@@ -149,7 +149,7 @@ end
 desc "Post to a HipChat room if the build was successful"
 private_lane :smf_notify_via_hipchat do |options|
 
-  project_name = options[:build_variant_config]["PROJECT_NAME"]
+  project_name = options[:project_name]
 
   room = options[:room]
 
@@ -172,18 +172,18 @@ end
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
 private_lane :smf_notify_via_mail do |options|
 
-  project_name = options[:build_variant_config]["PROJECT_NAME"]
+  project_name = options[:project_name]
 
   authors_email = options[:authors_email]
   success = options[:success]
 
   case success
   when true
-    subject = "#{PROJECT_NAME} realeased successfully #{get_build_number}"
-    message = "#{PROJECT_NAME} have a new version #{get_build_number} 🎉🎉🎉"
+    subject = "#{project_name} realeased successfully #{get_build_number}"
+    message = "#{project_name} have a new version #{get_build_number} 🎉🎉🎉"
   else
-    subject = "#{PROJECT_NAME} failed"
-    message = "#{PROJECT_NAME} failed to upload a new version 😢😢😢"
+    subject = "#{project_name} failed"
+    message = "#{project_name} failed to upload a new version 😢😢😢"
   end
 
   authors_email.each do |c|
@@ -209,12 +209,10 @@ end
 desc "Clean, build and release the app on HockeyApp"
 private_lane :smf_upload_ipa_to_hockey do |options|
 
-  hockeyAppId = options[:hockeyAppId]
-  buildVariant = options[:buildVariant]
-
+  hockey_app_id = options[:build_variant_config]["HOCKEY_ID"]
 
   UI.important("Upload a new build to HockeyApp")
-  #Print .ipa path
+
   puts "IPA: "+lane_context[SharedValues::IPA_OUTPUT_PATH]+"".green
 
   hockey(
@@ -222,7 +220,7 @@ private_lane :smf_upload_ipa_to_hockey do |options|
     ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
     notify: "0",
     notes: ENV["CHANGELOG"],
-    public_identifier: hockeyAppId
+    public_identifier: hockey_app_id
     )
 
   clean_build_artifacts
