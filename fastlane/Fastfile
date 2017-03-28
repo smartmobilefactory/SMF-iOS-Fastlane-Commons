@@ -1,16 +1,11 @@
 
 
-###################
-### archive_ipa ###
-###################
+#######################
+### smf_archive_ipa ###
+#######################
 
 desc "Build the project based on the build type."
-private_lane :archive_ipa do |options|
-
-  app_identifier = options[:target_config]["BUNDLE_IDENTIFIER"]
-  scheme = options[:target_config]["SCHEME_NAME"]
-  ipa_filename = "#{options[:target_config]["SCHEME_NAME"]}"
-  codesigning_identity = options[:target_config]["CODE_SIGNING_IDENTITY"]
+private_lane :smf_archive_ipa do |options|
 
   UI.important("Build a new version")
 
@@ -18,65 +13,59 @@ private_lane :archive_ipa do |options|
 
   sigh(
     skip_certificate_verification:true,
-    app_identifier: app_identifier
+    app_identifier: options[:build_variant_config]["BUNDLE_IDENTIFIER"]
     )
 
   unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
 
   gym(
     clean: true,
-    workspace: "Baur.xcworkspace",
-    scheme: scheme,
+    workspace: "#{options[:build_variant_config]["PROJECT_NAME"]}.xcworkspace",
+    scheme: options[:build_variant_config]["SCHEME_NAME"],
     configuration: 'Release',
-    codesigning_identity: codesigning_identity,
+    codesigning_identity: options[:build_variant_config]["CODE_SIGNING_IDENTITY"],
     output_directory: "build",
     archive_path:"build/",
-    output_name: ipa_filename     
+    output_name: "#{options[:build_variant_config]["SCHEME_NAME"]}"     
     )
 end
 
 
-#########################
-### collect_changelog ###
-#########################
+#############################
+### smf_collect_changelog ###
+#############################
 
 desc "Collect git commit messages and author mail adressex into a changelog and store them as environmental varibles."
-private_lane :collect_changelog do |options|
+private_lane :smf_collect_changelog do |options|
 
-  buildVariant = options[:buildVariant]
+  build_variant_config = options[:build_variant_config]
+  build_variant = build_variant_config["BUID_VARIANT_NAME"]
 
   UI.important("collect commits back to the last tag")
 
-  case buildVariant 
-  when "Alpha"
+  if build_variant.include? "Alpha"
     ENV["CHANGELOG"] =  changelog_from_git_commits(include_merges: false, pretty: '- (%an) %s')
     ENV["EMAIL"] = changelog_from_git_commits( include_merges: false, pretty: '%ae')
   else
-    
-    if TARGETS_DICT.key?(buildVariant)
-      ENV["CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: '*#{buildVariant}*',include_merges: false, pretty: '- (%an) %s')
-      ENV["EMAIL"] = changelog_from_git_commits(tag_match_pattern: '*#{buildVariant}*',include_merges: false, pretty: '%ae')
-    else
-      puts "No valid target"
-    end
-  
+    ENV["CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: '*#{build_variant}*',include_merges: false, pretty: '- (%an) %s')
+    ENV["EMAIL"] = changelog_from_git_commits(tag_match_pattern: '*#{build_variant}*',include_merges: false, pretty: '%ae')
   end
 
 end
 
 
-###################################
-### disable_former_hockey_entry ###
-###################################
+#######################################
+### smf_disable_former_hockey_entry ###
+#######################################
 
 desc "Disable the downlaod of the former app version on HockeyApp - does not apply for Alpha builds."
-private_lane :disable_former_hockey_entry do |options|
+private_lane :smf_disable_former_hockey_entry do |options|
 
-  hockeyAppId = options[:hockeyAppId]
-  buildVariant = options[:buildVariant]
+  build_variant_config = options[:build_variant_config]
+  build_variant = build_variant_config["BUID_VARIANT_NAME"]
 
   # Disable the download of the former non Alpha app on Hockey App
-  if (buildVariant != "Alpha") && (Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id'] > 1)
+  if not build_variant.include? "Alpha" && (Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id'] > 1)
     previous_version_id  = Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id'] - 1
 
     UI.important("HERE IS THE ID OF THE Current VERSION #{Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id']}")
@@ -84,27 +73,25 @@ private_lane :disable_former_hockey_entry do |options|
 
     disable_hockey_download(
       api_token: ENV["HOCKEYAPP_API_TOKEN"],
-      public_identifier: hockeyAppId,
+      public_identifier: build_variant_config["HOCKEY_ID"],
       version_id: "#{previous_version_id}"
       )
   end
 
-  clean_build_artifacts
-
 end
 
 
-##########################
-### generate_meta_json ###
-##########################
+##############################
+### smf_generate_meta_json ###
+##############################
 
 desc "Create and push the metaJSON files - applys only for Alpha builds."
-private_lane :generate_meta_json do |options|
+private_lane :smf_generate_meta_json do |options|
 
-  buildVariant = options[:buildVariant]
+  build_variant = options[:build_variant_config]["BUID_VARIANT_NAME"]
   branch = options[:branch]
 
-  if buildVariant == "Alpha"
+  if build_variant.include? "Alpha"
     desc "Create the meta JSON files"
     sh "cd .. && Submodules/SMF-iOS-CommonProjectSetupFiles/MetaJSON/update-and-push-meta-jsons.sh \"#{branch}\" || true"
   end
@@ -112,34 +99,34 @@ private_lane :generate_meta_json do |options|
 end
 
 
-##############################
-### increment_build_number ###
-##############################
+#############################
+### smf_push_build_number ###
+#############################
 
-desc "Increment and push the build number."
-private_lane :increment_build_number do |options|
+desc "Commit and push the build number."
+private_lane :smf_push_build_number do |options|
 
-  buildVariant = options[:buildVariant]
+  build_variant_config = options[:build_variant_config]
+  build_variant = build_variant_config["BUID_VARIANT_NAME"]
+  project_name = build_variant_config["PROJECT_NAME"]
   branch = options[:branch]
 
   UI.important("Increment Build Version Code")
 
-  clean_build_artifacts
-
-  version = get_build_number(xcodeproj: "#{PROJECT_NAME}.xcodeproj")
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   puts version
 
   commit_version_bump(
-    xcodeproj: "#{PROJECT_NAME}.xcodeproj",
+    xcodeproj: "#{project_name}.xcodeproj",
     message: "Increment build number to #{version}"
     )
 
   # Tag the increment build number commit
-  if git_tag_exists(tag: "build/"+buildVariant+"_b"+version)
+  if git_tag_exists(tag: "build/"+build_variant+"_b"+version)
     UI.message("Git tag already existed")
   else
     add_git_tag(
-      tag: "build/"+buildVariant+"_b"+version
+      tag: "build/"+build_variant+"_b"+version
       )
   end
     
@@ -149,28 +136,27 @@ private_lane :increment_build_number do |options|
     remote_branch: branch,
     force: false,
     tags: true
-    )
-
-  clean_build_artifacts
+  )
 
 end
 
 
-##########################
-### notify_via_hipchat ###
-##########################
+##############################
+### smf_notify_via_hipchat ###
+##############################
 
 desc "Post to a HipChat room if the build was successful"
-private_lane :notify_via_hipchat do |options|
+private_lane :smf_notify_via_hipchat do |options|
+
+  project_name = options[:build_variant_config]["PROJECT_NAME"]
 
   room = options[:room]
-  api_token = options[:api_token]
 
   hipchat(
-    message: "#{PROJECT_NAME} successfully released version #{get_build_number}!",
+    message: "#{project_name} successfully released version #{get_build_number}!",
     channel: room,
     success: true,
-    api_token: api_token,
+    api_token: ENV["HIPCHAT_API_TOKEN"],
     notify_room: true,
     version: "2"
   )
@@ -178,15 +164,18 @@ private_lane :notify_via_hipchat do |options|
 end
 
 
-#######################
-### notify_via_mail ###
-#######################
+###########################
+### smf_notify_via_mail ###
+###########################
 
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
-private_lane :notify_via_mail do |options|
+private_lane :smf_notify_via_mail do |options|
+
+  project_name = options[:build_variant_config]["PROJECT_NAME"]
 
   authors_email = options[:authors_email]
   success = options[:success]
+
   case success
   when true
     subject = "#{PROJECT_NAME} realeased successfully #{get_build_number}"
@@ -200,7 +189,7 @@ private_lane :notify_via_mail do |options|
     mailgun(
       subject: subject,
       postmaster:"postmaster@mailgun.smfhq.com",
-      apikey: "key-74595c7e3dbbab1e25af00bea08571b8",
+      apikey: ENV["MAILGUN_KEY"],
       to: c,
       success: success,
       message: message,
@@ -212,12 +201,12 @@ private_lane :notify_via_mail do |options|
 end
 
 
-############################
-### upload_ipa_to_hockey ###
-############################
+################################
+### smf_upload_ipa_to_hockey ###
+################################
 
 desc "Clean, build and release the app on HockeyApp"
-private_lane :upload_ipa_to_hockey do |options|
+private_lane :smf_upload_ipa_to_hockey do |options|
 
   hockeyAppId = options[:hockeyAppId]
   buildVariant = options[:buildVariant]
