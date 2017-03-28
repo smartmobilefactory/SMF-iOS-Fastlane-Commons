@@ -11,10 +11,10 @@
 desc "Build the project based on the build type."
 private_lane :archive_ipa do |options|
 
-  app_identifier = options[:target_config["BUNDLE_IDENTIFIER"]]
-  scheme = options[:target_config["SCHEME_NAME"]]
-  ipa_filename = "#{options[:target_config["SCHEME_NAME"]]}"
-  codesigning_identity = options[:target_config["CODE_SIGNING_IDENTITY"]]
+  app_identifier = options[:target_config]["BUNDLE_IDENTIFIER"]
+  scheme = options[:target_config]["SCHEME_NAME"]
+  ipa_filename = "#{options[:target_config]["SCHEME_NAME"]}"
+  codesigning_identity = options[:target_config]["CODE_SIGNING_IDENTITY"]
 
   UI.important("Build a new version")
 
@@ -25,7 +25,7 @@ private_lane :archive_ipa do |options|
     app_identifier: app_identifier
     )
 
-  nlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+  unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
 
   gym(
     clean: true,
