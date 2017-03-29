@@ -150,6 +150,7 @@ desc "Post to a HipChat room if the build was successful"
 private_lane :smf_notify_via_hipchat do |options|
 
   project_name = ENV["PROJECT_NAME"]
+  build_variant_name = ENV["BUILD_VARIANT_NAME"]
 
   room = options[:room]
 
