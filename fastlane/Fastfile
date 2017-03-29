@@ -20,7 +20,7 @@ private_lane :smf_archive_ipa do |options|
 
   gym(
     clean: true,
-    workspace: "#{options[:build_variant_config]["PROJECT_NAME"]}.xcworkspace",
+    workspace: "#{ENV["PROJECT_NAME"]}.xcworkspace",
     scheme: options[:build_variant_config]["SCHEME_NAME"],
     configuration: 'Release',
     codesigning_identity: options[:build_variant_config]["CODE_SIGNING_IDENTITY"],
@@ -35,11 +35,11 @@ end
 ### smf_collect_changelog ###
 #############################
 
-desc "Collect git commit messages and author mail adressex into a changelog and store them as environmental varibles."
+desc "Collect git commit messages and author mail adresses into a changelog and store them as environmental varibles."
 private_lane :smf_collect_changelog do |options|
 
   build_variant_config = options[:build_variant_config]
-  build_variant = build_variant_config["BUILD_VARIANT_NAME"]
+  build_variant = ENV["BUILD_VARIANT_NAME"]
 
   UI.important("collect commits back to the last tag")
 
@@ -62,7 +62,7 @@ desc "Disable the downlaod of the former app version on HockeyApp - does not app
 private_lane :smf_disable_former_hockey_entry do |options|
 
   build_variant_config = options[:build_variant_config]
-  build_variant = build_variant_config["BUILD_VARIANT_NAME"]
+  build_variant = ENV["BUILD_VARIANT_NAME"]
 
   # Disable the download of the former non Alpha app on Hockey App
   if not build_variant.include? "Alpha"
@@ -89,7 +89,7 @@ end
 desc "Create and push the metaJSON files - applys only for Alpha builds."
 private_lane :smf_generate_meta_json do |options|
 
-  build_variant = options[:build_variant_config]["BUILD_VARIANT_NAME"]
+  build_variant = ENV["BUILD_VARIANT_NAME"]
   branch = options[:branch]
 
   if build_variant.include? "Alpha"
@@ -108,8 +108,8 @@ desc "Commit and push the build number."
 private_lane :smf_push_build_number do |options|
 
   build_variant_config = options[:build_variant_config]
-  build_variant = build_variant_config["BUILD_VARIANT_NAME"]
-  project_name = build_variant_config["PROJECT_NAME"]
+  build_variant = ENV["BUILD_VARIANT_NAME"]
+  project_name = ENV["PROJECT_NAME"]
   branch = options[:branch]
 
   UI.important("Increment Build Version Code")
