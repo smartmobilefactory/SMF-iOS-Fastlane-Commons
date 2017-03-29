@@ -149,12 +149,12 @@ end
 desc "Post to a HipChat room if the build was successful"
 private_lane :smf_notify_via_hipchat do |options|
 
-  project_name = options[:project_name]
+  project_name = ENV["PROJECT_NAME"]
 
   room = options[:room]
 
   hipchat(
-    message: "#{project_name} successfully released version #{get_build_number}!",
+    message: "#Successfully released {project_name} #{build_variant_name} (Build #{get_build_number})",
     channel: room,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
@@ -172,18 +172,21 @@ end
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
 private_lane :smf_notify_via_mail do |options|
 
-  project_name = options[:project_name]
+  project_name = ENV["PROJECT_NAME"]
+  build_variant_name = ENV["BUILD_VARIANT_NAME"]
 
   authors_email = options[:authors_email]
   success = options[:success]
 
   case success
   when true
-    subject = "#{project_name} realeased successfully #{get_build_number}"
-    message = "#{project_name} have a new version #{get_build_number} 🎉🎉🎉"
+    subject = "#Successfully released {project_name} #{build_variant_name} (Build #{get_build_number})"
+    message = "#{project_name} has a new #{build_variant_name} build: #{get_build_number} 🎉🎉🎉"
+    app_link = Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK]
   else
-    subject = "#{project_name} failed"
-    message = "#{project_name} failed to upload a new version 😢😢😢"
+    subject = "Failed to build #{project_name} #{build_variant_name}"
+    message = "Failed to build and release #{project_name} #{build_variant_name} 😢😢😢"
+    app_link = ""
   end
 
   authors_email.each do |c|
@@ -194,7 +197,7 @@ private_lane :smf_notify_via_mail do |options|
       to: c,
       success: success,
       message: message,
-      app_link: Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK],
+      app_link: app_link,
       ci_build_link: ENV["BUILD_URL"]
       )
   end
