@@ -119,7 +119,8 @@ private_lane :smf_push_build_number do |options|
 
   commit_version_bump(
     xcodeproj: "#{project_name}.xcodeproj",
-    message: "Increment build number to #{version}"
+    message: "Increment build number to #{version}",
+    force: true
     )
 
   # Tag the increment build number commit
