@@ -156,7 +156,7 @@ private_lane :smf_notify_via_hipchat do |options|
   room = options[:room]
 
   hipchat(
-    message: "#Successfully released {project_name} #{build_variant_name} (Build #{get_build_number})",
+    message: "Successfully released #{project_name} #{build_variant_name} (Build #{get_build_number})",
     channel: room,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
@@ -182,7 +182,7 @@ private_lane :smf_notify_via_mail do |options|
 
   case success
   when true
-    subject = "#Successfully released {project_name} #{build_variant_name} (Build #{get_build_number})"
+    subject = "Successfully released #{project_name} #{build_variant_name} (Build #{get_build_number})"
     message = "#{project_name} has a new #{build_variant_name} build: #{get_build_number} 🎉🎉🎉"
     app_link = Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK]
   else
