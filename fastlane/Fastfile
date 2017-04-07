@@ -156,12 +156,15 @@ private_lane :smf_notify_via_hipchat do |options|
   room = options[:room]
 
   hipchat(
-    message: "Successfully released #{project_name} #{build_variant_name} (Build #{get_build_number})",
+    message:"<table><tr><td><strong>🎉 Successfully released #{ENV["PROJECT_NAME"]} #{ENV["BUILD_VARIANT_NAME"]} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["CHANGELOG"]}</pre></td></tr></table>",
     channel: room,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
     notify_room: true,
-    version: "2"
+    version: "2",
+    message_format: "html",
+    include_html_header: false,
+    from: "#{ENV["PROJECT_NAME"]} CI"
   )
 
 end
