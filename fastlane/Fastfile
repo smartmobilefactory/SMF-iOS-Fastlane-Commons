@@ -47,8 +47,8 @@ private_lane :smf_collect_changelog do |options|
     ENV["CHANGELOG"] =  changelog_from_git_commits(include_merges: false, pretty: '- (%an) %s')
     ENV["EMAIL"] = changelog_from_git_commits( include_merges: false, pretty: '%ae')
   else
-    ENV["CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: '*#{build_variant}*',include_merges: false, pretty: '- (%an) %s')
-    ENV["EMAIL"] = changelog_from_git_commits(tag_match_pattern: '*#{build_variant}*',include_merges: false, pretty: '%ae')
+    ENV["CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '- (%an) %s')
+    ENV["EMAIL"] = changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '%ae')
   end
 
 end
