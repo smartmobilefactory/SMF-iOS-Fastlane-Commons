@@ -203,7 +203,8 @@ private_lane :smf_notify_via_mail do |options|
       success: success,
       message: message,
       app_link: app_link,
-      ci_build_link: ENV["BUILD_URL"]
+      ci_build_link: ENV["BUILD_URL"],
+      template_path: "/Users/smf/jenkins/template_mail.erb"
       )
   end
 
