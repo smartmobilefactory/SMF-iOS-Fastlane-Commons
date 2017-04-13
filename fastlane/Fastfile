@@ -182,6 +182,8 @@ private_lane :smf_notify_via_mail do |options|
 
   authors_email = options[:authors_email]
   success = options[:success]
+  exception = options[:exception]
+
 
   case success
   when true
@@ -191,6 +193,16 @@ private_lane :smf_notify_via_mail do |options|
   else
     subject = "Failed to build #{project_name} #{build_variant_name}"
     message = "Failed to build and release #{project_name} #{build_variant_name} 😢😢😢"
+    message << "<p style='
+                border: 1px solid #D8D8D8;
+                padding: 5px;
+                border-radius: 5px;
+                font-family: Arial;
+                font-size: 11px;
+                text-transform: uppercase;
+                background-color: rgb(255, 249, 242);
+                color: rgb(211, 0, 0);
+                text-align: center;' >#{exception} <p>"
     app_link = ""
   end
 
