@@ -251,7 +251,7 @@ private_lane :smf_publish_pod do |options|
   ensure_git_status_clean
 
   # Use the default tag prefix if no one was given
-  undless defined?(options[:tag_prefix])
+  unless defined?(options[:tag_prefix])
     options[:tag_prefix] = ""
   end
 
