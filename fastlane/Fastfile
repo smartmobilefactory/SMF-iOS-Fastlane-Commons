@@ -247,7 +247,7 @@ private_lane :smf_publish_pod do |options|
   UI.important("Publish Pod")
 
   # Make sure the repo is up to date and clean
-  ensure_git_branch
+  ensure_git_branch(branch: options[:branch])
   ensure_git_status_clean
 
   # Bump the pods version if needed
