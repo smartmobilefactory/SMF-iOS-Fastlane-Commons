@@ -235,3 +235,57 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   clean_build_artifacts
 
 end
+
+
+#######################
+### smf_publish_pod ###
+#######################
+
+desc "Publish the pod. Either to the official specs repo or to the SMF specs repo"
+private_lane :smf_publish_pod do |options|
+
+  UI.important("Publish Pod")
+
+  # Make sure the repo is up to date and clean
+  ensure_git_branch
+  ensure_git_status_clean
+
+  # Bump the pods version if needed
+  if params[:bump_type] != "current"
+    bump_type = options[:bump_type]
+
+    version_bump_podspec(
+      path: options[:podspec_path],
+      bump_type: bump_type
+      )
+  end
+
+  version = read_podspec["version"]
+
+   # Commit the  version bump if needed
+  if params[:bump_type] != "current"
+    git_commit_all(message: "Release Pod #{version}")
+  end
+
+  # Add the git tag
+  add_git_tag(tag: version)
+  push_to_git_remote
+  
+  changelog = changelog_from_git_commits
+  github_release = set_github_release(
+      repository_name: options[:repository_path],
+      api_token: ENV['GITHUB_TOKEN'],
+      name: version,
+      tag_name: version,
+      description: changelog,
+      commitish: options[:branch]
+    )
+
+  # Publish the pod. Either to a private specs repo or to the offical one
+  if params[:specs_repo]
+    pod_push(repo: options[:specs_repo], path: options[:podspec_path], allow_warnings: true)
+  else
+    pod_push(path: options[:podspec_path])
+  end
+
+end
