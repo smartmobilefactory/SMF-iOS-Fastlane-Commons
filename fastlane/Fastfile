@@ -250,6 +250,11 @@ private_lane :smf_publish_pod do |options|
   ensure_git_branch(branch: options[:branch])
   ensure_git_status_clean
 
+  # Use the default tag prefix if no one was given
+  undless defined?(options[:tag_prefix])
+    options[:tag_prefix] = ""
+  end
+
   # Bump the pods version if needed
   if options[:bump_type] != "current"
     bump_type = options[:bump_type]
@@ -268,7 +273,7 @@ private_lane :smf_publish_pod do |options|
   end
 
   # Add the git tag
-  add_git_tag(tag: version)
+  add_git_tag(tag: "#{options[:tag_prefix]}#{version}")
   push_to_git_remote
   
   changelog = changelog_from_git_commits(pretty: '- (%an) %s')
@@ -277,7 +282,7 @@ private_lane :smf_publish_pod do |options|
       repository_name: options[:repository_path],
       api_token: ENV['GITHUB_TOKEN'],
       name: version,
-      tag_name: version,
+      tag_name: "#{options[:tag_prefix]}#{version}",
       description: changelog,
       commitish: options[:branch]
     )
