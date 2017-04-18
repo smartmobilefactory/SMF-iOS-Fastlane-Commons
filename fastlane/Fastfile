@@ -251,7 +251,7 @@ private_lane :smf_publish_pod do |options|
   ensure_git_status_clean
 
   # Bump the pods version if needed
-  if params[:bump_type] != "current"
+  if options[:bump_type] != "current"
     bump_type = options[:bump_type]
 
     version_bump_podspec(
@@ -263,7 +263,7 @@ private_lane :smf_publish_pod do |options|
   version = read_podspec["version"]
 
    # Commit the  version bump if needed
-  if params[:bump_type] != "current"
+  if options[:bump_type] != "current"
     git_commit_all(message: "Release Pod #{version}")
   end
 
@@ -282,7 +282,7 @@ private_lane :smf_publish_pod do |options|
     )
 
   # Publish the pod. Either to a private specs repo or to the offical one
-  if params[:specs_repo]
+  if options[:specs_repo]
     pod_push(repo: options[:specs_repo], path: options[:podspec_path], allow_warnings: true)
   else
     pod_push(path: options[:podspec_path])
