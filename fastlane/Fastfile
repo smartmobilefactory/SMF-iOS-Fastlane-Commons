@@ -264,7 +264,7 @@ private_lane :smf_publish_pod do |options|
 
    # Commit the  version bump if needed
   if options[:bump_type] != "current"
-    git_commit(message: "Release Pod #{version}")
+    git_commit(path: options[:podspec_path], message: "Release Pod #{version}")
   end
 
   # Add the git tag
