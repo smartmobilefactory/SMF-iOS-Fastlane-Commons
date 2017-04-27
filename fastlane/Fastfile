@@ -1,54 +1,196 @@
 
 
+######################
+### smf_deploy_app ###
+######################
+
+desc "Builds the project including build number incrementation, MetaJSON etc. and uploads the version to Hockey."
+private_lane :smf_deploy_app do |options|
+
+  UI.important("Deplay a new app version")
+
+  # Read options parameter
+  build_variant = options[:build_variant]
+  project_config = options[:project_config]
+  build_variant_config = options[:build_variant_config]
+  branch = options[:build_variant]
+
+  # Build and archive the IPA
+  smf_archive_ipa(
+    project_config: project_config,
+    build_variant_config: build_variant_config
+    )
+
+  # Collect the changelog 
+  smf_collect_changelog(
+    build_variant: build_variant
+    )
+
+  # Increment and push the build number
+  smf_bump_and_push_build_number(
+    project_config: project_config,
+    build_variant: build_variant,
+    branch: branch,
+    tag_prefix: "build/#{build_variant}_b"
+    )
+
+  # Update the MetaJSONS if wanted
+  if options[:generateMetaJSON] != false
+    smf_generate_meta_json(
+      build_variant: build_variant,
+      branch: branch,
+      build_variants_contains_whitelist: ["Alpha"]
+      )
+  end
+
+  # Upload the IPA to HockeyApp
+  smf_upload_ipa_to_hockey(
+    build_variant_config: build_variant_config
+    )
+
+  # Disable the former HockeyApp entry
+  smf_disable_former_hockey_entry(
+    build_variant: build_variant,
+    build_variant_config: build_variant_config
+    )
+end
+
+
+
+#######################
+### smf_publish_pod ###
+#######################
+
+# options: branch (String), tag_prefix (String) [optional], bump_type (String), podspec_path (String), repository_path (String), specs_repo (String)
+
+desc "Publish the pod. Either to the official specs repo or to the SMF specs repo"
+private_lane :smf_publish_pod do |options|
+
+  UI.important("Publish Pod")
+
+  # Read options parameter
+  branch = options[:branch]
+  tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
+  bump_type = options[:bump_type]
+  podspec_path = options[:podspec_path]
+  repository_path = options[:repository_path]
+  specs_repo = options[:specs_repo]
+
+  # Make sure the repo is up to date and clean
+  ensure_git_branch(branch: branch)
+  ensure_git_status_clean
+
+  # Update the CocoaPods repo to avoid unknown Pod version issues
+  sh "pod repo update"
+
+  # Bump the pods version if needed
+  if bump_type != "current"
+    version_bump_podspec(
+      path: podspec_path,
+      bump_type: bump_type
+      )
+  end
+
+  version = read_podspec(path: podspec_path)["version"]
+
+  # Commit the  version bump if needed
+  if bump_type != "current"
+    git_commit(
+      path: podspec_path,
+      message: "Release Pod #{version}"
+      )
+  end
+
+  # Add the git tag
+  add_git_tag(tag: "#{tag_prefix}#{version}")
+  push_to_git_remote
+  
+  changelog = changelog_from_git_commits(pretty: '- (%an) %s')
+
+  # Publish the pod. Either to a private specs repo or to the offical one
+  if specs_repo
+    pod_push(
+      repo: specs_repo,
+      path: podspec_path,
+      allow_warnings: true
+      )
+  else
+    pod_push(path: podspec_path)
+  end
+
+  github_release = set_github_release(
+    repository_name: repository_path,
+    api_token: ENV['GITHUB_TOKEN'],
+    name: version,
+    tag_name: "#{tag_prefix}#{version}",
+    description: changelog,
+    commitish: branch
+  )
+
+end
+
+
+
+
 #######################
 ### smf_archive_ipa ###
 #######################
+
+# options: build_variant_config (Hash), project_config (Hash)
 
 desc "Build the project based on the build type."
 private_lane :smf_archive_ipa do |options|
 
   UI.important("Build a new version")
 
+  # Read options parameter
+  project_name = options[:project_config]["project_name"]
+  build_variant_config = options[:build_variant_config]
+  
+  # Set the Apple Team ID
+  team_id build_variant_config["team_id"]
+
   unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
 
   sigh(
     skip_certificate_verification:true,
-    app_identifier: options[:build_variant_config]["BUNDLE_IDENTIFIER"]
+    app_identifier: build_variant_config["bundle_identifier"]
     )
 
   unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
 
   gym(
     clean: true,
-    workspace: "#{ENV["PROJECT_NAME"]}.xcworkspace",
-    scheme: options[:build_variant_config]["SCHEME_NAME"],
+    workspace: "#{project_name}.xcworkspace",
+    scheme: build_variant_config["scheme"],
     configuration: 'Release',
-    codesigning_identity: options[:build_variant_config]["CODE_SIGNING_IDENTITY"],
+    codesigning_identity: build_variant_config["code_signing_identity"],
     output_directory: "build",
     archive_path:"build/",
-    output_name: "#{options[:build_variant_config]["SCHEME_NAME"]}"     
+    output_name: build_variant_config["scheme"]
     )
 end
-
 
 #############################
 ### smf_collect_changelog ###
 #############################
 
+# options: build_variant (String)
+
 desc "Collect git commit messages and author mail adresses into a changelog and store them as environmental varibles."
 private_lane :smf_collect_changelog do |options|
 
-  build_variant_config = options[:build_variant_config]
-  build_variant = ENV["BUILD_VARIANT_NAME"]
-
   UI.important("collect commits back to the last tag")
 
+  # Read options parameter
+  build_variant = options[:build_variant]
+
   if build_variant.include? "Alpha"
-    ENV["CHANGELOG"] =  changelog_from_git_commits(include_merges: false, pretty: '- (%an) %s')
-    ENV["EMAIL"] = changelog_from_git_commits( include_merges: false, pretty: '%ae')
+    ENV["FL_CHANGELOG"] =  changelog_from_git_commits(include_merges: false, pretty: '- (%an) %s')
+    ENV["FL_CHANGELOG_EMAILS"] = changelog_from_git_commits( include_merges: false, pretty: '%ae')
   else
-    ENV["CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '- (%an) %s')
-    ENV["EMAIL"] = changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '%ae')
+    ENV["FL_CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '- (%an) %s')
+    ENV["FL_CHANGELOG_EMAILS"] = changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '%ae')
   end
 
 end
@@ -58,11 +200,14 @@ end
 ### smf_disable_former_hockey_entry ###
 #######################################
 
+# options: build_variant_config (Hash), build_variant (String)
+
 desc "Disable the downlaod of the former app version on HockeyApp - does not apply for Alpha builds."
 private_lane :smf_disable_former_hockey_entry do |options|
 
+  # Read options parameter
+  build_variant = options[:build_variant]
   build_variant_config = options[:build_variant_config]
-  build_variant = ENV["BUILD_VARIANT_NAME"]
 
   # Disable the download of the former non Alpha app on Hockey App
   if not build_variant.include? "Alpha"
@@ -74,7 +219,7 @@ private_lane :smf_disable_former_hockey_entry do |options|
 
       disable_hockey_download(
         api_token: ENV["HOCKEYAPP_API_TOKEN"],
-        public_identifier: build_variant_config["HOCKEY_ID"],
+        public_identifier: build_variant_config["hockeyapp_id"],
         version_id: "#{previous_version_id}"
         )
     end
@@ -86,13 +231,17 @@ end
 ### smf_generate_meta_json ###
 ##############################
 
+# options: branch (String), build_variant (String) and build_variants_contains_whitelist (String) [optional]
+
 desc "Create and push the metaJSON files - applys only for Alpha builds."
 private_lane :smf_generate_meta_json do |options|
 
-  build_variant = ENV["BUILD_VARIANT_NAME"]
+  # Read options parameter
   branch = options[:branch]
+  build_variant = options[:build_variant]
+  build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
-  if build_variant.include? "Alpha"
+  if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.includes?(whitelist_item) })
     desc "Create the meta JSON files"
     sh "cd .. && Submodules/SMF-iOS-CommonProjectSetupFiles/MetaJSON/update-and-push-meta-jsons.sh \"#{branch}\" || true"
   end
@@ -100,16 +249,20 @@ private_lane :smf_generate_meta_json do |options|
 end
 
 
-#############################
-### smf_push_build_number ###
-#############################
+######################################
+### smf_bump_and_push_build_number ###
+######################################
+
+# options: project_config (Hash), build_variant (String)
 
 desc "Commit and push the build number."
 private_lane :smf_push_build_number do |options|
 
-  build_variant_config = options[:build_variant_config]
-  build_variant = ENV["BUILD_VARIANT_NAME"]
-  project_name = ENV["PROJECT_NAME"]
+  # Read options parameter
+  project_name = options[:project_config]["project_name"]
+  build_variant = options[:build_variant]
+  tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
+  tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
   branch = options[:branch]
 
   UI.important("Increment Build Version Code")
@@ -124,11 +277,11 @@ private_lane :smf_push_build_number do |options|
     )
 
   # Tag the increment build number commit
-  if git_tag_exists(tag: "build/"+build_variant+"_b"+version)
+  if git_tag_exists(tag: tag_prefix+version+tag_suffix)
     UI.message("Git tag already existed")
   else
     add_git_tag(
-      tag: "build/"+build_variant+"_b"+version
+      tag: tag_prefix+version+tag_suffix
       )
   end
     
@@ -147,24 +300,26 @@ end
 ### smf_notify_via_hipchat ###
 ##############################
 
+# options: project_config (Hash), build_variant (String), channel (String)
+
 desc "Post to a HipChat room if the build was successful"
 private_lane :smf_notify_via_hipchat do |options|
 
-  project_name = ENV["PROJECT_NAME"]
-  build_variant_name = ENV["BUILD_VARIANT_NAME"]
-
-  room = options[:room]
+  # Read options parameter
+  project_name = options[:project_config]["project_name"]
+  build_variant = options[:build_variant]
+  hip_chat_channel = options[:hip_chat_channel]
 
   hipchat(
-    message:"<table><tr><td><strong>🎉 Successfully released #{ENV["PROJECT_NAME"]} #{ENV["BUILD_VARIANT_NAME"]} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["CHANGELOG"]}</pre></td></tr></table>",
-    channel: room,
+    message:"<table><tr><td><strong>🎉 Successfully released #{project_name} #{build_variant} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["FL_CHANGELOG"]}</pre></td></tr></table>",
+    hip_chat_channel: hip_chat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
     notify_room: true,
     version: "2",
     message_format: "html",
     include_html_header: false,
-    from: "#{ENV["PROJECT_NAME"]} CI"
+    from: "#{project_name} CI"
   )
 
 end
@@ -174,25 +329,27 @@ end
 ### smf_notify_via_mail ###
 ###########################
 
+# options: project_config (Hash), build_variant (String), authors_emails (String), success (Boolean), exception_message (String) [Optional]
+
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
 private_lane :smf_notify_via_mail do |options|
 
-  project_name = ENV["PROJECT_NAME"]
-  build_variant_name = ENV["BUILD_VARIANT_NAME"]
-
+  # Read options parameter
+  project_name = options[:project_config]["project_name"]
+  build_variant = options[:build_variant]
   authors_email = options[:authors_email]
   success = options[:success]
-  exception = options[:exception]
+  exception_message = options[:exception_message]
 
 
   case success
   when true
-    subject = "Successfully released #{project_name} #{build_variant_name} (Build #{get_build_number})"
-    message = "#{project_name} has a new #{build_variant_name} build: #{get_build_number} 🎉🎉🎉"
+    subject = "Successfully released #{project_name} #{build_variant} (Build #{get_build_number})"
+    message = "#{project_name} has a new #{build_variant} build: #{get_build_number} 🎉🎉🎉"
     app_link = Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK]
   else
-    subject = "Failed to build #{project_name} #{build_variant_name}"
-    message = "Failed to build and release #{project_name} #{build_variant_name} 😢😢😢"
+    subject = "Failed to build #{project_name} #{build_variant}"
+    message = "Failed to build and release #{project_name} #{build_variant} 😢😢😢"
     message << "<p style='
                 border: 1px solid #D8D8D8;
                 padding: 5px;
@@ -202,7 +359,7 @@ private_lane :smf_notify_via_mail do |options|
                 text-transform: uppercase;
                 background-color: rgb(255, 249, 242);
                 color: rgb(211, 0, 0);
-                text-align: center;' >#{exception} <p>"
+                text-align: center;' >#{exception_message} <p>"
     app_link = ""
   end
 
@@ -227,12 +384,15 @@ end
 ### smf_upload_ipa_to_hockey ###
 ################################
 
+# options: project_config (Hash)
+
 desc "Clean, build and release the app on HockeyApp"
 private_lane :smf_upload_ipa_to_hockey do |options|
 
-  hockey_app_id = options[:build_variant_config]["HOCKEY_ID"]
-
   UI.important("Upload a new build to HockeyApp")
+
+  # Read options parameter
+  hockey_app_id = options[:build_variant_config]["hockeyapp_id"]
 
   puts "IPA: "+lane_context[SharedValues::IPA_OUTPUT_PATH]+"".green
 
@@ -240,70 +400,10 @@ private_lane :smf_upload_ipa_to_hockey do |options|
     api_token: ENV["HOCKEYAPP_API_TOKEN"],
     ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
     notify: "0",
-    notes: ENV["CHANGELOG"],
+    notes: ENV["FL_CHANGELOG"],
     public_identifier: hockey_app_id
     )
 
   clean_build_artifacts
-
-end
-
-
-#######################
-### smf_publish_pod ###
-#######################
-
-desc "Publish the pod. Either to the official specs repo or to the SMF specs repo"
-private_lane :smf_publish_pod do |options|
-
-  UI.important("Publish Pod")
-
-  # Make sure the repo is up to date and clean
-  ensure_git_branch(branch: options[:branch])
-  ensure_git_status_clean
-
-  # Use the default tag prefix if no one was given
-  unless defined?(options[:tag_prefix])
-    options[:tag_prefix] = ""
-  end
-
-  # Bump the pods version if needed
-  if options[:bump_type] != "current"
-    bump_type = options[:bump_type]
-
-    version_bump_podspec(
-      path: options[:podspec_path],
-      bump_type: bump_type
-      )
-  end
-
-  version = read_podspec(path: options[:podspec_path])["version"]
-
-   # Commit the  version bump if needed
-  if options[:bump_type] != "current"
-    git_commit(path: options[:podspec_path], message: "Release Pod #{version}")
-  end
-
-  # Add the git tag
-  add_git_tag(tag: "#{options[:tag_prefix]}#{version}")
-  push_to_git_remote
-  
-  changelog = changelog_from_git_commits(pretty: '- (%an) %s')
-
-  github_release = set_github_release(
-      repository_name: options[:repository_path],
-      api_token: ENV['GITHUB_TOKEN'],
-      name: version,
-      tag_name: "#{options[:tag_prefix]}#{version}",
-      description: changelog,
-      commitish: options[:branch]
-    )
-
-  # Publish the pod. Either to a private specs repo or to the offical one
-  if options[:specs_repo]
-    pod_push(repo: options[:specs_repo], path: options[:podspec_path], allow_warnings: true)
-  else
-    pod_push(path: options[:podspec_path])
-  end
 
 end
