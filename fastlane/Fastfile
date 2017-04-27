@@ -56,7 +56,6 @@ private_lane :smf_deploy_app do |options|
 end
 
 
-
 #######################
 ### smf_publish_pod ###
 #######################
@@ -127,6 +126,55 @@ private_lane :smf_publish_pod do |options|
     commitish: branch
   )
 
+end
+
+
+##########################
+### smf_handle_success ###
+##########################
+
+desc "Handle the success by sending email to the authors and post to the hipchat channel"
+private_lane :smf_handle_success do |options|
+
+  UI.important("Handle the build job success")
+
+  # Read options parameter
+  hipchat_channel = options[:project_config]["hipchat_channel"]
+
+  smf_notify_via_mail(
+    send_to_autors: true,
+    success: true
+    )
+
+  if hipchat_channel
+    smf_notify_via_hipchat(hip_chat_channel: hipchat_channel)
+  end
+end
+
+
+############################
+### smf_handle_exception ###
+############################
+
+desc "Handle the exception by sending email to the authors"
+private_lane :smf_handle_exception do |options|
+
+  UI.important("Handle the build job exception")
+
+  # Read options parameter
+  exception = options[:exception]
+  build_variant = build_variant[:build_variant]
+
+  # Collect the changelog (again) in case the build job failed before the former changelog collecting
+  smf_collect_changelog(
+    build_variant: build_variant
+  )
+
+  smf_notify_via_mail(
+    send_to_autors: true,
+    success: false,
+    exception_message: exception
+  )
 end
 
 
@@ -337,10 +385,14 @@ private_lane :smf_notify_via_mail do |options|
   # Read options parameter
   project_name = options[:project_config]["project_name"]
   build_variant = options[:build_variant]
-  authors_email = options[:authors_email]
+  send_to_autors = options[:send_to_autors]
   success = options[:success]
   exception_message = options[:exception_message]
 
+  authors_emails = []
+  if send_to_autors
+    authors_emails = ENV["FL_CHANGELOG_EMAILS"].split(" ").uniq.delete_if{|e| e == "git-checkout@smartmobilefactory.com"}
+  end
 
   case success
   when true
@@ -363,12 +415,12 @@ private_lane :smf_notify_via_mail do |options|
     app_link = ""
   end
 
-  authors_email.each do |c|
+  authors_emails.each do |receiver|
     mailgun(
       subject: subject,
       postmaster:"postmaster@mailgun.smfhq.com",
       apikey: ENV["MAILGUN_KEY"],
-      to: c,
+      to: receiver,
       success: success,
       message: message,
       app_link: app_link,
