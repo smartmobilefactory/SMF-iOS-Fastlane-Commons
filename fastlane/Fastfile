@@ -13,7 +13,7 @@ private_lane :smf_deploy_app do |options|
   build_variant = options[:build_variant]
   project_config = options[:project_config]
   build_variant_config = options[:build_variant_config]
-  branch = options[:build_variant]
+  branch = options[:branch]
 
   # Build and archive the IPA
   smf_archive_ipa(
