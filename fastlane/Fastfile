@@ -10,12 +10,13 @@ private_lane :smf_deploy_app do |options|
   UI.important("Deplay a new app version")
 
   # Read options parameter
-  build_variant = options[:build_variant]
+  build_variant = options[:build_variant].downcase
   build_variants_config = options[:build_variants_config]
   branch = options[:branch]
+  generateMetaJSON = options[:generateMetaJSON]
   project_config = build_variants_config["project"]
   extensions_suffixes = build_variants_config["extensions_suffixes"]
-  build_variant_config = build_variants_config["targets"][build_variant.downcase]
+  build_variant_config = build_variants_config["targets"][build_variant]
 
   # Build and archive the IPA
   smf_archive_ipa(
@@ -38,7 +39,7 @@ private_lane :smf_deploy_app do |options|
     )
 
   # Update the MetaJSONS if wanted
-  if options[:generateMetaJSON] != false
+  if generateMetaJSON != false
     smf_generate_meta_json(
       build_variant: build_variant,
       branch: branch,
@@ -259,11 +260,11 @@ private_lane :smf_collect_changelog do |options|
   build_variant = options[:build_variant]
 
   if build_variant.include? "Alpha"
-    ENV["FL_CHANGELOG"] =  changelog_from_git_commits(include_merges: false, pretty: '- (%an) %s')
-    ENV["FL_CHANGELOG_EMAILS"] = changelog_from_git_commits( include_merges: false, pretty: '%ae')
+    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(include_merges: false, pretty: '- (%an) %s')
+    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits( include_merges: false, pretty: '%ae')
   else
-    ENV["FL_CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '- (%an) %s')
-    ENV["FL_CHANGELOG_EMAILS"] = changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '%ae')
+    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '- (%an) %s')
+    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '%ae')
   end
 
 end
@@ -392,7 +393,7 @@ private_lane :smf_notify_via_hipchat do |options|
   hipchat_channel = options[:hipchat_channel]
 
   hipchat(
-    message:"<table><tr><td><strong>🎉 Successfully released #{project_name} #{build_variant} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["FL_CHANGELOG"]}</pre></td></tr></table>",
+    message:"<table><tr><td><strong>🎉 Successfully released #{project_name} #{build_variant} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"]}</pre></td></tr></table>",
     channel: hipchat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
@@ -424,17 +425,17 @@ private_lane :smf_notify_via_mail do |options|
 
   authors_emails = []
   if send_to_autors
-    authors_emails = ENV["FL_CHANGELOG_EMAILS"].split(" ").uniq.delete_if{|e| e == "git-checkout@smartmobilefactory.com"}
+    authors_emails = ENV["SMF_CHANGELOG_EMAILS"].split(" ").uniq.delete_if{|e| e == "git-checkout@smartmobilefactory.com"}
   end
 
   case success
   when true
     subject = "Successfully released #{project_name} #{build_variant} (Build #{get_build_number})"
-    message = "#{project_name} has a new #{build_variant} build: #{get_build_number} 🎉🎉🎉"
+    message = "#{project_name} has a new #{build_variant} build: #{get_build_number} 🎉"
     app_link = Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK]
   else
     subject = "Failed to build #{project_name} #{build_variant}"
-    message = "Failed to build and release #{project_name} #{build_variant} 😢😢😢"
+    message = "Failed to build and release #{project_name} #{build_variant} 😢"
     message << "<p style='
                 border: 1px solid #D8D8D8;
                 padding: 5px;
@@ -485,7 +486,7 @@ private_lane :smf_upload_ipa_to_hockey do |options|
     api_token: ENV["HOCKEYAPP_API_TOKEN"],
     ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
     notify: "0",
-    notes: ENV["FL_CHANGELOG"],
+    notes: ENV["SMF_CHANGELOG"],
     public_identifier: hockey_app_id
     )
 
