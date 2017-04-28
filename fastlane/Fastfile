@@ -18,6 +18,9 @@ private_lane :smf_deploy_app do |options|
   extensions_suffixes = build_variants_config["extensions_suffixes"]
   build_variant_config = build_variants_config["targets"][build_variant]
 
+  # Increment the build number
+  increment_build_number
+
   # Build and archive the IPA
   smf_archive_ipa(
     project_config: project_config,
@@ -25,8 +28,11 @@ private_lane :smf_deploy_app do |options|
     extensions_suffixes: extensions_suffixes
     )
 
-  # Increment and push the build number
-  smf_bump_and_push_build_number(
+  # Commit and push generated code. There can be chages eg. from PhraseApp + R.swift
+  smf_push_generated_code()
+
+  # Push the build number
+  smf_push_build_number(
     project_config: project_config,
     build_variant: build_variant,
     branch: branch,
@@ -332,14 +338,39 @@ private_lane :smf_generate_meta_json do |options|
 end
 
 
-######################################
-### smf_bump_and_push_build_number ###
-######################################
+###############################
+### smf_push_generated_code ###
+###############################
+
+desc "Commit and push generated code"
+private_lane :smf_push_build_number do |options|
+
+  UI.important("Commit and push generated code")
+  
+  git_commit(
+    path: ["../Generated/"],
+    message: "Update generated code"
+    )
+    
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: branch,
+    force: false,
+    tags: true
+    )
+
+end
+
+
+#############################
+### smf_push_build_number ###
+#############################
 
 # options: project_config (Hash), build_variant (String)
 
 desc "Commit and push the build number."
-private_lane :smf_bump_and_push_build_number do |options|
+private_lane :smf_push_build_number do |options|
 
   # Read options parameter
   project_name = options[:project_config]["project_name"]
@@ -349,9 +380,6 @@ private_lane :smf_bump_and_push_build_number do |options|
   branch = options[:branch]
 
   UI.important("Increment Build Version Code")
-
-  increment_build_number
-
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   puts version
 
