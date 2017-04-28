@@ -29,7 +29,9 @@ private_lane :smf_deploy_app do |options|
     )
 
   # Commit and push generated code. There can be chages eg. from PhraseApp + R.swift
-  smf_push_generated_code()
+  smf_push_generated_code(
+    branch: branch
+    )
 
   # Push the build number
   smf_push_build_number(
@@ -342,18 +344,17 @@ end
 ### smf_push_generated_code ###
 ###############################
 
+# options: branch (String)
+
 desc "Commit and push generated code"
 private_lane :smf_push_generated_code do |options|
 
   UI.important("Commit and push generated code")
-  
-  directory_name = File.dirname("../Generated/")
-  def directory_exists?(directory_name)
-    git_commit(
-      path: ["../Generated/"],
-      message: "Update generated code"
-      )
-  end
+    # Read options parameter
+  branch = options[:branch]
+
+  sh "git add ../Generated/ || true"
+  sh "git commit -m \"Update generated code\" || true"
 
   push_to_git_remote(
     remote: 'origin',
