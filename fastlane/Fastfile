@@ -343,7 +343,7 @@ end
 ###############################
 
 desc "Commit and push generated code"
-private_lane :smf_push_build_number do |options|
+private_lane :smf_push_generated_code do |options|
 
   UI.important("Commit and push generated code")
   
