@@ -142,7 +142,7 @@ end
 desc "Handle the success by sending email to the authors and post to the hipchat channel"
 private_lane :smf_handle_success do |options|
 
-  UI.important("Handle the build job success")fhipcaht
+  UI.important("Handle the build job success")
 
   # Read options parameter
   build_variant = options[:build_variant]
