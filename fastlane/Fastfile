@@ -41,6 +41,7 @@ private_lane :smf_deploy_app do |options|
   # Update the MetaJSONS if wanted
   if generateMetaJSON != false
     smf_generate_meta_json(
+      project_config: project_config,
       build_variant: build_variant,
       branch: branch,
       build_variants_contains_whitelist: ["alpha"]
@@ -314,6 +315,7 @@ private_lane :smf_generate_meta_json do |options|
   # Read options parameter
   branch = options[:branch]
   build_variant = options[:build_variant]
+  project_name = options[:project_config]["project_name"]
   build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
   if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
@@ -321,7 +323,7 @@ private_lane :smf_generate_meta_json do |options|
     # Fetch the MetaJSON scripts repo
     sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
     # Create and commit the MetaJSON files
-    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-push-meta-jsons.sh \"#{branch}\" || true"
+    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-push-meta-jsons.sh \"#{branch}\" \"#{project_name}\" || true"
     # Remove the MetaJSON scripts repo
     sh "rm -rf SMF-iOS-MetaJSON"
   end
