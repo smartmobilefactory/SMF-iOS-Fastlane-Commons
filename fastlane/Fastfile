@@ -322,6 +322,8 @@ private_lane :smf_bump_and_push_build_number do |options|
 
   UI.important("Increment Build Version Code")
 
+  increment_build_number
+
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   puts version
 
