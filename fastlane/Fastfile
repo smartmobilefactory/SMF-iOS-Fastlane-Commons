@@ -141,6 +141,7 @@ private_lane :smf_handle_success do |options|
   # Read options parameter
   build_variant = options[:build_variant]
   project_config = options[:project_config]
+  hipchat_channel = project_config["hipchat_channel"]
 
   smf_notify_via_mail(
     build_variant: build_variant,
@@ -150,7 +151,7 @@ private_lane :smf_handle_success do |options|
     )
 
   if hipchat_channel
-    smf_notify_via_hipchat(hip_chat_channel: project_config["hipchat_channel"])
+    smf_notify_via_hipchat(hipchat_channel: hipchat_channel)
   end
 end
 
