@@ -320,7 +320,7 @@ private_lane :smf_generate_meta_json do |options|
     # Fetch the MetaJSON scripts repo
     sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
     # Create and commit the MetaJSON files
-    sh "cd .. && SMF-iOS-MetaJSON/scripts/update-and-push-meta-jsons.sh \"#{branch}\" || true"
+    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-push-meta-jsons.sh \"#{branch}\" || true"
     # Remove the MetaJSON scripts repo
     sh "rm -rf SMF-iOS-MetaJSON"
   end
