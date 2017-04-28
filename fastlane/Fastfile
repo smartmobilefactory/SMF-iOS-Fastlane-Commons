@@ -139,15 +139,18 @@ private_lane :smf_handle_success do |options|
   UI.important("Handle the build job success")
 
   # Read options parameter
-  hipchat_channel = options[:project_config]["hipchat_channel"]
+  build_variant = options[:build_variant]
+  project_config = options[:project_config]
 
   smf_notify_via_mail(
+    build_variant: build_variant
+    project_config: project_config,
     send_to_autors: true,
     success: true
     )
 
   if hipchat_channel
-    smf_notify_via_hipchat(hip_chat_channel: hipchat_channel)
+    smf_notify_via_hipchat(hip_chat_channel: project_config["hipchat_channel"])
   end
 end
 
@@ -163,7 +166,8 @@ private_lane :smf_handle_exception do |options|
 
   # Read options parameter
   exception = options[:exception]
-  build_variant = build_variant[:build_variant]
+  build_variant = options[:build_variant]
+  project_config = options[:project_config]
 
   # Collect the changelog (again) in case the build job failed before the former changelog collecting
   smf_collect_changelog(
@@ -171,6 +175,8 @@ private_lane :smf_handle_exception do |options|
   )
 
   smf_notify_via_mail(
+    build_variant: build_variant,
+    project_config: project_config,
     send_to_autors: true,
     success: false,
     exception_message: exception
