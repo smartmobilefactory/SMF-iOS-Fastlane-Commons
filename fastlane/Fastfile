@@ -378,7 +378,7 @@ private_lane :smf_notify_via_hipchat do |options|
 
   hipchat(
     message:"<table><tr><td><strong>🎉 Successfully released #{project_name} #{build_variant} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["FL_CHANGELOG"]}</pre></td></tr></table>",
-    hip_chat_channel: hipchat_channel,
+    channel: hipchat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
     notify_room: true,
