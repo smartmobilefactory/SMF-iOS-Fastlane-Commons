@@ -424,7 +424,7 @@ private_lane :smf_notify_via_mail do |options|
   exception_message = options[:exception_message]
 
   authors_emails = []
-  if send_to_autors
+  if (send_to_autors) && (ENV["SMF_CHANGELOG_EMAILS"])
     authors_emails = ENV["SMF_CHANGELOG_EMAILS"].split(" ").uniq.delete_if{|e| e == "git-checkout@smartmobilefactory.com"}
   end
 
