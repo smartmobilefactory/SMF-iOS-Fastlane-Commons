@@ -39,7 +39,7 @@ private_lane :smf_deploy_app do |options|
     smf_generate_meta_json(
       build_variant: build_variant,
       branch: branch,
-      build_variants_contains_whitelist: ["Alpha"]
+      build_variants_contains_whitelist: ["Beta"]
       )
   end
 
@@ -289,7 +289,7 @@ private_lane :smf_generate_meta_json do |options|
   build_variant = options[:build_variant]
   build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
-  if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.includes?(whitelist_item) })
+  if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
     desc "Create the meta JSON files"
     sh "cd .. && Submodules/SMF-iOS-CommonProjectSetupFiles/MetaJSON/update-and-push-meta-jsons.sh \"#{branch}\" || true"
   end
