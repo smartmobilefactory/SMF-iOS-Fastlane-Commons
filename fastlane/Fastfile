@@ -302,7 +302,12 @@ private_lane :smf_generate_meta_json do |options|
 
   if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
     desc "Create the meta JSON files"
-    sh "cd .. && Submodules/SMF-iOS-CommonProjectSetupFiles/MetaJSON/update-and-push-meta-jsons.sh \"#{branch}\" || true"
+    # Fetch the MetaJSON scripts repo
+    sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
+    # Create and commit the MetaJSON files
+    sh "cd .. && SMF-iOS-MetaJSON/scripts/update-and-push-meta-jsons.sh \"#{branch}\" || true"
+    # Remove the MetaJSON scripts repo
+    sh "rm -rf SMF-iOS-MetaJSON"
   end
 
 end
