@@ -143,7 +143,7 @@ private_lane :smf_handle_success do |options|
   project_config = options[:project_config]
 
   smf_notify_via_mail(
-    build_variant: build_variant
+    build_variant: build_variant,
     project_config: project_config,
     send_to_autors: true,
     success: true
