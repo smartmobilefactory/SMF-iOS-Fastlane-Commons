@@ -151,7 +151,11 @@ private_lane :smf_handle_success do |options|
     )
 
   if hipchat_channel
-    smf_notify_via_hipchat(hipchat_channel: hipchat_channel)
+    smf_notify_via_hipchat(
+      build_variant: build_variant,
+      project_config: project_config,
+      hipchat_channel: hipchat_channel
+      )
   end
 end
 
