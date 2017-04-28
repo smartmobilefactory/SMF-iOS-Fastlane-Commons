@@ -304,7 +304,7 @@ end
 # options: project_config (Hash), build_variant (String)
 
 desc "Commit and push the build number."
-private_lane :smf_push_build_number do |options|
+private_lane :smf_bump_and_push_build_number do |options|
 
   # Read options parameter
   project_name = options[:project_config]["project_name"]
