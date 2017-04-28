@@ -39,7 +39,7 @@ private_lane :smf_deploy_app do |options|
     smf_generate_meta_json(
       build_variant: build_variant,
       branch: branch,
-      build_variants_contains_whitelist: ["Beta"]
+      build_variants_contains_whitelist: ["Alpha"]
       )
   end
 
@@ -51,7 +51,8 @@ private_lane :smf_deploy_app do |options|
   # Disable the former HockeyApp entry
   smf_disable_former_hockey_entry(
     build_variant: build_variant,
-    build_variant_config: build_variant_config
+    build_variant_config: build_variant_config,
+    build_variants_contains_whitelist: "Beta"
     )
 end
 
@@ -267,9 +268,10 @@ private_lane :smf_disable_former_hockey_entry do |options|
   # Read options parameter
   build_variant = options[:build_variant]
   build_variant_config = options[:build_variant_config]
+  build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
   # Disable the download of the former non Alpha app on Hockey App
-  if not build_variant.include? "Alpha"
+    if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
     if (Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id'] > 1)
       previous_version_id  = Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id'] - 1
 
