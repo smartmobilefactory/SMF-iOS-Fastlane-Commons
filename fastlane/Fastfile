@@ -25,11 +25,6 @@ private_lane :smf_deploy_app do |options|
     extensions_suffixes: extensions_suffixes
     )
 
-  # Collect the changelog 
-  smf_collect_changelog(
-    build_variant: build_variant
-    )
-
   # Increment and push the build number
   smf_bump_and_push_build_number(
     project_config: project_config,
@@ -47,6 +42,11 @@ private_lane :smf_deploy_app do |options|
       build_variants_contains_whitelist: ["alpha"]
       )
   end
+
+  # Collect the changelog 
+  smf_collect_changelog(
+    build_variant: build_variant
+    )
 
   # Upload the IPA to HockeyApp
   smf_upload_ipa_to_hockey(
