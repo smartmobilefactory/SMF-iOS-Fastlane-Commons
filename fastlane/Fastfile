@@ -428,7 +428,7 @@ private_lane :smf_notify_via_hipchat do |options|
   hipchat_channel = options[:hipchat_channel]
 
   hipchat(
-    message:"<table><tr><td><strong>🎉 Successfully released #{project_name} iOS #{build_variant} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"]}</pre></td></tr></table>",
+    message:"<table><tr><td><strong>🎉 Successfully released #{project_name} iOS #{build_variant.upcase} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"]}</pre></td></tr></table>",
     channel: hipchat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
@@ -465,12 +465,12 @@ private_lane :smf_notify_via_mail do |options|
 
   case success
   when true
-    subject = "Successfully released #{project_name} iOS #{build_variant} (Build #{get_build_number})"
-    message = "🎉 #{project_name} has a new #{build_variant} build: #{get_build_number} 🎉"
+    subject = "Successfully released #{project_name} iOS #{build_variant.upcase} (Build #{get_build_number})"
+    message = "🎉 #{project_name} has a new #{build_variant.upcase} build: #{get_build_number} 🎉"
     app_link = Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK]
   else
-    subject = "Failed to build #{project_name} iOS #{build_variant}"
-    message = "😢 Failed to build and release #{project_name} iOS #{build_variant} 😢"
+    subject = "Failed to build #{project_name} iOS #{build_variant.upcase}"
+    message = "😢 Failed to build and release #{project_name} iOS #{build_variant.upcase} 😢"
     message << "<p style='
                 border: 1px solid #D8D8D8;
                 padding: 5px;
