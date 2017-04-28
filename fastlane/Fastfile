@@ -142,7 +142,7 @@ end
 desc "Handle the success by sending email to the authors and post to the hipchat channel"
 private_lane :smf_handle_success do |options|
 
-  UI.important("Handle the build job success")
+  UI.important("Handle the build job success")fhipcaht
 
   # Read options parameter
   build_variant = options[:build_variant]
@@ -396,7 +396,7 @@ private_lane :smf_notify_via_hipchat do |options|
   hipchat_channel = options[:hipchat_channel]
 
   hipchat(
-    message:"<table><tr><td><strong>🎉 Successfully released #{project_name} #{build_variant} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"]}</pre></td></tr></table>",
+    message:"<table><tr><td><strong>🎉 Successfully released #{project_name} iOS #{build_variant} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"]}</pre></td></tr></table>",
     channel: hipchat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
@@ -404,7 +404,7 @@ private_lane :smf_notify_via_hipchat do |options|
     version: "2",
     message_format: "html",
     include_html_header: false,
-    from: "#{project_name} CI"
+    from: "#{project_name} iOS CI"
   )
 
 end
@@ -433,12 +433,12 @@ private_lane :smf_notify_via_mail do |options|
 
   case success
   when true
-    subject = "Successfully released #{project_name} #{build_variant} (Build #{get_build_number})"
-    message = "#{project_name} has a new #{build_variant} build: #{get_build_number} 🎉"
+    subject = "Successfully released #{project_name} iOS #{build_variant} (Build #{get_build_number})"
+    message = "🎉 #{project_name} has a new #{build_variant} build: #{get_build_number} 🎉"
     app_link = Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK]
   else
-    subject = "Failed to build #{project_name} #{build_variant}"
-    message = "Failed to build and release #{project_name} #{build_variant} 😢"
+    subject = "Failed to build #{project_name} iOS #{build_variant}"
+    message = "😢 Failed to build and release #{project_name} iOS #{build_variant} 😢"
     message << "<p style='
                 border: 1px solid #D8D8D8;
                 padding: 5px;
