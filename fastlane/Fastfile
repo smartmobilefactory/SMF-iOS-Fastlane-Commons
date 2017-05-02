@@ -36,7 +36,17 @@ private_lane :smf_deploy_app do |options|
   # Push the build number
   smf_push_build_number(
     project_config: project_config,
-    build_variant: build_variant,
+    branch: branch
+    )
+
+  # Collect the changelog 
+  smf_collect_changelog(
+    build_variant: build_variant
+    )
+
+  # Push the build number
+  smf_add_git_tag(
+    project_config: project_config,
     branch: branch,
     tag_prefix: "build/#{build_variant}_b"
     )
@@ -50,11 +60,6 @@ private_lane :smf_deploy_app do |options|
       build_variants_contains_whitelist: ["alpha"]
       )
   end
-
-  # Collect the changelog 
-  smf_collect_changelog(
-    build_variant: build_variant
-    )
 
   # Upload the IPA to HockeyApp
   smf_upload_ipa_to_hockey(
@@ -189,10 +194,12 @@ private_lane :smf_handle_exception do |options|
   build_variant = options[:build_variant]
   project_config = options[:project_config]
 
-  # Collect the changelog (again) in case the build job failed before the former changelog collecting
-  smf_collect_changelog(
-    build_variant: build_variant
-  )
+  unless ENV["SMF_CHANGELOG"].nil?
+    # Collect the changelog (again) in case the build job failed before the former changelog collecting
+    smf_collect_changelog(
+      build_variant: build_variant
+    )
+  end
 
   smf_notify_via_mail(
     build_variant: build_variant,
@@ -371,16 +378,13 @@ end
 ### smf_push_build_number ###
 #############################
 
-# options: project_config (Hash), build_variant (String)
+# options: project_config (Hash), branch (String)
 
 desc "Commit and push the build number."
 private_lane :smf_push_build_number do |options|
 
   # Read options parameter
   project_name = options[:project_config]["project_name"]
-  build_variant = options[:build_variant]
-  tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
-  tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
   branch = options[:branch]
 
   UI.important("Increment Build Version Code")
@@ -392,8 +396,36 @@ private_lane :smf_push_build_number do |options|
     message: "Increment build number to #{version}",
     force: true
     )
+    
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: branch,
+    force: false,
+    tags: true
+  )
 
-  # Tag the increment build number commit
+end
+
+#######################
+### smf_add_git_tag ###
+#######################
+
+# options: project_config (Hash), tag_prefix (String), tag_suffix (String) [optional], branch (String) [optional]
+
+desc "Tag the current git commit."
+private_lane :smf_add_git_tag do |options|
+
+  # Read options parameter
+  project_name = options[:project_config]["project_name"]
+  tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
+  tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
+  branch = options[:branch]
+
+  UI.important("Tag the current commit")
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+
+  # Tag the current commit
   if git_tag_exists(tag: tag_prefix+version+tag_suffix)
     UI.message("Git tag already existed")
   else
@@ -411,7 +443,6 @@ private_lane :smf_push_build_number do |options|
   )
 
 end
-
 
 ##############################
 ### smf_notify_via_hipchat ###
