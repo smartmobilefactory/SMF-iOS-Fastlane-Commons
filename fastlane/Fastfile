@@ -280,8 +280,8 @@ private_lane :smf_collect_changelog do |options|
     ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(include_merges: false, pretty: '- (%an) %s')
     ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits( include_merges: false, pretty: '%ae')
   elsif ["patch", "minor", "major", "current"].any? { |item| build_variant.downcase.include?(item) }
-    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*#{releases}*",include_merges: false, pretty: '- (%an) %s')
-    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(tag_match_pattern: "*#{releases}*",include_merges: false, pretty: '%ae')
+    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*releases*",include_merges: false, pretty: '- (%an) %s')
+    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(tag_match_pattern: "*releases*",include_merges: false, pretty: '%ae')
   else
     ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '- (%an) %s')
     ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '%ae')
