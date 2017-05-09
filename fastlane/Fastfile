@@ -152,19 +152,22 @@ end
 ### smf_handle_success ###
 ##########################
 
+# options: build_variant (String), project_config (Hash), release_title (String) [optional]
+
 desc "Handle the success by sending email to the authors and post to the hipchat channel"
 private_lane :smf_handle_success do |options|
 
   UI.important("Handle the build job success")
 
   # Read options parameter
-  build_variant = options[:build_variant]
+  build_variant = options[:build_variant].downcase
   project_config = options[:project_config]
+  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
   hipchat_channel = project_config["hipchat_channel"]
 
   smf_notify_via_mail(
     build_variant: build_variant,
-    project_config: project_config,
+    release_title: release_title,
     send_to_autors: true,
     success: true
     )
@@ -173,6 +176,7 @@ private_lane :smf_handle_success do |options|
     hipchat_channel = URI.escape(hipchat_channel)
     smf_notify_via_hipchat(
       build_variant: build_variant,
+      release_title: release_title,
       project_config: project_config,
       hipchat_channel: hipchat_channel
       )
@@ -184,6 +188,8 @@ end
 ### smf_handle_exception ###
 ############################
 
+# options: exception (exception), build_variant (String), project_config (Hash), release_title (String) [optional]
+
 desc "Handle the exception by sending email to the authors"
 private_lane :smf_handle_exception do |options|
 
@@ -191,8 +197,9 @@ private_lane :smf_handle_exception do |options|
 
   # Read options parameter
   exception = options[:exception]
-  build_variant = options[:build_variant]
+  build_variant = options[:build_variant].downcase
   project_config = options[:project_config]
+  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
 
   unless ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
@@ -203,7 +210,7 @@ private_lane :smf_handle_exception do |options|
 
   smf_notify_via_mail(
     build_variant: build_variant,
-    project_config: project_config,
+    release_title: release_title,
     send_to_autors: true,
     success: false,
     exception_message: exception
@@ -300,7 +307,7 @@ desc "Disable the downlaod of the former app version on HockeyApp - does not app
 private_lane :smf_disable_former_hockey_entry do |options|
 
   # Read options parameter
-  build_variant = options[:build_variant]
+  build_variant = options[:build_variant].downcase
   build_variant_config = options[:build_variant_config]
   build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
@@ -333,7 +340,7 @@ private_lane :smf_generate_meta_json do |options|
 
   # Read options parameter
   branch = options[:branch]
-  build_variant = options[:build_variant]
+  build_variant = options[:build_variant].downcase
   project_name = options[:project_config]["project_name"]
   build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
@@ -451,18 +458,18 @@ end
 ### smf_notify_via_hipchat ###
 ##############################
 
-# options: project_config (Hash), build_variant (String), channel (String)
+# options: project_config (Hash), release_title (String), channel (String)
 
 desc "Post to a HipChat room if the build was successful"
 private_lane :smf_notify_via_hipchat do |options|
 
   # Read options parameter
   project_name = options[:project_config]["project_name"]
-  build_variant = options[:build_variant]
+  release_title = options[:release_title]
   hipchat_channel = options[:hipchat_channel]
 
   hipchat(
-    message:"<table><tr><td><strong>🎉 Successfully released #{project_name} iOS #{build_variant.upcase} (Build #{get_build_number}) 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"]}</pre></td></tr></table>",
+    message:"<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"]}</pre></td></tr></table>",
     channel: hipchat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
@@ -480,14 +487,13 @@ end
 ### smf_notify_via_mail ###
 ###########################
 
-# options: project_config (Hash), build_variant (String), authors_emails (String), success (Boolean), exception_message (String) [Optional]
+# options: release_title (String), authors_emails (String), success (Boolean), exception_message (String) [Optional]
 
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
 private_lane :smf_notify_via_mail do |options|
 
   # Read options parameter
-  project_name = options[:project_config]["project_name"]
-  build_variant = options[:build_variant]
+  release_title = options[:release_title]
   send_to_autors = options[:send_to_autors]
   success = options[:success]
   exception_message = options[:exception_message]
@@ -499,12 +505,12 @@ private_lane :smf_notify_via_mail do |options|
 
   case success
   when true
-    subject = "Successfully released #{project_name} iOS #{build_variant.upcase} (Build #{get_build_number})"
-    message = "🎉 #{project_name} has a new #{build_variant.upcase} build: #{get_build_number} 🎉"
+    subject = "Successfully released #{release_title}"
+    message = "🎉 #{release_title} is available 🎉"
     app_link = Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK]
   else
-    subject = "Failed to build #{project_name} iOS #{build_variant.upcase}"
-    message = "😢 Failed to build and release #{project_name} iOS #{build_variant.upcase} 😢"
+    subject = "Failed to build #{release_title}"
+    message = "😢 Failed to build and release #{release_title} 😢"
     message << "<p style='
                 border: 1px solid #D8D8D8;
                 padding: 5px;
