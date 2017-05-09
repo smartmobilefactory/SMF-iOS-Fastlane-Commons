@@ -24,6 +24,7 @@ private_lane :smf_deploy_app do |options|
   # Build and archive the IPA
   smf_archive_ipa(
     project_config: project_config,
+    build_variant: build_variant,
     build_variant_config: build_variant_config,
     extensions_suffixes: extensions_suffixes
     )
@@ -224,7 +225,7 @@ end
 ### smf_archive_ipa ###
 #######################
 
-# options: build_variant_config (Hash), project_config (Hash)
+# options: build_variant_config (Hash), project_config (Hash), build_variant (String)
 
 desc "Build the project based on the build type."
 private_lane :smf_archive_ipa do |options|
@@ -233,6 +234,7 @@ private_lane :smf_archive_ipa do |options|
 
   # Read options parameter
   project_name = options[:project_config]["project_name"]
+  build_variant = options[:build_variant]
   build_variant_config = options[:build_variant_config]
   extensions_suffixes = options[:extensions_suffixes]
 
@@ -241,7 +243,10 @@ private_lane :smf_archive_ipa do |options|
 
   unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
 
+  is_adhoc_build = build_variant.include? "adhoc"
+
   sigh(
+    adhoc: is_adhoc_build,
     skip_certificate_verification:true,
     app_identifier: build_variant_config["bundle_identifier"]
     )
@@ -249,6 +254,7 @@ private_lane :smf_archive_ipa do |options|
   if extensions_suffixes
     for extension_suffix in extensions_suffixes do
       sigh(
+        adhoc: is_adhoc_build,
         skip_certificate_verification:true,
         app_identifier: "#{build_variant_config["bundle_identifier"]}.#{extension_suffix}"
     )
