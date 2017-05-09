@@ -25,7 +25,7 @@ private_lane :smf_deploy_app do |options|
   smf_archive_ipa(
     project_config: project_config,
     build_variant: build_variant,
-    build_variant_config: build_variant_config,
+    build_variants_config: build_variants_config,
     extensions_suffixes: extensions_suffixes
     )
 
@@ -225,7 +225,7 @@ end
 ### smf_archive_ipa ###
 #######################
 
-# options: build_variant_config (Hash), project_config (Hash), build_variant (String)
+# options: build_variants_config (Hash), project_config (Hash), build_variant (String)
 
 desc "Build the project based on the build type."
 private_lane :smf_archive_ipa do |options|
@@ -234,8 +234,9 @@ private_lane :smf_archive_ipa do |options|
 
   # Read options parameter
   project_name = options[:project_config]["project_name"]
-  build_variant = options[:build_variant]
-  build_variant_config = options[:build_variant_config]
+  build_variant = options[:build_variant].downcase
+  build_variant_config = options[:build_variants_config]["targets"][build_variant]
+
   extensions_suffixes = options[:extensions_suffixes]
 
   # Set the Apple Team ID
