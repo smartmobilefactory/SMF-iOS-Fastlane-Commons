@@ -193,7 +193,7 @@ end
 # options: build_variant (String), project_config (Hash), framework_config (Hash), release_title (String) [optional]
 
 desc "Handle the success by sending email to the authors and post to the hipchat channel"
-private_lane :smf_pod_handle_success do |options|
+private_lane :smf_handle_pod_publish_success do |options|
 
   # Read options parameter
   build_variant = options[:build_variant].downcase
