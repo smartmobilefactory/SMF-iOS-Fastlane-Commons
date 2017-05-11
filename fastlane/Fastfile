@@ -123,7 +123,7 @@ private_lane :smf_publish_pod do |options|
   smf_collect_changelog(
     build_variant: bump_type
     )
-  
+
   # Add the git tag
   add_git_tag(tag: "#{tag_prefix}#{version}")
   push_to_git_remote
@@ -201,7 +201,7 @@ private_lane :smf_handle_pod_publish_success do |options|
   framework_config = options[:framework_config]
 
   current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version})" : options[:release_title])
+  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version}" : options[:release_title])
 
   smf_handle_success(
         build_variant: build_variant,
@@ -261,7 +261,7 @@ private_lane :smf_handle_pod_publish_exception do |options|
   exception = options[:exception]
 
   current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version})" : options[:release_title])
+  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version}" : options[:release_title])
 
   smf_handle_exception(
     build_variant: build_variant,
