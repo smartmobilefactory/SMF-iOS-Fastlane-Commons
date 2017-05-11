@@ -124,8 +124,6 @@ private_lane :smf_publish_pod do |options|
   add_git_tag(tag: "#{tag_prefix}#{version}")
   push_to_git_remote
   
-  changelog = changelog_from_git_commits(pretty: '- (%an) %s')
-
   # Publish the pod. Either to a private specs repo or to the offical one
   if specs_repo
     pod_push(
@@ -137,12 +135,16 @@ private_lane :smf_publish_pod do |options|
     pod_push(path: podspec_path)
   end
 
+  smf_collect_changelog(
+    build_variant: bump_type
+    )
+
   github_release = set_github_release(
     repository_name: repository_path,
     api_token: ENV['GITHUB_TOKEN'],
     name: version,
     tag_name: "#{tag_prefix}#{version}",
-    description: changelog,
+    description: ENV["SMF_CHANGELOG"],
     commitish: branch
   )
 
@@ -184,6 +186,30 @@ private_lane :smf_handle_success do |options|
   end
 end
 
+######################################
+### smf_handle_pod_publish_success ###
+######################################
+
+# options: build_variant (String), project_config (Hash), framework_config (Hash), release_title (String) [optional]
+
+desc "Handle the success by sending email to the authors and post to the hipchat channel"
+private_lane :smf_pod_handle_success do |options|
+
+  # Read options parameter
+  build_variant = options[:build_variant].downcase
+  project_config = options[:project_config]
+  framework_config = options[:framework_config]
+
+  current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
+  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version})" : options[:release_title])
+
+  smf_handle_success(
+        build_variant: build_variant,
+        release_title: release_title,
+        project_config: project_config
+    )
+end
+
 
 ############################
 ### smf_handle_exception ###
@@ -219,6 +245,31 @@ private_lane :smf_handle_exception do |options|
 end
 
 
+########################################
+### smf_handle_pod_publish_exception ###
+########################################
+
+# options: build_variant (String), project_config (Hash), framework_config (Hash), exception (Exception), release_title (String) [optional]
+
+desc "Handle the success by sending email to the authors and post to the hipchat channel"
+private_lane :smf_handle_pod_publish_exception do |options|
+
+  # Read options parameter
+  build_variant = options[:build_variant].downcase
+  project_config = options[:project_config]
+  framework_config = options[:framework_config]
+  exception = options[:exception]
+
+  current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
+  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version})" : options[:release_title])
+
+  smf_handle_exception(
+    build_variant: build_variant,
+    release_title: release_title,
+    project_config: project_config,
+    exception: exception,
+    )
+end
 
 
 #######################
@@ -303,6 +354,30 @@ private_lane :smf_collect_changelog do |options|
 
 end
 
+
+############################
+### smf_test_pod_project ###
+############################
+
+# options: project_config (Hash), framework_config (Hash)
+
+desc "Performs the unit tests of a project."
+private_lane :smf_test_pod_project do |options|
+
+  UI.important("Perform the unit tests")
+
+  # Read options parameter
+  project_config = options[:project_config]
+  framework_config = options[:framework_config]
+
+    scan(
+      workspace: "#{project_config["project_name"]}.xcworkspace",
+      scheme: "#{framework_config["scheme"]}",
+      clean: false,
+      custom_report_file_name: "report.xml"
+    )
+
+end
 
 #######################################
 ### smf_disable_former_hockey_entry ###
