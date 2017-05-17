@@ -155,7 +155,7 @@ end
 ### smf_handle_success ###
 ##########################
 
-# options: build_variant (String), project_config (Hash), release_title (String) [optional]
+# options: build_variant (String), project_config (Hash), release_title (String) [optional], app_link (String) [optional] [default: HockeyApp Link]
 
 desc "Handle the success by sending email to the authors and post to the hipchat channel"
 private_lane :smf_handle_success do |options|
@@ -167,12 +167,14 @@ private_lane :smf_handle_success do |options|
   project_config = options[:project_config]
   release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
   hipchat_channel = project_config["hipchat_channel"]
+  app_link = (options[:app_link].nil? ? Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK] : options[:app_link])
 
   smf_notify_via_mail(
     build_variant: build_variant,
     release_title: release_title,
     send_to_autors: true,
-    success: true
+    success: true,
+    app_link: app_link
     )
 
   if hipchat_channel
@@ -206,7 +208,8 @@ private_lane :smf_handle_pod_publish_success do |options|
   smf_handle_success(
         build_variant: build_variant,
         release_title: release_title,
-        project_config: project_config
+        project_config: project_config,
+        app_link: ""
     )
 end
 
@@ -240,7 +243,8 @@ private_lane :smf_handle_exception do |options|
     release_title: release_title,
     send_to_autors: true,
     success: false,
-    exception_message: exception
+    exception_message: exception,
+    app_link: ""
   )
 end
 
