@@ -619,7 +619,7 @@ private_lane :smf_notify_via_mail do |options|
       message: message,
       app_link: app_link,
       ci_build_link: ENV["BUILD_URL"],
-      template_path: "/Users/smf/jenkins/template_mail.erb"
+      template_path: "/Users/smf/jenkins/template_mail_ios.erb"
       )
   end
 
