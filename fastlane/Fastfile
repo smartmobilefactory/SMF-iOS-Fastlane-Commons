@@ -15,7 +15,6 @@ private_lane :smf_deploy_app do |options|
   branch = options[:branch]
   generateMetaJSON = options[:generateMetaJSON]
   project_config = build_variants_config["project"]
-  extensions_suffixes = build_variants_config["extensions_suffixes"]
   build_variant_config = build_variants_config["targets"][build_variant]
 
   # Increment the build number
@@ -25,11 +24,10 @@ private_lane :smf_deploy_app do |options|
   smf_archive_ipa(
     project_config: project_config,
     build_variant: build_variant,
-    build_variants_config: build_variants_config,
-    extensions_suffixes: extensions_suffixes
+    build_variants_config: build_variants_config
     )
 
-  # Commit and push generated code. There can be chages eg. from PhraseApp + R.swift
+  # Commit and push generated code. There can be changes eg. from PhraseApp + R.swift
   smf_push_generated_code(
     branch: branch
     )
@@ -73,6 +71,7 @@ private_lane :smf_deploy_app do |options|
     build_variant_config: build_variant_config,
     build_variants_contains_whitelist: ["beta"]
     )
+
 end
 
 
@@ -292,7 +291,8 @@ private_lane :smf_archive_ipa do |options|
   build_variant = options[:build_variant].downcase
   build_variant_config = options[:build_variants_config]["targets"][build_variant]
 
-  extensions_suffixes = options[:extensions_suffixes]
+  extensions_suffixes = options[:build_variants_config]["extensions_suffixes"]
+
 
   # Set the Apple Team ID
   team_id build_variant_config["team_id"]
@@ -464,7 +464,7 @@ private_lane :smf_push_generated_code do |options|
     local_branch: branch,
     remote_branch: branch,
     force: false,
-    tags: true
+    tags: false
     )
 
 end
@@ -498,7 +498,7 @@ private_lane :smf_push_build_number do |options|
     local_branch: branch,
     remote_branch: branch,
     force: false,
-    tags: true
+    tags: false
   )
 
 end
@@ -653,3 +653,19 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   clean_build_artifacts
 
 end
+
+####################################
+### smf_upload_ipa_to_testflight ###
+####################################
+
+desc "upload the app on Testflight"
+private_lane :smf_upload_ipa_to_testflight do
+
+    UI.important("Upload a new build to Testflight")
+
+    pilot(
+    skip_waiting_for_build_processing: true
+    )
+
+end
+
