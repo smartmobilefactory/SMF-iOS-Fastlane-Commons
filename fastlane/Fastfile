@@ -72,10 +72,6 @@ private_lane :smf_deploy_app do |options|
     build_variants_contains_whitelist: ["beta"]
     )
 
-
-  # Upload the IPA to Testflight
-  smf_upload_ipa_to_testflight
-
 end
 
 
@@ -661,16 +657,15 @@ end
 ####################################
 ### smf_upload_ipa_to_testflight ###
 ####################################
+
 desc "upload the app on Testflight"
 private_lane :smf_upload_ipa_to_testflight do
 
     UI.important("Upload a new build to Testflight")
 
-    if build_variant == "release"
     pilot(
     skip_waiting_for_build_processing: true
     )
-    end 
 
 end
 
