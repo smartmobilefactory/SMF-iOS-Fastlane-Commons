@@ -1,5 +1,9 @@
 require 'uri'
 
+before_all do
+  update_fastlane(nightly: true)
+end
+
 ######################
 ### smf_deploy_app ###
 ######################
