@@ -379,7 +379,7 @@ private_lane :smf_test_pod_project do |options|
       workspace: "#{project_config["project_name"]}.xcworkspace",
       scheme: "#{framework_config["scheme"]}",
       clean: false,
-      custom_report_file_name: "report.xml"
+      output_files: "report.xml"
     )
 
 end
