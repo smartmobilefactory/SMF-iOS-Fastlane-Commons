@@ -19,7 +19,7 @@ module Fastlane
 
       def self.fail_on_error(result)
         if result.include?("error")
-          raise "Server error, failed to update the version".red
+          UI.error "Server error, failed to update the version"
         end
       end
 
