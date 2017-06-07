@@ -1,7 +1,7 @@
 require 'uri'
 
 before_all do
-  update_fastlane(nightly: true)
+  update_fastlane
 end
 
 ######################
