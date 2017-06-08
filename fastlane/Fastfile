@@ -349,12 +349,16 @@ private_lane :smf_collect_changelog do |options|
   # Read options parameter
   build_variant = options[:build_variant].downcase
 
+  # Get last tag for the current branch
+  last_tag = sh "git describe --tags --match \"*#{build_variant}*\" --abbrev=0 HEAD"
+  last_tag = last_tag.strip
+
   if ["patch", "minor", "major", "current"].any? { |item| build_variant.downcase.include?(item) }
-    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "releases*",include_merges: false, pretty: '- (%an) %s')
-    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(tag_match_pattern: "releases*",include_merges: false, pretty: '%ae')
+    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '- (%an) %s')
+    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '%ae')
   else
-    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '- (%an) %s')
-    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(tag_match_pattern: "*#{build_variant}*",include_merges: false, pretty: '%ae')
+    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '- (%an) %s')
+    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '%ae')
   end
 
 end
@@ -556,7 +560,7 @@ private_lane :smf_notify_via_hipchat do |options|
   hipchat_channel = options[:hipchat_channel]
 
   hipchat(
-    message:"<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"]}</pre></td></tr></table>",
+    message:"<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9996]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>",
     channel: hipchat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
