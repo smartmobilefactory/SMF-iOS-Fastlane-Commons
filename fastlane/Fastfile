@@ -21,6 +21,12 @@ private_lane :smf_deploy_app do |options|
   project_config = build_variants_config["project"]
   build_variant_config = build_variants_config["targets"][build_variant]
 
+  # check if the next Tag exist
+  smf_check_tag(
+    project_config: project_config,
+    build_variant: build_variant
+    )
+
   # Increment the build number
   increment_build_number
 
@@ -366,6 +372,71 @@ private_lane :smf_collect_changelog do |options|
 
 end
 
+#############################
+#####   smf_check_tag   #####
+#############################
+
+# options: build_variant (String)
+
+desc "Check if the tag exist after incrementation of the build number"
+private_lane :smf_check_tag do |options|
+
+  UI.important("check if the Incremented Tag exist")
+
+  # Read options parameter
+  build_variant = options[:build_variant].downcase
+  project_name = options[:project_config]["project_name"]
+
+  tag_prefix = (options[:tag_prefix].nil? ? "build/#{build_variant}_b" : options[:tag_prefix])
+  tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
+
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj").to_i + 1
+
+  if git_tag_exists(tag: tag_prefix+version+tag_suffix)
+    raise "raise "Server error, failed to update the version".red".red
+  end
+
+end
+
+
+#######################
+### smf_add_git_tag ###
+#######################
+
+# options: project_config (Hash), tag_prefix (String), tag_suffix (String) [optional], branch (String) [optional]
+
+desc "Tag the current git commit."
+private_lane :smf_add_git_tag do |options|
+
+  # Read options parameter
+  project_name = options[:project_config]["project_name"]
+  tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
+  tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
+  branch = options[:branch]
+
+  UI.important("Tag the current commit")
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+
+  # Tag the current commit
+  if git_tag_exists(tag: tag_prefix+version+tag_suffix)
+    UI.message("Git tag already existed")
+  else
+    add_git_tag(
+      tag: tag_prefix+version+tag_suffix
+      )
+  end
+    
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: branch,
+    force: false,
+    tags: true
+  )
+
+end
+
+
 
 ############################
 ### smf_test_pod_project ###
@@ -507,43 +578,6 @@ private_lane :smf_push_build_number do |options|
     remote_branch: branch,
     force: false,
     tags: false
-  )
-
-end
-
-#######################
-### smf_add_git_tag ###
-#######################
-
-# options: project_config (Hash), tag_prefix (String), tag_suffix (String) [optional], branch (String) [optional]
-
-desc "Tag the current git commit."
-private_lane :smf_add_git_tag do |options|
-
-  # Read options parameter
-  project_name = options[:project_config]["project_name"]
-  tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
-  tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
-  branch = options[:branch]
-
-  UI.important("Tag the current commit")
-  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-
-  # Tag the current commit
-  if git_tag_exists(tag: tag_prefix+version+tag_suffix)
-    UI.message("Git tag already existed")
-  else
-    add_git_tag(
-      tag: tag_prefix+version+tag_suffix
-      )
-  end
-    
-  push_to_git_remote(
-    remote: 'origin',
-    local_branch: branch,
-    remote_branch: branch,
-    force: false,
-    tags: true
   )
 
 end
