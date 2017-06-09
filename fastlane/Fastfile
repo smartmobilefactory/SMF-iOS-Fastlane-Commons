@@ -731,24 +731,20 @@ private_lane :smf_increment_build_number do |options|
   UI.important("increment build number")
 
   project_name = options[:project_config]["project_name"]
-
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
-if version.include? "."
+if version.to_s.include? "."
 
  parts = version.to_s.split(".")
+ count = parts.count
 
- result = (parts.count > 2 ? parts[2].to_i |: parts.count = 2 | parts[1].to_i)
+ incremented = count > 2 ? parts[2].to_i+1 : count = 2 ? parts[1].to_i+1 : 0
 
-  version = version + 1
+ version = count > 2 ? "#{parts[0]}.#{parts[1]}.#{incremented}" : count = 2 ? "#{parts[0]}.#{incremented}" : 0
 
-  increment_build_number(
-  build_number: version 
-  )
-
-
+ increment_build_number(build_number: version)
 else
-  increment_build_number 
+ increment_build_number 
 end
 
 end
