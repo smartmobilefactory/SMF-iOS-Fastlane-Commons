@@ -392,7 +392,7 @@ private_lane :smf_check_tag do |options|
 
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj").to_i + 1
 
-  if git_tag_exists(tag: tag_prefix+version+tag_suffix)
+  if git_tag_exists(tag: tag_prefix+version.to_s+tag_suffix)
     raise "Git tag already existed".red
   end
 
