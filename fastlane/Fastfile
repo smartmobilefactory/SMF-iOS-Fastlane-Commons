@@ -358,8 +358,16 @@ private_lane :smf_collect_changelog do |options|
 
   matching_pattern = (options[:tag_prefix].nil? ? "#{build_variant}" : options[:tag_prefix])
 
+  NO_GIT_TAG_FAILURE = "NO_GIT_TAG_FAILURE"
+
   # Get last tag for the current branch
-  last_tag = sh "git describe --tags --match \"*#{matching_pattern}*\" --abbrev=0 HEAD"
+  last_tag = sh("git describe --tags --match \"*alpha*\" --abbrev=0 HEAD || echo #{NO_GIT_TAG_FAILURE}").to_s
+
+  # Use the initial commit if there is no matching tag yet
+  if last_tag.include? NO_GIT_TAG_FAILURE
+    last_tag = sh("git rev-list --max-parents=0 HEAD").to_s
+  end
+
   last_tag = last_tag.strip
 
   if ["patch", "minor", "major", "current"].any? { |item| build_variant.downcase.include?(item) }
