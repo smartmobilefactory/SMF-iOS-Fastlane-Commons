@@ -28,7 +28,9 @@ private_lane :smf_deploy_app do |options|
     )
 
   # Increment the build number
-  increment_build_number
+  smf_increment_build_number(
+    project_config: project_config
+    )
 
   # Build and archive the IPA
   smf_archive_ipa(
@@ -715,6 +717,34 @@ private_lane :smf_upload_ipa_to_testflight do
     pilot(
     skip_waiting_for_build_processing: true
     )
+
+end
+
+
+################################
+### smf_increment_build_number ###
+################################
+
+desc "increment build number"
+private_lane :smf_increment_build_number do |options|
+
+  UI.important("increment build number")
+
+  project_name = options[:project_config]["project_name"]
+
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+
+if version.include? "."
+
+  version = version + 0.1
+
+  increment_build_number(
+  build_number: version 
+  )
+else
+  increment_build_number
+   
+end
 
 end
 
