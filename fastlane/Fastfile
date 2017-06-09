@@ -416,6 +416,7 @@ private_lane :smf_add_git_tag do |options|
 
   UI.important("Tag the current commit")
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+  version = version.to_s
 
   # Tag the current commit
   if git_tag_exists(tag: tag_prefix+version+tag_suffix)
