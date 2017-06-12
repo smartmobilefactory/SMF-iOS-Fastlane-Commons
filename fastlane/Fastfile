@@ -608,7 +608,7 @@ private_lane :smf_notify_via_hipchat do |options|
   hipchat_channel = options[:hipchat_channel]
 
   hipchat(
-    message:"<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9996]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>",
+    message:"<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9800]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>",
     channel: hipchat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
