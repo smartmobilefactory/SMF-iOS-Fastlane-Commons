@@ -748,7 +748,7 @@ private_lane :smf_increment_build_number do |options|
 
    version_string += incremented_version.to_s
 
-   increment_build_number(build_number: version)
+   increment_build_number(build_number: version_string)
   else
  increment_build_number 
 end
