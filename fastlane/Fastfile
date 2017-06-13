@@ -102,6 +102,7 @@ private_lane :smf_publish_pod do |options|
   framework_config = options[:framework_config]
   project_config = options[:project_config]
   branch = options[:branch]
+  generateMetaJSON = options[:generateMetaJSON]
   tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
   bump_type = options[:bump_type]
   podspec_path = framework_config["podsepc_path"]
