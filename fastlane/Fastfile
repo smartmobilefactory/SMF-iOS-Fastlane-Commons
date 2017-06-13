@@ -323,7 +323,7 @@ private_lane :smf_archive_ipa do |options|
   # Set the Apple Team ID
   team_id build_variant_config["team_id"]
 
-  unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+ # unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
 
   is_adhoc_build = build_variant.include? "adhoc"
 
@@ -343,7 +343,7 @@ private_lane :smf_archive_ipa do |options|
     end
   end
 
-  unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+ # unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
 
   gym(
     clean: true,
