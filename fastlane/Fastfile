@@ -99,12 +99,14 @@ private_lane :smf_publish_pod do |options|
   UI.important("Publish Pod")
 
   # Read options parameter
+  framework_config = options[:framework_config]
+  project_config = options[:project_config]
   branch = options[:branch]
   tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
   bump_type = options[:bump_type]
-  podspec_path = options[:podspec_path]
-  repository_path = options[:repository_path]
-  specs_repo = options[:specs_repo]
+  podspec_path = framework_config["podsepc_path"]
+  repository_path = project_config["github_repo_path"]
+  specs_repo = framework_config["pods_specs_repo"]
 
   # Make sure the repo is up to date and clean
   ensure_git_branch(branch: branch)
@@ -159,6 +161,16 @@ private_lane :smf_publish_pod do |options|
     description: ENV["SMF_CHANGELOG"],
     commitish: branch
   )
+
+  # Update the MetaJSONS if wanted
+  if generateMetaJSON != false
+    smf_generate_meta_json(
+      project_name: project_config,
+      build_variant: bump_type,
+      branch: branch,
+      build_variants_contains_whitelist: ["patch", "minor", "major", "current"]
+      )
+  end
 
 end
 
