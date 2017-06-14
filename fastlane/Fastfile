@@ -72,9 +72,22 @@ private_lane :smf_deploy_app do |options|
       )
   end
 
+  # Upload Ipa to Testflight and Download the generated DSYM
+  if build_variant.include? "live"
+
+      smf_upload_ipa_to_testflight
+
+      smf_download_dsym_from_testflight(
+        project_config: project_config,
+        build_variant_config: build_variant_config
+      )
+  end
+
+
   # Upload the IPA to HockeyApp
   smf_upload_ipa_to_hockey(
-    build_variant_config: build_variant_config
+    build_variant_config: build_variant_config,
+    project_config: project_config
     )
 
   # Disable the former HockeyApp entry
@@ -353,7 +366,9 @@ private_lane :smf_archive_ipa do |options|
     codesigning_identity: build_variant_config["code_signing_identity"],
     output_directory: "build",
     archive_path:"build/",
-    output_name: build_variant_config["scheme"]
+    output_name: build_variant_config["scheme"],
+    include_symbols: true,
+    include_bitcode: true
     )
 end
 
@@ -704,7 +719,14 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   UI.important("Upload a new build to HockeyApp")
 
   # Read options parameter
+  project_name = options[:project_config]["project_name"]
   hockey_app_id = options[:build_variant_config]["hockeyapp_id"]
+  bundle_identifier = options[:build_variant_config]["bundle_identifier"]
+  version_number = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
+  build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+
+  #DSYM Path
+  path = Pathname.getwd.dirname.to_s + "/#{bundle_identifier}-#{version_number}-#{build_number}.dSYM.zip"
 
   puts "IPA: "+lane_context[SharedValues::IPA_OUTPUT_PATH]+"".green
 
@@ -713,7 +735,8 @@ private_lane :smf_upload_ipa_to_hockey do |options|
     ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
     notify: "0",
     notes: ENV["SMF_CHANGELOG"],
-    public_identifier: hockey_app_id
+    public_identifier: hockey_app_id,
+    dsym: File.exist?(path) ? path : ""
     )
 
 end
@@ -728,8 +751,23 @@ private_lane :smf_upload_ipa_to_testflight do
     UI.important("Upload a new build to Testflight")
 
     pilot(
-    skip_waiting_for_build_processing: true
+    skip_submission:false
     )
+
+end
+
+desc "Clean, build and release the app on HockeyApp"
+private_lane :smf_download_dsym_from_testflight do |options|
+
+  UI.important("Download dsym from Testflight")
+
+  project_name = options[:project_config]["project_name"]
+  bundle_identifier = options[:build_variant_config]["bundle_identifier"]
+
+  build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+  build_number = build_number.to_s
+
+  download_dsyms(app_identifier: bundle_identifier,  build_number: build_number)
 
 end
 
