@@ -18,6 +18,7 @@ private_lane :smf_deploy_app do |options|
   build_variants_config = options[:build_variants_config]
   branch = options[:branch]
   generateMetaJSON = options[:generateMetaJSON]
+  upload_itc = options[:upload_itc]
   project_config = build_variants_config["project"]
   build_variant_config = build_variants_config["targets"][build_variant]
 
@@ -73,7 +74,7 @@ private_lane :smf_deploy_app do |options|
   end
 
   # Upload Ipa to Testflight and Download the generated DSYM
-  if build_variant.include? "live"
+  if build_variant.include? "live" and upload_itc == true
 
       smf_upload_ipa_to_testflight
 
