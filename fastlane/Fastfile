@@ -73,7 +73,7 @@ private_lane :smf_deploy_app do |options|
   end
 
   # Upload Ipa to Testflight and Download the generated DSYM
-  if build_variant.include? "live" and build_variant_config["upload_itc"] == true
+  if build_variant_config["upload_itc"] == true
 
     smf_upload_ipa_to_testflight
 
