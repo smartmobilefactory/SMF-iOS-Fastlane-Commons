@@ -785,15 +785,7 @@ private_lane :smf_increment_build_number do |options|
   project_name = options[:project_config]["project_name"]
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
-  if version.to_s.include? "."
-
     increment_build_number(build_number: check_build_number(version))
-
-  else
-
-    increment_build_number 
-
-  end
 
 end
 
@@ -811,18 +803,17 @@ def check_build_number(version)
 
    version_string = ""
 
-   for i in 0..count-2
-    version_string += parts[i].to_s + "."
-  end
+    for i in 0..count-2
+     version_string += parts[i].to_s + "."
+    end
 
-  version_string += incremented_version.to_s
+   version_string += incremented_version.to_s
 
-else 
-  version_string = version.to_s
+  else 
+   version_string = version.to_i + 1
 
-end    
+  end    
 
-return version_string
-
+ return version_string.to_s
 
 end
