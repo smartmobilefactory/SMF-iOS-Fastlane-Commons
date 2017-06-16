@@ -429,7 +429,7 @@ private_lane :smf_check_tag do |options|
   tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
 
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-  version_string = check_build_number(version)
+  version_string = get_incremented_build_number(version)
 
   if git_tag_exists(tag: tag_prefix+version_string.to_s+tag_suffix)
     raise "Git tag already existed".red
@@ -785,14 +785,14 @@ private_lane :smf_increment_build_number do |options|
   project_name = options[:project_config]["project_name"]
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
-    increment_build_number(build_number: check_build_number(version))
+    increment_build_number(build_number: get_incremented_build_number(version))
 
 end
 
 ##########################################################
 ###   check build number whether it's a int or float   ###
 ##########################################################
-def check_build_number(version)
+def get_incremented_build_number(version)
 
   if version.to_s.include? "."
     
