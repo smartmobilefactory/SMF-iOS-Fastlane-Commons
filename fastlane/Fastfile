@@ -72,9 +72,22 @@ private_lane :smf_deploy_app do |options|
       )
   end
 
+  # Upload Ipa to Testflight and Download the generated DSYM
+  if build_variant_config["upload_itc"] == true
+
+    smf_upload_ipa_to_testflight
+
+    smf_download_dsym_from_testflight(
+      project_config: project_config,
+      build_variant_config: build_variant_config
+      )
+  end
+
+
   # Upload the IPA to HockeyApp
   smf_upload_ipa_to_hockey(
-    build_variant_config: build_variant_config
+    build_variant_config: build_variant_config,
+    project_config: project_config
     )
 
   # Disable the former HockeyApp entry
@@ -161,7 +174,7 @@ private_lane :smf_publish_pod do |options|
     tag_name: "#{tag_prefix}#{version}",
     description: ENV["SMF_CHANGELOG"],
     commitish: branch
-  )
+    )
 
   # Update the MetaJSONS if wanted
   if generateMetaJSON != false
@@ -231,10 +244,10 @@ private_lane :smf_handle_pod_publish_success do |options|
   release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version}" : options[:release_title])
 
   smf_handle_success(
-        build_variant: build_variant,
-        release_title: release_title,
-        project_config: project_config,
-        app_link: ""
+    build_variant: build_variant,
+    release_title: release_title,
+    project_config: project_config,
+    app_link: ""
     )
 end
 
@@ -260,7 +273,7 @@ private_lane :smf_handle_exception do |options|
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
     smf_collect_changelog(
       build_variant: build_variant
-    )
+      )
   end
 
   smf_notify_via_mail(
@@ -270,7 +283,7 @@ private_lane :smf_handle_exception do |options|
     success: false,
     exception_message: exception,
     app_link: ""
-  )
+    )
 end
 
 
@@ -339,7 +352,7 @@ private_lane :smf_archive_ipa do |options|
         adhoc: is_adhoc_build,
         skip_certificate_verification:true,
         app_identifier: "#{build_variant_config["bundle_identifier"]}.#{extension_suffix}"
-    )
+        )
     end
   end
 
@@ -353,7 +366,9 @@ private_lane :smf_archive_ipa do |options|
     codesigning_identity: build_variant_config["code_signing_identity"],
     output_directory: "build",
     archive_path:"build/",
-    output_name: build_variant_config["scheme"]
+    output_name: build_variant_config["scheme"],
+    include_symbols: true,
+    include_bitcode: true
     )
 end
 
@@ -413,9 +428,10 @@ private_lane :smf_check_tag do |options|
   tag_prefix = (options[:tag_prefix].nil? ? "build/#{build_variant}_b" : options[:tag_prefix])
   tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
 
-  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj").to_i + 1
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+  version_string = get_incremented_build_number(version)
 
-  if git_tag_exists(tag: tag_prefix+version.to_s+tag_suffix)
+  if git_tag_exists(tag: tag_prefix+version_string.to_s+tag_suffix)
     raise "Git tag already existed".red
   end
 
@@ -449,14 +465,14 @@ private_lane :smf_add_git_tag do |options|
       tag: tag_prefix+version+tag_suffix
       )
   end
-    
+  
   push_to_git_remote(
     remote: 'origin',
     local_branch: branch,
     remote_branch: branch,
     force: false,
     tags: true
-  )
+    )
 
 end
 
@@ -477,11 +493,11 @@ private_lane :smf_test_pod_project do |options|
   project_config = options[:project_config]
   framework_config = options[:framework_config]
 
-    scan(
-      workspace: "#{project_config["project_name"]}.xcworkspace",
-      scheme: "#{framework_config["scheme"]}",
-      clean: false,
-      output_files: "report.xml"
+  scan(
+    workspace: "#{project_config["project_name"]}.xcworkspace",
+    scheme: "#{framework_config["scheme"]}",
+    clean: false,
+    output_files: "report.xml"
     )
 
 end
@@ -501,7 +517,7 @@ private_lane :smf_disable_former_hockey_entry do |options|
   build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
   # Disable the download of the former non Alpha app on Hockey App
-    if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
+  if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
     if (Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id'] > 1)
       previous_version_id  = Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id'] - 1
 
@@ -557,20 +573,20 @@ private_lane :smf_push_generated_code do |options|
 
   UI.important("Commit and push generated code")
     # Read options parameter
-  branch = options[:branch]
+    branch = options[:branch]
 
-  sh "git add ../Generated/ || true"
-  sh "git commit -m \"Update generated code\" || true"
+    sh "git add ../Generated/ || true"
+    sh "git commit -m \"Update generated code\" || true"
 
-  push_to_git_remote(
-    remote: 'origin',
-    local_branch: branch,
-    remote_branch: branch,
-    force: false,
-    tags: false
-    )
+    push_to_git_remote(
+      remote: 'origin',
+      local_branch: branch,
+      remote_branch: branch,
+      force: false,
+      tags: false
+      )
 
-end
+  end
 
 
 #############################
@@ -595,14 +611,14 @@ private_lane :smf_push_build_number do |options|
     message: "Increment build number to #{version}",
     force: true
     )
-    
+  
   push_to_git_remote(
     remote: 'origin',
     local_branch: branch,
     remote_branch: branch,
     force: false,
     tags: false
-  )
+    )
 
 end
 
@@ -630,7 +646,7 @@ private_lane :smf_notify_via_hipchat do |options|
     message_format: "html",
     include_html_header: false,
     from: "#{project_name} iOS CI"
-  )
+    )
 
 end
 
@@ -660,19 +676,19 @@ private_lane :smf_notify_via_mail do |options|
   when true
     subject = "Successfully released #{release_title}"
     message = "🎉 #{release_title} is available 🎉"
-    else
+  else
     subject = "Failed to build #{release_title}"
     message = "😢 Failed to build and release #{release_title} 😢"
     message << "<p style='
-                border: 1px solid #D8D8D8;
-                padding: 5px;
-                border-radius: 5px;
-                font-family: Arial;
-                font-size: 11px;
-                text-transform: uppercase;
-                background-color: rgb(255, 249, 242);
-                color: rgb(211, 0, 0);
-                text-align: center;' >#{exception_message} <p>"
+    border: 1px solid #D8D8D8;
+    padding: 5px;
+    border-radius: 5px;
+    font-family: Arial;
+    font-size: 11px;
+    text-transform: uppercase;
+    background-color: rgb(255, 249, 242);
+    color: rgb(211, 0, 0);
+    text-align: center;' >#{exception_message} <p>"
   end
 
   authors_emails.each do |receiver|
@@ -704,7 +720,14 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   UI.important("Upload a new build to HockeyApp")
 
   # Read options parameter
+  project_name = options[:project_config]["project_name"]
   hockey_app_id = options[:build_variant_config]["hockeyapp_id"]
+  bundle_identifier = options[:build_variant_config]["bundle_identifier"]
+  version_number = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
+  build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+
+  #DSYM Path
+  path = Pathname.getwd.dirname.to_s + "/#{bundle_identifier}-#{version_number}-#{build_number}.dSYM.zip"
 
   puts "IPA: "+lane_context[SharedValues::IPA_OUTPUT_PATH]+"".green
 
@@ -713,7 +736,8 @@ private_lane :smf_upload_ipa_to_hockey do |options|
     ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
     notify: "0",
     notes: ENV["SMF_CHANGELOG"],
-    public_identifier: hockey_app_id
+    public_identifier: hockey_app_id,
+    dsym: File.exist?(path) ? path : ""
     )
 
 end
@@ -725,11 +749,26 @@ end
 desc "upload the app on Testflight"
 private_lane :smf_upload_ipa_to_testflight do
 
-    UI.important("Upload a new build to Testflight")
+  UI.important("Upload a new build to Testflight")
 
-    pilot(
-    skip_waiting_for_build_processing: true
+  pilot(
+    skip_submission:false
     )
+
+end
+
+desc "Clean, build and release the app on HockeyApp"
+private_lane :smf_download_dsym_from_testflight do |options|
+
+  UI.important("Download dsym from Testflight")
+
+  project_name = options[:project_config]["project_name"]
+  bundle_identifier = options[:build_variant_config]["bundle_identifier"]
+
+  build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+  build_number = build_number.to_s
+
+  download_dsyms(app_identifier: bundle_identifier,  build_number: build_number)
 
 end
 
@@ -746,8 +785,17 @@ private_lane :smf_increment_build_number do |options|
   project_name = options[:project_config]["project_name"]
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
-  if version.to_s.include? "."
+    increment_build_number(build_number: get_incremented_build_number(version))
 
+end
+
+##########################################################
+###   check build number whether it's a int or float   ###
+##########################################################
+def get_incremented_build_number(version)
+
+  if version.to_s.include? "."
+    
    parts = version.to_s.split(".")
    count = parts.count
 
@@ -755,15 +803,17 @@ private_lane :smf_increment_build_number do |options|
 
    version_string = ""
 
-   for i in 0..count-2
-    version_string += parts[i].to_s + "."
-   end
+    for i in 0..count-2
+     version_string += parts[i].to_s + "."
+    end
 
    version_string += incremented_version.to_s
 
-   increment_build_number(build_number: version_string)
-  else
- increment_build_number 
-end
+  else 
+   version_string = version.to_i + 1
+
+  end    
+
+ return version_string.to_s
 
 end
