@@ -726,10 +726,10 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   version_number = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
+  puts "IPA: "+lane_context[SharedValues::IPA_OUTPUT_PATH]+"".green
+
   #DSYM Path
   path = Pathname.getwd.dirname.to_s + "/#{bundle_identifier}-#{version_number}-#{build_number}.dSYM.zip"
-
-  puts "IPA: "+lane_context[SharedValues::IPA_OUTPUT_PATH]+"".green
 
   hockey(
     api_token: ENV["HOCKEYAPP_API_TOKEN"],
@@ -737,8 +737,8 @@ private_lane :smf_upload_ipa_to_hockey do |options|
     notify: "0",
     notes: ENV["SMF_CHANGELOG"],
     public_identifier: hockey_app_id,
-    dsym: File.exist?(path) ? path : ""
-    )
+    dsym: File.exist?(path) ? path : nil  
+  )
 
 end
 
