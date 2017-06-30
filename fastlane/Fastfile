@@ -1,7 +1,8 @@
 require 'uri'
 
 before_all do
-  update_fastlane
+  # due to a wrong commit in fastlane 2.43.0 we disable temporary the update
+  #update_fastlane
 end
 
 ######################
