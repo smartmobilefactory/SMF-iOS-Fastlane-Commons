@@ -738,7 +738,7 @@ private_lane :smf_upload_ipa_to_hockey do |options|
 
   hockey(
     api_token: ENV["HOCKEYAPP_API_TOKEN"],
-    ipa: File.exist?(app_path) ? app_path : lane_context[SharedValues::IPA_OUTPUT_PATH] 
+    ipa: File.exist?(app_path) ? app_path : lane_context[SharedValues::IPA_OUTPUT_PATH], 
     notify: "0",
     notes: ENV["SMF_CHANGELOG"],
     public_identifier: hockey_app_id,
