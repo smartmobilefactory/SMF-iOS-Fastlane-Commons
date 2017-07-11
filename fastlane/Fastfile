@@ -19,6 +19,7 @@ private_lane :smf_deploy_app do |options|
   build_variants_config = options[:build_variants_config]
   branch = options[:branch]
   generateMetaJSON = options[:generateMetaJSON]
+  use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
   project_config = build_variants_config["project"]
   build_variant_config = build_variants_config["targets"][build_variant]
 
@@ -37,7 +38,8 @@ private_lane :smf_deploy_app do |options|
   smf_archive_ipa(
     project_config: project_config,
     build_variant: build_variant,
-    build_variants_config: build_variants_config
+    build_variants_config: build_variants_config,
+    use_sigh: use_sigh
     )
 
   # Commit and push generated code. There can be changes eg. from PhraseApp + R.swift
@@ -330,6 +332,7 @@ private_lane :smf_archive_ipa do |options|
   project_name = options[:project_config]["project_name"]
   build_variant = options[:build_variant].downcase
   build_variant_config = options[:build_variants_config]["targets"][build_variant]
+  use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
 
   extensions_suffixes = options[:build_variants_config]["extensions_suffixes"]
 
@@ -337,23 +340,25 @@ private_lane :smf_archive_ipa do |options|
   # Set the Apple Team ID
   team_id build_variant_config["team_id"]
 
-  unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+  if use_sigh
+    unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
 
-  is_adhoc_build = build_variant.include? "adhoc"
+    is_adhoc_build = build_variant.include? "adhoc"
 
-  sigh(
-    adhoc: is_adhoc_build,
-    skip_certificate_verification:true,
-    app_identifier: build_variant_config["bundle_identifier"]
-    )
+    sigh(
+      adhoc: is_adhoc_build,
+      skip_certificate_verification:true,
+      app_identifier: build_variant_config["bundle_identifier"]
+      )
 
-  if extensions_suffixes
-    for extension_suffix in extensions_suffixes do
-      sigh(
-        adhoc: is_adhoc_build,
-        skip_certificate_verification:true,
-        app_identifier: "#{build_variant_config["bundle_identifier"]}.#{extension_suffix}"
-        )
+    if extensions_suffixes
+      for extension_suffix in extensions_suffixes do
+        sigh(
+          adhoc: is_adhoc_build,
+          skip_certificate_verification:true,
+          app_identifier: "#{build_variant_config["bundle_identifier"]}.#{extension_suffix}"
+          )
+      end
     end
   end
 
