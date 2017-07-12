@@ -125,6 +125,12 @@ private_lane :smf_publish_pod do |options|
   repository_path = project_config["github_repo_path"]
   specs_repo = framework_config["pods_specs_repo"]
 
+
+  # Unlock keycahin to enable pull repo with https
+  unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+
+  unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+
   # Make sure the repo is up to date and clean
   ensure_git_branch(branch: branch)
   ensure_git_status_clean
