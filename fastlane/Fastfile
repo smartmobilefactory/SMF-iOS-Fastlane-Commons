@@ -744,7 +744,8 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   
   NO_APP_FAILURE = "NO_APP_FAILURE"
   sh "cd ../build; zip -r9 #{scheme}.app.zip #{scheme}.app || echo #{NO_APP_FAILURE}"
-  app_path = Pathname.getwd.dirname.to_s + "build/#{scheme}.app.zip"
+  app_path = Pathname.getwd.dirname.to_s + "/build/#{scheme}.app.zip"
+  puts app_path
 
   hockey(
     api_token: ENV["HOCKEYAPP_API_TOKEN"],
