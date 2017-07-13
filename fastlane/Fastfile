@@ -20,6 +20,7 @@ private_lane :smf_deploy_app do |options|
   branch = options[:branch]
   generateMetaJSON = options[:generateMetaJSON]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
+  use_hockey = (options[:use_hockey].nil? ? true : options[:use_hockey])
   project_config = build_variants_config["project"]
   build_variant_config = build_variants_config["targets"][build_variant]
 
@@ -86,7 +87,7 @@ private_lane :smf_deploy_app do |options|
       )
   end
 
-
+  if use_hockey
   # Upload the IPA to HockeyApp
   smf_upload_ipa_to_hockey(
     build_variant_config: build_variant_config,
@@ -99,6 +100,7 @@ private_lane :smf_deploy_app do |options|
     build_variant_config: build_variant_config,
     build_variants_contains_whitelist: ["beta"]
     )
+  end
 
 end
 
