@@ -218,7 +218,7 @@ private_lane :smf_handle_success do |options|
   hipchat_channel = project_config["hipchat_channel"]
   app_link = (options[:app_link].nil? ? Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK] : options[:app_link])
 
-  unless !ENV["SMF_CHANGELOG"].nil?
+  if ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
     smf_collect_changelog(
       build_variant: build_variant
@@ -287,7 +287,7 @@ private_lane :smf_handle_exception do |options|
   project_config = options[:project_config]
   release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
 
-  unless !ENV["SMF_CHANGELOG"].nil?
+  if ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
     smf_collect_changelog(
       build_variant: build_variant
