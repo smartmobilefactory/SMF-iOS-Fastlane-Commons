@@ -218,7 +218,7 @@ private_lane :smf_handle_success do |options|
   hipchat_channel = project_config["hipchat_channel"]
   app_link = (options[:app_link].nil? ? Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK] : options[:app_link])
 
-  unless ENV["SMF_CHANGELOG"].nil?
+  unless !ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
     smf_collect_changelog(
       build_variant: build_variant
@@ -287,7 +287,7 @@ private_lane :smf_handle_exception do |options|
   project_config = options[:project_config]
   release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
 
-  unless ENV["SMF_CHANGELOG"].nil?
+  unless !ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
     smf_collect_changelog(
       build_variant: build_variant
@@ -656,9 +656,6 @@ private_lane :smf_notify_via_hipchat do |options|
   project_name = options[:project_config]["project_name"]
   release_title = options[:release_title]
   hipchat_channel = options[:hipchat_channel]
-
-  puts release_title
-  puts ENV["SMF_CHANGELOG"]
 
   hipchat(
     message:"<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9800]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>",
