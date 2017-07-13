@@ -650,6 +650,9 @@ private_lane :smf_notify_via_hipchat do |options|
   release_title = options[:release_title]
   hipchat_channel = options[:hipchat_channel]
 
+  puts release_title
+  puts ENV["SMF_CHANGELOG"]
+
   hipchat(
     message:"<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9800]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>",
     channel: hipchat_channel,
