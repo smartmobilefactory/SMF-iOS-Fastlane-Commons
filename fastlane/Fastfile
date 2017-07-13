@@ -218,6 +218,13 @@ private_lane :smf_handle_success do |options|
   hipchat_channel = project_config["hipchat_channel"]
   app_link = (options[:app_link].nil? ? Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK] : options[:app_link])
 
+  unless ENV["SMF_CHANGELOG"].nil?
+    # Collect the changelog (again) in case the build job failed before the former changelog collecting
+    smf_collect_changelog(
+      build_variant: build_variant
+      )
+  end
+
   smf_notify_via_mail(
     build_variant: build_variant,
     release_title: release_title,
