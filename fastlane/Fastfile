@@ -239,7 +239,8 @@ private_lane :smf_handle_success do |options|
       build_variant: build_variant,
       release_title: release_title,
       project_config: project_config,
-      hipchat_channel: hipchat_channel
+      hipchat_channel: hipchat_channel,
+      success: true
       )
   end
 end
@@ -285,6 +286,7 @@ private_lane :smf_handle_exception do |options|
   exception = options[:exception]
   build_variant = options[:build_variant].downcase
   project_config = options[:project_config]
+  hipchat_channel = project_config["hipchat_channel"]
   release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
 
   if ENV["SMF_CHANGELOG"].nil?
@@ -302,6 +304,18 @@ private_lane :smf_handle_exception do |options|
     exception_message: exception,
     app_link: ""
     )
+
+    if hipchat_channel
+    hipchat_channel = URI.escape(hipchat_channel)
+    smf_notify_via_hipchat(
+      build_variant: build_variant,
+      release_title: release_title,
+      project_config: project_config,
+      hipchat_channel: hipchat_channel,
+      success: false,
+      exception_message: exception,
+      )
+  end
 end
 
 
@@ -656,9 +670,19 @@ private_lane :smf_notify_via_hipchat do |options|
   project_name = options[:project_config]["project_name"]
   release_title = options[:release_title]
   hipchat_channel = options[:hipchat_channel]
+  exception_message = options[:exception_message]
+  success = options[:success]
 
+
+  case success
+  when true
+    message = "<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9800]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>"
+  else
+    message = "<table><tr><td><strong>😢 Failed to build and release #{release_title} 😢</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9800]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>"
+
+  end
   hipchat(
-    message:"<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9800]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>",
+    message: message,
     channel: hipchat_channel,
     success: true,
     api_token: ENV["HIPCHAT_API_TOKEN"],
