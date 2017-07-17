@@ -449,8 +449,8 @@ private_lane :smf_collect_changelog do |options|
 
   if (!project_platform.nil?) && (project_platform.eql? "mac")
   
-  sh("echo ''SMF_CHANGELOG=#{ENV["SMF_CHANGELOG"]}'' >> changelog.properties")
-  sh("echo ''SMF_CHANGELOG_EMAILS=#{ENV["SMF_CHANGELOG_EMAILS"]}'' >> changelog.properties")
+  sh("echo 'SMF_CHANGELOG='#{ENV["SMF_CHANGELOG"]}'' >> changelog.properties")
+  sh("echo 'SMF_CHANGELOG_EMAILS='#{ENV["SMF_CHANGELOG_EMAILS"]}'' >> emails.properties")
 
   end
 
