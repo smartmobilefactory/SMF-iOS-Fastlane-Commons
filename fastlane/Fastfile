@@ -450,7 +450,7 @@ private_lane :smf_collect_changelog do |options|
   if (!project_platform.nil?) && (project_platform.eql? "mac")
 
    File.open("changelog.properties", 'w') { |file| file.write("SMF_CHANGELOG='#{ENV["SMF_CHANGELOG"]}'") }
-   File.open("changelog.properties", 'w') { |file| file.write("SMF_CHANGELOG='#{ENV["SMF_CHANGELOG_EMAILS"]}'") }
+   File.open("emails.properties", 'w') { |file| file.write("SMF_CHANGELOG_EMAILS='#{ENV["SMF_CHANGELOG_EMAILS"]}'") }
 
   end
 
