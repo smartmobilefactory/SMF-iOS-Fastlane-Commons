@@ -56,7 +56,8 @@ private_lane :smf_deploy_app do |options|
 
   # Collect the changelog 
   smf_collect_changelog(
-    build_variant: build_variant
+    build_variant: build_variant,
+    project_config: project_config
     )
 
   # Push the build number
@@ -221,7 +222,8 @@ private_lane :smf_handle_success do |options|
   if ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
     smf_collect_changelog(
-      build_variant: build_variant
+      build_variant: build_variant,
+      project_config: project_config
       )
   end
 
@@ -292,7 +294,8 @@ private_lane :smf_handle_exception do |options|
   if ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
     smf_collect_changelog(
-      build_variant: build_variant
+      build_variant: build_variant,
+      project_config: project_config
       )
   end
 
@@ -420,6 +423,7 @@ private_lane :smf_collect_changelog do |options|
 
   # Read options parameter
   build_variant = options[:build_variant].downcase
+  project_platform = options[:project_config]["platform"]
 
   matching_pattern = (options[:tag_prefix].nil? ? "#{build_variant}" : options[:tag_prefix])
 
@@ -441,6 +445,13 @@ private_lane :smf_collect_changelog do |options|
   else
     ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '- (%an) %s')
     ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '%ae')
+  end
+
+  if (!project_platform.nil?) && (project_platform.eql? "mac")
+
+   File.open("changelog.properties", 'w') { |file| file.write("SMF_CHANGELOG='#{ENV["SMF_CHANGELOG"]}'") }
+   File.open("emails.properties", 'w') { |file| file.write("SMF_CHANGELOG_EMAILS='#{ENV["SMF_CHANGELOG_EMAILS"]}'") }
+
   end
 
 end
