@@ -161,6 +161,7 @@ private_lane :smf_publish_pod do |options|
 
   smf_collect_changelog(
     build_variant: bump_type,
+    project_config: project_config,
     tag_prefix: tag_prefix
     )
 
