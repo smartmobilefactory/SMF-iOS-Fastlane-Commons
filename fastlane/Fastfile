@@ -80,7 +80,9 @@ private_lane :smf_deploy_app do |options|
   # Upload Ipa to Testflight and Download the generated DSYM
   if build_variant_config["upload_itc"] == true
 
-    smf_upload_ipa_to_testflight
+    smf_upload_ipa_to_testflight(
+      build_variant_config: build_variant_config
+      )
 
     smf_download_dsym_from_testflight(
       project_config: project_config,
@@ -811,8 +813,10 @@ desc "upload the app on Testflight"
 private_lane :smf_upload_ipa_to_testflight do
 
   UI.important("Upload a new build to Testflight")
+  username = options[:build_variant_config]["itc_apple_id"]
 
   pilot(
+    username: username.nil? ? nil : username
     skip_submission:false
     )
 
