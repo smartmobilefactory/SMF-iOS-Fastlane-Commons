@@ -816,7 +816,7 @@ private_lane :smf_upload_ipa_to_testflight do
   username = options[:build_variant_config]["itc_apple_id"]
 
   pilot(
-    username: username.nil? ? nil : username
+    username: username.nil? ? nil : username,
     skip_submission:false
     )
 
