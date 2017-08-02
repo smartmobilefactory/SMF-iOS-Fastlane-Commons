@@ -843,11 +843,12 @@ private_lane :smf_download_dsym_from_testflight do |options|
 
   project_name = options[:project_config]["project_name"]
   bundle_identifier = options[:build_variant_config]["bundle_identifier"]
+  username = options[:build_variant_config]["itc_apple_id"]
 
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   build_number = build_number.to_s
 
-  download_dsyms(app_identifier: bundle_identifier,  build_number: build_number)
+  download_dsyms(username: username, app_identifier: bundle_identifier,  build_number: build_number)
 
 end
 
