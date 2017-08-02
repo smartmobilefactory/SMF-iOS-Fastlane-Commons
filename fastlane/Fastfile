@@ -919,7 +919,7 @@ private_lane :smf_itunes_precheck do |options|
 
   if hipchat_channel
     hipchat_channel = URI.escape(hipchat_channel)
-    
+
     hipchat(
       message: message,
       channel: hipchat_channel,
@@ -932,6 +932,7 @@ private_lane :smf_itunes_precheck do |options|
       from: "#{project_name} iOS CI"
       )
   end
+end
 end
 
 ##########################################################
