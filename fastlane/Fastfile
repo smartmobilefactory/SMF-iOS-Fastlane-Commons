@@ -884,7 +884,7 @@ private_lane :smf_itunes_precheck do |options|
 
 
   begin
-     precheck(username: username, app_identifier: app_identifier)
+     precheck(username: username.nil? ? nil : username , app_identifier: app_identifier)
 
    rescue => e 
       UI.error "Error while checking Metadata ...:
