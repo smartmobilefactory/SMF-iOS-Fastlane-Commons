@@ -816,8 +816,10 @@ end
 ### smf_upload_ipa_to_testflight ###
 ####################################
 
+# options: build_variant_config (Hash)
+
 desc "upload the app on Testflight"
-private_lane :smf_upload_ipa_to_testflight do
+private_lane :smf_upload_ipa_to_testflight do |options|
 
   UI.important("Upload a new build to Testflight")
   username = options[:build_variant_config]["itc_apple_id"]
