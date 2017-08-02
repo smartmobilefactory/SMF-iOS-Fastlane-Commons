@@ -878,11 +878,13 @@ private_lane :smf_itunes_precheck do |options|
     project_config = options[:project_config]
     project_name = project_config["project_name"]
     hipchat_channel = URI.escape(project_config["hipchat_channel"])
-    build_variant_config= options[:build_variant_config]
+    build_variant_config = options[:build_variant_config]
+    app_identifier = build_variant_config["bundle_identifier"]
+    username = build_variant_config["itc_apple_id"]
 
 
   begin
-     precheck(app_identifier: build_variant_config["bundle_identifier"])
+     precheck(username: username, app_identifier: app_identifier)
 
    rescue => e 
       UI.error "Error while checking Metadata ...:
