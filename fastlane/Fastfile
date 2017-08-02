@@ -88,6 +88,11 @@ private_lane :smf_deploy_app do |options|
       project_config: project_config,
       build_variant_config: build_variant_config
       )
+
+    smf_itunes_precheck(
+      project_config: project_config,
+      build_variant_config: build_variant_config
+      )
   end
 
   if use_hockey
@@ -869,33 +874,33 @@ end
 
 private_lane :smf_itunes_precheck do |options|
 
-    build_variant = options[:build_variant].downcase
+    project_config = options[:project_config]
     project_name = project_config["project_name"]
     hipchat_channel = URI.escape(project_config["hipchat_channel"])
-    build_variant_config = build_variants_config["targets"][build_variant]
+    build_variant_config= options[:build_variant_config]
 
 
-    begin
+  begin
      precheck(app_identifier: build_variant_config["bundle_identifier"])
 
    rescue => e 
-    UI.error "Error while checking Metadata ...:
-    #{e.message}"
-    subject = "Found Metadata issues for #{project_name}"
-    message = "❌❌<strong> iTunes Precheck failed for #{project_name}</strong> ❌❌😢"
-    message << "<p style='
-    border: 1px solid #D8D8D8;
-    padding: 5px;
-    border-radius: 5px;
-    font-family: Arial;
-    font-size: 11px;
-    text-transform: uppercase;
-    background-color: rgb(255, 249, 242);
-    color: rgb(211, 0, 0);
-    text-align: center;' >#{e.message} <p>
-    <strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a>"
+      UI.error "Error while checking Metadata ...:
+      #{e.message}"
+      subject = "Found Metadata issues for #{project_name}"
+      message = "❌❌<strong> iTunes Precheck failed for #{project_name}</strong> ❌❌😢"
+      message << "<p style='
+      border: 1px solid #D8D8D8;
+      padding: 5px;
+      border-radius: 5px;
+      font-family: Arial;
+      font-size: 11px;
+      text-transform: uppercase;
+      background-color: rgb(255, 249, 242);
+      color: rgb(211, 0, 0);
+      text-align: center;' >#{e.message} <p>
+      <strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a>"
 
-    mailgun(
+     mailgun(
       subject: subject,
       postmaster:"postmaster@mailgun.smfhq.com",
       apikey: ENV["MAILGUN_KEY"],
@@ -907,7 +912,7 @@ private_lane :smf_itunes_precheck do |options|
       template_path: "/Users/smf/jenkins/template_mail_ios_precheck.erb"
       )
 
-    hipchat(
+     hipchat(
       message: message,
       channel: hipchat_channel,
       success: false,
