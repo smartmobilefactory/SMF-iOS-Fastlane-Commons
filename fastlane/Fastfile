@@ -88,6 +88,11 @@ private_lane :smf_deploy_app do |options|
       project_config: project_config,
       build_variant_config: build_variant_config
       )
+
+    smf_itunes_precheck(
+      project_config: project_config,
+      build_variant_config: build_variant_config
+      )
   end
 
   if use_hockey
@@ -313,6 +318,7 @@ private_lane :smf_handle_exception do |options|
 
     if hipchat_channel
     hipchat_channel = URI.escape(hipchat_channel)
+
     smf_notify_via_hipchat(
       build_variant: build_variant,
       release_title: release_title,
@@ -321,6 +327,7 @@ private_lane :smf_handle_exception do |options|
       success: false,
       exception_message: exception,
       )
+    end
   end
 end
 
@@ -838,11 +845,12 @@ private_lane :smf_download_dsym_from_testflight do |options|
 
   project_name = options[:project_config]["project_name"]
   bundle_identifier = options[:build_variant_config]["bundle_identifier"]
+  username = options[:build_variant_config]["itc_apple_id"]
 
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   build_number = build_number.to_s
 
-  download_dsyms(app_identifier: bundle_identifier,  build_number: build_number)
+  download_dsyms(username: username, app_identifier: bundle_identifier,  build_number: build_number)
 
 end
 
@@ -861,6 +869,70 @@ private_lane :smf_increment_build_number do |options|
 
     increment_build_number(build_number: get_incremented_build_number(version))
 
+end
+
+################################
+###   smf_itunes_precheck    ###
+################################
+
+private_lane :smf_itunes_precheck do |options|
+
+  project_config = options[:project_config]
+  project_name = project_config["project_name"]
+  hipchat_channel = project_config["hipchat_channel"]
+  build_variant_config = options[:build_variant_config]
+  app_identifier = build_variant_config["bundle_identifier"]
+  username = build_variant_config["itc_apple_id"]
+
+
+  begin
+   precheck(username: username.nil? ? nil : username , app_identifier: app_identifier)
+
+ rescue => e 
+  UI.error "Error while checking Metadata ...:
+  #{e.message}"
+  subject = "Found Metadata issues for #{project_name}"
+  message = "❌❌<strong> iTunes Precheck failed for #{project_name}</strong> ❌❌😢"
+  message << "<p style='
+  border: 1px solid #D8D8D8;
+  padding: 5px;
+  border-radius: 5px;
+  font-family: Arial;
+  font-size: 11px;
+  text-transform: uppercase;
+  background-color: rgb(255, 249, 242);
+  color: rgb(211, 0, 0);
+  text-align: center;' >#{e.message} <p>
+  <strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a>"
+
+  mailgun(
+    subject: subject,
+    postmaster:"postmaster@mailgun.smfhq.com",
+    apikey: ENV["MAILGUN_KEY"],
+    to: "development@smfhq.com",
+    success: false,
+    message: message,
+    app_link: "",
+    ci_build_link: ENV["BUILD_URL"],
+    template_path: "/Users/smf/jenkins/template_mail_ios_precheck.erb"
+    )
+
+  if hipchat_channel
+    hipchat_channel = URI.escape(hipchat_channel)
+
+    hipchat(
+      message: message,
+      channel: hipchat_channel,
+      success: false,
+      api_token: ENV["HIPCHAT_API_TOKEN"],
+      notify_room: true,
+      version: "2",
+      message_format: "html",
+      include_html_header: false,
+      from: "#{project_name} iOS CI"
+      )
+  end
+end
 end
 
 ##########################################################
