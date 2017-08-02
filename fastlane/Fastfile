@@ -328,7 +328,6 @@ private_lane :smf_handle_exception do |options|
       exception_message: exception,
       )
     end
-  end
 end
 
 
