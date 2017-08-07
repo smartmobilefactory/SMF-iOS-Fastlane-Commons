@@ -703,9 +703,9 @@ private_lane :smf_notify_via_hipchat do |options|
 
   case success
   when true
-    message = "<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9800]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr></table>"
+    message = "<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
   else
-    message = "<table><tr><td><strong>❌❌ Failed to build and release #{release_title} ❌❌😢</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9800]}#{'...' if ENV["SMF_CHANGELOG"].length > 10000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+    message = "<table><tr><td><strong>❌ Failed to build and release #{release_title} ❌ 😢</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
   end
   hipchat(
@@ -891,7 +891,7 @@ private_lane :smf_itunes_precheck do |options|
   UI.error "Error while checking Metadata ...:
   #{e.message}"
   subject = "Found Metadata issues for #{project_name}"
-  message = "❌❌<strong> iTunes Precheck failed for #{project_name}</strong> ❌❌😢"
+  message = "❌<strong> iTunes Precheck failed for #{project_name}</strong> ❌ 😢"
   message << "<p style='
   border: 1px solid #D8D8D8;
   padding: 5px;
@@ -901,7 +901,7 @@ private_lane :smf_itunes_precheck do |options|
   text-transform: uppercase;
   background-color: rgb(255, 249, 242);
   color: rgb(211, 0, 0);
-  text-align: center;' >#{e.message} <p>
+  text-align: center;' >#{e.message[0..8000]}#{'\n...' if e.message.length > 8000}<p>
   <strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a>"
 
   mailgun(
