@@ -703,9 +703,9 @@ private_lane :smf_notify_via_hipchat do |options|
 
   case success
   when true
-    message = "<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
+    message = "<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
   else
-    message = "<table><tr><td><strong>❌ Failed to build and release #{release_title} ❌ 😢</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+    message = "<table><tr><td><strong>❌ Failed to build and release #{release_title} ❌ 😢</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
   end
   hipchat(
@@ -799,6 +799,8 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   scheme = options[:build_variant_config]["scheme"]
 
+  release_notes = message = "#{ENV["SMF_CHANGELOG"][0..4995]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 4995}"
+
   #DSYM Path
   path = Pathname.getwd.dirname.to_s + "/#{bundle_identifier}-#{version_number}-#{build_number}.dSYM.zip"
   
@@ -807,11 +809,12 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   app_path = Pathname.getwd.dirname.to_s + "/build/#{scheme}.app.zip"
   puts app_path
 
+
   hockey(
     api_token: ENV["HOCKEYAPP_API_TOKEN"],
     ipa: File.exist?(app_path) ? app_path : lane_context[SharedValues::IPA_OUTPUT_PATH], 
     notify: "0",
-    notes: ENV["SMF_CHANGELOG"],
+    notes: release_notes,
     public_identifier: hockey_app_id,
     dsym: File.exist?(path) ? path : nil  
   )
@@ -901,7 +904,7 @@ private_lane :smf_itunes_precheck do |options|
   text-transform: uppercase;
   background-color: rgb(255, 249, 242);
   color: rgb(211, 0, 0);
-  text-align: center;' >#{e.message[0..8000]}#{'\n...' if e.message.length > 8000}<p>
+  text-align: center;' >#{e.message[0..8000]}#{'\\n...' if e.message.length > 8000}<p>
   <strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a>"
 
   mailgun(
