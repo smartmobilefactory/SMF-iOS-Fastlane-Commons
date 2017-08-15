@@ -546,18 +546,40 @@ end
 
 # options: project_config (Hash), framework_config (Hash)
 
-desc "Performs the unit tests of a project."
+desc "Performs the unit tests of the pod."
 private_lane :smf_test_pod_project do |options|
 
-  UI.important("Perform the unit tests")
+  UI.important("Test the pod")
 
   # Read options parameter
   project_config = options[:project_config]
   framework_config = options[:framework_config]
 
+  smf_perform_unit_tests(
+    project_config: project_config,
+    build_variant_config: framework_config
+  )
+
+end
+
+##############################
+### smf_perform_unit_tests ###
+##############################
+
+# options: project_config (Hash), build_variant_config (Hash)
+
+desc "Performs the unit tests of a project."
+private_lane :smf_perform_unit_tests do |options|
+
+  UI.important("Perform the unit tests")
+
+  # Read options parameter
+  project_config = options[:project_config]
+  build_variant_config = options[:build_variant_config]
+
   scan(
     workspace: "#{project_config["project_name"]}.xcworkspace",
-    scheme: "#{framework_config["scheme"]}",
+    scheme: "#{build_variant_config["scheme"]}",
     clean: false,
     output_files: "report.xml"
     )
