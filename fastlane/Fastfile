@@ -1,4 +1,6 @@
-require 'uri'
+fastlane_require 'net/https'
+fastlane_require 'uri'
+fastlane_require 'json'
 
 before_all do
   # due to a wrong commit in fastlane 2.43.0 we disable temporary the update
@@ -985,5 +987,57 @@ def get_incremented_build_number(version)
   end    
 
  return version_string.to_s
+
+end
+
+#####################################
+### smf_success_push_notification ###
+#####################################
+
+# options: hockeyapp_id (String)
+
+desc "Send a Push Notification through OneSignal"
+private_lane :smf_success_push_notification do |options|
+
+  UI.important("Send Push Notification")
+
+  # Read options parameter
+  hockey_app_id = options[:hockeyapp_id]
+
+  # Create valid URI
+  uri = URI.parse('https://onesignal.com/api/v1/notifications')
+
+  # Authentification Header
+  header = {
+    'Content-Type' => 'application/json; charset=utf-8',
+    'Authorization' => 'Basic OGMyMjA2ZGUtNTFjOS00NGQzLWE5YmEtOWM1YjMxZTE1YWZh' # OneSignal User AuthKey REST API
+  }
+
+  # Notification Payload
+  payload = {
+    'app_ids': ['f809f1b9-e7ae-4d64-946b-66db65daf360', '5cd4e388-10ad-4bd7-b0a0-acd8a25420a7'], # OneSignal App IDs (ALPHA & BETA)
+    'content_available': 'true',
+    'mutable_content': 'true',
+    'isIos': 'true',
+    'ios_category': 'com.usernotifications.app_update', # Remote Notification Category.
+    'filters': [
+      {
+        'field': 'tag',
+        'relation': '=',
+        'key': hockey_app_id,
+        'value': 'com.usernotifications.app_update'
+      }
+    ],
+    'data': {
+      'HockeyAppId': hockey_app_id
+    }
+  }
+
+  # Create and send a POST request
+  https = Net::HTTP.new(uri.host,uri.port)
+  https.use_ssl = true
+  request = Net::HTTP::Post.new(uri.path, header)
+  request.body = payload.to_json
+  https.request(request)
 
 end
