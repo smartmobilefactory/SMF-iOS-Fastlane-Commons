@@ -98,18 +98,37 @@ private_lane :smf_deploy_app do |options|
   end
 
   if use_hockey
-  # Upload the IPA to HockeyApp
-  smf_upload_ipa_to_hockey(
-    build_variant_config: build_variant_config,
-    project_config: project_config
-    )
+    # Upload the IPA to HockeyApp
+    smf_upload_ipa_to_hockey(
+      build_variant_config: build_variant_config,
+      project_config: project_config
+      )
 
-  # Disable the former HockeyApp entry
-  smf_disable_former_hockey_entry(
-    build_variant: build_variant,
-    build_variant_config: build_variant_config,
-    build_variants_contains_whitelist: ["beta"]
-    )
+    # Disable the former HockeyApp entry
+    smf_disable_former_hockey_entry(
+      build_variant: build_variant,
+      build_variant_config: build_variant_config,
+      build_variants_contains_whitelist: ["beta"]
+      )
+
+    # Inform the SMF HockeyApp about the new app version
+    begin
+      smf_send_ios_hockey_app_apn(
+        hockeyapp_id: build_variant_config["hockeyapp_id"]
+      )
+    rescue
+      UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
+
+      project_name = options[:project_config]["project_name"]
+
+      message = "<table><tr><td><strong>❌ Failed to send APN to SMF HockeyApp for #{project_name} #{build_variant.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+
+      smf_send_message_to_hipchat_ci_room(
+        project_name: project_name,
+        message: message
+      )
+      next   
+    end
   end
 
 end
@@ -990,14 +1009,14 @@ def get_incremented_build_number(version)
 
 end
 
-#####################################
-### smf_success_push_notification ###
-#####################################
+###################################
+### smf_send_ios_hockey_app_apn ###
+###################################
 
 # options: hockeyapp_id (String)
 
-desc "Send a Push Notification through OneSignal"
-private_lane :smf_success_push_notification do |options|
+desc "Send a Push Notification through OneSignal to the SMF HockeyApp"
+private_lane :smf_send_ios_hockey_app_apn do |options|
 
   UI.important("Send Push Notification")
 
@@ -1041,3 +1060,33 @@ private_lane :smf_success_push_notification do |options|
   https.request(request)
 
 end
+
+###########################################
+### smf_send_message_to_hipchat_ci_room ###
+###########################################
+
+# options: project_config (Hash), message (String)
+
+desc "Send a message to the CI room in HipChat"
+private_lane :smf_send_message_to_hipchat_ci_room do |options|
+
+  UI.important("Send a message to the CI room in HipChat")
+
+  # Read options parameter
+  project_name = options[:project_name]
+  message = options[:message]
+
+  hipchat(
+    message: message,
+    channel: "CI",
+    success: true,
+    api_token: ENV["HIPCHAT_API_TOKEN"],
+    notify_room: true,
+    version: "2",
+    message_format: "html",
+    include_html_header: false,
+    from: "#{project_name} iOS CI"
+  )
+
+end
+
