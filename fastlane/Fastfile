@@ -127,7 +127,7 @@ private_lane :smf_deploy_app do |options|
         project_name: project_name,
         message: message
       )
-      next   
+      next
     end
   end
 
