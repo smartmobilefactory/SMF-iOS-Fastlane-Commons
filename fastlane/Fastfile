@@ -565,7 +565,7 @@ end
 ### smf_test_pod_project ###
 ############################
 
-# options: project_config (Hash), framework_config (Hash)
+# options: project_config (Hash), framework_config (Hash). "perform_unit_tests" is handeld as opt-out
 
 desc "Performs the unit tests of the pod."
 private_lane :smf_test_pod_project do |options|
@@ -575,11 +575,48 @@ private_lane :smf_test_pod_project do |options|
   # Read options parameter
   project_config = options[:project_config]
   framework_config = options[:framework_config]
+  should_perform_unit_test = (framework_config["perform_unit_tests"].nil? ? true : framework_config["perform_unit_tests"])
 
-  smf_perform_unit_tests(
+  if should_perform_unit_test
+    smf_perform_unit_tests(
+      project_config: project_config,
+      build_variant_config: framework_config
+    )
+  end
+
+end
+
+############################
+### smf_test_app_project ###
+############################
+
+# options: project_config (Hash), build_variant (String), build_variants_config (Hash). "perform_unit_tests" is handeld as opt-in
+
+desc "Performs the unit tests of the pod."
+private_lane :smf_test_app_project do |options|
+
+  UI.important("Test the app project: Build an IPA and unit tests (opt-in).")
+
+  # Read options parameter
+  project_config = options[:project_config]
+  build_variant = options[:build_variant]
+  build_variants_config = options[:build_variants_config]
+  build_variant_config = build_variants_config["targets"][build_variant]
+  should_perform_unit_test = (build_variant_config["perform_unit_tests"].nil? ? false : build_variant_config["perform_unit_tests"])
+
+  # Build only the IPA to test if the project is compiling
+  smf_archive_ipa(
     project_config: project_config,
-    build_variant_config: framework_config
+    build_variant: build_variant,
+    build_variants_config: build_variants_config
   )
+
+  if should_perform_unit_test
+    smf_perform_unit_tests(
+      project_config: project_config,
+      build_variant_config: build_variant_config
+    )
+  end
 
 end
 
