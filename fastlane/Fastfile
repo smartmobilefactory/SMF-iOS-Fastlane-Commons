@@ -1065,7 +1065,7 @@ end
 ### smf_send_message_to_hipchat_ci_room ###
 ###########################################
 
-# options: project_config (Hash), message (String)
+# options: project_name (Hash), message (String)
 
 desc "Send a message to the CI room in HipChat"
 private_lane :smf_send_message_to_hipchat_ci_room do |options|
