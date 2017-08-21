@@ -635,9 +635,12 @@ private_lane :smf_perform_unit_tests do |options|
   project_config = options[:project_config]
   build_variant_config = options[:build_variant_config]
 
+  # Prefer the unit test scheme over the normal scheme
+  scheme = (build_variant_config["unit_test_schme"].nil? ? build_variant_config["scheme"] : build_variant_config["unit_test_schme"])
+
   scan(
     workspace: "#{project_config["project_name"]}.xcworkspace",
-    scheme: "#{build_variant_config["scheme"]}",
+    scheme: scheme,
     clean: false,
     output_files: "report.xml"
     )
