@@ -32,10 +32,12 @@ private_lane :smf_deploy_app do |options|
     build_variant: build_variant
     )
 
-  # Increment the build number
-  smf_increment_build_number(
-    project_config: project_config
-    )
+  # Increment the build number only if it should
+  if smf_should_build_number_be_incremented(build_variant)
+    smf_increment_build_number(
+      project_config: project_config
+      )
+  end
 
   # Build and archive the IPA
   smf_archive_ipa(
@@ -50,34 +52,43 @@ private_lane :smf_deploy_app do |options|
     branch: branch
     )
 
-  # Push the build number
-  smf_push_build_number(
-    project_config: project_config,
-    branch: branch
+  # Push the build number if was incremented
+  if smf_should_build_number_be_incremented(build_variant)
+    smf_push_build_number(
+      project_config: project_config,
+      branch: branch
     )
+  end
+
+  # Update the MetaJSONS if wanted
+  if generateMetaJSON != false
+    begin
+      smf_generate_meta_json(
+        project_config: project_config,
+        build_variant: build_variant,
+        branch: branch,
+        build_variants_contains_whitelist: ["alpha"]
+      )
+    rescue
+      UI.important("Warning: MetaJSON couldn't be created")
+
+      project_name = options[:project_config]["project_name"]
+
+      message = "<table><tr><td><strong>❌ Failed to create MetaJSON for #{project_name} #{build_variant.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+
+      smf_send_message_to_hipchat_ci_room(
+        project_name: project_name,
+        message: message
+      )
+      next
+    end
+  end
 
   # Collect the changelog 
   smf_collect_changelog(
     build_variant: build_variant,
     project_config: project_config
     )
-
-  # Push the build number
-  smf_add_git_tag(
-    project_config: project_config,
-    branch: branch,
-    tag_prefix: "build/#{build_variant}_b"
-    )
-
-  # Update the MetaJSONS if wanted
-  if generateMetaJSON != false
-    smf_generate_meta_json(
-      project_config: project_config,
-      build_variant: build_variant,
-      branch: branch,
-      build_variants_contains_whitelist: ["alpha"]
-      )
-  end
 
   # Upload Ipa to Testflight and Download the generated DSYM
   if build_variant_config["upload_itc"] == true
@@ -131,6 +142,13 @@ private_lane :smf_deploy_app do |options|
     end
   end
 
+  # Push the build number
+  smf_add_git_tag(
+    project_config: project_config,
+    branch: branch,
+    tag_prefix: "build/#{build_variant}_b"
+  )
+
 end
 
 
@@ -168,6 +186,30 @@ private_lane :smf_publish_pod do |options|
 
   # Update the CocoaPods repo to avoid unknown Pod version issues
   sh "pod repo update"
+
+  # Update the MetaJSONS if wanted
+  if generateMetaJSON != false
+    begin
+      smf_generate_meta_json(
+        project_config: project_config,
+        build_variant: bump_type,
+        branch: branch,
+        build_variants_contains_whitelist: ["patch", "minor", "major", "current"]
+        )
+    rescue
+      UI.important("Warning: MetaJSON couldn't be created")
+
+      project_name = options[:project_config]["project_name"]
+
+      message = "<table><tr><td><strong>❌ Failed to create MetaJSON for #{project_name} #{bump_type.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+
+      smf_send_message_to_hipchat_ci_room(
+        project_name: project_name,
+        message: message
+      )
+      next
+    end
+  end
 
   # Bump the pods version if needed
   if bump_type != "current"
@@ -216,16 +258,6 @@ private_lane :smf_publish_pod do |options|
     description: ENV["SMF_CHANGELOG"],
     commitish: branch
     )
-
-  # Update the MetaJSONS if wanted
-  if generateMetaJSON != false
-    smf_generate_meta_json(
-      project_config: project_config,
-      build_variant: bump_type,
-      branch: branch,
-      build_variants_contains_whitelist: ["patch", "minor", "major", "current"]
-      )
-  end
 
 end
 
@@ -512,9 +544,13 @@ private_lane :smf_check_tag do |options|
   tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
 
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-  version_string = get_incremented_build_number(version)
 
-  if git_tag_exists(tag: tag_prefix+version_string.to_s+tag_suffix)
+  # Use the incremented build number only if it's an alpha as the 
+  if smf_should_build_number_be_incremented(build_variant)
+    version = smf_get_incremented_build_number(version)
+  end
+
+  if git_tag_exists(tag: tag_prefix+version.to_s+tag_suffix)
     raise "Git tag already existed".red
   end
 
@@ -952,7 +988,7 @@ private_lane :smf_increment_build_number do |options|
   project_name = options[:project_config]["project_name"]
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
-    increment_build_number(build_number: get_incremented_build_number(version))
+  increment_build_number(build_number: smf_get_incremented_build_number(version))
 
 end
 
@@ -1023,7 +1059,8 @@ end
 ##########################################################
 ###   check build number whether it's a int or float   ###
 ##########################################################
-def get_incremented_build_number(version)
+
+def smf_get_incremented_build_number(version)
 
   if version.to_s.include? "."
     
@@ -1046,6 +1083,16 @@ def get_incremented_build_number(version)
   end    
 
  return version_string.to_s
+
+end
+
+#################################################
+###   smf_should_build_number_be_incremented  ###
+#################################################
+
+def smf_should_build_number_be_incremented(build_variant)
+
+  return build_variant.include? "_alpha"
 
 end
 
