@@ -1093,7 +1093,7 @@ end
 
 def smf_should_build_number_be_incremented(build_variant)
 
-  return build_variant.include? "_alpha"
+  return (build_variant.include? "_alpha" || build_variant == "alpha")
 
 end
 
