@@ -47,8 +47,8 @@ private_lane :smf_deploy_app do |options|
     use_sigh: use_sigh
     )
 
-  # Commit and push generated code. There can be changes eg. from PhraseApp + R.swift
-  smf_push_generated_code(
+  # Commit generated code. There can be changes eg. from PhraseApp + R.swift
+  smf_commit_generated_code(
     branch: branch
     )
 
@@ -76,9 +76,9 @@ private_lane :smf_deploy_app do |options|
     end
   end
 
-  # Push the build number if it was incremented
+  # Commit the build number if it was incremented
   if smf_should_build_number_be_incremented(build_variant)
-    smf_push_build_number(
+    smf_commit_build_number(
       project_config: project_config,
       branch: branch
     )
@@ -142,11 +142,20 @@ private_lane :smf_deploy_app do |options|
     end
   end
 
-  # Push the build number
   smf_add_git_tag(
     project_config: project_config,
     branch: branch,
     tag_prefix: "build/#{build_variant}_b"
+  )
+
+  git_pull
+
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: branch,
+    force: false,
+    tags: true
   )
 
 end
@@ -222,7 +231,7 @@ private_lane :smf_publish_pod do |options|
 
   version = read_podspec(path: podspec_path)["version"]
 
-  # Commit the  version bump if needed
+  # Commit the version bump if needed
   if bump_type != "current"
     git_commit(
       path: podspec_path,
@@ -237,8 +246,17 @@ private_lane :smf_publish_pod do |options|
     )
 
   # Add the git tag
-  add_git_tag(tag: "#{tag_prefix}#{version}")
-  push_to_git_remote
+  add_git_tag(
+    tag: "#{tag_prefix}#{version}"
+  )
+
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: branch,
+    force: false,
+    tags: true
+  )
   
   # Publish the pod. Either to a private specs repo or to the offical one
   if specs_repo
@@ -585,14 +603,6 @@ private_lane :smf_add_git_tag do |options|
       tag: tag_prefix+version+tag_suffix
       )
   end
-  
-  push_to_git_remote(
-    remote: 'origin',
-    local_branch: branch,
-    remote_branch: branch,
-    force: false,
-    tags: true
-    )
 
 end
 
@@ -722,7 +732,7 @@ end
 
 # options: branch (String), build_variant (String) and build_variants_contains_whitelist (String) [optional]
 
-desc "Create and push the metaJSON files - applys only for Alpha builds."
+desc "Create and commit the metaJSON files - applys only for Alpha builds."
 private_lane :smf_generate_meta_json do |options|
 
   # Read options parameter
@@ -736,7 +746,7 @@ private_lane :smf_generate_meta_json do |options|
     # Fetch the MetaJSON scripts repo
     sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
     # Create and commit the MetaJSON files
-    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-push-meta-jsons.sh \"#{branch}\" \"#{project_name}\" || true"
+    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-commit-meta-jsons.sh \"#{project_name}\" \"#{branch}\" || true"
     # Remove the MetaJSON scripts repo
     sh "rm -rf SMF-iOS-MetaJSON"
   end
@@ -745,40 +755,34 @@ end
 
 
 ###############################
-### smf_push_generated_code ###
+### smf_commit_generated_code ###
 ###############################
 
 # options: branch (String)
 
-desc "Commit and push generated code"
-private_lane :smf_push_generated_code do |options|
+desc "Commit generated code"
+private_lane :smf_commit_generated_code do |options|
 
   UI.important("Commit and push generated code")
     # Read options parameter
     branch = options[:branch]
 
+    # Reset the currently staged files first to make sure only the generated code will be commited
+    sh "git reset"
     sh "git add ../Generated/ || true"
     sh "git commit -m \"Update generated code\" || true"
-
-    push_to_git_remote(
-      remote: 'origin',
-      local_branch: branch,
-      remote_branch: branch,
-      force: false,
-      tags: false
-      )
 
   end
 
 
-#############################
-### smf_push_build_number ###
-#############################
+###############################
+### smf_commit_build_number ###
+###############################
 
 # options: project_config (Hash), branch (String)
 
-desc "Commit and push the build number."
-private_lane :smf_push_build_number do |options|
+desc "Commit the build number."
+private_lane :smf_commit_build_number do |options|
 
   # Read options parameter
   project_name = options[:project_config]["project_name"]
@@ -792,14 +796,6 @@ private_lane :smf_push_build_number do |options|
     xcodeproj: "#{project_name}.xcodeproj",
     message: "Increment build number to #{version}",
     force: true
-    )
-  
-  push_to_git_remote(
-    remote: 'origin',
-    local_branch: branch,
-    remote_branch: branch,
-    force: false,
-    tags: false
     )
 
 end
