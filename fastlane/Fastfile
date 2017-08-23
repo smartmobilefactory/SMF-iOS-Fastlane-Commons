@@ -72,7 +72,6 @@ private_lane :smf_deploy_app do |options|
         project_name: project_name,
         message: message
       )
-      next
     end
   end
 
@@ -109,6 +108,7 @@ private_lane :smf_deploy_app do |options|
   end
 
   if use_hockey
+    ENV["SMF_APP_HOCKEY_ID"] = build_variant_config["hockeyapp_id"]
     # Upload the IPA to HockeyApp
     smf_upload_ipa_to_hockey(
       build_variant_config: build_variant_config,
@@ -125,7 +125,7 @@ private_lane :smf_deploy_app do |options|
     # Inform the SMF HockeyApp about the new app version
     begin
       smf_send_ios_hockey_app_apn(
-        hockeyapp_id: build_variant_config["hockeyapp_id"]
+        hockeyapp_id: ENV["SMF_APP_HOCKEY_ID"]
       )
     rescue
       UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
@@ -138,7 +138,6 @@ private_lane :smf_deploy_app do |options|
         project_name: project_name,
         message: message
       )
-      next
     end
   end
 
@@ -368,6 +367,17 @@ private_lane :smf_handle_exception do |options|
   project_config = options[:project_config]
   hipchat_channel = project_config["hipchat_channel"]
   release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
+
+  apps_hockey_id = ENV["SMF_APP_HOCKEY_ID"]
+  if not apps_hockey_id.nil?
+    begin
+      smf_delete_uploaded_hockey_entry(
+        apps_hockey_id: apps_hockey_id
+      )
+    rescue
+      UI.message("The HockeyApp entry wasn't removed. This is fine if it wasn't yet uploaded")
+    end
+  end
 
   if ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
@@ -723,6 +733,32 @@ private_lane :smf_disable_former_hockey_entry do |options|
   end
 end
 
+########################################
+### smf_delete_uploaded_hockey_entry ###
+########################################
+
+# options: apps_hockey_id (String)
+
+desc "Deletes the uploaded app version on Hockey. It should be used to clean up after a error response from hockey app."
+private_lane :smf_delete_uploaded_hockey_entry do |options|
+
+  # Read options parameter
+  apps_hockey_id = options[:apps_hockey_id]
+
+  # Disable the download of the former non Alpha app on Hockey App
+  app_version_id  = Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id']
+  if (app_version_id > 1)
+    UI.important("Will remove the app version with id: #{app_version_id}")
+
+    delete_app_version_on_hockey(
+      api_token: ENV["HOCKEYAPP_API_TOKEN"],
+      public_identifier: apps_hockey_id,
+      version_id: "#{app_version_id}"
+     )
+  else
+    UI.message("No HOCKEY_BUILD_INFORMATION was found, so there is nothing to delete.")
+    end
+end
 
 ##############################
 ### smf_generate_meta_json ###
