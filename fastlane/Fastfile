@@ -39,19 +39,6 @@ private_lane :smf_deploy_app do |options|
       )
   end
 
-  # Build and archive the IPA
-  smf_archive_ipa(
-    project_config: project_config,
-    build_variant: build_variant,
-    build_variants_config: build_variants_config,
-    use_sigh: use_sigh
-    )
-
-  # Commit generated code. There can be changes eg. from PhraseApp + R.swift
-  smf_commit_generated_code(
-    branch: branch
-    )
-
   # Update the MetaJSONS if wanted
   if generateMetaJSON != false
     begin
@@ -74,6 +61,19 @@ private_lane :smf_deploy_app do |options|
       )
     end
   end
+  
+  # Build and archive the IPA
+  smf_archive_ipa(
+    project_config: project_config,
+    build_variant: build_variant,
+    build_variants_config: build_variants_config,
+    use_sigh: use_sigh
+    )
+
+  # Commit generated code. There can be changes eg. from PhraseApp + R.swift
+  smf_commit_generated_code(
+    branch: branch
+    )
 
   # Commit the build number if it was incremented
   if smf_should_build_number_be_incremented
