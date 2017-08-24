@@ -114,7 +114,7 @@ private_lane :smf_deploy_app do |options|
       build_variant_config: build_variant_config,
       project_config: project_config
       )
-
+    
     # Disable the former HockeyApp entry
     smf_disable_former_hockey_entry(
       build_variant: build_variant,
@@ -572,8 +572,9 @@ private_lane :smf_check_tag do |options|
 
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
-  # Use the incremented build number only if it's an alpha as the 
-  if smf_should_build_number_be_incremented
+  # Use the incremented build number only if it should be incremented. Also pass the former default prefix.
+  tag_prefixes = [tag_prefix, "build/#{build_variant}_b"]
+  if smf_should_build_number_be_incremented(tag_prefixes)
     version = smf_get_incremented_build_number(version)
   end
 
@@ -1122,11 +1123,23 @@ end
 ###   smf_should_build_number_be_incremented  ###
 #################################################
 
-def smf_should_build_number_be_incremented
+def smf_should_build_number_be_incremented(tag_prefixes = nil)
 
     if not ENV["SHOULD_INCREMENT_BUILD_NUMBER"].nil?
       UI.message("The SHOULD_INCREMENT_BUILD_NUMBER ENV was already set. Reusing #{ENV["SHOULD_INCREMENT_BUILD_NUMBER"]}")
       return ENV["SHOULD_INCREMENT_BUILD_NUMBER"] == "true"
+    end
+
+    # Check if the former commit was a build of the same build variant 
+    unless tag_prefix.nil?
+      last_commit_tags_string = sh "git tag -l --points-at HEAD"
+      for tag_prefix in tag_prefixes do
+        if last_commit_tags_string.include? tag_prefix
+          UI.message("Increment the build number as the former commit is a build of the same build variant. We have to increase it to avoid duplicate build numbers")
+          ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = "true"
+          return ENV["SHOULD_INCREMENT_BUILD_NUMBER"]
+        end
+      end
     end
 
     last_commit = last_git_commit
