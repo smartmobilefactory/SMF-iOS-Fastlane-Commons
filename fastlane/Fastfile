@@ -1136,10 +1136,10 @@ def smf_should_build_number_be_incremented
     UI.message("The last commit was \"#{message}\" from #{author}")
 
     if message.include? smf_increment_build_number_prefix_string and author == "SMFHUDSONCHECKOUT"
-      UI.message("Don't increment the build number as the last commit was a build number incrementatino from Jenkins")
+      UI.message("Don't increment the build number as the last commit was a build number incrementation from Jenkins")
       ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = "false"
     else
-      UI.message("Increment the build number as the last commit wasn't a build number incrementatino from Jenkins")
+      UI.message("Increment the build number as the last commit wasn't a build number incrementation from Jenkins")
       ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = "true"
     end
 
