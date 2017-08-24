@@ -144,7 +144,7 @@ private_lane :smf_deploy_app do |options|
     end
   end
 
-  smf_add_git_tag(
+  tag = smf_add_git_tag(
     project_config: project_config,
     branch: branch,
     tag_prefix: "build/#{build_variant}/"
@@ -156,6 +156,13 @@ private_lane :smf_deploy_app do |options|
     remote_branch: branch,
     force: false,
     tags: true
+  )
+
+  # Create the GitHub release
+  smf_create_github_release(
+    release_name: version,
+    tag: tag,
+    branch: branch
   )
 
 end
@@ -292,14 +299,11 @@ private_lane :smf_publish_pod do |options|
   )
 
   # Create the GitHub release
-  github_release = set_github_release(
-    repository_name: repository_path,
-    api_token: ENV['GITHUB_TOKEN'],
-    name: version,
-    tag_name: "#{tag_prefix}#{version}",
-    description: ENV["SMF_CHANGELOG"],
-    commitish: branch
-    )
+  smf_create_github_release(
+    release_name: version,
+    tag: "#{tag_prefix}#{version}",
+    branch: branch
+  )
 
 end
 
@@ -632,14 +636,16 @@ private_lane :smf_add_git_tag do |options|
   version = version.to_s
 
   # Tag the current commit
+  tag = tag_prefix+version+tag_suffix
   if git_tag_exists(tag: tag_prefix+version+tag_suffix)
     UI.message("Git tag already existed")
   else
     add_git_tag(
-      tag: tag_prefix+version+tag_suffix
+      tag: tag
       )
   end
 
+  puts tag
 end
 
 
@@ -1269,5 +1275,37 @@ private_lane :smf_send_message_to_hipchat_ci_room do |options|
     from: "#{project_name} iOS CI"
   )
 
+end
+
+#################################
+### smf_create_github_release ###
+#################################
+
+# options: release_name (String), tag (String), branch (String)
+
+private_lane :smf_create_github_release do |options|
+
+  release_name = options[:release_name]
+  tag = options[:tag]
+  branch = options[:branch]
+
+  git_remote_origin_url = sh "git config --get remote.origin.url"
+  github_url_match = git_remote_origin_url.match(/.*github.com:(.*)\.git/)
+  if github_url_match.nil? or github_url_match.length < 2
+    UI.message("The remote orgin doesn't seem to be GitHub. The GitHub Release won't be created.")
+    return
+  end
+
+  repository_path = github_url_match[1]
+
+  # Create the GitHub release
+  set_github_release(
+    repository_name: repository_path,
+    api_token: ENV['GITHUB_TOKEN'],
+    name: release_name,
+    tag_name: tag,
+    description: ENV["SMF_CHANGELOG"],
+    commitish: branch
+  )
 end
 
