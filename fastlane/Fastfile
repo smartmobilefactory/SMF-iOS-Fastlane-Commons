@@ -252,9 +252,17 @@ private_lane :smf_publish_pod do |options|
     )
 
   # Add the git tag
-  add_git_tag(
-    tag: "#{tag_prefix}#{version}"
-  )
+  begin
+    add_git_tag(
+      tag: "#{tag_prefix}#{version}"
+    )
+  rescue
+      if bump_type == "current"
+        UI.message("The Git Tag couldn't be added as it already existed. The Pod publishing will continue as the bump type is current.")
+      else
+        raise "Git tag already existed".red
+      end
+  end
 
   # Push the changes to a temporary branch
   push_to_git_remote(
@@ -294,7 +302,7 @@ private_lane :smf_publish_pod do |options|
     force: false,
     tags: true
   )
-  
+
   # Remove the temporary git branch
   sh "git push origin --delete jenkins_build/#{branch} || true"
 
