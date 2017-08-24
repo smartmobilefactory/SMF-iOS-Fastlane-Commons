@@ -1131,7 +1131,7 @@ def smf_should_build_number_be_incremented(tag_prefixes = nil)
     end
 
     # Check if the former commit was a build of the same build variant 
-    unless tag_prefix.nil?
+    unless tag_prefixes.nil?
       last_commit_tags_string = sh "git tag -l --points-at HEAD"
       for tag_prefix in tag_prefixes do
         if last_commit_tags_string.include? tag_prefix
