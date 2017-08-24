@@ -14,7 +14,7 @@ end
 desc "Builds the project including build number incrementation, MetaJSON etc. and uploads the version to Hockey."
 private_lane :smf_deploy_app do |options|
 
-  UI.important("Deplay a new app version")
+  UI.important("Deploy a new app version")
 
   # Read options parameter
   build_variant = options[:build_variant].downcase
