@@ -144,7 +144,7 @@ private_lane :smf_deploy_app do |options|
   smf_add_git_tag(
     project_config: project_config,
     branch: branch,
-    tag_prefix: "build/#{build_variant}_b"
+    tag_prefix: "build/#{build_variant}/"
   )
 
   push_to_git_remote(
@@ -567,7 +567,7 @@ private_lane :smf_check_tag do |options|
   build_variant = options[:build_variant].downcase
   project_name = options[:project_config]["project_name"]
 
-  tag_prefix = (options[:tag_prefix].nil? ? "build/#{build_variant}_b" : options[:tag_prefix])
+  tag_prefix = (options[:tag_prefix].nil? ? "build/#{build_variant}/" : options[:tag_prefix])
   tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
 
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
@@ -577,7 +577,8 @@ private_lane :smf_check_tag do |options|
     version = smf_get_incremented_build_number(version)
   end
 
-  if git_tag_exists(tag: tag_prefix+version.to_s+tag_suffix)
+  # Check if the tag already exists. Check also for the former default tag prefix
+  if git_tag_exists(tag: tag_prefix+version.to_s+tag_suffix) or git_tag_exists(tag: "build/#{build_variant}_b"+version.to_s+tag_suffix)
     raise "Git tag already existed".red
   end
 
