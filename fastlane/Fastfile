@@ -286,9 +286,6 @@ private_lane :smf_publish_pod do |options|
     raise "Pod push failed: #{e.message}"
   end
 
-  # Remove the temporary git branch
-  sh "git push origin --delete jenkins_build/#{branch} || true"
-
   # Push the changes to the original branch
   push_to_git_remote(
     remote: 'origin',
@@ -297,6 +294,9 @@ private_lane :smf_publish_pod do |options|
     force: false,
     tags: true
   )
+  
+  # Remove the temporary git branch
+  sh "git push origin --delete jenkins_build/#{branch} || true"
 
   # Create the GitHub release
   smf_create_github_release(
