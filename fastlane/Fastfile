@@ -20,11 +20,13 @@ private_lane :smf_deploy_app do |options|
   build_variant = options[:build_variant].downcase
   build_variants_config = options[:build_variants_config]
   branch = options[:branch]
+  project_config = build_variants_config["project"]
+  build_variant_config = build_variants_config["targets"][build_variant]
+  # Optional parameters
   generateMetaJSON = options[:generateMetaJSON]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
   use_hockey = (options[:use_hockey].nil? ? true : options[:use_hockey])
-  project_config = build_variants_config["project"]
-  build_variant_config = build_variants_config["targets"][build_variant]
+  push_generated_code = (options[:push_generated_code].nil? ? false : options[:push_generated_code])
 
   # check if the next Tag exist
   smf_check_tag(
@@ -48,9 +50,11 @@ private_lane :smf_deploy_app do |options|
     )
 
   # Commit generated code. There can be changes eg. from PhraseApp + R.swift
-  smf_commit_generated_code(
-    branch: branch
+  if push_generated_code
+    smf_commit_generated_code(
+      branch: branch
     )
+  end
 
   # Update the MetaJSONS if wanted
   if generateMetaJSON != false
