@@ -249,6 +249,40 @@ private_lane :smf_publish_pod do |options|
     tag: "#{tag_prefix}#{version}"
   )
 
+  # Push the changes to a temporary branch
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: "jenkins_build/#{branch}",
+    force: false,
+    tags: true
+  )
+  
+  begin
+    # Publish the pod. Either to a private specs repo or to the offical one
+    if specs_repo
+      pod_push(
+        repo: specs_repo,
+        path: podspec_path,
+        allow_warnings: true
+        )
+    else
+      pod_push(path: podspec_path)
+    end
+
+  rescue => e 
+    # Remove the git tag
+    sh "git push --delete origin #{tag_prefix}#{version} || true"
+    # Remove the temporary git branch
+    sh "git push origin --delete jenkins_build/#{branch} || true"
+
+    raise "Pod push failed: #{e.message}"
+  end
+
+  # Remove the temporary git branch
+  sh "git push origin --delete jenkins_build/#{branch} || true"
+
+  # Push the changes to the original branch
   push_to_git_remote(
     remote: 'origin',
     local_branch: branch,
@@ -256,18 +290,8 @@ private_lane :smf_publish_pod do |options|
     force: false,
     tags: true
   )
-  
-  # Publish the pod. Either to a private specs repo or to the offical one
-  if specs_repo
-    pod_push(
-      repo: specs_repo,
-      path: podspec_path,
-      allow_warnings: true
-      )
-  else
-    pod_push(path: podspec_path)
-  end
 
+  # Create the GitHub release
   github_release = set_github_release(
     repository_name: repository_path,
     api_token: ENV['GITHUB_TOKEN'],
