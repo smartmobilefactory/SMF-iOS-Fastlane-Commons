@@ -159,7 +159,7 @@ private_lane :smf_deploy_app do |options|
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   smf_create_github_release(
     release_name: version,
-    tag: tag,
+    tag: "#{tag}",
     branch: branch
   )
 
@@ -1304,12 +1304,14 @@ private_lane :smf_create_github_release do |options|
 
   repository_path = github_url_match[1]
 
+  UI.message("Found #{repository_path} as GitHub repo name")
+
   # Create the GitHub release
   set_github_release(
     repository_name: repository_path,
     api_token: ENV['GITHUB_TOKEN'],
     name: release_name.to_s,
-    tag_name: tag.to_s,
+    tag_name: tag,
     description: ENV["SMF_CHANGELOG"],
     commitish: branch
   )
