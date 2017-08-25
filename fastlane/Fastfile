@@ -438,7 +438,7 @@ private_lane :smf_handle_exception do |options|
       project_config: project_config,
       hipchat_channel: hipchat_channel,
       success: false,
-      exception_message: exception,
+      exception_message: exception.message,
       )
     end
 end
@@ -893,7 +893,7 @@ private_lane :smf_notify_via_hipchat do |options|
   when true
     message = "<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
   else
-    message = "<table><tr><td><strong>❌ Failed to build and release #{release_title} ❌ 😢</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+    message = "<table><tr><td><strong>❌ Failed to build and release #{release_title} ❌ 😢</strong></td></tr><tr></tr><tr><td><pre>#{exception_message[0..9000]}#{'\\n...' if exception_message.length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
   end
   hipchat(
