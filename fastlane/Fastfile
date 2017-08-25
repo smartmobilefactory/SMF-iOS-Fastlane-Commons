@@ -651,7 +651,8 @@ private_lane :smf_add_git_tag do |options|
       )
   end
 
-  puts tag
+  # Return the tag
+  tag
 end
 
 
