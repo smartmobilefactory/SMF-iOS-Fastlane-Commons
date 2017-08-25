@@ -1308,8 +1308,8 @@ private_lane :smf_create_github_release do |options|
   set_github_release(
     repository_name: repository_path,
     api_token: ENV['GITHUB_TOKEN'],
-    name: release_name,
-    tag_name: tag,
+    name: release_name.to_s,
+    tag_name: tag.to_s,
     description: ENV["SMF_CHANGELOG"],
     commitish: branch
   )
