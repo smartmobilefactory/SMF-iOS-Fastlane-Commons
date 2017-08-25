@@ -899,7 +899,7 @@ private_lane :smf_notify_via_hipchat do |options|
   hipchat(
     message: message,
     channel: hipchat_channel,
-    success: true,
+    success: success,
     api_token: ENV["HIPCHAT_API_TOKEN"],
     notify_room: true,
     version: "2",
