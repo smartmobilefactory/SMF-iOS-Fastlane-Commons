@@ -22,6 +22,7 @@ private_lane :smf_deploy_app do |options|
   branch = options[:branch]
   project_config = build_variants_config["project"]
   build_variant_config = build_variants_config["targets"][build_variant]
+  project_name = project_config["project_name"]
   # Optional parameters
   generateMetaJSON = options[:generateMetaJSON]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
@@ -66,8 +67,6 @@ private_lane :smf_deploy_app do |options|
       )
     rescue
       UI.important("Warning: MetaJSON couldn't be created")
-
-      project_name = options[:project_config]["project_name"]
 
       message = "<table><tr><td><strong>❌ Failed to create MetaJSON for #{project_name} #{build_variant.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
@@ -133,8 +132,6 @@ private_lane :smf_deploy_app do |options|
     rescue
       UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
 
-      project_name = options[:project_config]["project_name"]
-
       message = "<table><tr><td><strong>❌ Failed to send APN to SMF HockeyApp for #{project_name} #{build_variant.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
       smf_send_message_to_hipchat_ci_room(
@@ -159,6 +156,7 @@ private_lane :smf_deploy_app do |options|
   )
 
   # Create the GitHub release
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   smf_create_github_release(
     release_name: version,
     tag: tag,
