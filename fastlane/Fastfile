@@ -68,11 +68,12 @@ private_lane :smf_deploy_app do |options|
     rescue
       UI.important("Warning: MetaJSON couldn't be created")
 
-      message = "<table><tr><td><strong>❌ Failed to create MetaJSON for #{project_name} #{build_variant.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+      message = "<table><tr><td><strong>Failed to create MetaJSON for #{project_name} #{build_variant.upcase} 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
       smf_send_message_to_hipchat_ci_room(
         project_name: project_name,
-        message: message
+        message: message,
+        success: false
       )
     end
   end
@@ -132,11 +133,12 @@ private_lane :smf_deploy_app do |options|
     rescue
       UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
 
-      message = "<table><tr><td><strong>❌ Failed to send APN to SMF HockeyApp for #{project_name} #{build_variant.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+      message = "<table><tr><td><strong>Failed to send APN to SMF HockeyApp for #{project_name} #{build_variant.upcase} 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
       smf_send_message_to_hipchat_ci_room(
         project_name: project_name,
-        message: message
+        message: message,
+        success: false
       )
     end
   end
@@ -223,11 +225,12 @@ private_lane :smf_publish_pod do |options|
 
       project_name = options[:project_config]["project_name"]
 
-      message = "<table><tr><td><strong>❌ Failed to create MetaJSON for #{project_name} #{bump_type.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+      message = "<table><tr><td><strong>Failed to create MetaJSON for #{project_name} #{bump_type.upcase} 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
       smf_send_message_to_hipchat_ci_room(
         project_name: project_name,
-        message: message
+        message: message,
+        success: false
       )
       next
     end
@@ -891,9 +894,9 @@ private_lane :smf_notify_via_hipchat do |options|
 
   case success
   when true
-    message = "<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
+    message = "<table><tr><td><strong>Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
   else
-    message = "<table><tr><td><strong>❌ Failed to build and release #{release_title} ❌ 😢</strong></td></tr><tr></tr><tr><td><pre>#{exception_message[0..9000]}#{'\\n...' if exception_message.length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+    message = "<table><tr><td><strong>Failed to build and release #{release_title} 😢</strong></td></tr><tr></tr><tr><td><pre>#{exception_message[0..9000]}#{'\\n...' if exception_message.length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
   end
   hipchat(
@@ -935,10 +938,10 @@ private_lane :smf_notify_via_mail do |options|
   case success
   when true
     subject = "Successfully released #{release_title}"
-    message = "🎉 #{release_title} is available 🎉"
+    message = "#{release_title} is available 🎉"
   else
     subject = "Failed to build #{release_title}"
-    message = "😢 Failed to build and release #{release_title} 😢"
+    message = "Failed to build and release #{release_title} 😢"
     message << "<p style='
     border: 1px solid #D8D8D8;
     padding: 5px;
@@ -1082,7 +1085,7 @@ private_lane :smf_itunes_precheck do |options|
   UI.error "Error while checking Metadata ...:
   #{e.message}"
   subject = "Found Metadata issues for #{project_name}"
-  message = "❌<strong> iTunes Precheck failed for #{project_name}</strong> ❌ 😢"
+  message = "<strong> iTunes Precheck failed for #{project_name}</strong> 😢"
   message << "<p style='
   border: 1px solid #D8D8D8;
   padding: 5px;
@@ -1266,11 +1269,12 @@ private_lane :smf_send_message_to_hipchat_ci_room do |options|
   # Read options parameter
   project_name = options[:project_name]
   message = options[:message]
+  success = options[:success]
 
   hipchat(
     message: message,
     channel: "CI",
-    success: true,
+    success: success,
     api_token: ENV["HIPCHAT_API_TOKEN"],
     notify_room: true,
     version: "2",
