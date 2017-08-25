@@ -308,7 +308,8 @@ private_lane :smf_publish_pod do |options|
   smf_create_github_release(
     release_name: version,
     tag: "#{tag_prefix}#{version}",
-    branch: branch
+    branch: branch,
+    ignore_existing_release: true
   )
 
 end
@@ -1295,6 +1296,7 @@ private_lane :smf_create_github_release do |options|
   release_name = options[:release_name]
   tag = options[:tag]
   branch = options[:branch]
+  ignore_existing_release = (options[:ignore_existing_release].nil? ? false : options[:ignore_existing_release])
 
   git_remote_origin_url = sh "git config --get remote.origin.url"
   github_url_match = git_remote_origin_url.match(/.*github.com:(.*)\.git/)
@@ -1304,6 +1306,12 @@ private_lane :smf_create_github_release do |options|
   end
 
   repository_path = github_url_match[1]
+
+  UI.message("Found #{repository_path} as GitHub repo name")
+
+  if get_github_release(url: repository_path, version: tag) and ignore_existing_release == false
+    raise "Git release already existed".red
+  end
 
   UI.message("Found #{repository_path} as GitHub repo name")
 
