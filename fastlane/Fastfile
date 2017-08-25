@@ -160,7 +160,7 @@ private_lane :smf_deploy_app do |options|
   # Create the GitHub release
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   smf_create_github_release(
-    release_name: version,
+    release_name: "#{build_variant.upcase} (#{version})",
     tag: "#{tag}",
     branch: branch
   )
