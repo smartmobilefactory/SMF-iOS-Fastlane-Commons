@@ -1362,6 +1362,7 @@ end
 
 def smf_git_pull
   branch = git_branch
+  branch.sub!("origin/", "")
   sh "git pull origin #{branch}"
 end
 
