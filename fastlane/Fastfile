@@ -328,7 +328,7 @@ private_lane :smf_handle_success do |options|
   # Read options parameter
   build_variant = options[:build_variant].downcase
   project_config = options[:project_config]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
+  release_title = (options[:release_title].nil? ? smf_default_app_notification_release_title(project_config["project_name"], build_variant) : options[:release_title])
   hipchat_channel = project_config["hipchat_channel"]
   app_link = (options[:app_link].nil? ? Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK] : options[:app_link])
 
@@ -374,8 +374,7 @@ private_lane :smf_handle_pod_publish_success do |options|
   project_config = options[:project_config]
   framework_config = options[:framework_config]
 
-  current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version}" : options[:release_title])
+  release_title = (options[:release_title].nil? ? smf_default_pod_notification_release_title(project_config["project_name"], framework_config) : options[:release_title])
 
   smf_handle_success(
     build_variant: build_variant,
@@ -402,7 +401,7 @@ private_lane :smf_handle_exception do |options|
   build_variant = options[:build_variant].downcase
   project_config = options[:project_config]
   hipchat_channel = project_config["hipchat_channel"]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
+  release_title = (options[:release_title].nil? ? smf_default_app_notification_release_title(project_config["project_name"], build_variant) : options[:release_title])
 
   apps_hockey_id = ENV["SMF_APP_HOCKEY_ID"]
   if not apps_hockey_id.nil?
@@ -462,8 +461,7 @@ private_lane :smf_handle_pod_publish_exception do |options|
   framework_config = options[:framework_config]
   exception = options[:exception]
 
-  current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version}" : options[:release_title])
+  release_title = (options[:release_title].nil? ? smf_default_pod_notification_release_title(project_config["project_name"], framework_config) : options[:release_title])
 
   smf_handle_exception(
     build_variant: build_variant,
@@ -894,9 +892,9 @@ private_lane :smf_notify_via_hipchat do |options|
 
   case success
   when true
-    message = "<table><tr><td><strong>Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
+    message = "<table><tr><td><strong>Built #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
   else
-    message = "<table><tr><td><strong>Failed to build and release #{release_title} 😢</strong></td></tr><tr></tr><tr><td><pre>#{exception_message[0..9000]}#{'\\n...' if exception_message.length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+    message = "<table><tr><td><strong>Failed to build #{release_title} 😢</strong></td></tr><tr></tr><tr><td><pre>#{exception_message[0..9000]}#{'\\n...' if exception_message.length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
   end
   hipchat(
@@ -937,11 +935,11 @@ private_lane :smf_notify_via_mail do |options|
 
   case success
   when true
-    subject = "Successfully released #{release_title}"
-    message = "#{release_title} is available 🎉"
+    subject = "Built #{release_title} 🎉"
+    message = "#{release_title} is now available!"
   else
-    subject = "Failed to build #{release_title}"
-    message = "Failed to build and release #{release_title} 😢"
+    subject = "Failed to build #{release_title} 😢"
+    message = "Failed to build #{release_title}:"
     message << "<p style='
     border: 1px solid #D8D8D8;
     padding: 5px;
@@ -1199,10 +1197,6 @@ def smf_should_build_number_be_incremented(tag_prefixes = nil)
 
 end
 
-def smf_increment_build_number_prefix_string
-  return "Increment build number to "
-end
-
 ###################################
 ### smf_send_ios_hockey_app_apn ###
 ###################################
@@ -1324,5 +1318,39 @@ private_lane :smf_create_github_release do |options|
     description: ENV["SMF_CHANGELOG"],
     commitish: branch
   )
+end
+
+##############
+### HELPER ###
+##############
+
+def smf_default_app_notification_release_title(project_name, build_variant)
+
+  # Create the branch name string
+  branch = git_branch
+  branch_suffix = ""
+  if branch.nil? == false and branch.length > 0
+    branch_suffix = " (branch: #{branch})"
+  end
+
+  return "#{project_name} #{build_variant.upcase} (build #{get_build_number}#{branch_suffix})"
+end
+
+def smf_default_pod_notification_release_title(project_name, framework_config)
+
+  current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
+
+  # Create the branch name string
+  branch = git_branch
+  branch_suffix = ""
+  if branch.nil? == false and branch.length > 0
+    branch_suffix = " (branch: #{branch})"
+  end
+
+  return "#{project_name} #{current_version}#{branch_suffix}"
+end
+
+def smf_increment_build_number_prefix_string
+  return "Increment build number to "
 end
 
