@@ -1330,10 +1330,11 @@ def smf_default_app_notification_release_title(project_name, build_variant)
   branch = git_branch
   branch_suffix = ""
   if branch.nil? == false and branch.length > 0
-    branch_suffix = " (branch: #{branch})"
+    branch_suffix = ", branch: #{branch}"
+    branch_suffix.sub!("origin/", "")
   end
 
-  return "#{project_name} #{build_variant.upcase} (build #{get_build_number}#{branch_suffix})"
+  return "#{project_name} #{build_variant.upcase} (build: #{get_build_number}#{branch_suffix})"
 end
 
 def smf_default_pod_notification_release_title(project_name, framework_config)
@@ -1345,6 +1346,7 @@ def smf_default_pod_notification_release_title(project_name, framework_config)
   branch_suffix = ""
   if branch.nil? == false and branch.length > 0
     branch_suffix = " (branch: #{branch})"
+    branch_suffix.sub!("origin/", "")
   end
 
   return "#{project_name} #{current_version}#{branch_suffix}"
