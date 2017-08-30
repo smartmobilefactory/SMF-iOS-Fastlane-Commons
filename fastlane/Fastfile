@@ -149,7 +149,7 @@ private_lane :smf_deploy_app do |options|
     tag_prefix: "build/#{build_variant}/"
   )
 
-  git_pull
+  smf_git_pull
 
   push_to_git_remote(
     remote: 'origin',
@@ -263,7 +263,7 @@ private_lane :smf_publish_pod do |options|
     raise "Git tag already existed".red
   end
 
-  git_pull
+  smf_git_pull
 
   # Push the changes to a temporary branch
   push_to_git_remote(
@@ -1358,5 +1358,10 @@ end
 
 def smf_increment_build_number_prefix_string
   return "Increment build number to "
+end
+
+def smf_git_pull
+  branch = git_branch
+  sh "git pull origin #{branch}"
 end
 
