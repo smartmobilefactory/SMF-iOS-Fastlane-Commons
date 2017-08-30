@@ -14,17 +14,20 @@ end
 desc "Builds the project including build number incrementation, MetaJSON etc. and uploads the version to Hockey."
 private_lane :smf_deploy_app do |options|
 
-  UI.important("Deplay a new app version")
+  UI.important("Deploy a new app version")
 
   # Read options parameter
   build_variant = options[:build_variant].downcase
   build_variants_config = options[:build_variants_config]
   branch = options[:branch]
+  project_config = build_variants_config["project"]
+  build_variant_config = build_variants_config["targets"][build_variant]
+  project_name = project_config["project_name"]
+  # Optional parameters
   generateMetaJSON = options[:generateMetaJSON]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
   use_hockey = (options[:use_hockey].nil? ? true : options[:use_hockey])
-  project_config = build_variants_config["project"]
-  build_variant_config = build_variants_config["targets"][build_variant]
+  push_generated_code = (options[:push_generated_code].nil? ? false : options[:push_generated_code])
 
   # check if the next Tag exist
   smf_check_tag(
@@ -32,10 +35,12 @@ private_lane :smf_deploy_app do |options|
     build_variant: build_variant
     )
 
-  # Increment the build number
-  smf_increment_build_number(
-    project_config: project_config
-    )
+  # Increment the build number only if it should
+  if smf_should_build_number_be_incremented
+    smf_increment_build_number(
+      project_config: project_config
+      )
+  end
 
   # Build and archive the IPA
   smf_archive_ipa(
@@ -45,39 +50,47 @@ private_lane :smf_deploy_app do |options|
     use_sigh: use_sigh
     )
 
-  # Commit and push generated code. There can be changes eg. from PhraseApp + R.swift
-  smf_push_generated_code(
-    branch: branch
+  # Commit generated code. There can be changes eg. from PhraseApp + R.swift
+  if push_generated_code
+    smf_commit_generated_code(
+      branch: branch
     )
+  end
 
-  # Push the build number
-  smf_push_build_number(
-    project_config: project_config,
-    branch: branch
+  # Update the MetaJSONS if wanted
+  if generateMetaJSON != false
+    begin
+      smf_generate_meta_json(
+        project_config: project_config,
+        build_variant: build_variant,
+        branch: branch
+      )
+    rescue
+      UI.important("Warning: MetaJSON couldn't be created")
+
+      message = "<table><tr><td><strong>Failed to create MetaJSON for #{project_name} #{build_variant.upcase} 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+
+      smf_send_message_to_hipchat_ci_room(
+        project_name: project_name,
+        message: message,
+        success: false
+      )
+    end
+  end
+
+  # Commit the build number if it was incremented
+  if smf_should_build_number_be_incremented
+    smf_commit_build_number(
+      project_config: project_config,
+      branch: branch
     )
+  end
 
   # Collect the changelog 
   smf_collect_changelog(
     build_variant: build_variant,
     project_config: project_config
     )
-
-  # Push the build number
-  smf_add_git_tag(
-    project_config: project_config,
-    branch: branch,
-    tag_prefix: "build/#{build_variant}_b"
-    )
-
-  # Update the MetaJSONS if wanted
-  if generateMetaJSON != false
-    smf_generate_meta_json(
-      project_config: project_config,
-      build_variant: build_variant,
-      branch: branch,
-      build_variants_contains_whitelist: ["alpha"]
-      )
-  end
 
   # Upload Ipa to Testflight and Download the generated DSYM
   if build_variant_config["upload_itc"] == true
@@ -98,12 +111,13 @@ private_lane :smf_deploy_app do |options|
   end
 
   if use_hockey
+    ENV["SMF_APP_HOCKEY_ID"] = build_variant_config["hockeyapp_id"]
     # Upload the IPA to HockeyApp
     smf_upload_ipa_to_hockey(
       build_variant_config: build_variant_config,
       project_config: project_config
       )
-
+    
     # Disable the former HockeyApp entry
     smf_disable_former_hockey_entry(
       build_variant: build_variant,
@@ -114,22 +128,42 @@ private_lane :smf_deploy_app do |options|
     # Inform the SMF HockeyApp about the new app version
     begin
       smf_send_ios_hockey_app_apn(
-        hockeyapp_id: build_variant_config["hockeyapp_id"]
+        hockeyapp_id: ENV["SMF_APP_HOCKEY_ID"]
       )
     rescue
       UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
 
-      project_name = options[:project_config]["project_name"]
-
-      message = "<table><tr><td><strong>❌ Failed to send APN to SMF HockeyApp for #{project_name} #{build_variant.upcase} ❌ 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+      message = "<table><tr><td><strong>Failed to send APN to SMF HockeyApp for #{project_name} #{build_variant.upcase} 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
       smf_send_message_to_hipchat_ci_room(
         project_name: project_name,
-        message: message
+        message: message,
+        success: false
       )
-      next
     end
   end
+
+  tag = smf_add_git_tag(
+    project_config: project_config,
+    branch: branch,
+    tag_prefix: "build/#{build_variant}/"
+  )
+
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: branch,
+    force: false,
+    tags: true
+  )
+
+  # Create the GitHub release
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+  smf_create_github_release(
+    release_name: "#{build_variant.upcase} (#{version})",
+    tag: "#{tag}",
+    branch: branch
+  )
 
 end
 
@@ -169,6 +203,7 @@ private_lane :smf_publish_pod do |options|
   # Update the CocoaPods repo to avoid unknown Pod version issues
   sh "pod repo update"
 
+
   # Bump the pods version if needed
   if bump_type != "current"
     version_bump_podspec(
@@ -176,10 +211,34 @@ private_lane :smf_publish_pod do |options|
       bump_type: bump_type
       )
   end
+  
+  # Update the MetaJSONS if wanted
+  if generateMetaJSON != false
+    begin
+      smf_generate_meta_json(
+        project_config: project_config,
+        build_variant: bump_type,
+        branch: branch
+        )
+    rescue
+      UI.important("Warning: MetaJSON couldn't be created")
+
+      project_name = options[:project_config]["project_name"]
+
+      message = "<table><tr><td><strong>Failed to create MetaJSON for #{project_name} #{bump_type.upcase} 😢</strong></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+
+      smf_send_message_to_hipchat_ci_room(
+        project_name: project_name,
+        message: message,
+        success: false
+      )
+      next
+    end
+  end
 
   version = read_podspec(path: podspec_path)["version"]
 
-  # Commit the  version bump if needed
+  # Commit the version bump if needed
   if bump_type != "current"
     git_commit(
       path: podspec_path,
@@ -194,38 +253,63 @@ private_lane :smf_publish_pod do |options|
     )
 
   # Add the git tag
-  add_git_tag(tag: "#{tag_prefix}#{version}")
-  push_to_git_remote
-  
-  # Publish the pod. Either to a private specs repo or to the offical one
-  if specs_repo
-    pod_push(
-      repo: specs_repo,
-      path: podspec_path,
-      allow_warnings: true
-      )
-  else
-    pod_push(path: podspec_path)
-  end
-
-  github_release = set_github_release(
-    repository_name: repository_path,
-    api_token: ENV['GITHUB_TOKEN'],
-    name: version,
-    tag_name: "#{tag_prefix}#{version}",
-    description: ENV["SMF_CHANGELOG"],
-    commitish: branch
+  begin
+    add_git_tag(
+      tag: "#{tag_prefix}#{version}"
     )
-
-  # Update the MetaJSONS if wanted
-  if generateMetaJSON != false
-    smf_generate_meta_json(
-      project_config: project_config,
-      build_variant: bump_type,
-      branch: branch,
-      build_variants_contains_whitelist: ["patch", "minor", "major", "current"]
-      )
+  rescue
+    raise "Git tag already existed".red
   end
+
+  # Push the changes to a temporary branch
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: "jenkins_build/#{branch}",
+    force: false,
+    tags: true
+  )
+  
+  begin
+    # Publish the pod. Either to a private specs repo or to the offical one
+    if specs_repo
+      pod_push(
+        repo: specs_repo,
+        path: podspec_path,
+        allow_warnings: true
+        )
+    else
+      pod_push(path: podspec_path)
+    end
+
+  rescue => e 
+    # Remove the git tag
+    sh "git push --delete origin #{tag_prefix}#{version} || true"
+    # Remove the temporary git branch
+    sh "git push origin --delete jenkins_build/#{branch} || true"
+
+    raise "Pod push failed: #{e.message}"
+  end
+
+  # Push the changes to the original branch
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: branch,
+    remote_branch: branch,
+    force: false,
+    tags: true
+  )
+
+  # Remove the temporary git branch
+  sh "git push origin --delete jenkins_build/#{branch} || true"
+
+  # Create the GitHub release
+  smf_create_github_release(
+    release_name: version,
+    tag: "#{tag_prefix}#{version}",
+    branch: branch,
+    ignore_existing_release: true
+  )
 
 end
 
@@ -244,7 +328,7 @@ private_lane :smf_handle_success do |options|
   # Read options parameter
   build_variant = options[:build_variant].downcase
   project_config = options[:project_config]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
+  release_title = (options[:release_title].nil? ? smf_default_app_notification_release_title(project_config["project_name"], build_variant) : options[:release_title])
   hipchat_channel = project_config["hipchat_channel"]
   app_link = (options[:app_link].nil? ? Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK] : options[:app_link])
 
@@ -290,8 +374,7 @@ private_lane :smf_handle_pod_publish_success do |options|
   project_config = options[:project_config]
   framework_config = options[:framework_config]
 
-  current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version}" : options[:release_title])
+  release_title = (options[:release_title].nil? ? smf_default_pod_notification_release_title(project_config["project_name"], framework_config) : options[:release_title])
 
   smf_handle_success(
     build_variant: build_variant,
@@ -318,7 +401,18 @@ private_lane :smf_handle_exception do |options|
   build_variant = options[:build_variant].downcase
   project_config = options[:project_config]
   hipchat_channel = project_config["hipchat_channel"]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{build_variant.upcase} (Build #{get_build_number})" : options[:release_title])
+  release_title = (options[:release_title].nil? ? smf_default_app_notification_release_title(project_config["project_name"], build_variant) : options[:release_title])
+
+  apps_hockey_id = ENV["SMF_APP_HOCKEY_ID"]
+  if not apps_hockey_id.nil?
+    begin
+      smf_delete_uploaded_hockey_entry(
+        apps_hockey_id: apps_hockey_id
+      )
+    rescue
+      UI.message("The HockeyApp entry wasn't removed. This is fine if it wasn't yet uploaded")
+    end
+  end
 
   if ENV["SMF_CHANGELOG"].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
@@ -346,7 +440,7 @@ private_lane :smf_handle_exception do |options|
       project_config: project_config,
       hipchat_channel: hipchat_channel,
       success: false,
-      exception_message: exception,
+      exception_message: exception.message,
       )
     end
 end
@@ -367,8 +461,7 @@ private_lane :smf_handle_pod_publish_exception do |options|
   framework_config = options[:framework_config]
   exception = options[:exception]
 
-  current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
-  release_title = (options[:release_title].nil? ? "#{project_config["project_name"]} #{current_version}" : options[:release_title])
+  release_title = (options[:release_title].nil? ? smf_default_pod_notification_release_title(project_config["project_name"], framework_config) : options[:release_title])
 
   smf_handle_exception(
     build_variant: build_variant,
@@ -508,13 +601,19 @@ private_lane :smf_check_tag do |options|
   build_variant = options[:build_variant].downcase
   project_name = options[:project_config]["project_name"]
 
-  tag_prefix = (options[:tag_prefix].nil? ? "build/#{build_variant}_b" : options[:tag_prefix])
+  tag_prefix = (options[:tag_prefix].nil? ? "build/#{build_variant}/" : options[:tag_prefix])
   tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
 
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-  version_string = get_incremented_build_number(version)
 
-  if git_tag_exists(tag: tag_prefix+version_string.to_s+tag_suffix)
+  # Use the incremented build number only if it should be incremented. Also pass the former default prefix.
+  tag_prefixes = [tag_prefix, "build/#{build_variant}_b"]
+  if smf_should_build_number_be_incremented(tag_prefixes)
+    version = smf_get_incremented_build_number(version)
+  end
+
+  # Check if the tag already exists. Check also for the former default tag prefix
+  if git_tag_exists(tag: tag_prefix+version.to_s+tag_suffix) or git_tag_exists(tag: "build/#{build_variant}_b"+version.to_s+tag_suffix)
     raise "Git tag already existed".red
   end
 
@@ -541,22 +640,17 @@ private_lane :smf_add_git_tag do |options|
   version = version.to_s
 
   # Tag the current commit
+  tag = tag_prefix+version+tag_suffix
   if git_tag_exists(tag: tag_prefix+version+tag_suffix)
     UI.message("Git tag already existed")
   else
     add_git_tag(
-      tag: tag_prefix+version+tag_suffix
+      tag: tag
       )
   end
-  
-  push_to_git_remote(
-    remote: 'origin',
-    local_branch: branch,
-    remote_branch: branch,
-    force: false,
-    tags: true
-    )
 
+  # Return the tag
+  tag
 end
 
 
@@ -678,6 +772,32 @@ private_lane :smf_disable_former_hockey_entry do |options|
   end
 end
 
+########################################
+### smf_delete_uploaded_hockey_entry ###
+########################################
+
+# options: apps_hockey_id (String)
+
+desc "Deletes the uploaded app version on Hockey. It should be used to clean up after a error response from hockey app."
+private_lane :smf_delete_uploaded_hockey_entry do |options|
+
+  # Read options parameter
+  apps_hockey_id = options[:apps_hockey_id]
+
+  # Disable the download of the former non Alpha app on Hockey App
+  app_version_id  = Actions.lane_context[Actions::SharedValues::HOCKEY_BUILD_INFORMATION]['id']
+  if (app_version_id > 1)
+    UI.important("Will remove the app version with id: #{app_version_id}")
+
+    delete_app_version_on_hockey(
+      api_token: ENV["HOCKEYAPP_API_TOKEN"],
+      public_identifier: apps_hockey_id,
+      version_id: "#{app_version_id}"
+     )
+  else
+    UI.message("No HOCKEY_BUILD_INFORMATION was found, so there is nothing to delete.")
+    end
+end
 
 ##############################
 ### smf_generate_meta_json ###
@@ -685,7 +805,7 @@ end
 
 # options: branch (String), build_variant (String) and build_variants_contains_whitelist (String) [optional]
 
-desc "Create and push the metaJSON files - applys only for Alpha builds."
+desc "Create and commit the metaJSON files - applys only for Alpha builds."
 private_lane :smf_generate_meta_json do |options|
 
   # Read options parameter
@@ -694,12 +814,12 @@ private_lane :smf_generate_meta_json do |options|
   project_name = options[:project_config]["project_name"]
   build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
-  if (!build_variants_contains_whitelist) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
+  if (build_variants_contains_whitelist.nil?) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
     desc "Create the meta JSON files"
     # Fetch the MetaJSON scripts repo
     sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
     # Create and commit the MetaJSON files
-    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-push-meta-jsons.sh \"#{project_name}\" \"#{branch}\" || true"
+    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-commit-meta-jsons.sh \"#{project_name}\" \"#{branch}\" || true"
     # Remove the MetaJSON scripts repo
     sh "rm -rf SMF-iOS-MetaJSON"
   end
@@ -708,40 +828,34 @@ end
 
 
 ###############################
-### smf_push_generated_code ###
+### smf_commit_generated_code ###
 ###############################
 
 # options: branch (String)
 
-desc "Commit and push generated code"
-private_lane :smf_push_generated_code do |options|
+desc "Commit generated code"
+private_lane :smf_commit_generated_code do |options|
 
   UI.important("Commit and push generated code")
     # Read options parameter
     branch = options[:branch]
 
+    # Reset the currently staged files first to make sure only the generated code will be commited
+    sh "git reset"
     sh "git add ../Generated/ || true"
     sh "git commit -m \"Update generated code\" || true"
-
-    push_to_git_remote(
-      remote: 'origin',
-      local_branch: branch,
-      remote_branch: branch,
-      force: false,
-      tags: false
-      )
 
   end
 
 
-#############################
-### smf_push_build_number ###
-#############################
+###############################
+### smf_commit_build_number ###
+###############################
 
 # options: project_config (Hash), branch (String)
 
-desc "Commit and push the build number."
-private_lane :smf_push_build_number do |options|
+desc "Commit the build number."
+private_lane :smf_commit_build_number do |options|
 
   # Read options parameter
   project_name = options[:project_config]["project_name"]
@@ -753,16 +867,8 @@ private_lane :smf_push_build_number do |options|
 
   commit_version_bump(
     xcodeproj: "#{project_name}.xcodeproj",
-    message: "Increment build number to #{version}",
+    message: "#{smf_increment_build_number_prefix_string} #{version}",
     force: true
-    )
-  
-  push_to_git_remote(
-    remote: 'origin',
-    local_branch: branch,
-    remote_branch: branch,
-    force: false,
-    tags: false
     )
 
 end
@@ -786,15 +892,15 @@ private_lane :smf_notify_via_hipchat do |options|
 
   case success
   when true
-    message = "<table><tr><td><strong>🎉 Successfully released #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
+    message = "<table><tr><td><strong>Built #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
   else
-    message = "<table><tr><td><strong>❌ Failed to build and release #{release_title} ❌ 😢</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+    message = "<table><tr><td><strong>Failed to build #{release_title} 😢</strong></td></tr><tr></tr><tr><td><pre>#{exception_message[0..9000]}#{'\\n...' if exception_message.length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
 
   end
   hipchat(
     message: message,
     channel: hipchat_channel,
-    success: true,
+    success: success,
     api_token: ENV["HIPCHAT_API_TOKEN"],
     notify_room: true,
     version: "2",
@@ -829,11 +935,11 @@ private_lane :smf_notify_via_mail do |options|
 
   case success
   when true
-    subject = "Successfully released #{release_title}"
-    message = "🎉 #{release_title} is available 🎉"
+    subject = "Built #{release_title} 🎉"
+    message = "#{release_title} is now available!"
   else
-    subject = "Failed to build #{release_title}"
-    message = "😢 Failed to build and release #{release_title} 😢"
+    subject = "Failed to build #{release_title} 😢"
+    message = "Failed to build #{release_title}:"
     message << "<p style='
     border: 1px solid #D8D8D8;
     padding: 5px;
@@ -940,9 +1046,9 @@ private_lane :smf_download_dsym_from_testflight do |options|
 end
 
 
-################################
+##################################
 ### smf_increment_build_number ###
-################################
+##################################
 
 desc "increment build number"
 private_lane :smf_increment_build_number do |options|
@@ -952,7 +1058,7 @@ private_lane :smf_increment_build_number do |options|
   project_name = options[:project_config]["project_name"]
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
-    increment_build_number(build_number: get_incremented_build_number(version))
+  increment_build_number(build_number: smf_get_incremented_build_number(version))
 
 end
 
@@ -977,7 +1083,7 @@ private_lane :smf_itunes_precheck do |options|
   UI.error "Error while checking Metadata ...:
   #{e.message}"
   subject = "Found Metadata issues for #{project_name}"
-  message = "❌<strong> iTunes Precheck failed for #{project_name}</strong> ❌ 😢"
+  message = "<strong> iTunes Precheck failed for #{project_name}</strong> 😢"
   message << "<p style='
   border: 1px solid #D8D8D8;
   padding: 5px;
@@ -1023,7 +1129,8 @@ end
 ##########################################################
 ###   check build number whether it's a int or float   ###
 ##########################################################
-def get_incremented_build_number(version)
+
+def smf_get_incremented_build_number(version)
 
   if version.to_s.include? "."
     
@@ -1046,6 +1153,47 @@ def get_incremented_build_number(version)
   end    
 
  return version_string.to_s
+
+end
+
+#################################################
+###   smf_should_build_number_be_incremented  ###
+#################################################
+
+def smf_should_build_number_be_incremented(tag_prefixes = nil)
+
+    if not ENV["SHOULD_INCREMENT_BUILD_NUMBER"].nil?
+      UI.message("The SHOULD_INCREMENT_BUILD_NUMBER ENV was already set. Reusing #{ENV["SHOULD_INCREMENT_BUILD_NUMBER"]}")
+      return ENV["SHOULD_INCREMENT_BUILD_NUMBER"] == "true"
+    end
+
+    # Check if the former commit was a build of the same build variant 
+    unless tag_prefixes.nil?
+      last_commit_tags_string = sh "git tag -l --points-at HEAD"
+      for tag_prefix in tag_prefixes do
+        if last_commit_tags_string.include? tag_prefix
+          UI.message("Increment the build number as the former commit is a build of the same build variant. We have to increase it to avoid duplicate build numbers")
+          ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = "true"
+          return ENV["SHOULD_INCREMENT_BUILD_NUMBER"]
+        end
+      end
+    end
+
+    last_commit = last_git_commit
+    message = last_commit[:message]
+    author = last_commit[:author]
+
+    UI.message("The last commit was \"#{message}\" from #{author}")
+
+    if message.include? smf_increment_build_number_prefix_string and author == "SMFHUDSONCHECKOUT"
+      UI.message("Don't increment the build number as the last commit was a build number incrementation from Jenkins")
+      ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = "false"
+    else
+      UI.message("Increment the build number as the last commit wasn't a build number incrementation from Jenkins")
+      ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = "true"
+    end
+
+  return ENV["SHOULD_INCREMENT_BUILD_NUMBER"] == "true"
 
 end
 
@@ -1115,11 +1263,12 @@ private_lane :smf_send_message_to_hipchat_ci_room do |options|
   # Read options parameter
   project_name = options[:project_name]
   message = options[:message]
+  success = options[:success]
 
   hipchat(
     message: message,
     channel: "CI",
-    success: true,
+    success: success,
     api_token: ENV["HIPCHAT_API_TOKEN"],
     notify_room: true,
     version: "2",
@@ -1128,5 +1277,82 @@ private_lane :smf_send_message_to_hipchat_ci_room do |options|
     from: "#{project_name} iOS CI"
   )
 
+end
+
+#################################
+### smf_create_github_release ###
+#################################
+
+# options: release_name (String), tag (String), branch (String)
+
+private_lane :smf_create_github_release do |options|
+
+  release_name = options[:release_name]
+  tag = options[:tag]
+  branch = options[:branch]
+  ignore_existing_release = (options[:ignore_existing_release].nil? ? false : options[:ignore_existing_release])
+
+  git_remote_origin_url = sh "git config --get remote.origin.url"
+  github_url_match = git_remote_origin_url.match(/.*github.com:(.*)\.git/)
+  if github_url_match.nil? or github_url_match.length < 2
+    UI.message("The remote orgin doesn't seem to be GitHub. The GitHub Release won't be created.")
+    return
+  end
+
+  repository_path = github_url_match[1]
+
+  UI.message("Found #{repository_path} as GitHub repo name")
+
+  if get_github_release(url: repository_path, version: tag) and ignore_existing_release == false
+    raise "Git release already existed".red
+  end
+
+  UI.message("Found #{repository_path} as GitHub repo name")
+
+  # Create the GitHub release
+  set_github_release(
+    repository_name: repository_path,
+    api_token: ENV['GITHUB_TOKEN'],
+    name: release_name.to_s,
+    tag_name: tag,
+    description: ENV["SMF_CHANGELOG"],
+    commitish: branch
+  )
+end
+
+##############
+### HELPER ###
+##############
+
+def smf_default_app_notification_release_title(project_name, build_variant)
+
+  # Create the branch name string
+  branch = git_branch
+  branch_suffix = ""
+  if branch.nil? == false and branch.length > 0
+    branch_suffix = ", branch: #{branch}"
+    branch_suffix.sub!("origin/", "")
+  end
+
+  return "#{project_name} #{build_variant.upcase} (build: #{get_build_number}#{branch_suffix})"
+end
+
+def smf_default_pod_notification_release_title(project_name, framework_config)
+
+  current_version = read_podspec(path: framework_config["podsepc_path"])["version"]
+
+  # Create the branch name string
+  branch = git_branch
+  branch_suffix = ""
+  if branch.nil? == false and branch.length > 0
+    branch_suffix = " (branch: #{branch})"
+    branch_suffix.sub!("origin/", "")
+  end
+
+  return "#{project_name} #{current_version}#{branch_suffix}"
+end
+
+def smf_increment_build_number_prefix_string
+  return "Increment build number to "
 end
 
