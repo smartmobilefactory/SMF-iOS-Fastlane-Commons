@@ -149,6 +149,8 @@ private_lane :smf_deploy_app do |options|
     tag_prefix: "build/#{build_variant}/"
   )
 
+  git_pull
+
   push_to_git_remote(
     remote: 'origin',
     local_branch: branch,
@@ -260,6 +262,8 @@ private_lane :smf_publish_pod do |options|
   rescue
     raise "Git tag already existed".red
   end
+
+  git_pull
 
   # Push the changes to a temporary branch
   push_to_git_remote(
