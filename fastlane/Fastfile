@@ -494,7 +494,7 @@ private_lane :smf_archive_ipa do |options|
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
 
   extensions_suffixes = options[:build_variants_config]["extensions_suffixes"]
-
+  scheme = build_variant_config["scheme"]
 
   # Set the Apple Team ID
   team_id build_variant_config["team_id"]
@@ -533,14 +533,14 @@ private_lane :smf_archive_ipa do |options|
   gym(
     clean: true,
     workspace: "#{project_name}.xcworkspace",
-    scheme: build_variant_config["scheme"],
+    scheme: scheme,
     configuration: 'Release',
     codesigning_identity: build_variant_config["code_signing_identity"],
     output_directory: "build",
     archive_path:"build/",
-    output_name: build_variant_config["scheme"],
+    output_name: scheme,
     include_symbols: true,
-    include_bitcode: true
+    include_bitcode: is_bitcode_enabled("#{project_name}.xcworkspace", scheme)
     )
 end
 
@@ -1365,5 +1365,10 @@ def smf_git_pull
   barnch_name = "#{branch}"
   barnch_name.sub!("origin/", "")
   sh "git pull origin #{barnch_name}"
+end
+
+def is_bitcode_enabled(project_name, scheme)
+    enable_bitcode_string = sh "cd .. && xcrun xcodebuild -showBuildSettings -workspace\ \"#{project_name}.xcworkspace\" -scheme \"#{scheme}\" \| grep \"ENABLE_BITCODE = \" \| grep -o \"\\(YES\\|NO\\)\""
+    return ((enable_bitcode_string.include? "NO") == false)
 end
 
