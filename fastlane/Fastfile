@@ -1091,7 +1091,7 @@ private_lane :smf_itunes_precheck do |options|
   UI.error "Error while checking Metadata ...:
   #{e.message}"
   subject = "Found Metadata issues for #{project_name}"
-  message = "<strong> iTunes Precheck failed for #{project_name}</strong> 😢"
+  message = "<strong> Info: iTunes Connect Precheck found issues for #{build_variant_config["scheme"]}</strong> 😢"
   message << "<p style='
   border: 1px solid #D8D8D8;
   padding: 5px;
