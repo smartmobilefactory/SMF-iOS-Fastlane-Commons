@@ -1302,6 +1302,11 @@ private_lane :smf_create_github_release do |options|
 
   git_remote_origin_url = sh "git config --get remote.origin.url"
   github_url_match = git_remote_origin_url.match(/.*github.com:(.*)\.git/)
+  # Search fot the https url if the ssh url couldn't be found
+  if github_url_match.nil?
+    github_url_match = git_remote_origin_url.match(/.*github.com\/(.*)\.git/)
+  end
+
   if github_url_match.nil? or github_url_match.length < 2
     UI.message("The remote orgin doesn't seem to be GitHub. The GitHub Release won't be created.")
     return
