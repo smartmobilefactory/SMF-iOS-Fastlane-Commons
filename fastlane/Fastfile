@@ -920,7 +920,7 @@ end
 ### smf_notify_via_mail ###
 ###########################
 
-# options: release_title (String), authors_emails (String), success (Boolean), exception_message (String) [Optional], app_link (String)
+# options: release_title (String), authors_emails (String), success (Boolean), exception_message (String) [Optional], app_link (String), only_to_internal_adresses (Bool) [optional]
 
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
 private_lane :smf_notify_via_mail do |options|
@@ -931,10 +931,22 @@ private_lane :smf_notify_via_mail do |options|
   success = options[:success]
   exception_message = options[:exception_message]
   app_link = options[:app_link]
+  only_to_internal_adresses = (options[:only_to_internal_adresses].nil? ? true : options[:only_to_internal_adresses])
 
   authors_emails = []
   if (send_to_autors) && (ENV["SMF_CHANGELOG_EMAILS"])
     authors_emails = ENV["SMF_CHANGELOG_EMAILS"].split(" ").uniq.delete_if{|e| e == "git-checkout@smartmobilefactory.com"}
+    # Only allow internal mail adresses if wanted
+    if only_to_internal_adresses
+      authors_emails.delete_if do |e_mail|
+        if e_mail.end_with? "@smfhq.com" or e_mail.end_with? "@smartmobilefactory.com"
+          false
+        else
+          UI.message("Exclude #{e_mail} as it's not an SMF mail adress")
+          true
+        end
+      end
+    end
   end
 
   case success
