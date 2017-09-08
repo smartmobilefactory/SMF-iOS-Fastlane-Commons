@@ -95,6 +95,10 @@ private_lane :smf_deploy_app do |options|
   # Upload Ipa to Testflight and Download the generated DSYM
   if build_variant_config["upload_itc"] == true
 
+    if build_variant_config.key?("itc_team_id")
+      itc_team_id build_variant_config["itc_team_id"]
+    end
+
     smf_upload_ipa_to_testflight(
       build_variant_config: build_variant_config
       )
@@ -1094,7 +1098,6 @@ private_lane :smf_itunes_precheck do |options|
   build_variant_config = options[:build_variant_config]
   app_identifier = build_variant_config["bundle_identifier"]
   username = build_variant_config["itc_apple_id"]
-
 
   begin
    precheck(username: username.nil? ? nil : username , app_identifier: app_identifier)
