@@ -1040,6 +1040,9 @@ desc "upload the app on Testflight"
 private_lane :smf_upload_ipa_to_testflight do |options|
 
   UI.important("Upload a new build to Testflight")
+
+  skip_waiting = (options[:build_variant_config]["itc_skip_waiting"].nil? ? false : options[:build_variant_config]["itc_skip_waiting"])
+
   if options[:build_variant_config].key? "itc_apple_id"
     username = options[:build_variant_config]["itc_apple_id"]
   else
@@ -1048,7 +1051,7 @@ private_lane :smf_upload_ipa_to_testflight do |options|
 
   pilot(
     username: username,
-    skip_waiting_for_build_processing: true
+    skip_waiting_for_build_processing: skip_waiting
     )
 
 end
