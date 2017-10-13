@@ -897,6 +897,7 @@ private_lane :smf_notify_via_hipchat do |options|
   exception_message = options[:exception_message]
   success = options[:success]
 
+  hipchat_channel = URI.unescape(hipchat_channel) == hipchat_channel ? URI.escape(hipchat_channel) : hipchat_channel
 
   case success
   when true
