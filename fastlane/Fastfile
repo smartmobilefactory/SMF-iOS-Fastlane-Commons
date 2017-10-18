@@ -92,28 +92,6 @@ private_lane :smf_deploy_app do |options|
     project_config: project_config
     )
 
-  # Upload Ipa to Testflight and Download the generated DSYM
-  if build_variant_config["upload_itc"] == true
-
-    if build_variant_config.key?("itc_team_id")
-      ENV["FASTLANE_ITC_TEAM_ID"] = build_variant_config["itc_team_id"]
-    end
-
-    smf_upload_ipa_to_testflight(
-      build_variant_config: build_variant_config
-      )
-
-    smf_download_dsym_from_testflight(
-      project_config: project_config,
-      build_variant_config: build_variant_config
-      )
-
-    smf_itunes_precheck(
-      project_config: project_config,
-      build_variant_config: build_variant_config
-      )
-  end
-
   if use_hockey
     ENV["SMF_APP_HOCKEY_ID"] = build_variant_config["hockeyapp_id"]
     # Upload the IPA to HockeyApp
@@ -170,6 +148,43 @@ private_lane :smf_deploy_app do |options|
     tag: "#{tag}",
     branch: branch
   )
+
+  # Upload Ipa to Testflight and Download the generated DSYM
+  # The testflight upload should happen as last step as the upload often shows an error although the IPA was successfully uploaded. We still want the tag, HockeyApp upload etc in this case.
+  if build_variant_config["upload_itc"] == true
+
+    if build_variant_config.key?("itc_team_id")
+      ENV["FASTLANE_ITC_TEAM_ID"] = build_variant_config["itc_team_id"]
+    end
+
+    smf_itunes_precheck(
+      project_config: project_config,
+      build_variant_config: build_variant_config
+    )
+
+    begin
+      smf_upload_ipa_to_testflight(
+        build_variant_config: build_variant_config
+      )
+
+      smf_download_dsym_from_testflight(
+        project_config: project_config,
+        build_variant_config: build_variant_config
+      )
+    rescue => e 
+      UI.important("Warning: The upload to iTunes Connect failed!")
+
+      message = "<table><tr><td><strong>Failed to upload #{project_name} #{build_variant.upcase} to iTunes Connect 😢</strong></td></tr><tr><td>As iTunes Connect often response with an error altough the IPA was successfully uploaded, you may want to check iTunes Connect to know if the upload worked or not.</td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+
+      smf_send_message_to_hipchat_project_room(
+        build_variant: build_variant,
+        project_config: project_config,
+        success: false,
+        message: message
+      )
+    end
+
+  end
 
 end
 
@@ -365,6 +380,41 @@ private_lane :smf_handle_success do |options|
       hipchat_channel: hipchat_channel,
       success: true
       )
+  end
+end
+
+################################################
+### smf_send_message_to_hipchat_project_room ###
+################################################
+
+# options: build_variant (String), project_config (Hash), success (String), release_title (String), message: String [optional]
+
+desc "Send a message to the hipchat channel of the current project"
+private_lane :smf_send_message_to_hipchat_project_room do |options|
+
+  UI.important("Send HipChat message to project room")
+
+  # Read options parameter
+  build_variant = options[:build_variant].downcase
+  project_config = options[:project_config]
+  success = options[:success]
+  release_title = (options[:release_title].nil? ? smf_default_app_notification_release_title(project_config["project_name"], build_variant) : options[:release_title])
+  message = options[:message]
+  hipchat_channel = project_config["hipchat_channel"]
+
+  if hipchat_channel
+    hipchat_channel = URI.escape(hipchat_channel)
+    hipchat(
+      message: message,
+      channel: hipchat_channel,
+      success: success,
+      api_token: ENV["HIPCHAT_API_TOKEN"],
+      notify_room: true,
+      version: "2",
+      message_format: "html",
+      include_html_header: false,
+      from: "#{project_config["project_name"]} iOS CI"
+    )
   end
 end
 
