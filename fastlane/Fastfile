@@ -985,7 +985,7 @@ private_lane :smf_notify_via_mail do |options|
   send_to_autors = options[:send_to_autors]
   success = options[:success]
   exception_message = options[:exception_message]
-  app_link = options[:app_link]
+  app_link = (options[:app_link].nil? ? "" : options[:app_link])
   only_to_internal_adresses = (options[:only_to_internal_adresses].nil? ? true : options[:only_to_internal_adresses])
 
   authors_emails = []
@@ -1446,7 +1446,14 @@ def smf_git_pull
 end
 
 def is_bitcode_enabled(project_name, scheme)
-    enable_bitcode_string = sh "cd .. && xcrun xcodebuild -showBuildSettings -workspace\ \"#{project_name}.xcworkspace\" -scheme \"#{scheme}\" \| grep \"ENABLE_BITCODE = \" \| grep -o \"\\(YES\\|NO\\)\""
-    return ((enable_bitcode_string.include? "NO") == false)
+  if not sh "pgrep Xcode"
+    # Xcode isn't running, open it to avoid a hanging xcrun
+    
+    # Wait 10 seconds to let Xcode start properly
+    sleep 10
+  end
+
+  enable_bitcode_string = sh "cd .. && xcrun xcodebuild -showBuildSettings -workspace\ \"#{project_name}.xcworkspace\" -scheme \"#{scheme}\" \| grep \"ENABLE_BITCODE = \" \| grep -o \"\\(YES\\|NO\\)\""
+  return ((enable_bitcode_string.include? "NO") == false)
 end
 
