@@ -596,7 +596,7 @@ private_lane :smf_archive_ipa do |options|
     output_name: scheme,
     include_symbols: true,
     include_bitcode: true,
-    export_options(
+    export_options: export_options(
       iCloudContainerEnvironment: icloud_environment
       )
     )
