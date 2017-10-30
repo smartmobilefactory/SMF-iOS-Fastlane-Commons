@@ -547,6 +547,7 @@ private_lane :smf_archive_ipa do |options|
   build_variant_config = options[:build_variants_config]["targets"][build_variant]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
   icloud_environment = (build_variant_config["icloud_environment"].nil? ? "Development" : build_variant_config["icloud_environment"])
+  upload_itc = (build_variant_config["upload_itc"].nil? ? false : build_variant_config["upload_itc"])
 
   extensions_suffixes = options[:build_variants_config]["extensions_suffixes"]
   scheme = build_variant_config["scheme"]
@@ -595,7 +596,7 @@ private_lane :smf_archive_ipa do |options|
     archive_path:"build/",
     output_name: scheme,
     include_symbols: true,
-    include_bitcode: true,
+    include_bitcode: upload_itc,
     export_options: { iCloudContainerEnvironment: icloud_environment }
     )
 end
