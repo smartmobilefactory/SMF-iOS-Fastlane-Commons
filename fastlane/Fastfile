@@ -967,7 +967,6 @@ private_lane :smf_notify_via_hipchat do |options|
     end
   end
 
-  end
   hipchat(
     message: message,
     channel: hipchat_channel,
