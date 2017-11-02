@@ -462,7 +462,7 @@ private_lane :smf_handle_deploy_app_success do |options|
   smf_notify_via_mail(
     title: message_title,
     message: "#{build_variant} is now available!",
-    release_title: release_title
+    release_title: release_title,
     success: true,
     app_link: app_link
     )
@@ -1359,6 +1359,10 @@ private_lane :smf_send_message_to_hipchat_ci_room do |options|
   )
 
 end
+
+##################
+### error lane ###
+##################
 
 error do |lane, exception|
   if ENV["SMF_SHOULD_SEND_DEPLOY_FAILURE_NOTIFICATIONS"] == "true"
