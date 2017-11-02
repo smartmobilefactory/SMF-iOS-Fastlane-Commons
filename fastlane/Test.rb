@@ -1,7 +1,7 @@
   
 
   private_lane :work do |options|
-    UI.message("Commons: Everthing is fine").green
+    UI.message("Commons: Everthing is fine".green)
   end
 
   private_lane :crash do |options|
