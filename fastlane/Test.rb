@@ -1,5 +1,10 @@
   
 
+  
+  private_lane :print do |options|
+    UI.message("project_config: #{project_config}")
+  end
+
   private_lane :work do |options|
     UI.message("Commons: Everthing is fine".green)
   end
