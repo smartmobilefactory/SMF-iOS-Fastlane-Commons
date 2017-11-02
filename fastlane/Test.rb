@@ -2,7 +2,7 @@ default_platform :ios
 
 platform :ios do
 
-  build_variants_config_stored = nil
+  build_variants_config_stored = {}
 
   private_lane :print_do do |options|
     UI.message("config: #{config}")
