@@ -461,7 +461,7 @@ private_lane :smf_handle_deploy_app_success do |options|
 
   smf_notify_via_mail(
     title: message_title,
-    message: "#{build_variant} is now available!",
+    message: "#{release_title} is now available!",
     release_title: release_title,
     success: true,
     app_link: app_link
