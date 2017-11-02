@@ -1,4 +1,6 @@
-  
+default_platform :ios
+
+platform :ios do
 
   build_variants_config_stored = nil
 
@@ -29,3 +31,4 @@
 
     return build_variants_config_stored
   end
+end
