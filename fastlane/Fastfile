@@ -472,6 +472,7 @@ private_lane :smf_handle_deploy_app_success do |options|
     smf_notify_via_hipchat(
       title: message_title,
       message: ENV["SMF_CHANGELOG"],
+      project_name: project_config["name"],
       project_config: project_config,
       hipchat_channel: hipchat_channel,
       success: true
@@ -591,6 +592,7 @@ private_lane :smf_handle_exception do |options|
       smf_notify_via_hipchat(
         title: message_title,
         message: "#{exception.message}",
+        project_name: project_config["name"],
         additional_html_entries: ["strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a>"],
         hipchat_channel: hipchat_channel,
         success: false
@@ -953,6 +955,7 @@ private_lane :smf_notify_via_hipchat do |options|
   # Read options parameter
   title = options[:title]
   message = options[:message]
+  project_name = options[:project_name]
   additional_html_entries = options[:additional_html_entries]
   hipchat_channel = options[:hipchat_channel]
   success = options[:success]
