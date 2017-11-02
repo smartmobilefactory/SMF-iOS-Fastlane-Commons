@@ -1,7 +1,7 @@
   
 
   
-  private_lane :print do |options|
+  private_lane :print_do do |options|
     UI.message("project_config: #{project_config}")
   end
 
