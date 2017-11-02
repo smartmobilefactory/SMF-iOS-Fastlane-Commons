@@ -154,6 +154,11 @@ private_lane :smf_deploy_app do |options|
     branch: branch
   )
 
+  smf_handle_deploy_app_success(
+    build_variant: build_variant,
+    project_config: project_config
+    )
+
   # Upload Ipa to Testflight and Download the generated DSYM
   # The testflight upload should happen as last step as the upload often shows an error although the IPA was successfully uploaded. We still want the tag, HockeyApp upload etc in this case.
   if build_variant_config["upload_itc"] == true
@@ -167,6 +172,9 @@ private_lane :smf_deploy_app do |options|
       build_variant_config: build_variant_config
     )
 
+    notification_message = ""
+    itc_upload_succeeded = false
+
     begin
       smf_upload_ipa_to_testflight(
         build_variant_config: build_variant_config
@@ -176,19 +184,30 @@ private_lane :smf_deploy_app do |options|
         project_config: project_config,
         build_variant_config: build_variant_config
       )
+
+      skip_waiting = (options[:build_variant_config]["itc_skip_waiting"].nil? ? false : options[:build_variant_config]["itc_skip_waiting"])
+      skipped_waiting_message = ""
+      if skip_waiting
+        skipped_waiting_message = "The build job didn't wait until iTunes Connect processed the build. Errors might still occur! ⚠️"
+      else
+        skipped_waiting_message = "The IPA was processed by Apple without any errors 👍"
+      end
+
+      notification_message = "<table><tr><td><strong>Uploaded #{project_name} #{build_variant.upcase} to iTunes Connect 🎉</strong></td></tr><tr><td>skipped_waiting_message</td></tr>/table>"
+      itc_upload_succeeded = true
     rescue => e 
       UI.important("Warning: The upload to iTunes Connect failed!")
 
-      message = "<table><tr><td><strong>Failed to upload #{project_name} #{build_variant.upcase} to iTunes Connect 😢</strong></td></tr><tr><td>As iTunes Connect often response with an error altough the IPA was successfully uploaded, you may want to check iTunes Connect to know if the upload worked or not.</td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
-
-      smf_send_message_to_hipchat_project_room(
-        build_variant: build_variant,
-        project_config: project_config,
-        success: false,
-        message: message
-      )
+      notification_message = "<table><tr><td><strong>Failed to upload #{project_name} #{build_variant.upcase} to iTunes Connect 😢</strong></td></tr><tr><td>As iTunes Connect often response with an error altough the IPA was successfully uploaded, you may want to check iTunes Connect to know if the upload worked or not.</td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+      itc_upload_succeeded = false
     end
 
+    smf_send_message_to_hipchat_project_room(
+        build_variant: build_variant,
+        project_config: project_config,
+        success: itc_upload_succeeded,
+        message: notification_message
+      )
   end
 
 end
@@ -339,6 +358,12 @@ private_lane :smf_publish_pod do |options|
     ignore_existing_release: true
   )
 
+  smf_handle_pod_publish_success(
+    build_variant: bump_type,
+    project_config: project_config,
+    framework_config: framework_config
+    )
+
 end
 
 ############################
@@ -406,14 +431,14 @@ end
 ######################
 ######################
 
-##########################
-### smf_handle_success ###
-##########################
+#####################################
+### smf_handle_deploy_app_success ###
+#####################################
 
 # options: build_variant (String), project_config (Hash), release_title (String) [optional], app_link (String) [optional] [default: HockeyApp Link]
 
 desc "Handle the success by sending email to the authors and post to the hipchat channel"
-private_lane :smf_handle_success do |options|
+private_lane :smf_handle_deploy_app_success do |options|
 
   UI.important("Handle the build job success")
 
@@ -432,10 +457,12 @@ private_lane :smf_handle_success do |options|
       )
   end
 
+  message_title = "Built #{release_title} 🎉"
+
   smf_notify_via_mail(
-    build_variant: build_variant,
-    release_title: release_title,
-    send_to_autors: true,
+    title: message_title,
+    message: "#{build_variant} is now available!",
+    release_title: release_title
     success: true,
     app_link: app_link
     )
@@ -443,8 +470,8 @@ private_lane :smf_handle_success do |options|
   if hipchat_channel
     hipchat_channel = URI.escape(hipchat_channel)
     smf_notify_via_hipchat(
-      build_variant: build_variant,
-      release_title: release_title,
+      title: message_title,
+      message: ENV["SMF_CHANGELOG"],
       project_config: project_config,
       hipchat_channel: hipchat_channel,
       success: true
@@ -456,7 +483,7 @@ end
 ### smf_send_message_to_hipchat_project_room ###
 ################################################
 
-# options: build_variant (String), project_config (Hash), success (String), release_title (String), message: String [optional]
+# options: build_variant (String), project_config (Hash), success (String), message: String [optional]
 
 desc "Send a message to the hipchat channel of the current project"
 private_lane :smf_send_message_to_hipchat_project_room do |options|
@@ -467,7 +494,6 @@ private_lane :smf_send_message_to_hipchat_project_room do |options|
   build_variant = options[:build_variant].downcase
   project_config = options[:project_config]
   success = options[:success]
-  release_title = (options[:release_title].nil? ? smf_default_app_notification_release_title(project_config["project_name"], build_variant) : options[:release_title])
   message = options[:message]
   hipchat_channel = project_config["hipchat_channel"]
 
@@ -503,7 +529,7 @@ private_lane :smf_handle_pod_publish_success do |options|
 
   release_title = (options[:release_title].nil? ? smf_default_pod_notification_release_title(project_config["project_name"], framework_config) : options[:release_title])
 
-  smf_handle_success(
+  smf_handle_deploy_app_success(
     build_variant: build_variant,
     release_title: release_title,
     project_config: project_config,
@@ -549,26 +575,26 @@ private_lane :smf_handle_exception do |options|
       )
   end
 
+  message_title = "Failed to build #{release_title} 😢"
+
   smf_notify_via_mail(
-    build_variant: build_variant,
-    release_title: release_title,
-    send_to_autors: true,
+    title: message_title,
+    message: message_title,
     success: false,
     exception_message: exception,
     app_link: ""
     )
 
     if hipchat_channel
-    hipchat_channel = URI.escape(hipchat_channel)
+      hipchat_channel = URI.escape(hipchat_channel)
 
-    smf_notify_via_hipchat(
-      build_variant: build_variant,
-      release_title: release_title,
-      project_config: project_config,
-      hipchat_channel: hipchat_channel,
-      success: false,
-      exception_message: exception.message,
-      )
+      smf_notify_via_hipchat(
+        title: message_title,
+        message: "#{exception.message}",
+        additional_html_entries: ["strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a>"],
+        hipchat_channel: hipchat_channel,
+        success: false
+        )
     end
 end
 
@@ -946,25 +972,27 @@ end
 ### smf_notify_via_hipchat ###
 ##############################
 
-# options: project_config (Hash), release_title (String), channel (String)
+# options: title (String), message (String), additional_html_entries (Array of Strings), hipchat_channel (String), success (String)
 
 desc "Post to a HipChat room if the build was successful"
 private_lane :smf_notify_via_hipchat do |options|
 
   # Read options parameter
-  project_name = options[:project_config]["project_name"]
-  release_title = options[:release_title]
+  title = options[:title]
+  message = options[:message]
+  additional_html_entries = options[:additional_html_entries]
   hipchat_channel = options[:hipchat_channel]
-  exception_message = options[:exception_message]
   success = options[:success]
 
   hipchat_channel = URI.unescape(hipchat_channel) == hipchat_channel ? URI.escape(hipchat_channel) : hipchat_channel
 
-  case success
-  when true
-    message = "<table><tr><td><strong>Built #{release_title} 🎉</strong></td></tr><tr></tr><tr><td><pre>#{ENV["SMF_CHANGELOG"][0..9000]}#{'\\n...' if ENV["SMF_CHANGELOG"].length > 9000}</pre></td></tr></table>"
-  else
-    message = "<table><tr><td><strong>Failed to build #{release_title} 😢</strong></td></tr><tr></tr><tr><td><pre>#{exception_message[0..9000]}#{'\\n...' if exception_message.length > 9000}</pre></td></tr><tr><td><strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a></td></tr></table>"
+  message = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr><tr><td><pre>#{message[0..8000]}#{' ...' if message.length > 8000}</pre></td></tr></table>"
+
+  if additional_html_entries
+    for additional_html_entry in additional_html_entries do
+      message.sub('</table>', "<tr><td>#{additional_html_entry}</td></tr></table>")
+    end
+  end
 
   end
   hipchat(
@@ -986,42 +1014,34 @@ end
 ### smf_notify_via_mail ###
 ###########################
 
-# options: release_title (String), authors_emails (String), success (Boolean), exception_message (String) [Optional], app_link (String), only_to_internal_adresses (Bool) [optional]
+# options: release_title (String), authors_emails (String), success (Boolean), exception_message (String) [Optional], app_link (String)
 
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
 private_lane :smf_notify_via_mail do |options|
 
   # Read options parameter
-  release_title = options[:release_title]
-  send_to_autors = options[:send_to_autors]
+  title = options[:title]
+  message = options[:message]
   success = options[:success]
   exception_message = options[:exception_message]
   app_link = (options[:app_link].nil? ? "" : options[:app_link])
-  only_to_internal_adresses = (options[:only_to_internal_adresses].nil? ? true : options[:only_to_internal_adresses])
 
   authors_emails = []
-  if (send_to_autors) && (ENV["SMF_CHANGELOG_EMAILS"])
+  if ENV["SMF_CHANGELOG_EMAILS"]
     authors_emails = ENV["SMF_CHANGELOG_EMAILS"].split(" ").uniq.delete_if{|e| e == "git-checkout@smartmobilefactory.com"}
-    # Only allow internal mail adresses if wanted
-    if only_to_internal_adresses
-      authors_emails.delete_if do |e_mail|
-        if e_mail.end_with? "@smfhq.com" or e_mail.end_with? "@smartmobilefactory.com"
-          false
-        else
-          UI.message("Exclude #{e_mail} as it's not an SMF mail adress")
-          true
-        end
+    # Only allow internal mail adresses
+    authors_emails.delete_if do |e_mail|
+      if e_mail.end_with? "@smfhq.com" or e_mail.end_with? "@smartmobilefactory.com"
+        false
+      else
+        UI.message("Exclude #{e_mail} as it's not an SMF mail adress")
+        true
       end
     end
   end
 
   case success
-  when true
-    subject = "Built #{release_title} 🎉"
-    message = "#{release_title} is now available!"
-  else
-    subject = "Failed to build #{release_title} 😢"
-    message = "Failed to build #{release_title}:"
+  when false
     message << "<p style='
     border: 1px solid #D8D8D8;
     padding: 5px;
@@ -1036,7 +1056,7 @@ private_lane :smf_notify_via_mail do |options|
 
   authors_emails.each do |receiver|
     mailgun(
-      subject: subject,
+      subject: title,
       postmaster:"postmaster@mailgun.smfhq.com",
       apikey: ENV["MAILGUN_KEY"],
       to: receiver,
