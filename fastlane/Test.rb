@@ -1,11 +1,6 @@
-default_platform :ios
-
-platform :ios do
-
-  build_variants_config_stored = {}
 
   private_lane :print_do do |options|
-    UI.message("config: #{config}")
+    UI.message("build_variants_config: #{build_variants_config}")
   end
 
   private_lane :work do |options|
@@ -23,12 +18,3 @@ platform :ios do
   error do |lane, exception|
     UI.message("Commons - Error: lane: #{lane}, exception: #{exception}")
   end
-
-  def config
-    if build_variants_config_stored.nil?
-      build_variants_config_stored = build_variants_config
-    end
-
-    return build_variants_config_stored
-  end
-end
