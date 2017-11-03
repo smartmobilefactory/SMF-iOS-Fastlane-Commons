@@ -21,6 +21,9 @@ private_lane :smf_deploy_app do |options|
 
   UI.important("Deploy a new app version")
 
+  # Reset the build incrementation flag to support build jobs which build multiple build variants in a row
+  ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = nil
+
   # Read options parameter
   build_variant = options[:build_variant].downcase
   build_variants_config = options[:build_variants_config]
