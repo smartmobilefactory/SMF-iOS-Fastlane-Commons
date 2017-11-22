@@ -621,6 +621,8 @@ private_lane :smf_archive_ipa do |options|
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
   icloud_environment = (build_variant_config["icloud_environment"].nil? ? "Development" : build_variant_config["icloud_environment"])
   upload_itc = (build_variant_config["upload_itc"].nil? ? false : build_variant_config["upload_itc"])
+  upload_bitcode = (build_variant_config["upload_bitcode"].nil? ? true : build_variant_config["upload_bitcode"])
+  export_method = (build_variant_config["export_method"].nil? ? nil : build_variant_config["export_method"])
 
   extensions_suffixes = options[:build_variants_config]["extensions_suffixes"]
   scheme = build_variant_config["scheme"]
@@ -669,7 +671,8 @@ private_lane :smf_archive_ipa do |options|
     archive_path:"build/",
     output_name: scheme,
     include_symbols: true,
-    include_bitcode: upload_itc,
+    include_bitcode: (upload_itc && upload_bitcode),
+    export_method: export_method,
     export_options: { iCloudContainerEnvironment: icloud_environment }
     )
 end
@@ -1074,8 +1077,9 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   path = Pathname.getwd.dirname.to_s + "/#{bundle_identifier}-#{version_number}-#{build_number}.dSYM.zip"
   
   NO_APP_FAILURE = "NO_APP_FAILURE"
-  sh "cd ../build; zip -r9 #{scheme}.app.zip #{scheme}.app || echo #{NO_APP_FAILURE}"
-  app_path = Pathname.getwd.dirname.to_s + "/build/#{scheme}.app.zip"
+  escaped_filename = scheme.gsub(" ", "\ ")
+  sh "cd ../build; zip -r9 \"#{escaped_filename}.app.zip\" \"#{escaped_filename}.app\" || echo #{NO_APP_FAILURE}"
+  app_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.zip"
   puts app_path
 
 
