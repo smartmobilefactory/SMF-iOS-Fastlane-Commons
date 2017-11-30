@@ -183,12 +183,13 @@ private_lane :smf_deploy_app do |options|
         build_variant_config: build_variant_config
       )
 
+      skip_waiting = should_skip_waiting_after_itc_upload(options[:build_variant_config])
+
       smf_download_dsym_from_testflight(
         project_config: project_config,
         build_variant_config: build_variant_config
       )
 
-      skip_waiting = (options[:build_variant_config]["itc_skip_waiting"].nil? ? false : options[:build_variant_config]["itc_skip_waiting"])
       skipped_waiting_message = ""
       if skip_waiting
         skipped_waiting_message = "The build job didn't wait until iTunes Connect processed the build. Errors might still occur! ⚠️"
@@ -1105,7 +1106,7 @@ private_lane :smf_upload_ipa_to_testflight do |options|
 
   UI.important("Upload a new build to Testflight")
 
-  skip_waiting = (options[:build_variant_config]["itc_skip_waiting"].nil? ? false : options[:build_variant_config]["itc_skip_waiting"])
+  skip_waiting = should_skip_waiting_after_itc_upload(options[:build_variant_config])
 
   if options[:build_variant_config].key? "itc_apple_id"
     username = options[:build_variant_config]["itc_apple_id"]
@@ -1492,5 +1493,9 @@ def is_bitcode_enabled(project_name, scheme)
 
   enable_bitcode_string = sh "cd .. && xcrun xcodebuild -showBuildSettings -workspace\ \"#{project_name}.xcworkspace\" -scheme \"#{scheme}\" \| grep \"ENABLE_BITCODE = \" \| grep -o \"\\(YES\\|NO\\)\""
   return ((enable_bitcode_string.include? "NO") == false)
+end
+
+def should_skip_waiting_after_itc_upload(build_variant_config)
+  return (build_variant_config["itc_skip_waiting"].nil? ? false : ["itc_skip_waiting"])
 end
 
