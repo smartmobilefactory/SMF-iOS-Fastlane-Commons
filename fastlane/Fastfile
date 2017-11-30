@@ -2,9 +2,9 @@ fastlane_require 'net/https'
 fastlane_require 'uri'
 fastlane_require 'json'
 
-before_all do
-  update_fastlane
-end
+# before_all do
+  # update_fastlane
+# end
 
 ########################################
 ########################################
