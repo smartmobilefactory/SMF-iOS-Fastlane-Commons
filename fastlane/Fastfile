@@ -21,6 +21,11 @@ private_lane :smf_deploy_app do |options|
 
   UI.important("Deploy a new app version")
 
+  # Cleanup
+
+  # Reset the HockeyApp ID to avoid that a successful upload is removed if a following build variant is failing in the same build job
+  ENV["SMF_APP_HOCKEY_ID"] = nil
+
   # Reset the build incrementation flag to support build jobs which build multiple build variants in a row
   ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = nil
 
