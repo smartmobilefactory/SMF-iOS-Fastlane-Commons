@@ -58,7 +58,7 @@ private_lane :smf_deploy_app do |options|
 
   # Build and archive the IPA
   smf_archive_ipa(
-    should_clean_project: should_clean_project
+    should_clean_project: should_clean_project,
     project_config: project_config,
     build_variant: build_variant,
     build_variants_config: build_variants_config,
