@@ -420,13 +420,15 @@ private_lane :smf_test_app_project do |options|
   build_variant_config = build_variants_config["targets"][build_variant]
   should_perform_unit_test = (build_variant_config["perform_unit_tests"].nil? ? false : build_variant_config["perform_unit_tests"])
   should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
+  use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
 
   # Build only the IPA to test if the project is compiling
   smf_archive_ipa(
     should_clean_project: should_clean_project,
     project_config: project_config,
     build_variant: build_variant,
-    build_variants_config: build_variants_config
+    build_variants_config: build_variants_config,
+    use_sigh: use_sigh
   )
 
   if should_perform_unit_test
