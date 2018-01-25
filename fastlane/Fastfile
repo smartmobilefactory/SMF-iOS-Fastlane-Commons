@@ -675,7 +675,7 @@ private_lane :smf_archive_ipa do |options|
     export_method: export_method,
     export_options: { iCloudContainerEnvironment: icloud_environment },
     xcpretty_report_json: "/Users/smf/Marc/Json-output.json",
-    xcpretty_formatter: "xcpretty-json-formatter"
+    xcpretty_formatter: "/usr/local/bin/xcpretty-json-formatter"
     )
 end
 
