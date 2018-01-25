@@ -673,7 +673,8 @@ private_lane :smf_archive_ipa do |options|
     include_symbols: true,
     include_bitcode: (upload_itc && upload_bitcode),
     export_method: export_method,
-    export_options: { iCloudContainerEnvironment: icloud_environment }
+    export_options: { iCloudContainerEnvironment: icloud_environment },
+    xcpretty_formatter: 'xcpretty-json-formatter'
     )
 end
 
