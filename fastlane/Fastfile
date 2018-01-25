@@ -674,7 +674,7 @@ private_lane :smf_archive_ipa do |options|
     include_bitcode: (upload_itc && upload_bitcode),
     export_method: export_method,
     export_options: { iCloudContainerEnvironment: icloud_environment },
-    xcpretty_formatter: "\`/usr/local/bin/xcpretty-json-formatter\`"
+    xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
     )
 end
 
