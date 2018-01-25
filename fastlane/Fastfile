@@ -1494,3 +1494,22 @@ def is_bitcode_enabled(project_name, scheme)
   return ((enable_bitcode_string.include? "NO") == false)
 end
 
+######################
+### smf_run_danger ###
+######################
+
+# options: project_config (Hash), framework_config (Hash). "perform_unit_tests" is handeld as opt-out
+
+desc "Runs the danger tool to check for several things that are configured in the projects Dangerfile"
+private_lane :smf_run_danger do |options|
+
+  UI.important("Running danger")
+
+  sh DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN
+  sh export DANGER_GITHUB_API_TOKEN
+
+  sh cd ..
+  sh bundle exec danger
+
+end
+
