@@ -1494,6 +1494,14 @@ def is_bitcode_enabled(project_name, scheme)
   return ((enable_bitcode_string.include? "NO") == false)
 end
 
+def smf_run_danger
+  sh DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN
+  sh export DANGER_GITHUB_API_TOKEN
+
+  sh cd ..
+  sh bundle exec danger
+end
+
 ######################
 ### smf_run_danger ###
 ######################
@@ -1505,11 +1513,7 @@ private_lane :smf_run_danger do |options|
 
   UI.important("Running danger")
 
-  sh DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN
-  sh export DANGER_GITHUB_API_TOKEN
-
-  sh cd ..
-  sh bundle exec danger
+  smf_run_danger
 
 end
 
