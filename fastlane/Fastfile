@@ -1,4 +1,4 @@
-fastlane_require 'net/https'
+smf_deploy_appfastlane_require 'net/https'
 fastlane_require 'uri'
 fastlane_require 'json'
 
@@ -213,6 +213,8 @@ private_lane :smf_deploy_app do |options|
       )
   end
 
+  smf_run_danger
+
 end
 
 
@@ -425,6 +427,8 @@ private_lane :smf_test_app_project do |options|
       build_variant_config: build_variant_config
     )
   end
+
+  smf_run_danger
 
 end
 
