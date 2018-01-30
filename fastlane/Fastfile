@@ -1497,19 +1497,3 @@ end
 def smf_run_danger
   sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; bundle exec danger"
 end
-
-######################
-### smf_run_danger ###
-######################
-
-# options: project_config (Hash), framework_config (Hash). "perform_unit_tests" is handeld as opt-out
-
-desc "Runs the danger tool to check for several things that are configured in the projects Dangerfile"
-private_lane :smf_run_danger do |options|
-
-  UI.important("Running danger")
-
-  smf_run_danger
-
-end
-
