@@ -1,4 +1,4 @@
-smf_deploy_appfastlane_require 'net/https'
+fastlane_require 'net/https'
 fastlane_require 'uri'
 fastlane_require 'json'
 
