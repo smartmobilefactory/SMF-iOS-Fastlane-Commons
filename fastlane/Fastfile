@@ -1499,5 +1499,5 @@ def is_bitcode_enabled(project_name, scheme)
 end
 
 def smf_run_danger
-  sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; bundle exec danger"
+  sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; cd..; bundle exec danger"
 end
