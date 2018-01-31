@@ -1499,5 +1499,7 @@ def is_bitcode_enabled(project_name, scheme)
 end
 
 def smf_run_danger
-  sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; /usr/local/bin/danger"
+  sh "pwd"
+  sh "[ -f Dangerfile ] && cp Dangerfile ../"
+  sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; cd ..; pwd; /usr/local/bin/danger"
 end
