@@ -1499,7 +1499,7 @@ def is_bitcode_enabled(project_name, scheme)
 end
 
 def smf_run_danger
-  if sh "test -f fastlane/Dangerfile"
+  if sh "test -f Dangerfile"
     sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
