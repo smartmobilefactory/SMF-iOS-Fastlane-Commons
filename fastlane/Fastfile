@@ -213,8 +213,6 @@ private_lane :smf_deploy_app do |options|
       )
   end
 
-  smf_run_danger
-
 end
 
 
@@ -391,6 +389,8 @@ private_lane :smf_test_pod_project do |options|
       build_variant_config: framework_config
     )
   end
+
+  smf_run_danger
 
 end
 
