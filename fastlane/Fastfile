@@ -365,14 +365,14 @@ private_lane :smf_publish_pod do |options|
     ignore_existing_release: true
   )
 
+  # Update the CocoaPods repo to avoid unknown Pod version issues if this Pod is integrated into another project
+  sh "pod repo update"
+
   smf_handle_pod_publish_success(
     build_variant: bump_type,
     project_config: project_config,
     framework_config: framework_config
     )
-
-  # Update the CocoaPods repo to avoid unknown Pod version issues if this Pod is integrated into another project
-  sh "pod repo update"
 
 end
 
@@ -398,6 +398,8 @@ private_lane :smf_test_pod_project do |options|
       build_variant_config: framework_config
     )
   end
+
+  smf_run_danger
 
 end
 
@@ -436,6 +438,8 @@ private_lane :smf_test_app_project do |options|
       build_variant_config: build_variant_config
     )
   end
+
+  smf_run_danger
 
 end
 
@@ -685,7 +689,8 @@ private_lane :smf_archive_ipa do |options|
     include_symbols: true,
     include_bitcode: (upload_itc && upload_bitcode),
     export_method: export_method,
-    export_options: { iCloudContainerEnvironment: icloud_environment }
+    export_options: { iCloudContainerEnvironment: icloud_environment },
+    xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
     )
 end
 
@@ -1127,7 +1132,8 @@ private_lane :smf_upload_ipa_to_testflight do |options|
 
   pilot(
     username: username,
-    skip_waiting_for_build_processing: skip_waiting
+    skip_waiting_for_build_processing: skip_waiting,
+    changelog: ""
     )
 
 end
@@ -1510,3 +1516,10 @@ def should_skip_waiting_after_itc_upload(build_variant_config)
   return (build_variant_config["itc_skip_waiting"].nil? ? false : ["itc_skip_waiting"])
 end
 
+def smf_run_danger
+  if sh "test -f Dangerfile"
+    sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
+  else
+    UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
+  end
+end
