@@ -3,7 +3,7 @@ fastlane_require 'uri'
 fastlane_require 'json'
 
 # before_all do
-#   update_fastlane
+  # update_fastlane
 # end
 
 ########################################
@@ -21,6 +21,11 @@ private_lane :smf_deploy_app do |options|
 
   UI.important("Deploy a new app version")
 
+  # Cleanup
+
+  # Reset the HockeyApp ID to avoid that a successful upload is removed if a following build variant is failing in the same build job
+  ENV["SMF_APP_HOCKEY_ID"] = nil
+
   # Reset the build incrementation flag to support build jobs which build multiple build variants in a row
   ENV["SHOULD_INCREMENT_BUILD_NUMBER"] = nil
 
@@ -32,6 +37,7 @@ private_lane :smf_deploy_app do |options|
   build_variant_config = build_variants_config["targets"][build_variant]
   project_name = project_config["project_name"]
   # Optional parameters
+  should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
   generateMetaJSON = options[:generateMetaJSON]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
   use_hockey = (options[:use_hockey].nil? ? true : options[:use_hockey])
@@ -52,6 +58,7 @@ private_lane :smf_deploy_app do |options|
 
   # Build and archive the IPA
   smf_archive_ipa(
+    should_clean_project: should_clean_project,
     project_config: project_config,
     build_variant: build_variant,
     build_variants_config: build_variants_config,
@@ -183,12 +190,13 @@ private_lane :smf_deploy_app do |options|
         build_variant_config: build_variant_config
       )
 
+      skip_waiting = should_skip_waiting_after_itc_upload(options[:build_variant_config])
+
       smf_download_dsym_from_testflight(
         project_config: project_config,
         build_variant_config: build_variant_config
       )
 
-      skip_waiting = (options[:build_variant_config]["itc_skip_waiting"].nil? ? false : options[:build_variant_config]["itc_skip_waiting"])
       skipped_waiting_message = ""
       if skip_waiting
         skipped_waiting_message = "The build job didn't wait until iTunes Connect processed the build. Errors might still occur! ⚠️"
@@ -249,7 +257,7 @@ private_lane :smf_publish_pod do |options|
   ensure_git_status_clean
 
   # Bump the pods version if needed
-  if bump_type != "current"
+  if ["major", "minor", "patch"].include? bump_type
     version_bump_podspec(
       path: podspec_path,
       bump_type: bump_type
@@ -283,7 +291,7 @@ private_lane :smf_publish_pod do |options|
   version = read_podspec(path: podspec_path)["version"]
 
   # Commit the version bump if needed
-  if bump_type != "current"
+  if ["major", "minor", "patch"].include? bump_type
     git_commit(
       path: podspec_path,
       message: "Release Pod #{version}"
@@ -365,6 +373,7 @@ private_lane :smf_publish_pod do |options|
     project_config: project_config,
     framework_config: framework_config
     )
+
 end
 
 ############################
@@ -411,12 +420,16 @@ private_lane :smf_test_app_project do |options|
   build_variants_config = options[:build_variants_config]
   build_variant_config = build_variants_config["targets"][build_variant]
   should_perform_unit_test = (build_variant_config["perform_unit_tests"].nil? ? false : build_variant_config["perform_unit_tests"])
+  should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
+  use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
 
   # Build only the IPA to test if the project is compiling
   smf_archive_ipa(
+    should_clean_project: should_clean_project,
     project_config: project_config,
     build_variant: build_variant,
-    build_variants_config: build_variants_config
+    build_variants_config: build_variants_config,
+    use_sigh: use_sigh
   )
 
   if should_perform_unit_test
@@ -609,7 +622,7 @@ end
 ### smf_archive_ipa ###
 #######################
 
-# options: build_variants_config (Hash), project_config (Hash), build_variant (String)
+# options: build_variants_config (Hash), project_config (Hash), build_variant (String), use_sigh (string) [Optional], should_clean_project (String) [Optional]
 
 desc "Build the project based on the build type."
 private_lane :smf_archive_ipa do |options|
@@ -621,6 +634,7 @@ private_lane :smf_archive_ipa do |options|
   build_variant = options[:build_variant].downcase
   build_variant_config = options[:build_variants_config]["targets"][build_variant]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
+  should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
   icloud_environment = (build_variant_config["icloud_environment"].nil? ? "Development" : build_variant_config["icloud_environment"])
   upload_itc = (build_variant_config["upload_itc"].nil? ? false : build_variant_config["upload_itc"])
   upload_bitcode = (build_variant_config["upload_bitcode"].nil? ? true : build_variant_config["upload_bitcode"])
@@ -664,7 +678,7 @@ private_lane :smf_archive_ipa do |options|
   unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
 
   gym(
-    clean: true,
+    clean: should_clean_project,
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
     configuration: 'Release',
@@ -1108,7 +1122,7 @@ private_lane :smf_upload_ipa_to_testflight do |options|
 
   UI.important("Upload a new build to Testflight")
 
-  skip_waiting = (options[:build_variant_config]["itc_skip_waiting"].nil? ? false : options[:build_variant_config]["itc_skip_waiting"])
+  skip_waiting = should_skip_waiting_after_itc_upload(options[:build_variant_config])
 
   if options[:build_variant_config].key? "itc_apple_id"
     username = options[:build_variant_config]["itc_apple_id"]
@@ -1496,6 +1510,10 @@ def is_bitcode_enabled(project_name, scheme)
 
   enable_bitcode_string = sh "cd .. && xcrun xcodebuild -showBuildSettings -workspace\ \"#{project_name}.xcworkspace\" -scheme \"#{scheme}\" \| grep \"ENABLE_BITCODE = \" \| grep -o \"\\(YES\\|NO\\)\""
   return ((enable_bitcode_string.include? "NO") == false)
+end
+
+def should_skip_waiting_after_itc_upload(build_variant_config)
+  return (build_variant_config["itc_skip_waiting"].nil? ? false : ["itc_skip_waiting"])
 end
 
 def smf_run_danger
