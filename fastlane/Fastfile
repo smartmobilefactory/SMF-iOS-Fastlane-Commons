@@ -1517,7 +1517,7 @@ def should_skip_waiting_after_itc_upload(build_variant_config)
 end
 
 def smf_run_danger
-  if sh "test -f Dangerfile"
+  if File.file?('Dangerfile')
     sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
