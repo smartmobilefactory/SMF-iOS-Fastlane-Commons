@@ -47,13 +47,17 @@ swiftlint.lint_files
 #####################
 
 if config_parsed == true
-  slather.configure(project_config["project_name"] + ".xcodeproj", target_config["scheme"], options: {
-    workspace: project_config["project_name"] + ".xcworkspace"
-  })
+  if config["targets"][build_variant]["perform_unit_tests"]
+    slather.configure(project_config["project_name"] + ".xcodeproj", target_config["scheme"], options: {
+      workspace: project_config["project_name"] + ".xcworkspace"
+    })
 
-  slather.notify_if_coverage_is_less_than(minimum_coverage: 60)
-  slather.notify_if_modified_file_is_less_than(minimum_coverage: 50)
-  slather.show_coverage
+    slather.notify_if_coverage_is_less_than(minimum_coverage: 30)
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: 50)
+    slather.show_coverage
+  else
+    message( "Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
+  end
 else
   warn("Slather not run: BuildVariants.json wasn't parsed")
 end
