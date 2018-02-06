@@ -2,10 +2,9 @@
 ###### General config ######
 ############################
 
-build_variant = ENV['BUILD_VARIANT']
-build_type = ENV['BUILD_TYPE']
-build_type = "targets"
-message( "Running danger for build variant: " + build_variant + " with build type " + build_type)
+ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
+ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
+message( "Running danger for build variant **\"" + build_variant + "\"** with build type **\"" + build_type + "\"**")
 
 if File.file?('fastlane/BuildVariants.json')
   config = JSON.parse(File.read('fastlane/BuildVariants.json'))
