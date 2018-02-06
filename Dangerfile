@@ -54,13 +54,25 @@ end
 ###### Xcode ######
 ###################
 
-xcode_summary.report 'build/reports/errors.json'
+if danger_config["xcode_summary.report"]
+  xcode_summary.report 'build/reports/errors.json'
+else
+  message( "Skipping Xcode summary report for: " + build_variant + ". Not enabled in BuildVariants.json.")
+end
 
 #######################
 ###### Swiftlint ######
 #######################
 
-swiftlint.lint_files
+if danger_config["swiftlint"]
+  if File.file?('Pods/SwiftLint/swiftlint')
+    swiftlint.binary_path = 'Pods/SwiftLint/swiftlint'
+  end
+
+  swiftlint.lint_files
+else
+  message( "Skipping SwiftLint for: " + build_variant + ". Not enabled in BuildVariants.json.")
+end
 
 #####################
 ###### Slather ######
@@ -72,8 +84,8 @@ if config_parsed == true
       workspace: project_config["project_name"] + ".xcworkspace"
     })
 
-    slather.notify_if_coverage_is_less_than(minimum_coverage: config["danger_config"][build_type][build_variant]["notify_if_coverage_is_less_than"])
-    slather.notify_if_modified_file_is_less_than(minimum_coverage: config["danger_config"][build_type][build_variant]["notify_if_modified_file_is_less_than"])
+    slather.notify_if_coverage_is_less_than(minimum_coverage: danger_config[build_type][build_variant]["notify_if_coverage_is_less_than"])
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: danger_config[build_type][build_variant]["notify_if_modified_file_is_less_than"])
     slather.show_coverage
   else
     message( "Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
