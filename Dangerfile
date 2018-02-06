@@ -2,10 +2,13 @@
 ###### General config ######
 ############################
 
-if system("test -f fastlane/BuildVariants.json")
+build_variant = ENV['BUILD_VARIANT']
+message( "Running danger for build variant: " + build_variant )
+
+if File.file?('fastlane/BuildVariants.json')
   config = JSON.parse(File.read('fastlane/BuildVariants.json'))
   project_config = config["project"]
-  target_config = config["targets"]["alpha"] # TODO: Make multi target compatible
+  target_config = config["targets"][build_variant]
   config_parsed = true
 else
   warn "No BuildVariants.json found in ./fastlane"
@@ -33,16 +36,22 @@ end
 
 xcode_summary.report 'build/reports/errors.json'
 
+#######################
+###### Swiftlint ######
+#######################
+
+swiftlint.lint_files
+
 #####################
 ###### Slather ######
 #####################
 
-  if config_parsed == true
-    slather.configure(project_config["project_name"] + ".xcodeproj", target_config["scheme"], options: {
+if config_parsed == true
+  slather.configure(project_config["project_name"] + ".xcodeproj", target_config["scheme"], options: {
     workspace: project_config["project_name"] + ".xcworkspace"
   })
 
-  slather.notify_if_coverage_is_less_than(minimum_coverage: 40)
+  slather.notify_if_coverage_is_less_than(minimum_coverage: 60)
   slather.notify_if_modified_file_is_less_than(minimum_coverage: 50)
   slather.show_coverage
 else
