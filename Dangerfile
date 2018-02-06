@@ -67,6 +67,7 @@ end
 if danger_config["swiftlint"]
   if File.file?('Pods/SwiftLint/swiftlint')
     swiftlint.binary_path = 'Pods/SwiftLint/swiftlint'
+    message( "Using Pods/SwiftLint/swiftlint for linting.")
   else
     message( "Running SwiftLint with default version, no specific version found in Pods.")
   end
