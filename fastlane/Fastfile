@@ -399,7 +399,7 @@ private_lane :smf_test_pod_project do |options|
     )
   end
 
-  smf_run_danger
+  smf_run_danger(options[:build_variant_config])
 
 end
 
@@ -439,7 +439,7 @@ private_lane :smf_test_app_project do |options|
     )
   end
 
-  smf_run_danger
+  smf_run_danger(options[:build_variant_config])
 
 end
 
@@ -1516,9 +1516,9 @@ def should_skip_waiting_after_itc_upload(build_variant_config)
   return (build_variant_config["itc_skip_waiting"].nil? ? false : ["itc_skip_waiting"])
 end
 
-def smf_run_danger
+def smf_run_danger(build_variant_config)
   if File.file?('Dangerfile')
-    sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
+    sh "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN; export BUILD_VARIANT_CONFIG=\"#{build_variant_config}\"; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
   end
