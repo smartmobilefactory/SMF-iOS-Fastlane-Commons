@@ -32,8 +32,8 @@ end
 
 def get_config_value(danger_config, target_config, key)
   if defined? target_config[key] != nil
-    return target_config[key] != nil
-  elsif defined? danger_config[key]
+    return target_config[key]
+  elsif defined? danger_config[key] != nil
     return danger_config[key]
   else
     warn("Unable to find configuration for " + key)
@@ -91,6 +91,7 @@ if get_config_value(danger_config, target_config, "swiftlint")
     swiftlint.lint_files fail_on_error: true
   else
     swiftlint.lint_files
+    swiftlint.lint_files reporter: "json"
   end
   
 else
