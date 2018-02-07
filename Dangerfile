@@ -1,18 +1,3 @@
-###################
-##### Helpers #####
-###################
-
-def get_config_value(key)
-  if config["danger_config"][build_type][build_variant][key] != nil
-    return config["danger_config"][build_type][build_variant][key]
-  elsif config["danger_config"][key] != nil
-    return config["danger_config"][key]
-  else
-    warn("Unable to find configuration for " + key)
-    return nil
-  end
-end
-
 ############################
 ###### General config ######
 ############################
@@ -39,6 +24,21 @@ if danger_config == nil
   danger_config["github.pr_title.include"] = "[WIP]"
   config["danger_config"][build_type][build_variant]["notify_if_coverage_is_less_than"] = 30
   config["danger_config"][build_type][build_variant]["notify_if_modified_file_is_less_than"] = 50
+end
+
+###################
+##### Helpers #####
+###################
+
+def get_config_value(key)
+  if config["danger_config"][build_type][build_variant][key] != nil
+    return config["danger_config"][build_type][build_variant][key]
+  elsif config["danger_config"][key] != nil
+    return config["danger_config"][key]
+  else
+    warn("Unable to find configuration for " + key)
+    return nil
+  end
 end
 
 #####################
@@ -87,7 +87,13 @@ if get_config_value("swiftlint")
     message( "Running SwiftLint with default version, no specific version found in Pods.")
   end
 
-  swiftlint.lint_files
+  if get_config_value("swiftlint.fail_on_error")
+    swiftlint.lint_files fail_on_error: true
+  else
+    swiftlint.lint_files
+  end
+
+  
 else
   message("Skipping SwiftLint for: " + build_variant + ". Not enabled in BuildVariants.json.")
 end
