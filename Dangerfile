@@ -19,11 +19,12 @@ end
 if danger_config == nil
   warn "BuildVariants.json did not include danger_config, using defaults."
 
+  danger_config = { 'run_slather' => true }
+
   danger_config["run_slather"] = true
   danger_config["xcode_summary.report"] = true
   danger_config["swiftlint"] = true
   danger_config["swiftlint.fail_on_error"] = false
-
   danger_config["git.lines_of_code"] = 100
   danger_config["github.pr_body.length"] = 10
   danger_config["github.branch_for_base"] = "develop"
