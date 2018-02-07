@@ -829,7 +829,8 @@ private_lane :smf_perform_unit_tests do |options|
     workspace: "#{project_config["project_name"]}.xcworkspace",
     scheme: scheme,
     clean: false,
-    output_files: "report.xml"
+    output_types: "html,junit,json-compilation-database"
+    output_files: "report.xml,report.junit,report.json"
     )
 
 end
