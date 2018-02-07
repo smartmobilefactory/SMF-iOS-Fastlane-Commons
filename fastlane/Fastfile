@@ -399,7 +399,7 @@ private_lane :smf_test_pod_project do |options|
     )
   end
 
-  smf_run_danger
+  smf_run_danger(options[:build_variant_config], "framework", project_config["fastlane_commons_branch"])
 
 end
 
@@ -439,7 +439,7 @@ private_lane :smf_test_app_project do |options|
     )
   end
 
-  smf_run_danger
+  smf_run_danger(options[:build_variant], "targets", project_config["fastlane_commons_branch"])
 
 end
 
@@ -829,7 +829,8 @@ private_lane :smf_perform_unit_tests do |options|
     workspace: "#{project_config["project_name"]}.xcworkspace",
     scheme: scheme,
     clean: false,
-    output_files: "report.xml"
+    output_types: "html,junit,json-compilation-database",
+    output_files: "report.xml,report.junit,report.json"
     )
 
 end
@@ -1516,9 +1517,9 @@ def should_skip_waiting_after_itc_upload(build_variant_config)
   return (build_variant_config["itc_skip_waiting"].nil? ? false : ["itc_skip_waiting"])
 end
 
-def smf_run_danger
-  if sh "test -f Dangerfile"
-    sh "DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN export DANGER_GITHUB_API_TOKEN; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
+def smf_run_danger(build_variant, build_type, fastlane_commons_branch)
+  if File.file?('Dangerfile')
+    sh "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN; export BUILD_VARIANT=\"#{build_variant}\"; export BUILD_TYPE=\"#{build_type}\"; export FASTLANE_COMMONS_BRANCH=\"#{fastlane_commons_branch}\"; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
   end
