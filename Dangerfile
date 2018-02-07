@@ -120,7 +120,7 @@ if config_parsed == true
     slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov.to_i)
     slather.show_coverage
 
-    message("Total coverage: " + slather.total_coverage)
+    message("Total coverage: " + slather.total_coverage.to_s)
   else
     message("Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
   end
