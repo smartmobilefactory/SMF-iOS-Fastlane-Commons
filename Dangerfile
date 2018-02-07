@@ -87,8 +87,8 @@ if config_parsed == true
       workspace: project_config["project_name"] + ".xcworkspace"
     })
 
-    slather.notify_if_coverage_is_less_than(minimum_coverage: get_config_value("notify_if_coverage_is_less_than")
-    slather.notify_if_modified_file_is_less_than(minimum_coverage: get_config_value("notify_if_modified_file_is_less_than")
+    slather.notify_if_coverage_is_less_than(minimum_coverage: get_config_value("notify_if_coverage_is_less_than"))
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: get_config_value("notify_if_modified_file_is_less_than"))
     slather.show_coverage
   else
     message( "Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
