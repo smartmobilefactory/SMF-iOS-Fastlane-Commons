@@ -31,9 +31,9 @@ end
 ###################
 
 def get_config_value(danger_config, target_config, key)
-  if target_config[key] != nil
-    return target_config[key]
-  elsif danger_config[key] != nil
+  if defined? target_config[key] != nil
+    return target_config[key] != nil
+  elsif defined? danger_config[key]
     return danger_config[key]
   else
     warn("Unable to find configuration for " + key)
@@ -107,8 +107,11 @@ if config_parsed == true
       workspace: project_config["project_name"] + ".xcworkspace"
     })
 
-    slather.notify_if_coverage_is_less_than(minimum_coverage: get_config_value(danger_config, target_config, "notify_if_coverage_is_less_than"))
-    slather.notify_if_modified_file_is_less_than(minimum_coverage: get_config_value(danger_config, target_config, "notify_if_modified_file_is_less_than"))
+    min_cov = get_config_value(danger_config, target_config, "notify_if_coverage_is_less_than")
+    min_file_cov = get_config_value(danger_config, target_config, "notify_if_modified_file_is_less_than")
+
+    slather.notify_if_coverage_is_less_than(minimum_coverage: min_cov)
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov)
     slather.show_coverage
   else
     message( "Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
