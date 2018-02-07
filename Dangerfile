@@ -31,14 +31,6 @@ end
 ###################
 
 def get_config_value(danger_config, target_config, key)
-  if key == "notify_if_coverage_is_less_than"
-    return 30
-  end
-  
-  if key == "notify_if_modified_file_is_less_than"
-    return 50
-  end
-
   if (defined?(target_config[key])).nil?
     return target_config[key]
   else danger_config.nil?
@@ -121,8 +113,8 @@ if config_parsed == true
     min_cov = get_config_value(danger_config, target_config, "notify_if_coverage_is_less_than")
     min_file_cov = get_config_value(danger_config, target_config, "notify_if_modified_file_is_less_than")
 
-    slather.notify_if_coverage_is_less_than(minimum_coverage: min_cov)
-    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov)
+    slather.notify_if_coverage_is_less_than(minimum_coverage: min_cov.to_nearest_i)
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov.to_nearest_i)
     slather.show_coverage
   else
     message( "Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
