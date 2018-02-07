@@ -10,7 +10,7 @@ if File.file?('fastlane/BuildVariants.json')
   config = JSON.parse(File.read('fastlane/BuildVariants.json'))
   project_config = config["project"]
   danger_config = config["danger_config"]
-  target_config = config["targets"][build_variant]
+  target_config = config[build_type][build_variant]
   config_parsed = true
 else
   warn "No BuildVariants.json found in ./fastlane"
@@ -31,19 +31,19 @@ end
 #####################
 
 if config_parsed == true
-  if git.lines_of_code > danger_config["git.lines_of_code"]
+  if git.lines_of_code > get_config_value("git.lines_of_code")
     warn("Big PR")
   end
 
-  if github.pr_body.length < danger_config["github.pr_body.length"]
+  if github.pr_body.length < get_config_value("github.pr_body.length")
     warn "Please provide a summary in the Pull Request description"
   end
 
-  if github.branch_for_base != danger_config["github.branch_for_base"]
+  if github.branch_for_base != get_config_value("github.branch_for_base")
     warn("Please target PRs to `develop` branch")
   end
 
-  if github.pr_title.include? danger_config["github.pr_title.include"]
+  if github.pr_title.include? get_config_value("github.pr_title.include")
     warn("PR is classed as Work in Progress") 
   end
 else
@@ -54,7 +54,7 @@ end
 ###### Xcode ######
 ###################
 
-if danger_config["xcode_summary.report"]
+if get_config_value("xcode_summary.report")
   xcode_summary.report 'build/reports/errors.json'
 else
   message( "Skipping Xcode summary report for: " + build_variant + ". Not enabled in BuildVariants.json.")
@@ -64,7 +64,7 @@ end
 ###### Swiftlint ######
 #######################
 
-if danger_config["swiftlint"]
+if get_config_value("swiftlint")
   if File.file?('Pods/SwiftLint/swiftlint')
     swiftlint.binary_path = 'Pods/SwiftLint/swiftlint'
     message( "Using Pods/SwiftLint/swiftlint for linting.")
@@ -74,7 +74,7 @@ if danger_config["swiftlint"]
 
   swiftlint.lint_files
 else
-  message( "Skipping SwiftLint for: " + build_variant + ". Not enabled in BuildVariants.json.")
+  message("Skipping SwiftLint for: " + build_variant + ". Not enabled in BuildVariants.json.")
 end
 
 #####################
@@ -87,12 +87,27 @@ if config_parsed == true
       workspace: project_config["project_name"] + ".xcworkspace"
     })
 
-    slather.notify_if_coverage_is_less_than(minimum_coverage: danger_config[build_type][build_variant]["notify_if_coverage_is_less_than"])
-    slather.notify_if_modified_file_is_less_than(minimum_coverage: danger_config[build_type][build_variant]["notify_if_modified_file_is_less_than"])
+    slather.notify_if_coverage_is_less_than(minimum_coverage: get_config_value("notify_if_coverage_is_less_than")
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: get_config_value("notify_if_modified_file_is_less_than")
     slather.show_coverage
   else
     message( "Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
   end
 else
   warn("Slather not run: BuildVariants.json wasn't parsed")
+end
+
+###################
+##### Helpers #####
+###################
+
+def get_config_value(key)
+  if config["danger_config"][build_type][build_variant][key] != nil
+    return config["danger_config"][build_type][build_variant][key]
+  elsif config["danger_config"][key] != nil
+    return config["danger_config"][key]
+  else
+    warn("Unable to find configuration for " + key)
+    return nil
+  end
 end
