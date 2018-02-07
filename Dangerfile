@@ -2,6 +2,8 @@
 ###### General config ######
 ############################
 
+metaJsonFolder = '.MetaJSON'
+
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
 ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
 message( "Running danger for build variant **\"" + build_variant + "\"** with build type **\"" + build_type + "\"**")
@@ -33,7 +35,7 @@ end
 def get_config_value(danger_config, target_config, key)
   if (defined?(target_config[key])).nil?
     return target_config[key]
-  else danger_config.nil?
+  else
     return danger_config[key]
   end
 end
@@ -107,7 +109,8 @@ end
 if config_parsed == true
   if config[build_type][build_variant]["perform_unit_tests"]
     slather.configure(project_config["project_name"] + ".xcodeproj", target_config["scheme"], options: {
-      workspace: project_config["project_name"] + ".xcworkspace"
+      workspace: project_config["project_name"] + ".xcworkspace",
+      output_directory: 'build/reports',
     })
 
     min_cov = get_config_value(danger_config, target_config, "notify_if_coverage_is_less_than")
@@ -121,4 +124,13 @@ if config_parsed == true
   end
 else
   warn("Slather not run: BuildVariants.json wasn't parsed")
+end
+
+######################
+###### MetaJSON ######
+######################
+
+if File.directory?(metaJsonFolder)
+  FileUtils.cp('build/reports/swiftlint.json', metaJsonFolder)
+  FileUtils.cp('build/reports/errors.json', metaJsonFolder)
 end
