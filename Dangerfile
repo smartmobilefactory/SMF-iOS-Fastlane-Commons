@@ -113,8 +113,8 @@ if config_parsed == true
     min_cov = get_config_value(danger_config, target_config, "notify_if_coverage_is_less_than")
     min_file_cov = get_config_value(danger_config, target_config, "notify_if_modified_file_is_less_than")
 
-    slather.notify_if_coverage_is_less_than(minimum_coverage: min_cov.to_nearest_i)
-    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov.to_nearest_i)
+    slather.notify_if_coverage_is_less_than(minimum_coverage: min_cov.to_i)
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov.to_i)
     slather.show_coverage
   else
     message( "Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
