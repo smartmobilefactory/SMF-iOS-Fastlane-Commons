@@ -1,3 +1,18 @@
+###################
+##### Helpers #####
+###################
+
+def get_config_value(key)
+  if config["danger_config"][build_type][build_variant][key] != nil
+    return config["danger_config"][build_type][build_variant][key]
+  elsif config["danger_config"][key] != nil
+    return config["danger_config"][key]
+  else
+    warn("Unable to find configuration for " + key)
+    return nil
+  end
+end
+
 ############################
 ###### General config ######
 ############################
@@ -97,17 +112,3 @@ else
   warn("Slather not run: BuildVariants.json wasn't parsed")
 end
 
-###################
-##### Helpers #####
-###################
-
-def get_config_value(key)
-  if config["danger_config"][build_type][build_variant][key] != nil
-    return config["danger_config"][build_type][build_variant][key]
-  elsif config["danger_config"][key] != nil
-    return config["danger_config"][key]
-  else
-    warn("Unable to find configuration for " + key)
-    return nil
-  end
-end
