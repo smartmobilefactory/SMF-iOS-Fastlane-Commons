@@ -31,6 +31,14 @@ end
 ###################
 
 def get_config_value(danger_config, target_config, key)
+  if key == "notify_if_coverage_is_less_than"
+    return 30
+  end
+  
+  if key == "notify_if_modified_file_is_less_than"
+    return 50
+  end
+
   if (defined?(target_config[key])).nil?
     return target_config[key]
   else danger_config.nil?
