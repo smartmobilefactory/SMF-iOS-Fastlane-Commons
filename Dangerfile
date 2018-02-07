@@ -31,13 +31,10 @@ end
 ###################
 
 def get_config_value(danger_config, target_config, key)
-  if defined? target_config[key] != nil
+  if (defined?(target_config[key])).nil?
     return target_config[key]
-  elsif defined? danger_config[key] != nil
+  else danger_config.nil?
     return danger_config[key]
-  else
-    warn("Unable to find configuration for " + key)
-    return nil
   end
 end
 
@@ -91,7 +88,12 @@ if get_config_value(danger_config, target_config, "swiftlint")
     swiftlint.lint_files fail_on_error: true
   else
     swiftlint.lint_files
-    swiftlint.lint_files reporter: "json"
+  end
+
+  if swiftlint.binary_path != nil
+    system "Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"
+  else
+    system "swiftlint lint --reporter json > build/reports/swiftlint.json"
   end
   
 else
