@@ -2,8 +2,6 @@
 ###### General config ######
 ############################
 
-metaJsonFolder = '.MetaJSON'
-
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
 ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
 message( "Running danger for build variant **\"" + build_variant + "\"** with build type **\"" + build_type + "\"**")
@@ -20,12 +18,18 @@ end
 
 if danger_config == nil
   warn "BuildVariants.json did not include danger_config, using defaults."
+
+  danger_config["run_slather"] = true
+  danger_config["xcode_summary.report"] = true
+  danger_config["swiftlint"] = true
+  danger_config["swiftlint.fail_on_error"] = false
+
   danger_config["git.lines_of_code"] = 100
   danger_config["github.pr_body.length"] = 10
   danger_config["github.branch_for_base"] = "develop"
   danger_config["github.pr_title.include"] = "[WIP]"
-  config["danger_config"][build_type][build_variant]["notify_if_coverage_is_less_than"] = 30
-  config["danger_config"][build_type][build_variant]["notify_if_modified_file_is_less_than"] = 50
+  danger_config["notify_if_coverage_is_less_than"] = 30
+  danger_config["notify_if_modified_file_is_less_than"] = 50
 end
 
 ###################
@@ -107,32 +111,27 @@ end
 #####################
 
 if config_parsed == true
-  if config[build_type][build_variant]["perform_unit_tests"]
-    slather.configure(project_config["project_name"] + ".xcodeproj", target_config["scheme"], options: {
-      workspace: project_config["project_name"] + ".xcworkspace",
-      output_directory: 'build/reports',
-    })
+  if get_config_value(danger_config, target_config, "run_slather")
+    if config[build_type][build_variant]["perform_unit_tests"]
+      slather.configure(project_config["project_name"] + ".xcodeproj", target_config["scheme"], options: {
+        workspace: project_config["project_name"] + ".xcworkspace",
+        output_directory: 'build/reports',
+      })
 
-    min_cov = get_config_value(danger_config, target_config, "notify_if_coverage_is_less_than")
-    min_file_cov = get_config_value(danger_config, target_config, "notify_if_modified_file_is_less_than")
+      min_cov = get_config_value(danger_config, target_config, "notify_if_coverage_is_less_than")
+      min_file_cov = get_config_value(danger_config, target_config, "notify_if_modified_file_is_less_than")
 
-    slather.notify_if_coverage_is_less_than(minimum_coverage: min_cov.to_i)
-    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov.to_i)
-    slather.show_coverage
+      slather.notify_if_coverage_is_less_than(minimum_coverage: min_cov.to_i)
+      slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov.to_i)
+      slather.show_coverage
 
-    message("Total coverage: " + slather.total_coverage.to_s)
+      message("Total coverage: " + slather.total_coverage.to_s)
+    else
+      message("Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
+    end
   else
-    message("Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
+    warn("Slather not run: Disabled in BuildVariants.json.")
   end
 else
-  warn("Slather not run: BuildVariants.json wasn't parsed")
-end
-
-######################
-###### MetaJSON ######
-######################
-
-if File.directory?(metaJsonFolder)
-  FileUtils.cp('build/reports/swiftlint.json', metaJsonFolder)
-  FileUtils.cp('build/reports/errors.json', metaJsonFolder)
+  warn("Slather not run: BuildVariants.json wasn't parsed.")
 end
