@@ -399,7 +399,9 @@ private_lane :smf_test_pod_project do |options|
     )
   end
 
-  smf_run_danger(options[:build_variant_config], "framework", project_config["fastlane_commons_branch"])
+  fastlane_commons_branch = (project_config["fastlane_commons_branch"].nil? ? "marc" : project_config["fastlane_commons_branch"])
+
+  smf_run_danger(options[:build_variant_config], "framework", fastlane_commons_branch)
 
 end
 
@@ -439,8 +441,9 @@ private_lane :smf_test_app_project do |options|
     )
   end
 
-  smf_run_danger(options[:build_variant], "targets", project_config["fastlane_commons_branch"])
+  fastlane_commons_branch = (project_config["fastlane_commons_branch"].nil? ? "marc" : project_config["fastlane_commons_branch"])
 
+  smf_run_danger(options[:build_variant], "targets", fastlane_commons_branch)
 end
 
 ######################
@@ -1496,9 +1499,9 @@ end
 
 def smf_git_pull
   branch = git_branch
-  barnch_name = "#{branch}"
-  barnch_name.sub!("origin/", "")
-  sh "git pull origin #{barnch_name}"
+  branch_name = "#{branch}"
+  branch_name.sub!("origin/", "")
+  sh "git pull origin #{branch_name}"
 end
 
 def is_bitcode_enabled(project_name, scheme)
@@ -1518,7 +1521,10 @@ def should_skip_waiting_after_itc_upload(build_variant_config)
 end
 
 def smf_run_danger(build_variant, build_type, fastlane_commons_branch)
+  fastlane_commons_branch = (fastlane_commons_branch.nil? ? "marc" : fastlane_commons_branch)
+
   if File.file?('Dangerfile')
+    sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git commons"
     sh "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN; export BUILD_VARIANT=\"#{build_variant}\"; export BUILD_TYPE=\"#{build_type}\"; export FASTLANE_COMMONS_BRANCH=\"#{fastlane_commons_branch}\"; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")

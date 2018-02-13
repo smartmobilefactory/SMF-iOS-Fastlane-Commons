@@ -17,20 +17,15 @@ else
 end
 
 if danger_config == nil
-  warn "BuildVariants.json did not include danger_config, using defaults."
+  message "BuildVariants.json did not include danger_config, using defaults from fastlane/commons/danger/danger_defaults.json"
 
-  danger_config = { 'run_slather' => true }
-
-  danger_config["run_slather"] = true
-  danger_config["xcode_summary.report"] = true
-  danger_config["swiftlint"] = true
-  danger_config["swiftlint.fail_on_error"] = false
-  danger_config["git.lines_of_code"] = 100
-  danger_config["github.pr_body.length"] = 10
-  danger_config["github.branch_for_base"] = "develop"
-  danger_config["github.pr_title.include"] = "[WIP]"
-  danger_config["notify_if_coverage_is_less_than"] = 30
-  danger_config["notify_if_modified_file_is_less_than"] = 50
+  if File.file?('fastlane/commons/danger/danger_defaults.json')
+    danger_config = { 'run_slather' => true }
+    danger_defaults = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
+    danger_config = danger_defaults["danger_config"]
+  else
+    warn "No BuildVariants.json found in ./fastlane"
+  end
 end
 
 ###################
@@ -41,7 +36,11 @@ def get_config_value(danger_config, target_config, key)
   if (defined?(target_config[key])).nil?
     return target_config[key]
   else
-    return danger_config[key]
+    if danger_config == nil
+      warn "Could not find any configuration for key: " + key + ". Please add a sane default value to danger_defaults.json in commons and if needed to BuildVariants.json in this project."
+    else
+      return danger_config[key]
+    end
   end
 end
 
