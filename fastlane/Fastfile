@@ -65,6 +65,9 @@ private_lane :smf_deploy_app do |options|
     use_sigh: use_sigh
     )
 
+  # Run the linter to generate JSON
+  smf_run_linter
+
   # Commit generated code. There can be changes eg. from PhraseApp + R.swift
   if push_generated_code
     smf_commit_generated_code(
@@ -1529,4 +1532,10 @@ def smf_run_danger(build_variant, build_type, fastlane_commons_branch)
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
   end
+end
+
+def smf_run_linter
+  workspace = ENV["WORKSPACE"]
+
+  system "cd " + workspace +"; Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"  
 end
