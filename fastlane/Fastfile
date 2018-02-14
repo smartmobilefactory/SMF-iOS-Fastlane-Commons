@@ -399,7 +399,7 @@ private_lane :smf_test_pod_project do |options|
     )
   end
 
-  fastlane_commons_branch = (project_config["fastlane_commons_branch"].nil? ? "marc" : project_config["fastlane_commons_branch"])
+  fastlane_commons_branch = project_config["fastlane_commons_branch"]
 
   smf_run_danger(options[:build_variant_config], "framework", fastlane_commons_branch)
 
@@ -441,7 +441,7 @@ private_lane :smf_test_app_project do |options|
     )
   end
 
-  fastlane_commons_branch = (project_config["fastlane_commons_branch"].nil? ? "marc" : project_config["fastlane_commons_branch"])
+  fastlane_commons_branch = project_config["fastlane_commons_branch"]
 
   smf_run_danger(options[:build_variant], "targets", fastlane_commons_branch)
 end
