@@ -80,10 +80,7 @@ private_lane :smf_deploy_app do |options|
 
   smf_run_linter
 
-  smf_run_slather(
-    scheme: build_variant_config["scheme"],
-    projectName: project_name
-    )
+  smf_run_slather(build_variant_config["scheme"], project_name)
 
   # Commit generated code. There can be changes eg. from PhraseApp + R.swift
   if push_generated_code
