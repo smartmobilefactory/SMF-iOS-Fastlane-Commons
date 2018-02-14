@@ -37,6 +37,7 @@ private_lane :smf_deploy_app do |options|
   build_variant_config = build_variants_config["targets"][build_variant]
   project_name = project_config["project_name"]
   # Optional parameters
+  should_perform_unit_test = (build_variant_config["perform_unit_tests"].nil? ? false : build_variant_config["perform_unit_tests"])
   should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
   generateMetaJSON = options[:generateMetaJSON]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
@@ -65,8 +66,24 @@ private_lane :smf_deploy_app do |options|
     use_sigh: use_sigh
     )
 
-  # Run the linter to generate JSON
+  # Run unit tests and then run linter to generate JSONs
+  if should_perform_unit_test
+    smf_perform_unit_tests(
+      project_config: project_config,
+      build_variant_config: build_variant_config
+    )
+  end
+
+  fastlane_commons_branch = project_config["fastlane_commons_branch"]
+
+  smf_run_danger(options[:build_variant], "targets", fastlane_commons_branch)
+
   smf_run_linter
+
+  smf_run_slather(
+    scheme: build_variant_config["scheme"],
+    projectName: project_name
+    )
 
   # Commit generated code. There can be changes eg. from PhraseApp + R.swift
   if push_generated_code
@@ -1537,5 +1554,11 @@ end
 def smf_run_linter
   workspace = ENV["WORKSPACE"]
 
-  system "cd " + workspace +"; Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"  
+  system "cd " + workspace + "; Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"
+end
+
+def smf_run_slather(scheme, projectName)
+  workspace = ENV["WORKSPACE"]
+
+  system "cd " + workspace + "; slather coverage -v --html --scheme " + scheme + " --workspace " + projectName + ".xcworkspace " + projectName + ".xcodeproj"
 end
