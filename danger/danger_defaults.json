@@ -1,0 +1,15 @@
+{
+	"danger_config": {
+            "run_slather": true,
+            "xcode_summary.report": true,
+            "swiftlint": true,
+            "swiftlint.fail_on_error": true,
+            "git.lines_of_code": 31337,
+            "github.pr_body.length": 10,
+            "github.branch_for_base": "develop",
+            "github.pr_title.include": "[WIP]",
+            "notify_if_coverage_is_less_than": 100,
+            "notify_if_modified_file_is_less_than": 100,
+            "notify_level": "error"
+	}
+}
