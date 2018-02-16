@@ -401,7 +401,7 @@ private_lane :smf_test_pod_project do |options|
 
   fastlane_commons_branch = project_config["fastlane_commons_branch"]
 
-  smf_run_danger(options[:build_variant_config], "framework", fastlane_commons_branch)
+  smf_run_danger(options[:build_variant_config], "frameworks", fastlane_commons_branch)
 
 end
 
