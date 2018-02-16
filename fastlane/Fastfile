@@ -1521,7 +1521,7 @@ def should_skip_waiting_after_itc_upload(build_variant_config)
 end
 
 def smf_run_danger(build_variant, build_type, fastlane_commons_branch)
-  fastlane_commons_branch = (fastlane_commons_branch.nil? ? "marc" : fastlane_commons_branch)
+  fastlane_commons_branch = (fastlane_commons_branch.nil? ? "danger" : fastlane_commons_branch)
 
   if File.file?('Dangerfile')
     sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git commons"
