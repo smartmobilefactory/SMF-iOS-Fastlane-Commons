@@ -1576,6 +1576,15 @@ def smf_run_linter
   workspace = ENV["WORKSPACE"]
 
   system "cd " + workspace + "; Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"
+
+  # Removes the workspace part
+  workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
+  system "sed -i -e 's/#{workspace_regexp}//g' " + workspace + "/build/reports/swiftlint.json"
+
+  # Turns \/ int /
+  a = '\\\\\/'
+  b = '\/'
+  system "sed -i -e 's/#{a}/#{b}/g' " + workspace + "/build/reports/swiftlint.json"
 end
 
 def smf_run_slather(scheme, projectName)
