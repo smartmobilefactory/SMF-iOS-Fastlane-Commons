@@ -97,6 +97,9 @@ private_lane :smf_deploy_app do |options|
         build_variant: build_variant,
         branch: branch
       )
+      smf_commit_meta_json(
+      	branch: branch
+      )
     rescue
       UI.important("Warning: MetaJSON couldn't be created")
 
@@ -289,6 +292,9 @@ private_lane :smf_publish_pod do |options|
         build_variant: bump_type,
         branch: branch
         )
+      smf_commit_meta_json(
+      	branch: branch
+      )
     rescue
       UI.important("Warning: MetaJSON couldn't be created")
 
@@ -919,7 +925,7 @@ end
 
 # options: branch (String), build_variant (String) and build_variants_contains_whitelist (String) [optional]
 
-desc "Create and commit the metaJSON files - applys only for Alpha builds."
+desc "Create the metaJSON files - applys only for Alpha builds."
 private_lane :smf_generate_meta_json do |options|
 
   # Read options parameter
@@ -933,13 +939,29 @@ private_lane :smf_generate_meta_json do |options|
     # Fetch the MetaJSON scripts repo
     sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
     # Create and commit the MetaJSON files
-    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-commit-meta-jsons.sh \"#{project_name}\" \"#{branch}\" || true"
+    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/create-meta-jsons.sh \"#{project_name}\" \"#{branch}\" || true"
     # Remove the MetaJSON scripts repo
     sh "rm -rf SMF-iOS-MetaJSON"
   end
 
 end
 
+############################
+### smf_commit_meta_json ###
+############################
+
+# options: branch (String)
+
+desc "Commit the metaJSON files - applys only for Alpha builds."
+private_lane :smf_commit_meta_json do |options|
+  branch = options[:branch]
+
+  workspace = ENV["WORKSPACE"]
+
+  desc "Commit the meta JSON files"
+  # Reset git, add MetaJSON directory and commit
+  sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && git commit -m \"Update MetaJSONs\""
+end
 
 ###############################
 ### smf_commit_generated_code ###
@@ -959,7 +981,7 @@ private_lane :smf_commit_generated_code do |options|
     sh "git add ../Generated/ || true"
     sh "git commit -m \"Update generated code\" || true"
 
-  end
+end
 
 
 ###############################
