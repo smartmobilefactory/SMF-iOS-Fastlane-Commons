@@ -76,8 +76,6 @@ private_lane :smf_deploy_app do |options|
 
   fastlane_commons_branch = project_config["fastlane_commons_branch"]
 
-  smf_run_danger(options[:build_variant], "targets", fastlane_commons_branch)
-
   smf_run_linter
 
   smf_run_slather(build_variant_config["scheme"], project_name)
