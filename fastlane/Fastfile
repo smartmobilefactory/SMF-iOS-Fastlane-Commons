@@ -959,6 +959,10 @@ private_lane :smf_commit_meta_json do |options|
   workspace = ENV["WORKSPACE"]
 
   desc "Commit the meta JSON files"
+  # Copy additional meta files to MetaJSON directory
+  sh "[ -f #{workspace}/build/reports/errors.json ] && cp #{workspace}/build/reports/errors.json #{workspace}/.MetaJSON/xcodebuild.json"
+  sh "[ -f #{workspace}/build/reports/swiftlint.json ] && cp #{workspace}/build/reports/swiftlint.json #{workspace}/.MetaJSON/swiftlint.json"
+  sh "[ -d #{workspace}/html ] && cp -r #{workspace}/html #{workspace}/.MetaJSON/code-coverage"
   # Reset git, add MetaJSON directory and commit
   sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && git commit -m \"Update MetaJSONs\""
 end
