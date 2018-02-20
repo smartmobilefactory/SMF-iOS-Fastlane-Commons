@@ -960,7 +960,9 @@ private_lane :smf_commit_meta_json do |options|
   # Copy additional meta files to MetaJSON directory
   sh "[ -f #{workspace}/build/reports/errors.json ] && cp #{workspace}/build/reports/errors.json #{workspace}/.MetaJSON/xcodebuild.json"
   sh "[ -f #{workspace}/build/reports/swiftlint.json ] && cp #{workspace}/build/reports/swiftlint.json #{workspace}/.MetaJSON/swiftlint.json"
+  sh "[ -f #{workspace}/build/reports/smf_coverage.json ] && cp #{workspace}/build/reports/smf_overage.json #{workspace}/.MetaJSON/smf_coverage.json"
   sh "[ -d #{workspace}/html ] && cp -r #{workspace}/html #{workspace}/.MetaJSON/code-coverage"
+
   # Reset git, add MetaJSON directory and commit
   sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && git commit -m \"Update MetaJSONs\""
 end
@@ -1591,4 +1593,62 @@ def smf_run_slather(scheme, projectName)
   workspace = ENV["WORKSPACE"]
 
   system "cd " + workspace + "; slather coverage -v --html --scheme " + scheme + " --workspace " + projectName + ".xcworkspace " + projectName + ".xcodeproj"
+  system "cd " + workspace + "; slather coverage -v --json --scheme " + scheme + " --workspace " + projectName + ".xcworkspace " + projectName + ".xcodeproj"
+
+  if File.file?(workspace + '/report.json')
+    smf_create_json_slather_summary(workspace + '/report.json')
+  end
+end
+
+def smf_create_json_slather_summary(report_file)
+  if File.file?(report_file)
+    files = JSON.parse(File.read(report_file))
+
+    workspace = ENV["WORKSPACE"]
+
+    summary = { }
+    summary["files"] = [ ]
+
+    total_covered_loc = 0
+    total_relevant_loc = 0
+    filenum = 0
+
+    for file in files
+        filenum += 1
+
+        covered_loc = 0
+        relevant_loc = 0
+
+        for line in file["coverage"]
+          if line.to_i > 0
+            covered_loc += 1
+            relevant_loc += 1
+          elsif !line.nil? && line.to_i == 0
+            relevant_loc += 1
+          end
+        end
+
+        percent = (covered_loc.to_f / relevant_loc.to_f) * 100
+        #puts "Covered lines in " + file["file"] + ": " + covered_loc.to_s + " of " + relevant_loc.to_s  + " relevant lines of code (" + percent.round(3).to_s + "%)"
+
+        entity = { }
+        entity["file"] = file["file"]
+        entity["coverage"] = percent
+        summary["files"] << entity
+
+        total_covered_loc += covered_loc
+        total_relevant_loc += relevant_loc
+    end
+
+    percent = (total_covered_loc.to_f / total_relevant_loc.to_f) * 100
+    #puts "Tested " + files.length.to_s + " files. Total coverage: " + percent.to_s  + "%"
+
+    summary["total_coverage"] = percent
+
+    File.open(workspace + "/build/reports/smf_coverage.json", "w") do |f|
+      f.write(summary.to_json)
+    end
+  else
+    puts "Sorry, could not find file: " + report_file
+  end
 end
