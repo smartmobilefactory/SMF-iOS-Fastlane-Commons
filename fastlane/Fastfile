@@ -37,6 +37,7 @@ private_lane :smf_deploy_app do |options|
   build_variant_config = build_variants_config["targets"][build_variant]
   project_name = project_config["project_name"]
   # Optional parameters
+  should_perform_unit_test = (build_variant_config["perform_unit_tests"].nil? ? false : build_variant_config["perform_unit_tests"])
   should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
   generateMetaJSON = options[:generateMetaJSON]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
@@ -65,6 +66,20 @@ private_lane :smf_deploy_app do |options|
     use_sigh: use_sigh
     )
 
+  # Run unit tests and then run linter to generate JSONs
+  if should_perform_unit_test
+    smf_perform_unit_tests(
+      project_config: project_config,
+      build_variant_config: build_variant_config
+    )
+  end
+
+  fastlane_commons_branch = project_config["fastlane_commons_branch"]
+
+  smf_run_linter
+
+  smf_run_slather(build_variant_config["scheme"], project_name)
+
   # Commit generated code. There can be changes eg. from PhraseApp + R.swift
   if push_generated_code
     smf_commit_generated_code(
@@ -79,6 +94,9 @@ private_lane :smf_deploy_app do |options|
         project_config: project_config,
         build_variant: build_variant,
         branch: branch
+      )
+      smf_commit_meta_json(
+      	branch: branch
       )
     rescue
       UI.important("Warning: MetaJSON couldn't be created")
@@ -272,6 +290,9 @@ private_lane :smf_publish_pod do |options|
         build_variant: bump_type,
         branch: branch
         )
+      smf_commit_meta_json(
+      	branch: branch
+      )
     rescue
       UI.important("Warning: MetaJSON couldn't be created")
 
@@ -902,7 +923,7 @@ end
 
 # options: branch (String), build_variant (String) and build_variants_contains_whitelist (String) [optional]
 
-desc "Create and commit the metaJSON files - applys only for Alpha builds."
+desc "Create the metaJSON files - applys only for Alpha builds."
 private_lane :smf_generate_meta_json do |options|
 
   # Read options parameter
@@ -916,13 +937,35 @@ private_lane :smf_generate_meta_json do |options|
     # Fetch the MetaJSON scripts repo
     sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
     # Create and commit the MetaJSON files
-    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/update-and-commit-meta-jsons.sh \"#{project_name}\" \"#{branch}\" || true"
+    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/create-meta-jsons.sh \"#{project_name}\" \"#{branch}\" || true"
     # Remove the MetaJSON scripts repo
     sh "rm -rf SMF-iOS-MetaJSON"
   end
 
 end
 
+############################
+### smf_commit_meta_json ###
+############################
+
+# options: branch (String)
+
+desc "Commit the metaJSON files - applys only for Alpha builds."
+private_lane :smf_commit_meta_json do |options|
+  branch = options[:branch]
+
+  workspace = ENV["WORKSPACE"]
+
+  desc "Commit the meta JSON files"
+  # Copy additional meta files to MetaJSON directory
+  sh "[ -f #{workspace}/build/reports/errors.json ] && cp #{workspace}/build/reports/errors.json #{workspace}/.MetaJSON/xcodebuild.json"
+  sh "[ -f #{workspace}/build/reports/swiftlint.json ] && cp #{workspace}/build/reports/swiftlint.json #{workspace}/.MetaJSON/swiftlint.json"
+  sh "[ -f #{workspace}/build/reports/smf_coverage.json ] && cp #{workspace}/build/reports/smf_coverage.json #{workspace}/.MetaJSON/smf_coverage.json"
+  sh "[ -d #{workspace}/html ] && cp -r #{workspace}/html #{workspace}/.MetaJSON/code-coverage"
+
+  # Reset git, add MetaJSON directory and commit
+  sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && git commit -m \"Update MetaJSONs\""
+end
 
 ###############################
 ### smf_commit_generated_code ###
@@ -942,7 +985,7 @@ private_lane :smf_commit_generated_code do |options|
     sh "git add ../Generated/ || true"
     sh "git commit -m \"Update generated code\" || true"
 
-  end
+end
 
 
 ###############################
@@ -1528,5 +1571,84 @@ def smf_run_danger(build_variant, build_type, fastlane_commons_branch)
     sh "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN; export BUILD_VARIANT=\"#{build_variant}\"; export BUILD_TYPE=\"#{build_type}\"; export FASTLANE_COMMONS_BRANCH=\"#{fastlane_commons_branch}\"; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
+  end
+end
+
+def smf_run_linter
+  workspace = ENV["WORKSPACE"]
+
+  system "cd " + workspace + "; Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"
+
+  # Removes the workspace part
+  workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
+  system "sed -i -e 's/#{workspace_regexp}//g' " + workspace + "/build/reports/swiftlint.json"
+
+  # Turns \/ int /
+  a = '\\\\\/'
+  b = '\/'
+  system "sed -i -e 's/#{a}/#{b}/g' " + workspace + "/build/reports/swiftlint.json"
+end
+
+def smf_run_slather(scheme, projectName)
+  workspace = ENV["WORKSPACE"]
+
+  system "cd " + workspace + "; slather coverage -v --html --scheme " + scheme + " --workspace " + projectName + ".xcworkspace " + projectName + ".xcodeproj"
+  system "cd " + workspace + "; slather coverage -v --json --scheme " + scheme + " --workspace " + projectName + ".xcworkspace " + projectName + ".xcodeproj"
+
+  if File.file?(workspace + '/report.json')
+    smf_create_json_slather_summary(workspace + '/report.json')
+  end
+end
+
+def smf_create_json_slather_summary(report_file)
+  if File.file?(report_file)
+    files = JSON.parse(File.read(report_file))
+
+    workspace = ENV["WORKSPACE"]
+
+    summary = { }
+    summary["files"] = [ ]
+
+    total_covered_loc = 0
+    total_relevant_loc = 0
+    filenum = 0
+
+    for file in files
+        filenum += 1
+
+        covered_loc = 0
+        relevant_loc = 0
+
+        for line in file["coverage"]
+          if line.to_i > 0
+            covered_loc += 1
+            relevant_loc += 1
+          elsif !line.nil? && line.to_i == 0
+            relevant_loc += 1
+          end
+        end
+
+        percent = (covered_loc.to_f / relevant_loc.to_f) * 100
+        #puts "Covered lines in " + file["file"] + ": " + covered_loc.to_s + " of " + relevant_loc.to_s  + " relevant lines of code (" + percent.round(3).to_s + "%)"
+
+        entity = { }
+        entity["file"] = file["file"]
+        entity["coverage"] = percent
+        summary["files"] << entity
+
+        total_covered_loc += covered_loc
+        total_relevant_loc += relevant_loc
+    end
+
+    percent = (total_covered_loc.to_f / total_relevant_loc.to_f) * 100
+    #puts "Tested " + files.length.to_s + " files. Total coverage: " + percent.to_s  + "%"
+
+    summary["total_coverage"] = percent
+
+    File.open(workspace + "/build/reports/smf_coverage.json", "w") do |f|
+      f.write(summary.to_json)
+    end
+  else
+    puts "Sorry, could not find file: " + report_file
   end
 end
