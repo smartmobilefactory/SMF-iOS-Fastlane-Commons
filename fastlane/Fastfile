@@ -6,7 +6,7 @@ fastlane_require 'json'
   # update_fastlane
 # end
 
-METAJSON_TEMP_FOLDERNAME = "/.MetaJSON-temp"
+METAJSON_TEMP_FOLDERNAME = ".MetaJSON-temp"
 
 ########################################
 ########################################
@@ -49,7 +49,7 @@ private_lane :smf_deploy_app do |options|
   # Cleanup the temporary MetaJSON folder in case it exists from a former build
   if generateMetaJSON != false
     workspace = ENV["WORKSPACE"]
-    sh "[ -f #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ] && rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}"
+    sh "[ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ] && rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}"
   end
 
   # check if the next Tag exist
