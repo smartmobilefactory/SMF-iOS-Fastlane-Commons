@@ -50,6 +50,7 @@ private_lane :smf_deploy_app do |options|
   if generateMetaJSON != false
     workspace = ENV["WORKSPACE"]
     sh "if [ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}; fi"
+    sh "mkdir #{workspace}/#{METAJSON_TEMP_FOLDERNAME}"
   end
 
   # check if the next Tag exist
