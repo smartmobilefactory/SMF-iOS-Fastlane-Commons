@@ -6,6 +6,8 @@ fastlane_require 'json'
   # update_fastlane
 # end
 
+METAJSON_TEMP_FOLDERNAME = "./MetaJSON-temp"
+
 ########################################
 ########################################
 ### LANES TO BE USED BY THE PROJECTS ###
@@ -44,6 +46,12 @@ private_lane :smf_deploy_app do |options|
   use_hockey = (options[:use_hockey].nil? ? true : options[:use_hockey])
   push_generated_code = (options[:push_generated_code].nil? ? false : options[:push_generated_code])
 
+  # Cleanup the temporary MetaJSON folder in case it exists from a former build
+  if generateMetaJSON != false
+    workspace = ENV["WORKSPACE"]
+    sh "[ -f #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ] && rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}"
+  end
+
   # check if the next Tag exist
   smf_check_tag(
     project_config: project_config,
@@ -66,6 +74,12 @@ private_lane :smf_deploy_app do |options|
     use_sigh: use_sigh
     )
 
+  # Copy the Xcode warnings and errors report to keep the files available for MetaJSON
+  if generateMetaJSON != false
+    workspace = ENV["WORKSPACE"]
+    sh "[ -f #{workspace}/build/reports/errors.json ] && cp #{workspace}/build/reports/errors.json #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/xcodebuild.json"
+  end
+
   # Run unit tests and then run linter to generate JSONs
   if should_perform_unit_test
     smf_perform_unit_tests(
@@ -73,12 +87,6 @@ private_lane :smf_deploy_app do |options|
       build_variant_config: build_variant_config
     )
   end
-
-  fastlane_commons_branch = project_config["fastlane_commons_branch"]
-
-  smf_run_linter
-
-  smf_run_slather(build_variant_config["scheme"], project_name)
 
   # Commit generated code. There can be changes eg. from PhraseApp + R.swift
   if push_generated_code
@@ -90,6 +98,10 @@ private_lane :smf_deploy_app do |options|
   # Update the MetaJSONS if wanted
   if generateMetaJSON != false
     begin
+      smf_run_linter
+
+      smf_run_slather(build_variant_config["scheme"], project_name)
+
       smf_generate_meta_json(
         project_config: project_config,
         build_variant: build_variant,
@@ -716,6 +728,7 @@ private_lane :smf_archive_ipa do |options|
     export_options: { iCloudContainerEnvironment: icloud_environment },
     xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
     )
+
 end
 
 #############################
@@ -957,11 +970,12 @@ private_lane :smf_commit_meta_json do |options|
   workspace = ENV["WORKSPACE"]
 
   desc "Commit the meta JSON files"
+
   # Copy additional meta files to MetaJSON directory
-  sh "[ -f #{workspace}/build/reports/errors.json ] && cp #{workspace}/build/reports/errors.json #{workspace}/.MetaJSON/xcodebuild.json"
-  sh "[ -f #{workspace}/build/reports/swiftlint.json ] && cp #{workspace}/build/reports/swiftlint.json #{workspace}/.MetaJSON/swiftlint.json"
-  sh "[ -f #{workspace}/build/reports/smf_coverage.json ] && cp #{workspace}/build/reports/smf_coverage.json #{workspace}/.MetaJSON/smf_coverage.json"
-  sh "[ -d #{workspace}/html ] && cp -r #{workspace}/html #{workspace}/.MetaJSON/code-coverage"
+  sh "[ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ] && cp -R #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/. #{workspace}/.MetaJSON/"
+
+  # Delete the temporary MetaJSON folder
+  sh "[ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ] && rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}"
 
   # Reset git, add MetaJSON directory and commit
   sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && git commit -m \"Update MetaJSONs\""
@@ -1586,7 +1600,8 @@ def smf_run_linter
   # Turns \/ int /
   a = '\\\\\/'
   b = '\/'
-  system "sed -i -e 's/#{a}/#{b}/g' " + workspace + "/build/reports/swiftlint.json"
+  system "sed -i -e 's/#{a}/#{b}/g' " + workspace + "/#{METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
+
 end
 
 def smf_run_slather(scheme, projectName)
@@ -1598,6 +1613,9 @@ def smf_run_slather(scheme, projectName)
   if File.file?(workspace + '/report.json')
     smf_create_json_slather_summary(workspace + '/report.json')
   end
+
+  sh "[ -f #{workspace}/build/reports/test_coverage.json ] && cp #{workspace}/build/reports/test_coverage.json #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/test_coverage.json"
+  sh "[ -d #{workspace}/html ] && cp -r #{workspace}/html #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/test_report.html"
 end
 
 def smf_create_json_slather_summary(report_file)
@@ -1645,7 +1663,7 @@ def smf_create_json_slather_summary(report_file)
 
     summary["total_coverage"] = percent
 
-    File.open(workspace + "/build/reports/smf_coverage.json", "w") do |f|
+    File.open(workspace + "/build/reports/test_coverage.json", "w") do |f|
       f.write(summary.to_json)
     end
   else
