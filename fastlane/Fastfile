@@ -1619,7 +1619,7 @@ def smf_run_slather(scheme, projectName)
   sh "if [ -d #{workspace}/html ]; then cp -r #{workspace}/html #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
   # Compress the Slather HTML folder and delete it afterwards
   sh "if [ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report ]; then zip #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
-  sh "if [ -f #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip ]; then rm #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
+  sh "if [ -f #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip ]; then rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
 end
 
 def smf_create_json_slather_summary(report_file)
