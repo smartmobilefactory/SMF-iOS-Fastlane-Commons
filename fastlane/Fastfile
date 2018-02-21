@@ -6,7 +6,7 @@ fastlane_require 'json'
   # update_fastlane
 # end
 
-METAJSON_TEMP_FOLDERNAME = "./MetaJSON-temp"
+METAJSON_TEMP_FOLDERNAME = "/.MetaJSON-temp"
 
 ########################################
 ########################################
