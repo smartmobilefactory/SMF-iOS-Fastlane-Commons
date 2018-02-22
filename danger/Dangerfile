@@ -4,8 +4,8 @@
 
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
 ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
-project_danger_config = nil
-commons_danger_config = nil
+@project_danger_config = nil
+@commons_danger_config = nil
 
 message("Analysing build variant **#{build_variant}** of build type #{build_type}**")
 
@@ -14,17 +14,17 @@ if File.file?('fastlane/BuildVariants.json')
   build_variant_config = fastlane_config[build_type][build_variant]
   target_depended_config = fastlane_config[build_type][build_variant]["danger_config_name"]
   if target_depended_config
-    project_danger_config = fastlane_config[target_depended_config]
+    @project_danger_config = fastlane_config[target_depended_config]
   else
-    project_danger_config = fastlane_config["danger_config"]
+    @project_danger_config = fastlane_config["danger_config"]
   end
 else
   fail "./fastlane doesn't contain BuildVariants.json"
 end
 
 if File.file?('fastlane/commons/danger/danger_defaults.json')
-  commons_danger_config = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
-  if commons_danger_config.nil?
+  @commons_danger_config = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
+  if @commons_danger_config.nil?
       fail "The default Danger config is nil"
   end
 else
@@ -35,17 +35,17 @@ end
 ##### Helpers #####
 ###################
 
-define_method get_config_value(key) {
-  if (defined?(project_danger_config[key])).nil?
-    return project_danger_config[key]
+def get_config_value(key)
+  if (defined?(@project_danger_config[key])).nil?
+    return @project_danger_config[key]
   else
-    if commons_danger_config == nil
+    if @commons_danger_config == nil
       return nil
     else
-      return commons_danger_config[key]
+      return @commons_danger_config[key]
     end
   end
-}
+end
 
 #####################
 ###### General ######
