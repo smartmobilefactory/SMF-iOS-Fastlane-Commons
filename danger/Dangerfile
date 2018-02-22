@@ -4,42 +4,43 @@
 
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
 ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
-message( "Running danger for build variant **\"" + build_variant + "\"** with build type **\"" + build_type + "\"**")
+
+message("Analysing build variant **#{build_variant}** of build type #{build_type}**")
 
 if File.file?('fastlane/BuildVariants.json')
-  config = JSON.parse(File.read('fastlane/BuildVariants.json'))
-  project_config = config["project"]
-  danger_config = config["danger_config"]
-  target_config = config[build_type][build_variant]
-  config_parsed = true
+  fastlane_config = JSON.parse(File.read('fastlane/BuildVariants.json'))
+  build_variant_config = fastlane_config[build_type][build_variant]
+  target_depended_config = fastlane_config[build_type][build_variant]["danger_config_name"]
+  if target_depended_config
+    project_danger_config = fastlane_config[target_depended_config]
+  else
+    project_danger_config = fastlane_config["danger_config"]
+  end
 else
-  warn "No BuildVariants.json found in ./fastlane"
+  fail "./fastlane doesn't contain BuildVariants.json"
 end
 
-if danger_config == nil
-  message "BuildVariants.json did not include danger_config, using defaults from fastlane/commons/danger/danger_defaults.json"
-
-  if File.file?('fastlane/commons/danger/danger_defaults.json')
-    danger_config = { 'run_slather' => true }
-    danger_defaults = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
-    danger_config = danger_defaults["danger_config"]
-  else
-    warn "No BuildVariants.json found in ./fastlane"
+if File.file?('fastlane/commons/danger/danger_defaults.json')
+  commons_danger_config = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
+  if commons_danger_config.nil?
+      fail "The default Danger config is nil"
   end
+else
+  fail "The Fastlane commons repo doesn't contain danger/danger_defaults.json"
 end
 
 ###################
 ##### Helpers #####
 ###################
 
-def get_config_value(danger_config, target_config, key)
-  if (defined?(target_config[key])).nil?
-    return target_config[key]
+def get_config_value(key)
+  if (defined?(project_danger_config[key])).nil?
+    return project_danger_config[key]
   else
-    if danger_config == nil
-      warn "Could not find any configuration for key: " + key + ". Please add a sane default value to danger_defaults.json in commons and if needed to BuildVariants.json in this project."
+    if commons_danger_config == nil
+      return nil
     else
-      return danger_config[key]
+      return commons_danger_config[key]
     end
   end
 end
@@ -48,90 +49,73 @@ end
 ###### General ######
 #####################
 
-if config_parsed == true
-  if git.lines_of_code > get_config_value(danger_config, target_config, "git.lines_of_code")
-    warn("Big PR")
-  end
-
-  if github.pr_body.length < get_config_value(danger_config, target_config, "github.pr_body.length")
-    warn "Please provide a summary in the Pull Request description"
-  end
-
-  if github.branch_for_base != get_config_value(danger_config, target_config, "github.branch_for_base")
-    warn("Please target PRs to `develop` branch")
-  end
-
-  if github.pr_title.include? get_config_value(danger_config, target_config, "github.pr_title.include")
-    warn("PR is classed as Work in Progress") 
-  end
+if get_config_value("github.pr.big_length.use_feature") && git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code")
+  warn("There amount of changed code is huge (#{git.lines_of_code}). Please try to create many small pull requests instead of a few big ones!")
 else
-  warn("Slather not run: BuildVariants.json wasn't parsed")
+  message("[GitHub PR length] Disabled")
 end
 
 ###################
 ###### Xcode ######
 ###################
 
-if get_config_value(danger_config, target_config, "xcode_summary.report")
+if get_config_value("xcode_build_warnings.use_feature")
   xcode_summary.report 'build/reports/errors.json'
 else
-  message( "Skipping Xcode summary report for: " + build_variant + ". Not enabled in BuildVariants.json.")
+  message("[Xcode Warnings] Disabled")
 end
 
 #######################
 ###### Swiftlint ######
 #######################
 
-if get_config_value(danger_config, target_config, "swiftlint")
-  if File.file?('Pods/SwiftLint/swiftlint')
-    swiftlint.binary_path = 'Pods/SwiftLint/swiftlint'
-    message( "Using Pods/SwiftLint/swiftlint for linting.")
+if get_config_value("swiftlint.use_feature")
+  # Use the SwiftLint Pod if available. Otherwise the SwiftLint version from the Danger plugin is used.
+  fail_on_error = get_config_value("swiftlint.fail_on_error")
+  pods_swiftlint_binary = "Pods/SwiftLint/swiftlint"
+  if File.file?(pods_swiftlint_binary)
+    swiftlint.binary_path = pods_swiftlint_binary
+    binary_message_string = pods_swiftlint_binary
   else
-    message( "Running SwiftLint with default version, no specific version found in Pods.")
+    binary_message_string = "Danger SwiftLint Plugin version"
   end
 
-  if get_config_value(danger_config, target_config, "swiftlint.fail_on_error")
+
+  # Run SwiftLint 
+  if fail_on_error
     swiftlint.lint_files fail_on_error: true
   else
     swiftlint.lint_files
   end
-
-  if swiftlint.binary_path != nil
-    system "Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"
-  else
-    system "swiftlint lint --reporter json > build/reports/swiftlint.json"
-  end
   
+  message("[Swiftlint] Enabled<br /><br />binary: #{binary_message_string},<br />fail_on_error: #{fail_on_error}")
 else
-  message("Skipping SwiftLint for: " + build_variant + ". Not enabled in BuildVariants.json.")
+  message("[SwiftLint] Disabled")
 end
 
 #####################
 ###### Slather ######
 #####################
 
-if config_parsed == true
-  if get_config_value(danger_config, target_config, "run_slather")
-    if config[build_type][build_variant]["perform_unit_tests"]
-      slather.configure(project_config["project_name"] + ".xcodeproj", target_config["scheme"], options: {
-        workspace: project_config["project_name"] + ".xcworkspace",
-        output_directory: 'build/reports',
-      })
+if get_config_value("code_coverage.slather.use_feature")
+  if build_variant_config["perform_unit_tests"]
+    slather.configure(fastlane_config["project"]["project_name"] + ".xcodeproj", build_variant_config["scheme"], options: {
+      workspace: project_config["project_name"] + ".xcworkspace",
+      output_directory: 'build/reports',
+    })
 
-      min_cov = get_config_value(danger_config, target_config, "notify_if_coverage_is_less_than")
-      min_file_cov = get_config_value(danger_config, target_config, "notify_if_modified_file_is_less_than")
+    min_total_coverage = get_config_value("code_coverage.slather.notify_if_coverage_is_less_than").to_i
+    min_file_coverage = get_config_value("code_coverage.slather.notify_if_modified_file_is_less_than").to_i
+    notify_level = get_config_value("code_coverage.slather.notify_level")
 
-      slather.notify_if_coverage_is_less_than(minimum_coverage: min_cov.to_i)
-      slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_cov.to_i)
-      slather.show_coverage
+    slather.notify_if_coverage_is_less_than(minimum_coverage: min_total_coverage, notify_level: notify_level)
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_coverage, notify_level: notify_level)
+    slather.show_coverage
 
-      message("Total coverage: " + slather.total_coverage.to_s)
-    else
-      message("Skipping slather (code coverage) for: " + build_variant + ". Not enabled in BuildVariants.json.")
-    end
+    message("[Slather] Enabled.<br /><br />notify_if_coverage_is_less_than: #{min_total_coverage}<br />notify_if_modified_file_is_less_than: #{min_file_coverage}<br />notify_level: #{notify_level})")
   else
-    warn("Slather not run: Disabled in BuildVariants.json.")
+    message("[Slather] Disabled as unit tests shouldn't be runned")
   end
 else
-  warn("Slather not run: BuildVariants.json wasn't parsed.")
+  warn("[Slather] Disabled")
 end
