@@ -4,6 +4,7 @@
 
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
 ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
+
 @project_danger_config = nil
 @commons_danger_config = nil
 
@@ -22,8 +23,8 @@ else
   fail "./fastlane doesn't contain BuildVariants.json"
 end
 
-if File.file?('fastlane/commons/danger/danger_defaults.json')
-  @commons_danger_config = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
+if File.file?("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json")
+  @commons_danger_config = JSON.parse(File.read("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json"))
   if @commons_danger_config.nil?
       fail "The default Danger config is nil"
   end

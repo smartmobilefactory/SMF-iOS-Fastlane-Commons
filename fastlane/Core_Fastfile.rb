@@ -427,9 +427,7 @@ private_lane :smf_test_pod_project do |options|
     )
   end
 
-  fastlane_commons_branch = project_config["fastlane_commons_branch"]
-
-  smf_run_danger(options[:build_variant_config], "frameworks", fastlane_commons_branch)
+  smf_run_danger(options[:build_variant_config], "frameworks")
 
 end
 
@@ -469,9 +467,7 @@ private_lane :smf_test_app_project do |options|
     )
   end
 
-  fastlane_commons_branch = project_config["fastlane_commons_branch"]
-
-  smf_run_danger(options[:build_variant], "targets", fastlane_commons_branch)
+  smf_run_danger(options[:build_variant], "targets")
 end
 
 ######################
@@ -1572,12 +1568,9 @@ def should_skip_waiting_after_itc_upload(build_variant_config)
   return (build_variant_config["itc_skip_waiting"].nil? ? false : ["itc_skip_waiting"])
 end
 
-def smf_run_danger(build_variant, build_type, fastlane_commons_branch)
-  fastlane_commons_branch = (fastlane_commons_branch.nil? ? "danger" : fastlane_commons_branch)
-
+def smf_run_danger(build_variant, build_type)
   if File.file?('Dangerfile')
-    sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git commons"
-    sh "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN; export BUILD_VARIANT=\"#{build_variant}\"; export BUILD_TYPE=\"#{build_type}\"; export FASTLANE_COMMONS_BRANCH=\"#{fastlane_commons_branch}\"; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
+    sh "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN; export BUILD_VARIANT=\"#{build_variant}\"; export BUILD_TYPE=\"#{build_type}\"; export FASTLANE_COMMONS_FOLDER=\"#{FASTLANE_COMMONS_FOLDER_NAME}\"; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
   end
