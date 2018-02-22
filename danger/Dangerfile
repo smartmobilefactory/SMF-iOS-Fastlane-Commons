@@ -4,6 +4,8 @@
 
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
 ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
+project_danger_config = nil
+commons_danger_config = nil
 
 message("Analysing build variant **#{build_variant}** of build type #{build_type}**")
 
