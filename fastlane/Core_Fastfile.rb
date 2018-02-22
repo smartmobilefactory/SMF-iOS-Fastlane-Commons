@@ -2,6 +2,9 @@ fastlane_require 'net/https'
 fastlane_require 'uri'
 fastlane_require 'json'
 
+METAJSON_TEMP_FOLDERNAME = ".MetaJSON-temp"
+FASTLANE_COMMONS_FOLDER_NAME = ".SMF-iOS-Fastlane-Commons"
+
 ########################################
 ########################################
 ### LANES TO BE USED BY THE PROJECTS ###
