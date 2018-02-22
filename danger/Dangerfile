@@ -53,9 +53,9 @@ end
 
 if get_config_value("github.pr.big_length.use_feature") && git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code")
   warn("There amount of changed code is huge (#{git.lines_of_code}). Please try to create many small pull requests instead of a few big ones!")
-  message("[GitHub PR length] Enabled*<br />- lines_of_code: **#{get_config_value("github.pr.big_length.lines_of_code")}***")
+  message("GitHub PR length is **enabled***<br />- lines_of_code: **#{get_config_value("github.pr.big_length.lines_of_code")}***")
 else
-  message("[GitHub PR length] Disabled")
+  message("GitHub PR length is **disabled**")
 end
 
 ###################
@@ -65,7 +65,7 @@ end
 if get_config_value("xcode_build_warnings.use_feature")
   xcode_summary.report 'build/reports/errors.json'
 else
-  message("[Xcode Warnings] Disabled")
+  message("[Xcode warnings are **disabled**")
 end
 
 #######################
@@ -91,9 +91,9 @@ if get_config_value("swiftlint.use_feature")
     swiftlint.lint_files
   end
   
-  message("[Swiftlint] Enabled*<br />- binary: **#{binary_message_string}**,<br />- fail_on_error: **#{fail_on_error}***")
+  message("SwiftLint is **enabled***<br />- binary: **#{binary_message_string}**,<br />- fail_on_error: **#{fail_on_error}***")
 else
-  message("[SwiftLint] Disabled")
+  message("SwiftLint is **disabled**")
 end
 
 #####################
@@ -115,10 +115,10 @@ if get_config_value("code_coverage.slather.use_feature")
     slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_coverage, notify_level: notify_level)
     slather.show_coverage
 
-    message("[Slather] Enabled*<br />- notify_if_coverage_is_less_than: **#{min_total_coverage}**<br />- notify_if_modified_file_is_less_than: **#{min_file_coverage}**<br />- notify_level: **#{notify_level}***")
+    message("Slather is **enabled***<br />- notify_if_coverage_is_less_than: **#{min_total_coverage}**<br />- notify_if_modified_file_is_less_than: **#{min_file_coverage}**<br />- notify_level: **#{notify_level}***")
   else
-    message("[Slather] Disabled as unit tests shouldn't be runned")
+    message("Slather is **disabled** as unit tests shouldn't be runned")
   end
 else
-  warn("[Slather] Disabled")
+  warn("Slather is **disabled**")
 end
