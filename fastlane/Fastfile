@@ -3,14 +3,21 @@ FASTLANE_COMMONS_FOLDER_NAME = ".SMF-iOS-Fastlane-Commons"
 
 before_all do
 
-  UI.important("Cloning the commons repo and importing the internal Fastfile")
-
-  fastlane_commons_branch = build_variants_config["project"]["fastlane_commons_branch"]
-  sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git #{FASTLANE_COMMONS_FOLDER_NAME}"
+  smf_remove_fastlane_commons_clone
+  smf_clone_fastlane_commons
 
   import "#{FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/Core_Fastfile"
 end
 
 after_all do
+  smf_remove_fastlane_commons_clone
+end
+
+private_lane :smf_clone_fastlane_commons do
+  fastlane_commons_branch = build_variants_config["project"]["fastlane_commons_branch"]
+  sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git #{FASTLANE_COMMONS_FOLDER_NAME}"
+end
+
+private_lane :smf_remove_fastlane_commons_clone do
   sh "if [ -d #{FASTLANE_COMMONS_FOLDER_NAME} ]; then rm -rf #{FASTLANE_COMMONS_FOLDER_NAME}; fi"
 end
