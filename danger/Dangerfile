@@ -4,8 +4,8 @@
 
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
 ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
-project_danger_config = nil
-commons_danger_config = nil
+@project_danger_config = nil
+@commons_danger_config = nil
 
 message("Analysing build variant **#{build_variant}** of build type #{build_type}**")
 
@@ -14,17 +14,17 @@ if File.file?('fastlane/BuildVariants.json')
   build_variant_config = fastlane_config[build_type][build_variant]
   target_depended_config = fastlane_config[build_type][build_variant]["danger_config_name"]
   if target_depended_config
-    project_danger_config = fastlane_config[target_depended_config]
+    @project_danger_config = fastlane_config[target_depended_config]
   else
-    project_danger_config = fastlane_config["danger_config"]
+    @project_danger_config = fastlane_config["danger_config"]
   end
 else
   fail "./fastlane doesn't contain BuildVariants.json"
 end
 
 if File.file?('fastlane/commons/danger/danger_defaults.json')
-  commons_danger_config = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
-  if commons_danger_config.nil?
+  @commons_danger_config = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
+  if @commons_danger_config.nil?
       fail "The default Danger config is nil"
   end
 else
@@ -35,14 +35,14 @@ end
 ##### Helpers #####
 ###################
 
-def get_config_value(key, project_danger_config, commons_danger_config)
-  if project_danger_config != nil && defined?(project_danger_config[key]
-    return project_danger_config[key]
+def get_config_value(key)
+  if @project_danger_config != nil && defined?(@project_danger_config[key]
+    return @project_danger_config[key]
   else
-    if commons_danger_config == nil
+    if @commons_danger_config == nil
       return nil
     else
-      return commons_danger_config[key]
+      return @commons_danger_config[key]
     end
   end
 end
@@ -51,7 +51,7 @@ end
 ###### General ######
 #####################
 
-if get_config_value("github.pr.big_length.use_feature", project_danger_config, commons_danger_config) && git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code", project_danger_config, commons_danger_config)
+if get_config_value("github.pr.big_length.use_feature") && git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code")
   warn("There amount of changed code is huge (#{git.lines_of_code}). Please try to create many small pull requests instead of a few big ones!")
 else
   message("[GitHub PR length] Disabled")
@@ -61,7 +61,7 @@ end
 ###### Xcode ######
 ###################
 
-if get_config_value("xcode_build_warnings.use_feature", project_danger_config, commons_danger_config)
+if get_config_value("xcode_build_warnings.use_feature")
   xcode_summary.report 'build/reports/errors.json'
 else
   message("[Xcode Warnings] Disabled")
@@ -71,9 +71,9 @@ end
 ###### Swiftlint ######
 #######################
 
-if get_config_value("swiftlint.use_feature", project_danger_config, commons_danger_config)
+if get_config_value("swiftlint.use_feature")
   # Use the SwiftLint Pod if available. Otherwise the SwiftLint version from the Danger plugin is used.
-  fail_on_error = get_config_value("swiftlint.fail_on_error", project_danger_config, commons_danger_config)
+  fail_on_error = get_config_value("swiftlint.fail_on_error")
   pods_swiftlint_binary = "Pods/SwiftLint/swiftlint"
   if File.file?(pods_swiftlint_binary)
     swiftlint.binary_path = pods_swiftlint_binary
@@ -99,16 +99,16 @@ end
 ###### Slather ######
 #####################
 
-if get_config_value("code_coverage.slather.use_feature", project_danger_config, commons_danger_config)
+if get_config_value("code_coverage.slather.use_feature")
   if build_variant_config["perform_unit_tests"]
     slather.configure(fastlane_config["project"]["project_name"] + ".xcodeproj", build_variant_config["scheme"], options: {
       workspace: project_config["project_name"] + ".xcworkspace",
       output_directory: 'build/reports',
     })
 
-    min_total_coverage = get_config_value("code_coverage.slather.notify_if_coverage_is_less_than", project_danger_config, commons_danger_config).to_i
-    min_file_coverage = get_config_value("code_coverage.slather.notify_if_modified_file_is_less_than", project_danger_config, commons_danger_config).to_i
-    notify_level = get_config_value("code_coverage.slather.notify_level", project_danger_config, commons_danger_config)
+    min_total_coverage = get_config_value("code_coverage.slather.notify_if_coverage_is_less_than").to_i
+    min_file_coverage = get_config_value("code_coverage.slather.notify_if_modified_file_is_less_than").to_i
+    notify_level = get_config_value("code_coverage.slather.notify_level")
 
     slather.notify_if_coverage_is_less_than(minimum_coverage: min_total_coverage, notify_level: notify_level)
     slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_coverage, notify_level: notify_level)
