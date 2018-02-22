@@ -5,7 +5,7 @@
       "code_coverage.slather.use_feature": true,
       "code_coverage.slather.notify_if_coverage_is_less_than": 0,
       "code_coverage.slather.notify_if_modified_file_is_less_than": 0,
-      "code_coverage.slather.notify_level": "error",
+      "code_coverage.slather.notify_level": "fail",
       "swiftlint.use_feature": true,
       "swiftlint.fail_on_error": true
 }
