@@ -36,7 +36,7 @@ end
 ###################
 
 def get_config_value(key)
-  if @project_danger_config != nil && defined?(@project_danger_config[key]
+  if @project_danger_config != nil && defined?(@project_danger_config[key])
     return @project_danger_config[key]
   else
     if @commons_danger_config == nil
