@@ -51,8 +51,10 @@ end
 ###### General ######
 #####################
 
-if get_config_value("github.pr.big_length.use_feature") && git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code")
-  warn("There amount of changed code is huge (#{git.lines_of_code}). Please try to create many small pull requests instead of a few big ones!")
+if get_config_value("github.pr.big_length.use_feature")
+  if git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code")
+    warn("There amount of changed code is huge (#{git.lines_of_code}). Please try to create many small pull requests instead of a few big ones!")
+  end
   message("GitHub PR length is **enabled***<br />- lines_of_code: **#{get_config_value("github.pr.big_length.lines_of_code")}***")
 else
   message("GitHub PR length is **disabled**")
