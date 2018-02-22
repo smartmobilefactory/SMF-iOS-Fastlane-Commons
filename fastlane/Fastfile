@@ -9,7 +9,7 @@ before_all do
   fastlane_commons_branch = build_variants_config["project"]["fastlane_commons_branch"]
   sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git #{FASTLANE_COMMONS_FOLDER_NAME}"
 
-  import "#{FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/Core_Fastlane"
+  import "#{FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/Core_Fastfile"
 end
 
 after_all do
