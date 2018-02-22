@@ -35,7 +35,7 @@ end
 ##### Helpers #####
 ###################
 
-def get_config_value(key)
+define_method get_config_value(key)
   if (defined?(project_danger_config[key])).nil?
     return project_danger_config[key]
   else
