@@ -6,8 +6,6 @@ METAJSON_TEMP_FOLDERNAME = ".MetaJSON-temp"
 FASTLANE_COMMONS_FOLDER_NAME = ".SMF-iOS-Fastlane-Commons"
 
 before_all do
-  update_fastlane
-
   fastlane_commons_branch = build_variants_config["project"]["fastlane_commons_branch"]
   sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git #{FASTLANE_COMMONS_FOLDER_NAME}"
 end
