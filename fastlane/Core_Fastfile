@@ -2,8 +2,7 @@ fastlane_require 'net/https'
 fastlane_require 'uri'
 fastlane_require 'json'
 
-METAJSON_TEMP_FOLDERNAME = ".MetaJSON-temp"
-FASTLANE_COMMONS_FOLDER_NAME = ".SMF-iOS-Fastlane-Commons"
+$METAJSON_TEMP_FOLDERNAME = ".MetaJSON-temp"
 
 ########################################
 ########################################
@@ -46,8 +45,8 @@ private_lane :smf_deploy_app do |options|
   # Cleanup the temporary MetaJSON folder in case it exists from a former build
   if generateMetaJSON != false
     workspace = ENV["WORKSPACE"]
-    sh "if [ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}; fi"
-    sh "mkdir #{workspace}/#{METAJSON_TEMP_FOLDERNAME}"
+    sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}; fi"
+    sh "mkdir #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}"
   end
 
   # check if the next Tag exist
@@ -75,7 +74,7 @@ private_lane :smf_deploy_app do |options|
   # Copy the Xcode warnings and errors report to keep the files available for MetaJSON
   if generateMetaJSON != false
     workspace = ENV["WORKSPACE"]
-    sh "if [ -f #{workspace}/build/reports/errors.json ]; then cp #{workspace}/build/reports/errors.json #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/xcodebuild.json; fi"
+    sh "if [ -f #{workspace}/build/reports/errors.json ]; then cp #{workspace}/build/reports/errors.json #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/xcodebuild.json; fi"
   end
 
   # Run unit tests and then run linter to generate JSONs
@@ -966,10 +965,10 @@ private_lane :smf_commit_meta_json do |options|
   desc "Commit the meta JSON files"
 
   # Copy additional meta files to MetaJSON directory
-  sh "if [ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ]; then cp -R #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/. #{workspace}/.MetaJSON/; fi"
+  sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME} ]; then cp -R #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/. #{workspace}/.MetaJSON/; fi"
 
   # Delete the temporary MetaJSON folder
-  sh "if [ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}; fi"
+  sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}; fi"
 
   # Reset git, add MetaJSON directory and commit
   sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && git commit -m \"Update MetaJSONs\""
@@ -1573,7 +1572,7 @@ end
 
 def smf_run_danger(build_variant, build_type)
   if File.file?('Dangerfile')
-    sh "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN; export BUILD_VARIANT=\"#{build_variant}\"; export BUILD_TYPE=\"#{build_type}\"; export FASTLANE_COMMONS_FOLDER=\"#{FASTLANE_COMMONS_FOLDER_NAME}\"; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
+    sh "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN; export BUILD_VARIANT=\"#{build_variant}\"; export BUILD_TYPE=\"#{build_type}\"; export FASTLANE_COMMONS_FOLDER=\"#{$FASTLANE_COMMONS_FOLDER_NAME}\"; cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile"
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
   end
@@ -1591,7 +1590,7 @@ def smf_run_linter
   # Turns \/ int /
   a = '\\\\\/'
   b = '\/'
-  system "sed -i -e 's/#{a}/#{b}/g' " + workspace + "/#{METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
+  system "sed -i -e 's/#{a}/#{b}/g' " + workspace + "/#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
 
 end
 
@@ -1605,11 +1604,11 @@ def smf_run_slather(scheme, projectName)
     smf_create_json_slather_summary(workspace + '/report.json')
   end
 
-  sh "if [ -f #{workspace}/build/reports/test_coverage.json ]; then cp #{workspace}/build/reports/test_coverage.json #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/test_coverage.json; fi"
-  sh "if [ -d #{workspace}/html ]; then cp -r #{workspace}/html #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
+  sh "if [ -f #{workspace}/build/reports/test_coverage.json ]; then cp #{workspace}/build/reports/test_coverage.json #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/test_coverage.json; fi"
+  sh "if [ -d #{workspace}/html ]; then cp -r #{workspace}/html #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
   # Compress the Slather HTML folder and delete it afterwards
-  sh "if [ -d #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report ]; then zip #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
-  sh "if [ -f #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip ]; then rm -rf #{workspace}/#{METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
+  sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report ]; then zip #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
+  sh "if [ -f #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip ]; then rm -rf #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
 end
 
 def smf_create_json_slather_summary(report_file)
