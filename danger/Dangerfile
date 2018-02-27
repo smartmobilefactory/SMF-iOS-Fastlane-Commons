@@ -4,10 +4,13 @@
 
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
 ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
+
 @project_danger_config = nil
 @commons_danger_config = nil
 
-message("Analysing build variant **#{build_variant}** of build type **#{build_type}**")
+danger_info_message = ""
+danger_info_message += "Danger configuration:"
+danger_info_message += "<br /><br />Analysing build variant **#{build_variant}** of build type **#{build_type}**"
 
 if File.file?('fastlane/BuildVariants.json')
   fastlane_config = JSON.parse(File.read('fastlane/BuildVariants.json'))
@@ -22,8 +25,8 @@ else
   fail "./fastlane doesn't contain BuildVariants.json"
 end
 
-if File.file?('fastlane/commons/danger/danger_defaults.json')
-  @commons_danger_config = JSON.parse(File.read('fastlane/commons/danger/danger_defaults.json'))
+if File.file?("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json")
+  @commons_danger_config = JSON.parse(File.read("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json"))
   if @commons_danger_config.nil?
       fail "The default Danger config is nil"
   end
@@ -53,11 +56,11 @@ end
 
 if get_config_value("github.pr.big_length.use_feature")
   if git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code")
-    warn("There amount of changed code is huge (#{git.lines_of_code}). Please try to create many small pull requests instead of a few big ones!")
+    warn("There amount of changed code is huge (#{git.lines_of_code} lines). Please try to create many small pull requests instead of a few big ones!")
   end
-  message("GitHub PR length is **enabled***<br />- lines_of_code: **#{get_config_value("github.pr.big_length.lines_of_code")}***")
+  danger_info_message += "<br /><br />GitHub PR length is **enabled***<br />- lines_of_code: **#{get_config_value("github.pr.big_length.lines_of_code")}***"
 else
-  message("GitHub PR length is **disabled**")
+  danger_info_message += "<br /><br />GitHub PR length is **disabled**"
 end
 
 ###################
@@ -66,8 +69,9 @@ end
 
 if get_config_value("xcode_build_warnings.use_feature")
   xcode_summary.report 'build/reports/errors.json'
+  danger_info_message += "<br /><br />Xcode warnings are **enabled**"
 else
-  message("[Xcode warnings are **disabled**")
+  danger_info_message += "<br /><br />Xcode warnings are **disabled**"
 end
 
 #######################
@@ -93,9 +97,9 @@ if get_config_value("swiftlint.use_feature")
     swiftlint.lint_files
   end
   
-  message("SwiftLint is **enabled***<br />- binary: **#{binary_message_string}**,<br />- fail_on_error: **#{fail_on_error}***")
+  danger_info_message += "<br /><br />SwiftLint is **enabled***<br />- binary: **#{binary_message_string}**,<br />- fail_on_error: **#{fail_on_error}***"
 else
-  message("SwiftLint is **disabled**")
+  danger_info_message += "<br /><br />SwiftLint is **disabled**"
 end
 
 #####################
@@ -118,10 +122,13 @@ if get_config_value("code_coverage.slather.use_feature")
     slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_coverage, notify_level: notify_level)
     slather.show_coverage
 
-    message("Slather is **enabled***<br />- notify_if_coverage_is_less_than: **#{min_total_coverage}**<br />- notify_if_modified_file_is_less_than: **#{min_file_coverage}**<br />- notify_level: **#{notify_level_string}***")
+    danger_info_message += "<br /><br />Slather is **enabled***<br />- notify_if_coverage_is_less_than: **#{min_total_coverage}**<br />- notify_if_modified_file_is_less_than: **#{min_file_coverage}**<br />- notify_level: **#{notify_level_string}***"
   else
-    message("Slather is **disabled** as unit tests shouldn't be runned")
+    danger_info_message += "<br /><br />Slather is **disabled** as unit tests shouldn't be runned"
   end
 else
   warn("Slather is **disabled**")
 end
+
+message(danger_info_message)
+
