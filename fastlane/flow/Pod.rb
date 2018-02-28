@@ -28,7 +28,6 @@ private_lane :smf_publish_pod do |options|
 
   # Make sure the repo is up to date and clean
   ensure_git_branch(branch: branch)
-  ensure_git_status_clean
 
   # Bump the pods version if needed
   if ["major", "minor", "patch"].include? bump_type
