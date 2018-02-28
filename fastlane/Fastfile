@@ -7,6 +7,9 @@ $METAJSON_TEMP_FOLDERNAME = ".MetaJSON-temp"
 
 before_all do
 
+  # Load the Fastlane config from the disk into memory
+  smf_load_fastlane_config
+  
   # Clone the Commons Repo
   smf_remove_fastlane_commons_repo
   smf_clone_fastlane_commons_repo
@@ -14,9 +17,6 @@ before_all do
   # Import the splitted Fastlane classes
   require_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/flow"
   require_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/steps"
-
-  # Load the Fastlane config from the disk into memory
-  smf_load_fastlane_config
 end
 
 after_all do
