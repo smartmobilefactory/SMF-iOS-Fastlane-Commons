@@ -1,22 +1,96 @@
 $FASTLANE_COMMONS_FOLDER_NAME = ".SMF-iOS-Fastlane-Commons"
+$METAJSON_TEMP_FOLDERNAME = ".MetaJSON-temp"
+
+#################
+### Lifecycle ###
+#################
 
 before_all do
 
-  smf_remove_fastlane_commons_clone
-  smf_clone_fastlane_commons
+  # Load the Fastlane config from the disk into memory
+  smf_load_fastlane_config
 
-  import "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/Core_Fastfile"
+  # Clone the Commons Repo
+  smf_remove_fastlane_commons_repo
+  smf_clone_fastlane_commons_repo
+
+  # Import the splitted Fastlane classes
+  import_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/flow"
+  import_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/steps"
 end
 
 after_all do
-  smf_remove_fastlane_commons_clone
+  smf_remove_fastlane_commons_repo
 end
 
-private_lane :smf_clone_fastlane_commons do
-  fastlane_commons_branch = build_variants_config["project"]["fastlane_commons_branch"]
+error do |lane, exception|
+  if ENV["SMF_SHOULD_SEND_DEPLOY_FAILURE_NOTIFICATIONS"] == "true"
+    project_config = @smf_fastlane_config["project"]
+
+    # Create the release title with the framework config if it's a framework
+    framework_identifier = ENV["SMF_FRAMEWORK_IDENTIFIER"]
+    release_title = nil
+    if framework_identifier
+      release_title = smf_default_pod_notification_release_title(project_config["project_name"], @smf_fastlane_config["build_variants"][framework_identifier])
+    end
+
+    smf_handle_exception(
+      build_variant: ENV["SMF_BUILD_VARIANT"],
+      project_config: project_config,
+      release_title: release_title,
+      exception: exception,
+      )
+  end
+end
+
+##############
+### Helper ###
+##############
+
+def import_all(path)
+  Dir["#{path}/*.rb"].each { |file| 
+    import file 
+  }
+end
+
+##############
+### Config ###
+##############
+
+def smf_value_for_keypath_in_hash_map(hash_map, keypath)
+  keys = keypath.split("/")
+  value = hash_map
+  for key in keys
+    if value.key?(key)
+      value = value[key]
+    else
+      raise "Error: Couldn't find keypath \"#{keypath}\" in \"#{hash_map}\"".red
+    end
+  end
+  return value
+end
+
+def smf_load_fastlane_config
+  config_path = fastlane_config_path
+  UI.message("Reading the SMF Fastlane config from \"#{config_path}\"")
+  config_file = File.read(config_path)
+  if config_file
+    @smf_fastlane_config ||= JSON.parse(config_file)
+    UI.success("Parsed config file into the hash map")
+  else
+    raise "Error: The SMF Fastlane config file doesn't exist at path \"#{config_path}\"".red
+  end
+end
+
+####################
+### Commons Repo ###
+####################
+
+private_lane :smf_clone_fastlane_commons_repo do
+  fastlane_commons_branch = @smf_fastlane_config["project"]["fastlane_commons_branch"]
   sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git #{$FASTLANE_COMMONS_FOLDER_NAME}"
 end
 
-private_lane :smf_remove_fastlane_commons_clone do
+private_lane :smf_remove_fastlane_commons_repo do
   sh "if [ -d #{$FASTLANE_COMMONS_FOLDER_NAME} ]; then rm -rf #{$FASTLANE_COMMONS_FOLDER_NAME}; fi"
 end
