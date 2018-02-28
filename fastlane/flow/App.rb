@@ -252,7 +252,8 @@ private_lane :smf_test_app_project do |options|
   # Read options parameter
   project_config = options[:project_config]
   build_variant = options[:build_variant]
-  build_variant_config = smf_fastlane_config["variants"][build_variant_config]
+  build_variants_config = options[:build_variants_config]
+  build_variant_config = build_variants_config[build_variant]
   should_perform_unit_test = (build_variant_config["perform_unit_tests"].nil? ? false : build_variant_config["perform_unit_tests"])
   should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
