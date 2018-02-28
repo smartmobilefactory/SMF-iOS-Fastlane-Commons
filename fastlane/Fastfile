@@ -26,13 +26,13 @@ end
 
 error do |lane, exception|
   if ENV["SMF_SHOULD_SEND_DEPLOY_FAILURE_NOTIFICATIONS"] == "true"
-    project_config = build_variants_config["project"]
+    project_config = @smf_fastlane_config["project"]
 
     # Create the release title with the framework config if it's a framework
     framework_identifier = ENV["SMF_FRAMEWORK_IDENTIFIER"]
     release_title = nil
     if framework_identifier
-      release_title = smf_default_pod_notification_release_title(project_config["project_name"], build_variants_config["framework"][framework_identifier])
+      release_title = smf_default_pod_notification_release_title(project_config["project_name"], @smf_fastlane_config["framework"][framework_identifier])
     end
 
     smf_handle_exception(
@@ -55,7 +55,7 @@ def require_all(path)
 end
 
 private_lane :smf_clone_fastlane_commons_repo do
-  fastlane_commons_branch = build_variants_config["project"]["fastlane_commons_branch"]
+  fastlane_commons_branch = @smf_fastlane_config["project"]["fastlane_commons_branch"]
   sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git #{$FASTLANE_COMMONS_FOLDER_NAME}"
 end
 
