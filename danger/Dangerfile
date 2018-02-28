@@ -3,7 +3,7 @@
 ############################
 
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
-ENV['BUILD_TYPE'] == nil ? build_type = "targets" : build_type = ENV['BUILD_TYPE']
+ENV['FASTLANE_CONFIG_PATH'] == nil ? build_type = "fastlane/Config.json" : build_type = ENV['FASTLANE_CONFIG_PATH']
 
 @project_danger_config = nil
 @commons_danger_config = nil
@@ -12,8 +12,8 @@ danger_info_message = ""
 danger_info_message += "Danger configuration:"
 danger_info_message += "<br /><br />Analysing build variant **#{build_variant}** of build type **#{build_type}**"
 
-if File.file?('fastlane/BuildVariants.json')
-  fastlane_config = JSON.parse(File.read('fastlane/BuildVariants.json'))
+if File.file?(ENV['FASTLANE_CONFIG_PATH'])
+  fastlane_config = JSON.parse(File.read(ENV['FASTLANE_CONFIG_PATH']))
   build_variant_config = fastlane_config[build_type][build_variant]
   target_depended_config = fastlane_config[build_type][build_variant]["danger_config_name"]
   if target_depended_config
@@ -22,7 +22,7 @@ if File.file?('fastlane/BuildVariants.json')
     @project_danger_config = fastlane_config["danger_config"]
   end
 else
-  fail "./fastlane doesn't contain BuildVariants.json"
+  fail "Error: SMF Fastlane config couldn't be found in #{ENV['FASTLANE_CONFIG_PATH']}"
 end
 
 if File.file?("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json")
