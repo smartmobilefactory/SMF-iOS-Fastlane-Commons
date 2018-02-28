@@ -16,7 +16,7 @@ private_lane :smf_archive_ipa do |options|
   # Read options parameter
   project_name = options[:project_config]["project_name"]
   build_variant = options[:build_variant].downcase
-  build_variant_config = options[:build_variants_config]["targets"][build_variant]
+  build_variant_config = options[:build_variants_config]["build_variants"][build_variant]
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
   should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
   icloud_environment = (build_variant_config["icloud_environment"].nil? ? "Development" : build_variant_config["icloud_environment"])

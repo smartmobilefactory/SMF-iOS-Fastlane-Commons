@@ -3,19 +3,19 @@
 ############################
 
 ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
-ENV['FASTLANE_CONFIG_PATH'] == nil ? build_type = "fastlane/Config.json" : build_type = ENV['FASTLANE_CONFIG_PATH']
+ENV['FASTLANE_CONFIG_PATH'] == nil ? fastlane_config_path = "fastlane/Config.json" : fastlane_config_path = ENV['FASTLANE_CONFIG_PATH']
 
 @project_danger_config = nil
 @commons_danger_config = nil
 
 danger_info_message = ""
 danger_info_message += "Danger configuration:"
-danger_info_message += "<br /><br />Analysing build variant **#{build_variant}** of build type **#{build_type}**"
+danger_info_message += "<br /><br />Analysing build variant **#{build_variant}**"
 
-if File.file?(ENV['FASTLANE_CONFIG_PATH'])
-  fastlane_config = JSON.parse(File.read(ENV['FASTLANE_CONFIG_PATH']))
-  build_variant_config = fastlane_config[build_type][build_variant]
-  target_depended_config = fastlane_config[build_type][build_variant]["danger_config_name"]
+if File.file?(fastlane_config_path)
+  fastlane_config = JSON.parse(File.read(fastlane_config_path))
+  build_variant_config = fastlane_config["build_variants"][build_variant]
+  target_depended_config = fastlane_config["build_variants"][build_variant]["danger_config_name"]
   if target_depended_config
     @project_danger_config = fastlane_config[target_depended_config]
   else

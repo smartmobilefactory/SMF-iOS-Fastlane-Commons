@@ -20,7 +20,7 @@ private_lane :smf_deploy_app do |options|
   build_variants_config = options[:build_variants_config]
   branch = options[:branch]
   project_config = build_variants_config["project"]
-  build_variant_config = build_variants_config["targets"][build_variant]
+  build_variant_config = build_variants_config["build_variants"][build_variant]
   project_name = project_config["project_name"]
   # Optional parameters
   should_perform_unit_test = (build_variant_config["perform_unit_tests"].nil? ? false : build_variant_config["perform_unit_tests"])
@@ -253,7 +253,7 @@ private_lane :smf_test_app_project do |options|
   project_config = options[:project_config]
   build_variant = options[:build_variant]
   build_variants_config = options[:build_variants_config]
-  build_variant_config = build_variants_config["targets"][build_variant]
+  build_variant_config = build_variants_config["build_variants"][build_variant]
   should_perform_unit_test = (build_variant_config["perform_unit_tests"].nil? ? false : build_variant_config["perform_unit_tests"])
   should_clean_project = (options[:should_clean_project].nil? ? true : options[:should_clean_project])
   use_sigh = (options[:use_sigh].nil? ? true : options[:use_sigh])
@@ -274,7 +274,7 @@ private_lane :smf_test_app_project do |options|
     )
   end
 
-  smf_run_danger(options[:build_variant], "targets")
+  smf_run_danger(options[:build_variant])
 end
 
 #####################################

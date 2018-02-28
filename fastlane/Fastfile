@@ -31,7 +31,7 @@ error do |lane, exception|
     framework_identifier = ENV["SMF_FRAMEWORK_IDENTIFIER"]
     release_title = nil
     if framework_identifier
-      release_title = smf_default_pod_notification_release_title(project_config["project_name"], @smf_fastlane_config["framework"][framework_identifier])
+      release_title = smf_default_pod_notification_release_title(project_config["project_name"], @smf_fastlane_config["build_variants"][framework_identifier])
     end
 
     smf_handle_exception(

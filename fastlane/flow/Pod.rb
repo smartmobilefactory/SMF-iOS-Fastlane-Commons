@@ -176,7 +176,7 @@ private_lane :smf_test_pod_project do |options|
     )
   end
 
-  smf_run_danger(options[:build_variant_config], "frameworks")
+  smf_run_danger(options[:build_variant_config])
 
 end
 
