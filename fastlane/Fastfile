@@ -9,14 +9,14 @@ before_all do
 
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
-  
+
   # Clone the Commons Repo
   smf_remove_fastlane_commons_repo
   smf_clone_fastlane_commons_repo
 
   # Import the splitted Fastlane classes
-  require_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/flow"
-  require_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/steps"
+  import_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/flow"
+  import_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/steps"
 end
 
 after_all do
@@ -47,9 +47,9 @@ end
 ### Helper ###
 ##############
 
-def require_all(path)
+def import_all(path)
   Dir["#{path}/*.rb"].each { |file| 
-    fastlane_require file 
+    import file 
   }
 end
 
