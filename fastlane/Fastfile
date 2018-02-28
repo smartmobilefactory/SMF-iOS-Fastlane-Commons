@@ -14,7 +14,6 @@ before_all do
   # Import the splitted Fastlane classes
   require_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/flow"
   require_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/steps"
-  require_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/utils"
 
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
@@ -53,6 +52,39 @@ def require_all(path)
     fastlane_require file 
   }
 end
+
+##############
+### Config ###
+##############
+
+def smf_value_for_keypath_in_hash_map(hash_map, keypath)
+  keys = keypath.split("/")
+  value = hash_map
+  for key in keys
+    if value.key?(key)
+      value = value[key]
+    else
+      raise "Error: Couldn't find keypath \"#{keypath}\" in \"#{hash_map}\"".red
+    end
+  end
+  return value
+end
+
+def smf_load_fastlane_config
+  config_path = fastlane_config_path
+  UI.message("Reading the SMF Fastlane config from \"#{config_path}\"")
+  config_file = File.read(config_path)
+  if config_file
+    @smf_fastlane_config ||= JSON.parse(config_file)
+    UI.success("Parsed config file into the hash map")
+  else
+    raise "Error: The SMF Fastlane config file doesn't exist at path \"#{config_path}\"".red
+  end
+end
+
+####################
+### Commons Repo ###
+####################
 
 private_lane :smf_clone_fastlane_commons_repo do
   fastlane_commons_branch = @smf_fastlane_config["project"]["fastlane_commons_branch"]
