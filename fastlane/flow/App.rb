@@ -159,7 +159,7 @@ private_lane :smf_deploy_build_variant do |options|
   version = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   smf_create_github_release(
-    release_name: "#{build_variant.upcase} version (#{build_number})",
+    release_name: "#{@smf_build_variant.upcase} version (#{build_number})",
     tag: tag
   )
 
