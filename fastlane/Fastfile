@@ -132,9 +132,13 @@ private_lane :smf_remove_fastlane_commons_repo do
   sh "if [ -d #{@fastlane_commons_dir_path} ]; then rm -rf #{@fastlane_commons_dir_path}; fi"
 end
 
-##############
-### Helper ###
-##############
+#####################################################
+### Helper (needed without commons repo available)###
+#####################################################
+
+def smf_is_jenkins_environment
+  return ENV["JENKINS_URL"]
+end
 
 def smf_workspace_dir
   if smf_is_jenkins_environment
