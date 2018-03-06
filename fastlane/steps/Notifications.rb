@@ -137,7 +137,7 @@ private_lane :smf_send_mail do |options|
       text-transform: uppercase;
       background-color: rgb(255, 249, 242);
       color: rgb(211, 0, 0);
-      text-align: center;' >#{exception_message.message[0..8000]}#{'\\n...' if exception_message.message.length > 8000}<p>
+      text-align: center;' >#{exception_message[0..8000]}#{'\\n...' if exception_message.length > 8000}<p>
       <strong>Source: </strong><a href=#{ENV["BUILD_URL"]}>Build Job Console</a>"
   end
 
