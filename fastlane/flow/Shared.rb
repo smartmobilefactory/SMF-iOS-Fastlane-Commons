@@ -68,7 +68,6 @@ private_lane :smf_send_deploy_success_notifications do |options|
 
   smf_send_mail_to_contributors(
     title: title,
-    message: ENV[$SMF_CHANGELOG_ENV_KEY],
     success: true,
     app_link: app_link
     )
