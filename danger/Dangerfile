@@ -41,6 +41,8 @@ end
 ###################
 
 def get_config_value(key)
+    puts "config for key: #{key}"
+
   if @project_danger_config != nil && @project_danger_config[key.to_sym] != nil
     return @project_danger_config[key.to_sym]
   else
@@ -117,8 +119,14 @@ if get_config_value("code_coverage.slather.use_feature")
     puts "fastlane_config: #{fastlane_config}"
     puts "build_variant_config: #{build_variant_config}"
 
-    slather.configure("#{fastlane_config[:project][:project_name]}.xcodeproj", build_variant_config[:scheme], options: {
-      workspace: "#{fastlane_config[:project][:project_name]}.xcworkspace",
+    project_name = fastlane_config[:project][:project_name]
+    scheme = build_variant_config[:scheme]
+
+    puts "project_name: #{project_name}"
+    puts "scheme: #{scheme}"
+
+    slather.configure("#{project_name}.xcodeproj", scheme, options: {
+      workspace: "#{project_name}.xcworkspace",
       output_directory: 'build/reports',
     })
 
