@@ -22,9 +22,9 @@ before_all do
   end
 
   # Import the splitted Fastlane classes
-  import_all "#{@fastlane_commons_dir_path}/flow"
-  import_all "#{@fastlane_commons_dir_path}/steps"
-  import_all "#{@fastlane_commons_dir_path}/utils"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
 end
 
 desc "Called on success"
@@ -106,7 +106,7 @@ def smf_set_build_variants_matching_regex(regex)
   all_build_variants = @smf_fastlane_config[:build_variants].keys
   matching_build_variants = all_build_variants.grep(/#{regex}/)
   
-  UI.important("Found matching build variatns: #{matching_build_variants}")
+  UI.important("Found matching build variants: #{matching_build_variants}")
   
   smf_set_build_variants_array(matching_build_variants)
 end
