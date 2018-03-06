@@ -26,7 +26,7 @@ else
 end
 
 if File.file?("#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json")
-  @commons_danger_config = JSON.parse(File.read("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json"), :symbolize_names => true)
+  @commons_danger_config = JSON.parse(File.read("#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json"), :symbolize_names => true)
   if @commons_danger_config.nil?
       fail "The default Danger config is nil"
   end
