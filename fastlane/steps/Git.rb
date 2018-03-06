@@ -197,6 +197,17 @@ def smf_default_tag_prefix
   return (smf_is_build_variant_a_pod ? smf_default_pod_tag_prefix : smf_default_app_tag_prefix)
 end
 
+def smf_default_tag_version
+  if smf_is_build_variant_a_pod 
+    podspec_path = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:podspec_path]
+    version = read_podspec(path: podspec_path)["version"]
+    return version
+  else
+    build_number = get_build_number(xcodeproj: "#{@smf_fastlane_config[:project][:project_name]}.xcodeproj").to_s
+    return build_number
+  end
+end
+
 def smf_default_app_tag_prefix
   return "build/#{@smf_build_variant}/"
 end
