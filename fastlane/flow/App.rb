@@ -55,6 +55,8 @@ private_lane :smf_deploy_build_variant do |options|
     sh "mkdir #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}"
   end
 
+  smf_install_pods_if_project_contains_podfile
+  
   # Increment the build number only if it should
   if smf_should_build_number_be_incremented
     smf_increment_build_number
