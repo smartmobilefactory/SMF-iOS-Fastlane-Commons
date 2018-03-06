@@ -15,7 +15,7 @@ danger_info_message += "<br /><br />Analysing build variant **#{build_variant}**
 if File.file?(fastlane_config_path)
   fastlane_config = JSON.parse(File.read(fastlane_config_path), :symbolize_names => true)
   build_variant_config = fastlane_config[:build_variants][build_variant.to_sym]
-  target_depended_config = fastlane_config[:build_variants][build_variant.to_sym][:danger_config_name]
+  target_depended_config = build_variant_config[:danger_config_name]
   if target_depended_config
     @project_danger_config = fastlane_config[target_depended_config.to_sym]
   else
@@ -109,6 +109,8 @@ end
 if get_config_value("code_coverage.slather.use_feature")
   perform_unit_tests = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
   if perform_unit_tests
+    message("#{fastlane_config}")
+    message("#{build_variant_config}")
     slather.configure("#{fastlane_config[:project][:project_name]}.xcodeproj", build_variant_config[:scheme], options: {
       workspace: "#{fastlane_config[:project][:project_name]}.xcworkspace",
       output_directory: 'build/reports',
