@@ -1,24 +1,27 @@
+# Constants
+
+SLATHER_COVERAGE_REPORT_JSON_NAME = "report.json"
+SMF_COVERAGE_REPORT_JSON_NAME = "test_coverage.json"
+SLATHER_HTML_OUTPUT_DIR_NAME = "slather_coverage_report"
+
 ##############################
 ### smf_generate_meta_json ###
 ##############################
 
-# options: branch (String), build_variant (String) and build_variants_contains_whitelist (String) [optional]
+# options: build_variants_contains_whitelist (String) [optional]
 
 desc "Create the metaJSON files - applys only for Alpha builds."
 private_lane :smf_generate_meta_json do |options|
 
-  # Read options parameter
-  branch = options[:branch]
-  build_variant = options[:build_variant].downcase
-  project_name = options[:project_config]["project_name"]
+  # Parameter
   build_variants_contains_whitelist = options[:build_variants_contains_whitelist]
 
-  if (build_variants_contains_whitelist.nil?) || (build_variants_contains_whitelist.any? { |whitelist_item| build_variant.include?(whitelist_item) })
+  if (build_variants_contains_whitelist.nil?) || (build_variants_contains_whitelist.any? { |whitelist_item| @smf_build_variant.include?(whitelist_item) })
     desc "Create the meta JSON files"
     # Fetch the MetaJSON scripts repo
     sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
     # Create and commit the MetaJSON files
-    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/create-meta-jsons.sh \"#{project_name}\" \"#{branch}\" || true"
+    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/create-meta-jsons.sh \"#{@smf_fastlane_config[:project][:project_name]}\" \"#{@smf_git_branch}\" || true"
     # Remove the MetaJSON scripts repo
     sh "rm -rf SMF-iOS-MetaJSON"
   end
@@ -29,15 +32,11 @@ end
 ### smf_commit_meta_json ###
 ############################
 
-# options: branch (String)
-
 desc "Commit the metaJSON files - applys only for Alpha builds."
 private_lane :smf_commit_meta_json do |options|
-  branch = options[:branch]
 
-  workspace = ENV["WORKSPACE"]
-
-  desc "Commit the meta JSON files"
+  # Variables
+  workspace = smf_workspace_dir
 
   # Copy additional meta files to MetaJSON directory
   sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME} ]; then cp -R #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/. #{workspace}/.MetaJSON/; fi"
@@ -54,43 +53,69 @@ end
 ##############
 
 def smf_run_linter
-  workspace = ENV["WORKSPACE"]
 
-  system "cd " + workspace + "; Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"
+  # Variables
+  workspace = smf_workspace_dir
 
-  # Removes the workspace part
-  workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
-  system "sed -i -e 's/#{workspace_regexp}//g' " + workspace + "/build/reports/swiftlint.json"
+  begin
+    # Run SwiftLint and save the output as JSON
+    system "cd " + workspace + "; Pods/SwiftLint/swiftlint lint --reporter json > build/reports/swiftlint.json"
 
-  # Turns \/ int /
-  a = '\\\\\/'
-  b = '\/'
-  system "sed -i -e 's/#{a}/#{b}/g' " + workspace + "/#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
+    # Removes the workspace part
+    workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
+    system "sed -i -e 's/#{workspace_regexp}//g' " + workspace + "/build/reports/swiftlint.json"
 
+    # Turns \/ int /
+    a = '\\\\\/'
+    b = '\/'
+    # Convert the abosulte path to a path wich is relative to the project root folder
+    system "sed -i -e 's/#{a}/#{b}/g' " + workspace + "/#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
+  rescue => e
+    UI.error("Failed to run SwiftLint. But the build job will continue.")
+
+    smf_send_hipchat_message(
+        title: "Failed to run Swiftlint for #{smf_default_notification_release_title} 😢",
+        success: false,
+        hipchat_channel: "CI"
+      )
+  end
 end
 
-def smf_run_slather(scheme, projectName)
-  workspace = ENV["WORKSPACE"]
+def smf_run_slather
 
-  system "cd " + workspace + "; slather coverage -v --html --scheme " + scheme + " --workspace " + projectName + ".xcworkspace " + projectName + ".xcodeproj"
-  system "cd " + workspace + "; slather coverage -v --json --scheme " + scheme + " --workspace " + projectName + ".xcworkspace " + projectName + ".xcodeproj"
+  # Variables
+  workspace = smf_workspace_dir
+  scheme = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
+  project_name = @smf_fastlane_config[:project][:project_name]
 
-  if File.file?(workspace + '/report.json')
-    smf_create_json_slather_summary(workspace + '/report.json')
+  # Create the Slather report as html
+  system "cd " + workspace + "; slather coverage -v --html --scheme " + scheme + " --workspace " + project_name + ".xcworkspace " + project_name + ".xcodeproj"
+  
+  # Create the Slather report as json
+  system "cd " + workspace + "; slather coverage -v --json --scheme " + scheme + " --workspace " + project_name + ".xcworkspace " + project_name + ".xcodeproj"
+
+  # Analyse the Slather json report and store the result in out format
+  if File.file?(workspace + "/#{SLATHER_COVERAGE_REPORT_JSON_NAME}")
+    smf_create_json_slather_summary(workspace + "/#{SLATHER_COVERAGE_REPORT_JSON_NAME}")
   end
 
-  sh "if [ -f #{workspace}/build/reports/test_coverage.json ]; then cp #{workspace}/build/reports/test_coverage.json #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/test_coverage.json; fi"
-  sh "if [ -d #{workspace}/html ]; then cp -r #{workspace}/html #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
+  # Copy the output into the temporary MetaJSON folder so that the files can be used once the MetaJSON creation is complete
+  slather_json_report_path = "#{workspace}/build/reports/#{SMF_COVERAGE_REPORT_JSON_NAME}"
+  sh "if [ -f \"#{slather_json_report_path}\" ]; then cp \"#{slather_json_report_path}\" #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/#{SMF_COVERAGE_REPORT_JSON_NAME}; fi"
+  slather_html_report_output_path = "#{workspace}/html"
+  slather_html_report_path = "#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/#{SLATHER_HTML_OUTPUT_DIR_NAME}"
+  sh "if [ -d \"#{slather_html_report_output_path}\" ]; then cp -r \"#{slather_html_report_output_path}\" \"#{slather_html_report_path}\"; fi"
+
   # Compress the Slather HTML folder and delete it afterwards
-  sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report ]; then zip #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
-  sh "if [ -f #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report.zip ]; then rm -rf #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/slather_coverage_report; fi"
+  sh "if [ -d \"#{slather_html_report_path}\" ]; then cd \"#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}\"; zip \"#{slather_html_report_path}.zip\" \"#{slather_html_report_path}\"; fi"
+  sh "if [ -f \"#{slather_html_report_path}.zip\" ]; then rm -rf \"#{slather_html_report_path}\"; fi"
 end
 
 def smf_create_json_slather_summary(report_file)
   if File.file?(report_file)
     files = JSON.parse(File.read(report_file))
 
-    workspace = ENV["WORKSPACE"]
+    workspace = smf_workspace_dir
 
     summary = { }
     summary["files"] = [ ]
@@ -115,7 +140,6 @@ def smf_create_json_slather_summary(report_file)
         end
 
         percent = (covered_loc.to_f / relevant_loc.to_f) * 100
-        #puts "Covered lines in " + file["file"] + ": " + covered_loc.to_s + " of " + relevant_loc.to_s  + " relevant lines of code (" + percent.round(3).to_s + "%)"
 
         entity = { }
         entity["file"] = file["file"]
@@ -127,14 +151,13 @@ def smf_create_json_slather_summary(report_file)
     end
 
     percent = (total_covered_loc.to_f / total_relevant_loc.to_f) * 100
-    #puts "Tested " + files.length.to_s + " files. Total coverage: " + percent.to_s  + "%"
 
     summary["total_coverage"] = percent
 
-    File.open(workspace + "/build/reports/test_coverage.json", "w") do |f|
+    File.open(workspace + "/build/reports/#{SMF_COVERAGE_REPORT_JSON_NAME}", "w") do |f|
       f.write(summary.to_json)
     end
   else
-    puts "Sorry, could not find file: " + report_file
+    puts "Warning: could not find Slather JSON report with filename \"#{report_file}\""
   end
 end

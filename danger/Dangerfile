@@ -13,20 +13,20 @@ danger_info_message += "Danger configuration:"
 danger_info_message += "<br /><br />Analysing build variant **#{build_variant}**"
 
 if File.file?(fastlane_config_path)
-  fastlane_config = JSON.parse(File.read(fastlane_config_path))
-  build_variant_config = fastlane_config["build_variants"][build_variant]
-  target_depended_config = fastlane_config["build_variants"][build_variant]["danger_config_name"]
+  fastlane_config = JSON.parse(File.read(fastlane_config_path), :symbolize_names => true)
+  build_variant_config = fastlane_config[:build_variants][build_variant.to_sym]
+  target_depended_config = fastlane_config[:build_variants][build_variant.to_sym][:danger_config_name]
   if target_depended_config
-    @project_danger_config = fastlane_config[target_depended_config]
+    @project_danger_config = fastlane_config[target_depended_config.to_sym]
   else
-    @project_danger_config = fastlane_config["danger_config"]
+    @project_danger_config = fastlane_config[:danger_config]
   end
 else
   fail "Error: SMF Fastlane config couldn't be found in #{ENV['FASTLANE_CONFIG_PATH']}"
 end
 
 if File.file?("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json")
-  @commons_danger_config = JSON.parse(File.read("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json"))
+  @commons_danger_config = JSON.parse(File.read("fastlane/#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json"), :symbolize_names => true)
   if @commons_danger_config.nil?
       fail "The default Danger config is nil"
   end
@@ -39,13 +39,13 @@ end
 ###################
 
 def get_config_value(key)
-  if @project_danger_config != nil && @project_danger_config[key] != nil
-    return @project_danger_config[key]
+  if @project_danger_config != nil && @project_danger_config[key.to_sym] != nil
+    return @project_danger_config[key.to_sym]
   else
     if @commons_danger_config == nil
       return nil
     else
-      return @commons_danger_config[key]
+      return @commons_danger_config[key.to_sym]
     end
   end
 end
@@ -107,9 +107,9 @@ end
 #####################
 
 if get_config_value("code_coverage.slather.use_feature")
-  if build_variant_config["perform_unit_tests"]
-    slather.configure(fastlane_config["project"]["project_name"] + ".xcodeproj", build_variant_config["scheme"], options: {
-      workspace: fastlane_config["project"]["project_name"] + ".xcworkspace",
+  if build_variant_config["pr.perform_unit_tests".to_sym]
+    slather.configure(fastlane_config[:project][:project_name] + ".xcodeproj", build_variant_config[:scheme], options: {
+      workspace: fastlane_config[:project][:project_name] + ".xcworkspace",
       output_directory: 'build/reports',
     })
 

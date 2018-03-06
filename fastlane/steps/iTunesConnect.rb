@@ -2,42 +2,52 @@
 ### smf_upload_ipa_to_testflight ###
 ####################################
 
-# options: build_variant_config (Hash)
-
 desc "upload the app on Testflight"
 private_lane :smf_upload_ipa_to_testflight do |options|
 
-  UI.important("Upload a new build to Testflight")
+  UI.important("Uploading the build to Testflight")
 
-  skip_waiting = should_skip_waiting_after_itc_upload(options[:build_variant_config])
+  # Variables
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
-  if options[:build_variant_config].key? "itc_apple_id"
-    username = options[:build_variant_config]["itc_apple_id"]
+  if build_variant_config.key? "itc_apple_id"
+    username = build_variant_config[:itc_apple_id]
   else
     username = nil
   end
 
   pilot(
     username: username,
-    skip_waiting_for_build_processing: skip_waiting,
+    skip_waiting_for_build_processing: should_skip_waiting_after_itc_upload,
     changelog: ""
     )
 
 end
 
-desc "Clean, build and release the app on HockeyApp"
+#########################################
+### smf_download_dsym_from_testflight ###
+#########################################
+
+desc "Download the dsym from iTunes Connect"
 private_lane :smf_download_dsym_from_testflight do |options|
 
   UI.important("Download dsym from Testflight")
 
-  project_name = options[:project_config]["project_name"]
-  bundle_identifier = options[:build_variant_config]["bundle_identifier"]
-  username = options[:build_variant_config]["itc_apple_id"]
+  # Variables
+  project_name = @smf_fastlane_config[:project][:project_name]
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  bundle_identifier = build_variant_config[:bundle_identifier]
+  username = build_variant_config[:itc_apple_id]
 
-  build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-  build_number = build_number.to_s
+  build_number = get_build_number(
+    xcodeproj: "#{project_name}.xcodeproj"
+    ).to_s
 
-  download_dsyms(username: username, app_identifier: bundle_identifier,  build_number: build_number)
+  download_dsyms(
+    username: username,
+    app_identifier: bundle_identifier,
+    build_number: build_number
+    )
 
 end
 
@@ -47,61 +57,43 @@ end
 
 private_lane :smf_itunes_precheck do |options|
 
-  project_config = options[:project_config]
-  project_name = project_config["project_name"]
-  hipchat_channel = project_config["hipchat_channel"]
-  build_variant_config = options[:build_variant_config]
-  app_identifier = build_variant_config["bundle_identifier"]
-  username = build_variant_config["itc_apple_id"]
+  # Variables
+  project_config = @smf_fastlane_config[:project]
+  project_name = project_config[:project_name]
+  hipchat_channel = project_config[:hipchat_channel]
+
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
   begin
-   precheck(username: username.nil? ? nil : username , app_identifier: app_identifier)
+    app_identifier = build_variant_config[:bundle_identifier]
+    username = build_variant_config[:itc_apple_id]
 
- rescue => e 
-  UI.error "Error while checking Metadata ...:
-  #{e.message}"
-  subject = "Found Metadata issues for #{project_name}"
-  message = "<strong> Info: iTunes Connect Precheck found issues for #{build_variant_config["scheme"]}</strong> 😢"
-  message << "<p style='
-  border: 1px solid #D8D8D8;
-  padding: 5px;
-  border-radius: 5px;
-  font-family: Arial;
-  font-size: 11px;
-  text-transform: uppercase;
-  background-color: rgb(255, 249, 242);
-  color: rgb(211, 0, 0);
-  text-align: center;' >#{e.message[0..8000]}#{'\\n...' if e.message.length > 8000}<p>
-  <strong> CI build: </strong><a href=#{ENV["BUILD_URL"]}> Build </a>"
+    precheck(
+      username: username.nil? ? nil : username,
+      app_identifier: app_identifier
+      )
 
-  mailgun(
-    subject: subject,
-    postmaster:"postmaster@mailgun.smfhq.com",
-    apikey: ENV["MAILGUN_KEY"],
-    to: "development@smfhq.com",
-    success: false,
-    message: message,
-    app_link: "",
-    ci_build_link: ENV["BUILD_URL"],
-    template_path: "/Users/smf/jenkins/template_mail_ios_precheck.erb"
+  rescue => e
+
+    title = "Fastlane Precheck found Metadata issues for #{project_name} #{@smf_build_variant.upcase} in iTunes Connect 😢"
+    message = "The build will continue to upload to iTunes Connect, but you may need to fix the Metadata issues before releasing the app."
+
+    smf_send_mail(
+      title: title,
+      message: message,
+      success: false,
+      exception_message: e,
+      authors_emails: ["development@smfhq.com"],
+      template_path: "/Users/smf/jenkins/template_mail_ios_precheck.erb"
     )
 
-  if hipchat_channel
-    hipchat_channel = URI.escape(hipchat_channel)
-
-    hipchat(
+    smf_send_hipchat_message(
+      title: title,
       message: message,
-      channel: hipchat_channel,
       success: false,
-      api_token: ENV["HIPCHAT_API_TOKEN"],
-      notify_room: true,
-      version: "2",
-      message_format: "html",
-      include_html_header: false,
-      from: "#{project_name} iOS CI"
+      hipchat_channel: hipchat_channel
       )
   end
- end
 end
 
 
@@ -109,6 +101,7 @@ end
 ### HELPER ###
 ##############
 
-def should_skip_waiting_after_itc_upload(build_variant_config)
-  return (build_variant_config["itc_skip_waiting"].nil? ? false : ["itc_skip_waiting"])
+def should_skip_waiting_after_itc_upload
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  return (build_variant_config[:itc_skip_waiting].nil? ? false : build_variant_config[:itc_skip_waiting])
 end

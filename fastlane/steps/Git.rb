@@ -2,23 +2,18 @@
 ### smf_collect_changelog ###
 #############################
 
-# options: build_variant (String)
-
 desc "Collect git commit messages and author mail adresses into a changelog and store them as environmental varibles."
 private_lane :smf_collect_changelog do |options|
 
-  UI.important("collect commits back to the last tag")
+  UI.important("Collecting commits back to the last tag")
 
-  # Read options parameter
-  build_variant = options[:build_variant].downcase
-  project_platform = options[:project_config]["platform"]
-
-  matching_pattern = (options[:tag_prefix].nil? ? "#{build_variant}" : options[:tag_prefix])
-
+  # Constants
   NO_GIT_TAG_FAILURE = "NO_GIT_TAG_FAILURE"
 
-  # Get last tag for the current branch
-  last_tag = sh("git describe --tags --match \"*#{matching_pattern}*\" --abbrev=0 HEAD --first-parent || echo #{NO_GIT_TAG_FAILURE}").to_s
+  # Create the tag with a regex as version. The result is eg. "releases/*" which will match any tag starting with "releases/"
+  matching_pattern = smf_construct_default_tag_for_current_project("*")
+
+  last_tag = sh("git describe --tags --match \"#{matching_pattern}\" --abbrev=0 HEAD --first-parent || echo #{NO_GIT_TAG_FAILURE}").to_s
 
   # Use the initial commit if there is no matching tag yet
   if last_tag.include? NO_GIT_TAG_FAILURE
@@ -27,52 +22,42 @@ private_lane :smf_collect_changelog do |options|
 
   last_tag = last_tag.strip
 
-  if ["patch", "minor", "major", "current"].any? { |item| build_variant.downcase.include?(item) }
-    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '- (%an) %s')
-    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '%ae')
-  else
-    ENV["SMF_CHANGELOG"] =  changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '- (%an) %s')
-    ENV["SMF_CHANGELOG_EMAILS"] = changelog_from_git_commits(between:[last_tag,"HEAD"],include_merges: false, pretty: '%ae')
-  end
+  ENV[$SMF_CHANGELOG_ENV_KEY] =  changelog_from_git_commits(
+    between:[last_tag,"HEAD"],
+    merge_commit_filtering: "exclude_merges",
+    pretty: '- (%an) %s'
+    )
+  ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_from_git_commits(
+    between:[last_tag,"HEAD"],
+    merge_commit_filtering: "exclude_merges",
+    pretty: '%ae'
+    )
 
-  if (!project_platform.nil?) && (project_platform.eql? "mac")
-
-   File.open("changelog.properties", 'w') { |file| file.write("SMF_CHANGELOG='#{ENV["SMF_CHANGELOG"]}'") }
-   File.open("emails.properties", 'w') { |file| file.write("SMF_CHANGELOG_EMAILS='#{ENV["SMF_CHANGELOG_EMAILS"]}'") }
-
+  # Store the change log in a file if a macOS app is build as the upload to HockeyApp is done in a separate Fastlane call
+  if lane_context[SharedValues::PLATFORM_NAME] == "mac"
+    File.open("changelog.properties", 'w') { |file| file.write("#{$SMF_CHANGELOG_ENV_KEY}='#{ENV[$SMF_CHANGELOG_ENV_KEY]}'") }
+    File.open("emails.properties", 'w') { |file| file.write("#{$SMF_CHANGELOG_EMAILS_ENV_KEY}='#{ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY]}'") }
   end
 
 end
 
-#############################
-#####   smf_check_tag   #####
-#############################
-
-# options: build_variant (String)
+##########################################################
+#####   smf_verify_git_tag_is_not_already_existing   #####
+##########################################################
 
 desc "Check if the tag exist after incrementation of the build number"
-private_lane :smf_check_tag do |options|
+private_lane :smf_verify_git_tag_is_not_already_existing do |options|
 
-  UI.important("check if the Incremented Tag exist")
+  UI.important("Checking if the incremented tag already exists")
 
-  # Read options parameter
-  build_variant = options[:build_variant].downcase
-  project_name = options[:project_config]["project_name"]
-
-  tag_prefix = (options[:tag_prefix].nil? ? "build/#{build_variant}/" : options[:tag_prefix])
-  tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
-
-  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-
-  # Use the incremented build number only if it should be incremented. Also pass the former default prefix.
-  tag_prefixes = [tag_prefix, "build/#{build_variant}_b"]
-  if smf_should_build_number_be_incremented(tag_prefixes)
-    version = smf_get_incremented_build_number(version)
-  end
-
-  # Check if the tag already exists. Check also for the former default tag prefix
-  if git_tag_exists(tag: tag_prefix+version.to_s+tag_suffix) or git_tag_exists(tag: "build/#{build_variant}_b"+version.to_s+tag_suffix)
-    raise "Git tag already existed".red
+  # Check if the tag already exists.
+  git_tag = smf_construct_default_tag_for_current_project
+  # Check also for the former default tag prefix
+  project_config = @smf_fastlane_config[:project]
+  tag_prefix = (project_config[:tag_prefix].nil? ? smf_default_tag_prefix : project_config[:tag_prefix])
+  deprecated_git_tag = smf_construct_tag_for_current_project("#{tag_prefix}_b", "")
+  if git_tag_exists(tag: git_tag) or git_tag_exists(tag: deprecated_git_tag)
+    raise "The Git tag already exists! The build will be aborted to avoid builds with the same build nubmer.".red
   end
 
 end
@@ -82,30 +67,16 @@ end
 ### smf_add_git_tag ###
 #######################
 
-# options: project_config (Hash), tag_prefix (String), tag_suffix (String) [optional], branch (String) [optional]
-
 desc "Tag the current git commit."
 private_lane :smf_add_git_tag do |options|
 
-  # Read options parameter
-  project_name = options[:project_config]["project_name"]
-  tag_prefix = (options[:tag_prefix].nil? ? "" : options[:tag_prefix])
-  tag_suffix = (options[:tag_suffix].nil? ? "" : options[:tag_suffix])
-  branch = options[:branch]
+  # Check if the tag isn't already existing. The build job will fail here if it already exists
+  smf_verify_git_tag_is_not_already_existing
 
-  UI.important("Tag the current commit")
-  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-  version = version.to_s
-
-  # Tag the current commit
-  tag = tag_prefix+version+tag_suffix
-  if git_tag_exists(tag: tag_prefix+version+tag_suffix)
-    UI.message("Git tag already existed")
-  else
-    add_git_tag(
-      tag: tag
-      )
-  end
+  tag = smf_construct_default_tag_for_current_project
+  add_git_tag(
+    tag: tag
+    )
 
   # Return the tag
   tag
@@ -115,19 +86,15 @@ end
 ### smf_commit_generated_code ###
 #################################
 
-# options: branch (String)
-
 desc "Commit generated code"
 private_lane :smf_commit_generated_code do |options|
 
   UI.important("Commit and push generated code")
-    # Read options parameter
-    branch = options[:branch]
 
-    # Reset the currently staged files first to make sure only the generated code will be commited
-    sh "git reset"
-    sh "git add ../Generated/ || true"
-    sh "git commit -m \"Update generated code\" || true"
+  # Reset the currently staged files first to make sure only the generated code will be commited
+  sh "git reset"
+  sh "git ls-files . | grep '\.generated\.' | xargs git add || true"
+  sh "git commit -m \"Update generated code\" || true"
 
 end
 
@@ -136,18 +103,14 @@ end
 ### smf_commit_build_number ###
 ###############################
 
-# options: project_config (Hash), branch (String)
-
 desc "Commit the build number."
 private_lane :smf_commit_build_number do |options|
 
-  # Read options parameter
-  project_name = options[:project_config]["project_name"]
-  branch = options[:branch]
+  UI.important("Commiting build number incrementation")
 
-  UI.important("Increment Build Version Code")
+  project_name = @smf_fastlane_config[:project][:project_name]
+
   version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-  puts version
 
   commit_version_bump(
     xcodeproj: "#{project_name}.xcodeproj",
@@ -162,14 +125,13 @@ end
 ### smf_create_github_release ###
 #################################
 
-# options: release_name (String), tag (String), branch (String)
+# options: release_name (String), tag (String)
 
 private_lane :smf_create_github_release do |options|
 
+  # Parameter
   release_name = options[:release_name]
   tag = options[:tag]
-  branch = options[:branch]
-  ignore_existing_release = (options[:ignore_existing_release].nil? ? false : options[:ignore_existing_release])
 
   git_remote_origin_url = sh "git config --get remote.origin.url"
   github_url_match = git_remote_origin_url.match(/.*github.com:(.*)\.git/)
@@ -185,22 +147,16 @@ private_lane :smf_create_github_release do |options|
 
   repository_path = github_url_match[1]
 
-  UI.message("Found #{repository_path} as GitHub repo name")
-
-  if get_github_release(url: repository_path, version: tag) and ignore_existing_release == false
-    raise "Git release already existed".red
-  end
-
-  UI.message("Found #{repository_path} as GitHub repo name")
+  UI.message("Found \"#{repository_path}\" as GitHub project")
 
   # Create the GitHub release
   set_github_release(
     repository_name: repository_path,
-    api_token: ENV['GITHUB_TOKEN'],
+    api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY],
     name: release_name.to_s,
     tag_name: tag,
-    description: ENV["SMF_CHANGELOG"],
-    commitish: branch
+    description: ENV[$SMF_CHANGELOG_ENV_KEY],
+    commitish: @smf_git_branch
   )
 end
 
@@ -208,9 +164,43 @@ end
 ### Helper ###
 ##############
 
+def smf_construct_default_tag_for_current_project(version = nil)
+
+  project_config = @smf_fastlane_config[:project]
+  tag_prefix = (project_config[:tag_prefix].nil? ? smf_default_tag_prefix : project_config[:tag_prefix])
+  tag_suffix = (project_config[:tag_suffix].nil? ? "" : project_config[:tag_suffix])
+
+  return smf_construct_tag_for_current_project(tag_prefix, tag_suffix, version)
+end
+
+def smf_construct_tag_for_current_project(tag_prefix, tag_suffix, version = nil)
+
+  tag_prefix = (tag_prefix.nil? ? "" : tag_prefix)
+  tag_suffix = (tag_suffix.nil? ? "" : tag_suffix)
+
+  # Get the current build number
+  if version.nil?
+    version = get_build_number(xcodeproj: "#{@smf_fastlane_config[:project][:project_name]}.xcodeproj").to_s
+  end
+
+  return tag_prefix+version+tag_suffix
+end
+
 def smf_git_pull
-  branch = git_branch
+  branch = @smf_git_branch
   branch_name = "#{branch}"
   branch_name.sub!("origin/", "")
   sh "git pull origin #{branch_name}"
+end
+
+def smf_default_tag_prefix
+  return (smf_is_build_variant_a_pod ? smf_default_pod_tag_prefix : smf_default_app_tag_prefix)
+end
+
+def smf_default_app_tag_prefix
+  return "build/#{@smf_build_variant}/"
+end
+
+def smf_default_pod_tag_prefix
+  return "releases/"
 end
