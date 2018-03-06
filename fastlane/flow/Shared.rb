@@ -97,6 +97,9 @@ private_lane :smf_handle_exception do |options|
   # Parameter
   exception = options[:exception]
 
+  # Variables
+  hipchat_channel = @smf_fastlane_config[:project][:hipchat_channel]
+
   apps_hockey_id = ENV[$SMF_APP_HOCKEY_ID_ENV_KEY]
   if not apps_hockey_id.nil?
     begin
@@ -127,7 +130,7 @@ private_lane :smf_handle_exception do |options|
       title: title,
       message: "#{exception.message}",
       success: false,
-      hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
+      hipchat_channel: hipchat_channel
       )
   end
 end
