@@ -180,7 +180,7 @@ def smf_construct_tag_for_current_project(tag_prefix, tag_suffix, version = nil)
 
   # Get the current build number
   if version.nil?
-    version = get_build_number(xcodeproj: "#{@smf_fastlane_config[:project][:project_name]}.xcodeproj").to_s
+    version = smf_default_tag_version
   end
 
   return tag_prefix+version+tag_suffix
