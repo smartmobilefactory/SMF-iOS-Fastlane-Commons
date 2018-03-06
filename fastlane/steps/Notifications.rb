@@ -27,17 +27,17 @@ private_lane :smf_send_hipchat_message do |options|
     content = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr></table>"
 
     if message != nil && message.length > 0
-      content.sub('</table>', "<tr><td><pre>#{message[0..8000]}#{' ...' if message.length > 8000}</pre></td></tr></table>")
+      content.sub!('</table>', "<tr><td><pre>#{message[0..8000]}#{' ...' if message.length > 8000}</pre></td></tr></table>")
     end
 
     if additional_html_entries
       for additional_html_entry in additional_html_entries do
-        content.sub('</table>', "<tr><td>#{additional_html_entry}</td></tr></table>")
+        content.sub!('</table>', "<tr><td>#{additional_html_entry}</td></tr></table>")
       end
     end
 
     if use_build_job_link_footer != false
-        content.sub('</table>', "<tr><td><strong>Source: </strong><a href=#{ENV["BUILD_URL"]}>Build Job Console</a></td></tr></table>")
+        content.sub!('</table>', "<tr><td><strong>Source: </strong><a href=#{ENV["BUILD_URL"]}>Build Job Console</a></td></tr></table>")
     end
 
     UI.message("Sending message \"#{content}\" to room \"#{hipchat_channel}\"")
@@ -231,7 +231,7 @@ def smf_default_app_notification_release_title
   # Create the branch name string
   branch_suffix = ""
   if branch.nil? == false and branch.length > 0
-    branch_suffix = " from branch: #{branch}"
+    branch_suffix = " from branch \"#{branch}\""
     branch_suffix.sub!("origin/", "")
   end
 
@@ -247,12 +247,12 @@ def smf_default_pod_notification_release_title
   podspec_path = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:podspec_path]
   branch = @smf_git_branch
 
-  version = read_podspec(path: podspec_path)[:version]
+  version = read_podspec(path: podspec_path)["version"]
 
   # Create the branch name string
   branch_suffix = ""
   if branch.nil? == false and branch.length > 0
-    branch_suffix = " from branch: #{branch}"
+    branch_suffix = " from branch \"#{branch}\""
     branch_suffix.sub!("origin/", "")
   end
 
