@@ -131,3 +131,20 @@ end
 private_lane :smf_remove_fastlane_commons_repo do
   sh "if [ -d #{@fastlane_commons_dir_path} ]; then rm -rf #{@fastlane_commons_dir_path}; fi"
 end
+
+##############
+### Helper ###
+##############
+
+def smf_workspace_dir
+  if smf_is_jenkins_environment
+    return ENV[$WORKSPACE_ENV_KEY]
+  else
+    path = "#{Dir.pwd}"
+    if path.end_with?("/fastlane")
+      path = path.chomp("/fastlane") 
+    end
+    UI.message("Fastlane doesn't seem to run in a Jenkins environement. The workspace path is \"#{path}\"")
+    return path
+  end
+end
