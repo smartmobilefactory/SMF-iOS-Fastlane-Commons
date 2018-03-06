@@ -16,7 +16,7 @@ end
 ### smf_archive_ipa ###
 #######################
 
-desc "Build the project based on the build type."
+desc "Creates an archive of the current build variant."
 private_lane :smf_archive_ipa do |options|
 
   UI.important("Creating the Xcode archive")
