@@ -107,9 +107,10 @@ end
 #####################
 
 if get_config_value("code_coverage.slather.use_feature")
-  if build_variant_config["pr.perform_unit_tests".to_sym]
-    slather.configure(fastlane_config[:project][:project_name] + ".xcodeproj", build_variant_config[:scheme], options: {
-      workspace: fastlane_config[:project][:project_name] + ".xcworkspace",
+  perform_unit_tests = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
+  if perform_unit_tests
+    slather.configure("#{fastlane_config[:project][:project_name]}.xcodeproj", build_variant_config[:scheme], options: {
+      workspace: "#{fastlane_config[:project][:project_name]}.xcworkspace",
       output_directory: 'build/reports',
     })
 
