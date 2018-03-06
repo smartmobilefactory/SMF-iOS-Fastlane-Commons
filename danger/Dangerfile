@@ -12,8 +12,6 @@ danger_info_message = ""
 danger_info_message += "Danger configuration:"
 danger_info_message += "<br /><br />Analysing build variant **#{build_variant}**"
 
-puts "fastlane_config_path: #{fastlane_config_path}"
-
 if File.file?(fastlane_config_path)
   fastlane_config = JSON.parse(File.read(fastlane_config_path), :symbolize_names => true)
   build_variant_config = fastlane_config[:build_variants][build_variant.to_sym]
@@ -41,8 +39,6 @@ end
 ###################
 
 def get_config_value(key)
-    puts "config for key: #{key}"
-
   if @project_danger_config != nil && @project_danger_config[key.to_sym] != nil
     return @project_danger_config[key.to_sym]
   else
@@ -113,17 +109,9 @@ end
 if get_config_value("code_coverage.slather.use_feature")
   perform_unit_tests = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
   if perform_unit_tests
-    message("#{fastlane_config}")
-    message("#{build_variant_config}")
-
-    puts "fastlane_config: #{fastlane_config}"
-    puts "build_variant_config: #{build_variant_config}"
 
     project_name = fastlane_config[:project][:project_name]
     scheme = build_variant_config[:scheme]
-
-    puts "project_name: #{project_name}"
-    puts "scheme: #{scheme}"
 
     slather.configure("#{project_name}.xcodeproj", scheme, options: {
       workspace: "#{project_name}.xcworkspace",
