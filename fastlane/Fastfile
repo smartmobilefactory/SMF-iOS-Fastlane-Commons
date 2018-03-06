@@ -68,7 +68,7 @@ def smf_value_for_keypath_in_hash_map(hash_map, keypath)
     if value.key?(key.to_sym)
       value = value[key.to_sym]
     else
-      raise "Error: Couldn't find keypath \"#{keypath}\" in \"#{hash_map}\"".red
+      raise "Error: Couldn't find keypath \"#{keypath}\" in \"#{hash_map}\""
     end
   end
   return value
@@ -82,7 +82,7 @@ def smf_load_fastlane_config
     @smf_fastlane_config ||= JSON.parse(config_file, :symbolize_names => true)
     UI.success("Parsed config file into the hash map")
   else
-    raise "Error: The SMF Fastlane config file doesn't exist at path \"#{config_path}\"".red
+    raise "Error: The SMF Fastlane config file doesn't exist at path \"#{config_path}\""
   end
 end
 
