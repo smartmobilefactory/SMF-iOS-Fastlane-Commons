@@ -119,7 +119,7 @@ private_lane :smf_handle_exception do |options|
   smf_send_mail_to_contributors(
     title: title,
     success: false,
-    exception_message: exception
+    exception_message: "#{exception.message}"
     )
 
   if hipchat_channel
