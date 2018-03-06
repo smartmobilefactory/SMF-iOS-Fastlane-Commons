@@ -27,17 +27,17 @@ private_lane :smf_send_hipchat_message do |options|
     content = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr></table>"
 
     if message != nil && message.length > 0
-      content.sub!('</table>', "<tr><td><pre>#{message[0..8000]}#{' ...' if message.length > 8000}</pre></td></tr></table>")
+      content << "<table><tr><td><pre>#{message[0..8000]}#{' ...' if message.length > 8000}</pre></td></tr></table>"
     end
 
     if additional_html_entries
       for additional_html_entry in additional_html_entries do
-        content.sub!('</table>', "<tr><td>#{additional_html_entry}</td></tr></table>")
+        content << ("<table><tr><td>#{additional_html_entry}</td></tr></table>")
       end
     end
 
     if use_build_job_link_footer != false
-        content.sub!('</table>', "<tr><td><strong>Source: </strong><a href=#{ENV["BUILD_URL"]}>Build Job Console</a></td></tr></table>")
+        content << ("<table><tr><td><strong>Source: </strong><a href=#{ENV["BUILD_URL"]}>Build Job Console</a></td></tr></table>")
     end
 
     UI.message("Sending message \"#{content}\" to room \"#{hipchat_channel}\"")
