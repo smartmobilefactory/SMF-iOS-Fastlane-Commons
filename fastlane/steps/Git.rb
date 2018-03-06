@@ -57,7 +57,7 @@ private_lane :smf_verify_git_tag_is_not_already_existing do |options|
   tag_prefix = (project_config[:tag_prefix].nil? ? smf_default_tag_prefix : project_config[:tag_prefix])
   deprecated_git_tag = smf_construct_tag_for_current_project("#{tag_prefix}_b", "")
   if git_tag_exists(tag: git_tag) or git_tag_exists(tag: deprecated_git_tag)
-    raise "The Git tag already exists! The build will be aborted to avoid Apps with the same build nubmer. If this surprises you: It may be a good time to get some help."
+    raise "The Git tag already exists! The build job will be aborted to avoid builds with the same build nubmer. If this surprises you: It may be a good time to get some help."
   end
 
 end
