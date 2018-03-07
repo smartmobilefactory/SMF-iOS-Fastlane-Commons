@@ -73,7 +73,7 @@ private_lane :smf_itunes_precheck do |options|
       app_identifier: app_identifier
       )
 
-  rescue => e
+  rescue => exception
 
     title = "Fastlane Precheck found Metadata issues for #{project_name} #{@smf_build_variant.upcase} in iTunes Connect 😢"
     message = "The build will continue to upload to iTunes Connect, but you may need to fix the Metadata issues before releasing the app."
@@ -82,7 +82,7 @@ private_lane :smf_itunes_precheck do |options|
       title: title,
       message: message,
       success: false,
-      exception_message: e,
+      exception_message: "#{exception}",
       authors_emails: ["development@smfhq.com"],
       template_path: "/Users/smf/jenkins/template_mail_ios_precheck.erb"
     )
