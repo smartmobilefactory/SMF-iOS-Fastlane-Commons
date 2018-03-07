@@ -59,23 +59,23 @@ def smf_run_linter
 
   begin
 
-    source_path = "#{workspace}/build/reports/swiftlint.json"
-    target_path = "#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
+    source_path = "build/reports/swiftlint.json"
+    target_path = "#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
 
     # Run SwiftLint and save the output as JSON
-    system "cd #{workspace} Pods/SwiftLint/swiftlint lint --reporter json > #{source_path}"
+    system "cd #{workspace}; Pods/SwiftLint/swiftlint lint --reporter json > \"#{source_path}\""
 
     # Removes the workspace part
     workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
-    system "sed -i -e 's/#{workspace_regexp}//g' " + source_path
+    system "sed -i -e 's/#{workspace_regexp}//g' #{workspace}/#{source_path}"
 
     # Turns \/ int /
     a = '\\\\\/'
     b = '\/'
     # Convert the abosulte path to a path wich is relative to the project root folder
-    system "sed -i -e 's/#{a}/#{b}/g' " + source_path
+    system "sed -i -e 's/#{a}/#{b}/g' #{workspace}/#{source_path}"
 
-    system "cp \"#{source_path}\" \"#{target_path}\""
+    system "cp \"#{workspace}/#{source_path}\" \"#{workspace}/#{target_path}\""
 
   rescue => e
     UI.error("Failed to run SwiftLint. But the build job will continue.")
