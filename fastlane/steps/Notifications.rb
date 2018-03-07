@@ -31,12 +31,18 @@ private_lane :smf_send_hipchat_message do |options|
       content << "<table><tr><td><pre>#{message[0..50]}#{' <br/> ...' if message.length > 50}</pre></td></tr></table>"
     end
 
-    UI.important("exception: #{exception}")
-    if exception != nil && exception.error_info != nil && exception.error_info.to_s.length > 0
-      content << ("<table><tr><td><strong>Error Info:</strong></td></tr><tr>")
-      content << ("<tr><td>#{exception.error_info.to_s[0..4000]}#{' <br/> ...' if exception.error_info.to_s.length > 4000}</td></tr></table>")
+    UI.important("exception: #{exception.inspect}")
 
-      exception.error_info.to_s
+    if exception != nil
+      error_info = exception.respond_to?(:preferred_error_info) ? exception.preferred_error_info : nil
+      error_info = exception.respond_to?(:error_info) ? exception.error_info : nil
+
+      if error_info != nil && error_info.to_s.length > 0
+        content << ("<table><tr><td><strong>Error Info:</strong></td></tr><tr>")
+        content << ("<tr><td>#{exception.error_info.to_s[0..4000]}#{' <br/> ...' if exception.error_info.to_s.length > 4000}</td></tr></table>")
+
+        exception.error_info.to_s
+      end
     end
 
     if additional_html_entries
