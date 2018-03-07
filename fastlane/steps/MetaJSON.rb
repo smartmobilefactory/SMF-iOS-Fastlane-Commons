@@ -109,7 +109,7 @@ def smf_run_slather
  
 
   # Compress the Slather HTML folder and delete it afterwards
-  sh "if [ -d \"#{slather_html_report_output_path}\" ]; then cd \"#{slather_html_report_output_root_path}\"; zip -rj \"#{slather_html_report_output_dir_name}.zip\" \"#{slather_html_report_output_dir_name}/*\"; fi"
+  sh "if [ -d \"#{slather_html_report_output_path}\" ]; then cd \"#{slather_html_report_output_root_path}\"; zip -rj \"#{slather_html_report_output_dir_name}.zip\" #{slather_html_report_output_dir_name}/*; fi"
   sh "if [ -f \"#{slather_html_report_output_path}.zip\" ]; then cp \"#{slather_html_report_output_path}.zip\" \"#{slather_html_report_path}.zip\"; fi"
 end
 
