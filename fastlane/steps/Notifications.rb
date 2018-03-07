@@ -11,6 +11,15 @@ fastlane_require 'json'
 desc "Sending a message to the given HipChat room"
 private_lane :smf_send_hipchat_message do |options|
 
+  # Log the exceptions to find out if there is useful information which can be added to the message
+  UI.message("exception.inspect: #{exception.inspect}")
+  UI.message("exception.cause: #{exception.cause}") if exception.respond_to?(:cause)
+  UI.message("exception.exception: #{exception.exception}") if exception.respond_to?(:exception)
+  UI.message("exception.backtrace: #{exception.backtrace}") if exception.respond_to?(:backtrace)
+  UI.message("exception.backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
+  UI.message("exception.preferred_error_info: #{exception.preferred_error_info}") if exception.respond_to?(:preferred_error_info)
+  UI.message("exception.error_info: #{exception.error_info}") if exception.respond_to?(:error_info)
+    
   # Parameter
   title = options[:title]
   message = options[:message]
@@ -28,17 +37,8 @@ private_lane :smf_send_hipchat_message do |options|
     content = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr></table>"
 
     if message != nil && message.length > 0
-      content << "<table><tr><td><pre>#{message[0..50]}#{' <br/>... (maxmium length reached)' if message.length > 50}</pre></td></tr></table>"
+      content << "<table><tr><td><pre>#{message[0..4000]}#{' <br/>... (maxmium length reached)' if message.length > 4000}</pre></td></tr></table>"
     end
-
-    # Log the exceptions to find out if there is useful information which can be added to the message
-    UI.message("exception.inspect: #{exception.inspect}")
-    UI.message("exception.cause: #{exception.cause}") if exception.respond_to?(:cause)
-    UI.message("exception.exception: #{exception.exception}") if exception.respond_to?(:exception)
-    UI.message("exception.backtrace: #{exception.backtrace}") if exception.respond_to?(:backtrace)
-    UI.message("exception.backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
-    UI.message("exception.preferred_error_info: #{exception.preferred_error_info}") if exception.respond_to?(:preferred_error_info)
-    UI.message("exception.error_info: #{exception.error_info}") if exception.respond_to?(:error_info)
 
     # Show the error info if it's provided
     if exception != nil
@@ -64,6 +64,21 @@ private_lane :smf_send_hipchat_message do |options|
     end
 
     UI.message("Sending message \"#{content}\" to room \"#{hipchat_channel}\"")
+
+    # Send failure messages also to CI to notice them so that we can see if they can be improved
+    if success == false && ((hipchat_channel.eql? "CI") == false)
+      hipchat(
+      message: content,
+      channel: "CI",
+      success: success,
+      api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
+      notify_room: true,
+      version: "2",
+      message_format: "html",
+      include_html_header: false,
+      from: "#{project_name} iOS CI"
+      )
+    end
 
     hipchat(
       message: content,
