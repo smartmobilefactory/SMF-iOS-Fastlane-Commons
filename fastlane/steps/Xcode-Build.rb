@@ -119,7 +119,6 @@ private_lane :smf_perform_unit_tests do |options|
     scheme: scheme,
     clean: false,
     code_coverage: true,
-    only_testing: [],
     output_types: "html,junit,json-compilation-database",
     output_files: "report.xml,report.junit,report.json"
     )
@@ -232,7 +231,7 @@ def smf_can_unit_tests_be_performed do |options|
     scan(
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
-    clean: false
+    clean: false,
     only_testing: []
     )
 
