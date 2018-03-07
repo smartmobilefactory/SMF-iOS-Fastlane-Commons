@@ -102,13 +102,16 @@ def smf_run_slather
   # Copy the output into the temporary MetaJSON folder so that the files can be used once the MetaJSON creation is complete
   slather_json_report_path = "#{workspace}/build/reports/#{SMF_COVERAGE_REPORT_JSON_NAME}"
   sh "if [ -f \"#{slather_json_report_path}\" ]; then cp \"#{slather_json_report_path}\" #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/#{SMF_COVERAGE_REPORT_JSON_NAME}; fi"
-  slather_html_report_output_path = "#{workspace}/html"
+  slather_html_report_output_root_path = "#{workspace}"
+  slather_html_report_output_dir_name = "html"
+  slather_html_report_output_path = "#{slather_html_report_output_root_path}/#{slather_html_report_output_dir_name}"
   slather_html_report_path = "#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/#{SLATHER_HTML_OUTPUT_DIR_NAME}"
-  sh "if [ -d \"#{slather_html_report_output_path}\" ]; then cp -r \"#{slather_html_report_output_path}\" \"#{slather_html_report_path}\"; fi"
+ 
 
   # Compress the Slather HTML folder and delete it afterwards
-  sh "if [ -d \"#{slather_html_report_path}\" ]; then cd \"#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}\"; zip \"#{slather_html_report_path}.zip\" \"#{slather_html_report_path}\"; fi"
-  # sh "if [ -f \"#{slather_html_report_path}.zip\" ]; then rm -rf \"#{slather_html_report_path}\"; fi"
+  sh "if [ -d \"#{slather_html_report_output_path}\" ]; then cd \"#{slather_html_report_output_root_path}\"; zip \"#{slather_html_report_output_dir_name}.zip\" \"#{slather_html_report_output_dir_name}\"; fi"
+  sh "if [ -f \"#{slather_html_report_output_path}.zip\" ]; then cp -r \"#{slather_html_report_output_path}.zip\" \"#{slather_html_report_path}.zip\"; fi"
+  sh "if [ -f \"#{slather_html_report_path}.zip\" ]; then rm -rf \"#{slather_html_report_path}\"; fi"
 end
 
 def smf_create_json_slather_summary(report_file)
