@@ -31,16 +31,16 @@ private_lane :smf_send_hipchat_message do |options|
       content << "<table><tr><td><pre>#{message[0..50]}#{' <br/>... (maxmium length reached)' if message.length > 50}</pre></td></tr></table>"
     end
 
-    UI.important("exception: #{exception.inspect}")
+    # Log the exceptions to find out if there is useful information which can be added to the message
+    UI.message("exception.inspect: #{exception.inspect}")
+    UI.message("exception.cause: #{exception.cause}") if exception.respond_to?(:cause)
+    UI.message("exception.exception: #{exception.exception}") if exception.respond_to?(:exception)
+    UI.message("exception.backtrace: #{exception.backtrace}") if exception.respond_to?(:backtrace)
+    UI.message("exception.backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
+    UI.message("exception.preferred_error_info: #{exception.preferred_error_info}") if exception.respond_to?(:preferred_error_info)
+    UI.message("exception.error_info: #{exception.error_info}") if exception.respond_to?(:error_info)
 
-    UI.important("exception backtrace: #{exception.backtrace}") if exception.respond_to?(:backtrace)
-
-    UI.important("exception backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
-
-    UI.important("exception backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
-
-    UI.important("exception exception: #{exception.exception}") if exception.respond_to?(:exception)
-
+    # Show the error info if it's provided
     if exception != nil
       error_info = exception.respond_to?(:preferred_error_info) ? exception.preferred_error_info : nil
       error_info = exception.respond_to?(:error_info) ? exception.error_info : nil
