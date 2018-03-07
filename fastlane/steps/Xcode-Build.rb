@@ -119,6 +119,7 @@ private_lane :smf_perform_unit_tests do |options|
     scheme: scheme,
     clean: false,
     code_coverage: true,
+    only_testing: [],
     output_types: "html,junit,json-compilation-database",
     output_files: "report.xml,report.junit,report.json"
     )
@@ -215,6 +216,37 @@ end
 ##############
 ### HELPER ###
 ##############
+
+def smf_can_unit_tests_be_performed do |options|
+
+  # Variables
+  project_name = @smf_fastlane_config[:project][:project_name]
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+
+  # Prefer the unit test scheme over the normal scheme
+  scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
+
+  UI.important("Checking whether the unit tests with the scheme \"#{scheme}\" can be performed.")
+
+  begin
+    scan(
+    workspace: "#{project_name}.xcworkspace",
+    scheme: scheme,
+    clean: false
+    only_testing: []
+    )
+
+    UI.important("Unit tests can be performed")
+    
+    return true
+  rescue => exception
+    
+    UI.important("Unit tests can't be performed: #{exception}")
+    
+    return false
+  end
+
+end
 
 def smf_increment_build_number_prefix_string
   return "Increment build number to "

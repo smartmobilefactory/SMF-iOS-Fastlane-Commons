@@ -87,7 +87,9 @@ private_lane :smf_deploy_build_variant do |options|
     begin
       # Run unit tests and then run linter to generate JSONs
       begin
-        smf_perform_unit_tests
+        if smf_can_unit_tests_be_performed
+          smf_perform_unit_tests
+        end
       rescue
         UI.important("Failed to perform the unit tests")
       end
