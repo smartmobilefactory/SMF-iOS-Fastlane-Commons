@@ -216,7 +216,7 @@ end
 ### HELPER ###
 ##############
 
-def smf_can_unit_tests_be_performed do |options|
+def smf_can_unit_tests_be_performed
 
   # Variables
   project_name = @smf_fastlane_config[:project][:project_name]
