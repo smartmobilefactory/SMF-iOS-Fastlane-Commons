@@ -109,7 +109,7 @@ end
 
 if get_config_value("code_coverage.slather.use_feature")
   perform_unit_tests = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
-  if perform_unit_tests && did_run_unit_tests.eql? "true"
+  if perform_unit_tests && did_run_unit_tests == "true"
 
     project_name = fastlane_config[:project][:project_name]
     scheme = build_variant_config[:scheme]
@@ -129,7 +129,7 @@ if get_config_value("code_coverage.slather.use_feature")
     slather.show_coverage
 
     danger_info_message += "<br /><br />Slather is **enabled***<br />- notify_if_coverage_is_less_than: **#{min_total_coverage}**<br />- notify_if_modified_file_is_less_than: **#{min_file_coverage}**<br />- notify_level: **#{notify_level_string}***"
-  elsif did_run_unit_tests.eql? "false"
+  elsif did_run_unit_tests == "false"
     danger_info_message += "<br /><br />Slather is **disabled** as unit tests weren't runned during the PR check"
   else
     danger_info_message += "<br /><br />Slather is **disabled** as unit tests shouldn't be runned"
