@@ -69,13 +69,14 @@ def smf_run_linter
     workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
     system "sed -i -e 's/#{workspace_regexp}//g' " + source_path
 
-    system "cp \"#{source_path}\" \"#{target_path}\""
-
     # Turns \/ int /
     a = '\\\\\/'
     b = '\/'
     # Convert the abosulte path to a path wich is relative to the project root folder
-    system "sed -i -e 's/#{a}/#{b}/g' " + target_path
+    system "sed -i -e 's/#{a}/#{b}/g' " + source_path
+
+    system "cp \"#{source_path}\" \"#{target_path}\""
+
   rescue => e
     UI.error("Failed to run SwiftLint. But the build job will continue.")
 
