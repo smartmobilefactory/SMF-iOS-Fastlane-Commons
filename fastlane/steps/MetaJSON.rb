@@ -60,7 +60,7 @@ def smf_run_linter
   begin
 
     source_path = "#{workspace}/build/reports/swiftlint.json"
-    target_path = "#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json\""
+    target_path = "#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
 
     # Run SwiftLint and save the output as JSON
     system "cd #{workspace} Pods/SwiftLint/swiftlint lint --reporter json > #{source_path}"
