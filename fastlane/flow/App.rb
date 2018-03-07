@@ -39,6 +39,9 @@ private_lane :smf_deploy_build_variant do |options|
   # Reset the build incrementation flag to support build jobs which build multiple build variants in a row
   ENV[$SMF_SHOULD_BUILD_NUMBER_BE_INCREMENTED_ENV_KEY] = nil
 
+  # Reset that the unit tests were run to avoid wrong information in Danger
+  ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY] = "false"
+
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   project_name = @smf_fastlane_config[:project][:project_name]
@@ -86,14 +89,15 @@ private_lane :smf_deploy_build_variant do |options|
   if generateMetaJSON != false
     begin
       # Run unit tests and then run linter to generate JSONs
-      begin
-        if smf_can_unit_tests_be_performed
+      if smf_can_unit_tests_be_performed
+        begin
           smf_perform_unit_tests
+        rescue
+          UI.important("Failed to perform the unit tests")
         end
-      rescue
-        UI.important("Failed to perform the unit tests")
+
+        smf_run_slather
       end
-      smf_run_slather
 
       smf_run_linter
 

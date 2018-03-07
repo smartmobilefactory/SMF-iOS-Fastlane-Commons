@@ -17,6 +17,9 @@ private_lane :smf_check_pr do |options|
 
     UI.important("Starting PR check for build variant \"#{build_variant}\"")
 
+    # Cleanup
+    ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY] = "false"
+
     smf_set_build_variant(build_variant, false)
 
     # Archive the IPA if the build variant didn't opt-out

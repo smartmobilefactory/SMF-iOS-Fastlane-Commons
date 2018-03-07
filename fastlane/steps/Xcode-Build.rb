@@ -123,6 +123,8 @@ private_lane :smf_perform_unit_tests do |options|
     output_files: "report.xml,report.junit,report.json"
     )
 
+  ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY] = "true"
+
 end
 
 ##################################
