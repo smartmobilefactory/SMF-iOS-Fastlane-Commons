@@ -30,7 +30,7 @@ private_lane :smf_check_pr do |options|
     # Run the unit tests if the build variant didn't opt-out
     should_perform_unit_test = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
 
-    if should_perform_unit_test
+    if should_perform_unit_test && smf_can_unit_tests_be_performed
       smf_perform_unit_tests
     end
 
