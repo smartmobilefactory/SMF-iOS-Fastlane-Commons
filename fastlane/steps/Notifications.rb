@@ -31,8 +31,8 @@ private_lane :smf_send_hipchat_message do |options|
       content << "<table><tr><td><pre>#{message[0..4000]}#{' ...' if message.length > 4000}</pre></td></tr></table>"
     end
 
-    if exception != nil && exception.length > 0
-      content << ("<table><tr><td><strong>Error message:</strong></td></tr><tr>")
+    if exception != nil && exception.error_info != nil && exception.error_info.to_s.length > 0
+      content << ("<table><tr><td><strong>Error Info:</strong></td></tr><tr>")
       content << ("<tr><td>#{exception.error_info.to_s[0..4000]}#{' ...' if exception.error_info.to_s.length > 4000}</td></tr></table>")
 
       exception.error_info.to_s
