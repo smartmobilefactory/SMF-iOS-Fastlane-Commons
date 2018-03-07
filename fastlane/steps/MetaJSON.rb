@@ -108,7 +108,7 @@ def smf_run_slather
 
   # Compress the Slather HTML folder and delete it afterwards
   sh "if [ -d \"#{slather_html_report_path}\" ]; then cd \"#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}\"; zip \"#{slather_html_report_path}.zip\" \"#{slather_html_report_path}\"; fi"
-  sh "if [ -f \"#{slather_html_report_path}.zip\" ]; then rm -rf \"#{slather_html_report_path}\"; fi"
+  # sh "if [ -f \"#{slather_html_report_path}.zip\" ]; then rm -rf \"#{slather_html_report_path}\"; fi"
 end
 
 def smf_create_json_slather_summary(report_file)
