@@ -33,6 +33,14 @@ private_lane :smf_send_hipchat_message do |options|
 
     UI.important("exception: #{exception.inspect}")
 
+    UI.important("exception backtrace: #{exception.backtrace}") if exception.respond_to?(:backtrace)
+
+    UI.important("exception backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
+
+    UI.important("exception backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
+
+    UI.important("exception exception: #{exception.exception}") if exception.respond_to?(:exception)
+
     if exception != nil
       error_info = exception.respond_to?(:preferred_error_info) ? exception.preferred_error_info : nil
       error_info = exception.respond_to?(:error_info) ? exception.error_info : nil
