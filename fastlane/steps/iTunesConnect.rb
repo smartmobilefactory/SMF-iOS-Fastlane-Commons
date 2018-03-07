@@ -75,7 +75,7 @@ private_lane :smf_itunes_precheck do |options|
 
   rescue => exception
 
-    title = "Fastlane Precheck found Metadata issues for #{project_name} #{@smf_build_variant.upcase} in iTunes Connect 😢"
+    title = "Fastlane Precheck found Metadata issues in iTunes Connect for #{smf_default_notification_release_title} 😢"
     message = "The build will continue to upload to iTunes Connect, but you may need to fix the Metadata issues before releasing the app."
 
     smf_send_mail(
