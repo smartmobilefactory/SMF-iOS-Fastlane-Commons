@@ -11,15 +11,6 @@ fastlane_require 'json'
 desc "Sending a message to the given HipChat room"
 private_lane :smf_send_hipchat_message do |options|
 
-  # Log the exceptions to find out if there is useful information which can be added to the message
-  UI.message("exception.inspect: #{exception.inspect}")
-  UI.message("exception.cause: #{exception.cause}") if exception.respond_to?(:cause)
-  UI.message("exception.exception: #{exception.exception}") if exception.respond_to?(:exception)
-  UI.message("exception.backtrace: #{exception.backtrace}") if exception.respond_to?(:backtrace)
-  UI.message("exception.backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
-  UI.message("exception.preferred_error_info: #{exception.preferred_error_info}") if exception.respond_to?(:preferred_error_info)
-  UI.message("exception.error_info: #{exception.error_info}") if exception.respond_to?(:error_info)
-    
   # Parameter
   title = options[:title]
   message = options[:message]
@@ -29,6 +20,15 @@ private_lane :smf_send_hipchat_message do |options|
   use_build_job_link_footer = options[:use_build_job_link_footer]
   hipchat_channel = options[:hipchat_channel]
 
+  # Log the exceptions to find out if there is useful information which can be added to the message
+  UI.message("exception.inspect: #{exception.inspect}")
+  UI.message("exception.cause: #{exception.cause}") if exception.respond_to?(:cause)
+  UI.message("exception.exception: #{exception.exception}") if exception.respond_to?(:exception)
+  UI.message("exception.backtrace: #{exception.backtrace}") if exception.respond_to?(:backtrace)
+  UI.message("exception.backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
+  UI.message("exception.preferred_error_info: #{exception.preferred_error_info}") if exception.respond_to?(:preferred_error_info)
+  UI.message("exception.error_info: #{exception.error_info}") if exception.respond_to?(:error_info)
+  
   if hipchat_channel
 
     project_name = @smf_fastlane_config[:project][:project_name]
