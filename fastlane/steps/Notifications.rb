@@ -28,7 +28,7 @@ private_lane :smf_send_hipchat_message do |options|
     content = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr></table>"
 
     if message != nil && message.length > 0
-      content << "<table><tr><td><pre>#{message[0..50]}#{' <br/> ...' if message.length > 50}</pre></td></tr></table>"
+      content << "<table><tr><td><pre>#{message[0..50]}#{' <br/>... (maxmium length reached)' if message.length > 50}</pre></td></tr></table>"
     end
 
     UI.important("exception: #{exception.inspect}")
@@ -39,7 +39,7 @@ private_lane :smf_send_hipchat_message do |options|
 
       if error_info != nil && error_info.to_s.length > 0
         content << ("<table><tr><td><strong>Error Info:</strong></td></tr><tr>")
-        content << ("<tr><td>#{exception.error_info.to_s[0..4000]}#{' <br/> ...' if exception.error_info.to_s.length > 4000}</td></tr></table>")
+        content << ("<tr><td>#{exception.error_info.to_s[0..4000]}#{' <br/>... (maxmium length reached)' if exception.error_info.to_s.length > 4000}</td></tr></table>")
 
         exception.error_info.to_s
       end
