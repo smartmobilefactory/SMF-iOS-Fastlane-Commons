@@ -14,6 +14,7 @@ private_lane :smf_send_hipchat_message do |options|
   # Parameter
   title = options[:title]
   message = options[:message]
+  exception = options[:exception]
   additional_html_entries = options[:additional_html_entries]
   success = options[:success]
   use_build_job_link_footer = options[:use_build_job_link_footer]
@@ -27,7 +28,14 @@ private_lane :smf_send_hipchat_message do |options|
     content = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr></table>"
 
     if message != nil && message.length > 0
-      content << "<table><tr><td><pre>#{message[0..8000]}#{' ...' if message.length > 8000}</pre></td></tr></table>"
+      content << "<table><tr><td><pre>#{message[0..4000]}#{' ...' if message.length > 4000}</pre></td></tr></table>"
+    end
+
+    if exception != nil && exception.length > 0
+      content << ("<table><tr><td><strong>Error message:</strong></td></tr><tr>")
+      content << ("<tr><td>#{exception.error_info.to_s[0..4000]}#{' ...' if exception.error_info.to_s.length > 4000}</td></tr></table>")
+
+      exception.error_info.to_s
     end
 
     if additional_html_entries

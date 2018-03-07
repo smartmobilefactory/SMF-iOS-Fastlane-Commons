@@ -45,7 +45,7 @@ private_lane :smf_publish_pod do |options|
       smf_generate_meta_json
       
       smf_commit_meta_json
-    rescue
+    rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
       project_name = project_config[:project_name]
@@ -53,6 +53,7 @@ private_lane :smf_publish_pod do |options|
       smf_send_hipchat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
         success: false,
+        exception: exception,
         hipchat_channel: "CI"
       )
       next

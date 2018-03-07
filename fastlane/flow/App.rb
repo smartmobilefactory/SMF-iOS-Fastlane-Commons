@@ -98,12 +98,13 @@ private_lane :smf_deploy_build_variant do |options|
       smf_generate_meta_json
       
       smf_commit_meta_json
-    rescue
+    rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
       smf_send_hipchat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
         success: false,
+        exception: exception,
         hipchat_channel: "CI"
       )
     end
@@ -132,12 +133,13 @@ private_lane :smf_deploy_build_variant do |options|
     # Inform the SMF HockeyApp about the new app version
     begin
       smf_send_ios_hockey_app_apn
-    rescue
+    rescue => exception
       UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
 
       smf_send_hipchat_message(
         title: "Failed to send APN to SMF HockeyApp for #{smf_default_notification_release_title} 😢",
         success: false,
+        exception: exception,
         hipchat_channel: "CI"
       )
     end
@@ -178,6 +180,7 @@ private_lane :smf_deploy_build_variant do |options|
     notification_title = nil
     notification_message = nil
     did_itc_upload_succeed = false
+    exception = nil
 
     begin
       smf_upload_ipa_to_testflight
@@ -213,12 +216,15 @@ private_lane :smf_deploy_build_variant do |options|
       did_itc_upload_succeed = false
 
       UI.important("Warning: The upload to iTunes Connect failed!")
+
+      exception = e
     end
 
     smf_send_hipchat_message(
         title: notification_title,
         message: notification_message,
         success: did_itc_upload_succeed,
+        exception: exception,
         hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
       )
   end

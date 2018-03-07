@@ -91,6 +91,7 @@ private_lane :smf_itunes_precheck do |options|
       title: title,
       message: message,
       success: false,
+      exception: exception,
       hipchat_channel: hipchat_channel
       )
   end

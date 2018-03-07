@@ -128,6 +128,7 @@ private_lane :smf_handle_exception do |options|
     smf_send_hipchat_message(
       title: title,
       message: "#{exception.message}",
+      exception: exception,
       success: false,
       hipchat_channel: hipchat_channel
       )
