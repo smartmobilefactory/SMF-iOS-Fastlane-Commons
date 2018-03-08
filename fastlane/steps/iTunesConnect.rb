@@ -190,7 +190,7 @@ def smf_check_if_app_version_is_editable_in_itc(app, version_number)
 
     UI.error(error)
 
-    return error
+    return [error]
   else
     UI.success("The App version #{version_number} is editable.")
     return []
