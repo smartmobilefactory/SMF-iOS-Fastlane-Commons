@@ -69,8 +69,12 @@ end
 ###################
 
 if get_config_value("xcode_build_warnings.use_feature")
-  xcode_summary.report 'build/reports/errors.json'
-  danger_info_message += "<br /><br />Xcode warnings are **enabled**"
+  if File.file?("build/reports/errors.json")
+    xcode_summary.report 'build/reports/errors.json'
+    danger_info_message += "<br /><br />Xcode warnings are **enabled**"
+  else
+    danger_info_message += "<br /><br />Xcode warnings are **disabled** as the build output couldn't be found"
+  end
 else
   danger_info_message += "<br /><br />Xcode warnings are **disabled**"
 end
