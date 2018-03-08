@@ -9,8 +9,9 @@ ENV['DID_RUN_UNIT_TESTS'] == nil ? did_run_unit_tests = "false" : did_run_unit_t
 @project_danger_config = nil
 @commons_danger_config = nil
 
-danger_info_message = ""
-danger_info_message += "<br /><br />Analysing build variant **#{build_variant}**"
+message("Analysing build variant <b>#{build_variant}</b>")
+
+configuration_message = ""
 
 if File.file?(fastlane_config_path)
   fastlane_config = JSON.parse(File.read(fastlane_config_path), :symbolize_names => true)
@@ -58,9 +59,9 @@ if get_config_value("github.pr.big_length.use_feature")
   if git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code")
     warn("There amount of changed code is huge (#{git.lines_of_code} lines). Please try to create many small pull requests instead of a few big ones!")
   end
-  danger_info_message += "<br /><br />GitHub PR length is **enabled**<br />- lines_of_code: **#{get_config_value("github.pr.big_length.lines_of_code")}**"
+  configuration_message += "<br /><br />GitHub PR length is <b>enabled</b><br />- lines_of_code: <b>#{get_config_value("github.pr.big_length.lines_of_code")}</b>"
 else
-  danger_info_message += "<br /><br />GitHub PR length is **disabled**"
+  configuration_message += "<br /><br />GitHub PR length is <b>disabled</b>"
 end
 
 ###################
@@ -70,12 +71,12 @@ end
 if get_config_value("xcode_build_warnings.use_feature")
   if File.file?("build/reports/errors.json")
     xcode_summary.report 'build/reports/errors.json'
-    danger_info_message += "<br /><br />Xcode warnings are **enabled**"
+    configuration_message += "<br /><br />Xcode warnings are <b>enabled</b>"
   else
-    danger_info_message += "<br /><br />Xcode warnings are **disabled** as the build output couldn't be found"
+    configuration_message += "<br /><br />Xcode warnings are <b>disabled</b> as the build output couldn't be found"
   end
 else
-  danger_info_message += "<br /><br />Xcode warnings are **disabled**"
+  configuration_message += "<br /><br />Xcode warnings are <b>disabled</b>"
 end
 
 #######################
@@ -101,9 +102,9 @@ if get_config_value("swiftlint.use_feature")
     swiftlint.lint_files
   end
   
-  danger_info_message += "<br /><br />SwiftLint is **enabled** (modified files only)<br />- binary: **#{binary_message_string}**,<br />- fail_on_error: **#{fail_on_error}**"
+  configuration_message += "<br /><br />SwiftLint is <b>enabled</b> (modified files only)<br />- binary: <b>#{binary_message_string}</b>,<br />- fail_on_error: <b>#{fail_on_error}</b>"
 else
-  danger_info_message += "<br /><br />SwiftLint is **disabled**"
+  configuration_message += "<br /><br />SwiftLint is <b>disabled</b>"
 end
 
 #####################
@@ -131,18 +132,18 @@ if get_config_value("code_coverage.slather.use_feature")
     slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_coverage, notify_level: notify_level)
     slather.show_coverage
 
-    danger_info_message += "<br /><br />Slather is **enabled***<br />- notify_if_coverage_is_less_than: **#{min_total_coverage}**<br />- notify_if_modified_file_is_less_than: **#{min_file_coverage}**<br />- notify_level: **#{notify_level_string}**"
+    configuration_message += "<br /><br />Slather is <b>enabled</b>*<br />- notify_if_coverage_is_less_than: <b>#{min_total_coverage}</b><br />- notify_if_modified_file_is_less_than: <b>#{min_file_coverage}</b><br />- notify_level: <b>#{notify_level_string}</b>"
   elsif did_run_unit_tests == "false"
-    danger_info_message += "<br /><br />Slather is **disabled** as unit tests weren't runned during the PR check"
+    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests weren't runned during the PR check"
   else
-    danger_info_message += "<br /><br />Slather is **disabled** as unit tests shouldn't be runned"
+    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests shouldn't be runned"
   end
 else
-  warn("Slather is **disabled**")
+  warn("Slather is <b>disabled</b>")
 end
 
 # Put the configuration message inside an expandable element
-danger_info_message = "<details><summary>Danger configuration:</summary>#{danger_info_message}</details>"
+configuration_message = "<details><summary>Danger configuration:</summary>#{configuration_message}</details>"
 
-message(danger_info_message)
+message(configuration_message)
 
