@@ -114,10 +114,15 @@ private_lane :smf_perform_unit_tests do |options|
 
   UI.important("Performing the unit tests with the scheme \"#{scheme}\"")
 
+  destination = (ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] == "mac" ? "platform=macOS,arch=x86_64" : nil)
+
+  UI.message("Use destination \"#{destination}\" for platform \"#{ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]}\"")
+
   scan(
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
     clean: false,
+    destination: destination,
     code_coverage: true,
     output_types: "html,junit,json-compilation-database",
     output_files: "report.xml,report.junit,report.json"
