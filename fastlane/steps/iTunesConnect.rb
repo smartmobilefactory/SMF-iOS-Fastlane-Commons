@@ -111,10 +111,10 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
 
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   bundle_identifier = build_variant_config[:bundle_identifier]
-  itc_apple_id = build_variant_config[:itc_apple_id]
+  itc_team_id = build_variant_config[:itc_team_id]
 
   # Setup Spaceship
-  ENV["FASTLANE_ITC_TEAM_ID"] = itc_apple_id
+  ENV["FASTLANE_ITC_TEAM_ID"] = itc_team_id
   Spaceship::Tunes.login
   Spaceship::Tunes.select_team
 
