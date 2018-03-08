@@ -5,8 +5,13 @@
 desc "Archives the IPA if the build variant declared a scheme"
 private_lane :smf_archive_ipa_if_scheme_is_provided do |options|
 
+  # Parameter
+  skip_export = options[:skip_export].nil? ? false : options[:skip_export])
+
   if @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
-    smf_archive_ipa
+    smf_archive_ipa(
+      skip_export: skip_export
+      )
   else
     UI.important("The IPA won't be archived as the build variant doesn't contain a scheme")
   end
@@ -20,6 +25,9 @@ desc "Creates an archive of the current build variant."
 private_lane :smf_archive_ipa do |options|
 
   UI.important("Creating the Xcode archive")
+
+  # Parameter
+  skip_package_ipa = options[:skip_export].nil? ? false : options[:skip_export])
 
   # Variables
 
@@ -93,6 +101,7 @@ private_lane :smf_archive_ipa do |options|
     include_bitcode: (upload_itc && upload_bitcode),
     export_method: export_method,
     export_options: { iCloudContainerEnvironment: icloud_environment },
+    skip_package_ipa: skip_package_ipa,
     xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
     )
 
