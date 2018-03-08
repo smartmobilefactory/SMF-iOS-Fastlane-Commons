@@ -97,10 +97,103 @@ private_lane :smf_itunes_precheck do |options|
   end
 end
 
+################################################
+###   smf_verify_common_itc_upload_errors    ###
+################################################
+
+private_lane :smf_verify_common_itc_upload_errors do |options|
+  require 'spaceship'
+
+  # Variables
+  project_name = fastlane_config[:project][:project_name]
+  version_number = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
+  build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+  bundle_identifier = build_variant_config[:bundle_identifier]
+  itc_apple_id = build_variant_config[:itc_apple_id]
+
+  # Setup Spaceship
+  ENV["FASTLANE_ITC_TEAM_ID"] = itc_apple_id
+  Spaceship::Tunes.login
+  Spaceship::Tunes.select_team
+
+  # Get the currently editable version
+  app = Spaceship::Tunes::Application.find(bundle_identifier)
+
+  # Check if there is already a build with the same build number
+  versions = [version_number]
+  if app.edit_version
+    versions.push(app.edit_version)
+  end
+
+  if app.live_version
+    versions.push(app.live_version)
+  end
+
+  duplicate_build_number_erros = smf_check_if_itc_already_contains_buildnumber(app, versions, build_number)
+
+  # Check if there is a matching editable app version
+  no_matching_editable_app_version = smf_check_if_app_version_is_editable_in_itc(app, version_number)
+
+  errors = duplicate_build_number_erros + no_matching_editable_app_version
+
+  if errors.length > 0
+    raise "#{errors}"
+  end
+end
 
 ##############
 ### HELPER ###
 ##############
+
+def smf_check_if_itc_already_contains_buildnumber(app, version_numbers, build_number)
+
+  errors = []
+
+  for version in version_numbers
+    
+    UI.message("Checking if App version #{version.version} contains already the build number #{build_number}"
+    
+    build_trains = app.build_trains[version]
+    if build_trains
+
+      for build_train in build_trains  
+        if build_train.build_version == build_number
+          UI.error("Found matching build #{build_train.build_version}")
+          errors.push("There is already a build uploaded with the build number #{build_number}. You need to increment the build number first before uploading to iTunes Connect.")
+          break
+        else
+          UI.message("Found not matching build #{build_train.build_version}")
+        end
+      end
+
+    end
+  end
+
+  return errors
+end
+
+def smf_check_if_app_version_is_editable_in_itc(app, version_number)
+
+  editable_app = app.edit_version
+
+  if editable_app == nil || editable_app.version != version_number
+    live_app = app.live_version
+    if live_app == version_number
+      error = "The App version #{version_number} is already in sale. You need to inrement the marketing version before you can upload a new Testflight build."
+    elsif editable_app != nil
+      error = "The App version #{version_number} is no editable, but #{editable_app.version} is. Please investigate why there is a mismatch."
+    else
+      error = "There is no editable version #{version_number}. Please investigate why there is a mismatch."
+    end
+
+    UI.error(error)
+
+    return error
+  else
+    UI.success("The App version #{version_number} is editable.")
+    return []
+  end
+end
 
 def should_skip_waiting_after_itc_upload
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]

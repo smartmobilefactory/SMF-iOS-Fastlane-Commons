@@ -68,6 +68,11 @@ private_lane :smf_deploy_build_variant do |options|
   # Check if the New Tag already exists
   smf_verify_git_tag_is_not_already_existing
 
+  # Check for commons ITC Upload errors if needed
+  if build_variant_config[:upload_itc] == true
+    smf_verify_common_itc_upload_errors
+  end
+
   # Sync Phrase App
   smf_sync_strings_with_phrase_app
 
