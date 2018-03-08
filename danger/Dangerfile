@@ -10,7 +10,6 @@ ENV['DID_RUN_UNIT_TESTS'] == nil ? did_run_unit_tests = "false" : did_run_unit_t
 @commons_danger_config = nil
 
 danger_info_message = ""
-danger_info_message += "Danger configuration:"
 danger_info_message += "<br /><br />Analysing build variant **#{build_variant}**"
 
 if File.file?(fastlane_config_path)
@@ -141,6 +140,9 @@ if get_config_value("code_coverage.slather.use_feature")
 else
   warn("Slather is **disabled**")
 end
+
+# Put the configuration message inside an expandable element
+danger_info_message = "<details><summary>Danger configuration:</summary>#{danger_info_message}</details>"
 
 message(danger_info_message)
 
