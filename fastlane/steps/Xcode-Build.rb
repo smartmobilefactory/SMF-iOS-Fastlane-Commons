@@ -6,7 +6,7 @@ desc "Archives the IPA if the build variant declared a scheme"
 private_lane :smf_archive_ipa_if_scheme_is_provided do |options|
 
   # Parameter
-  skip_export = options[:skip_export].nil? ? false : options[:skip_export])
+  skip_export = (options[:skip_export].nil? ? false : options[:skip_export])
 
   if @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
     smf_archive_ipa(
@@ -27,7 +27,7 @@ private_lane :smf_archive_ipa do |options|
   UI.important("Creating the Xcode archive")
 
   # Parameter
-  skip_package_ipa = options[:skip_export].nil? ? false : options[:skip_export])
+  skip_package_ipa = (options[:skip_export].nil? ? false : options[:skip_export])
 
   # Variables
 
