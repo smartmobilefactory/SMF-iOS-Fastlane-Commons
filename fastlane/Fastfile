@@ -25,6 +25,8 @@ before_all do
   import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
   import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
   import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
+
+  @smf_original_platform = ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]
 end
 
 desc "Called on success"
@@ -95,6 +97,16 @@ def smf_set_build_variant(build_variant, reset_build_variant_array = true)
   @smf_build_variant_sym = @smf_build_variant.to_sym
   if reset_build_variant_array
     smf_set_build_variants_array(nil)
+  end
+
+  # Modify the platform if needed
+  platform = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:platform]
+  if platform != nil
+    # Change the platform to the declared one
+    ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] = platform
+  else
+    # Reset the platform to one which was active in "befor_all" if no platform is specified
+    ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] = @smf_original_platform
   end
 end
 
