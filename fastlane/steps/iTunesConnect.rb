@@ -151,7 +151,7 @@ def smf_check_if_itc_already_contains_buildnumber(app, version_numbers, build_nu
 
   for version in version_numbers
     
-    UI.message("Checking if App version #{version.version} contains already the build number #{build_number}"
+    UI.message("Checking if App version #{version.version} contains already the build number #{build_number}")
     
     build_trains = app.build_trains[version]
     if build_trains
