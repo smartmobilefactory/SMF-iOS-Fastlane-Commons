@@ -244,7 +244,8 @@ def smf_can_unit_tests_be_performed
     scheme: scheme,
     destination: destination,
     clean: false,
-    only_testing: []
+    skip_build: true,
+    xcargs: "-dry-run"
     )
 
     UI.important("Unit tests can be performed")
