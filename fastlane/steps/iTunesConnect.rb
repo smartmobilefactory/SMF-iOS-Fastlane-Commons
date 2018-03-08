@@ -139,7 +139,7 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
   errors = duplicate_build_number_erros + no_matching_editable_app_version
 
   if errors.length > 0
-    raise "#{errors}"
+    raise errors.split("\n")
   end
 end
 
