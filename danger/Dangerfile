@@ -98,7 +98,7 @@ if get_config_value("swiftlint.use_feature")
     swiftlint.lint_files
   end
   
-  danger_info_message += "<br /><br />SwiftLint is **enabled***<br />- binary: **#{binary_message_string}**,<br />- fail_on_error: **#{fail_on_error}***"
+  danger_info_message += "<br /><br />SwiftLint is **enabled*** (modified files only)<br />- binary: **#{binary_message_string}**,<br />- fail_on_error: **#{fail_on_error}***"
 else
   danger_info_message += "<br /><br />SwiftLint is **disabled**"
 end
