@@ -139,7 +139,7 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
   errors = duplicate_build_number_erros + no_matching_editable_app_version
 
   if errors.length > 0
-    raise errors.split("\n")
+    raise errors.join("\n")
   end
 end
 
@@ -181,11 +181,11 @@ def smf_check_if_app_version_is_editable_in_itc(app, version_number)
   if editable_app == nil || editable_app.version != version_number
     live_app = app.live_version
     if live_app == version_number
-      error = "The App version #{version_number} is already in sale. You need to inrement the marketing version before you can upload a new Testflight build."
+      error = "The current App version #{version_number} is already in sale. You need to inrement the marketing version before you can upload a new Testflight build."
     elsif editable_app != nil
-      error = "The App version #{version_number} is no editable, but #{editable_app.version} is. Please investigate why there is a mismatch."
+      error = "The current App version #{version_number} is not editable, but #{editable_app.version} is. Please investigate why there is a mismatch."
     else
-      error = "There is no editable version #{version_number}. Please investigate why there is a mismatch."
+      error = "There is no editable App version #{version_number}. Please investigate why there is a mismatch."
     end
 
     UI.error(error)
