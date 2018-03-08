@@ -234,10 +234,15 @@ def smf_can_unit_tests_be_performed
 
   UI.important("Checking whether the unit tests with the scheme \"#{scheme}\" can be performed.")
 
+  destination = (ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] == "mac" ? "platform=macOS,arch=x86_64" : nil)
+
+  UI.message("Use destination \"#{destination}\" for platform \"#{ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]}\"")
+
   begin
     scan(
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
+    destination: destination,
     clean: false,
     only_testing: []
     )
