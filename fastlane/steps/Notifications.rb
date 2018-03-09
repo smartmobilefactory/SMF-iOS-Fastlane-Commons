@@ -14,6 +14,9 @@ private_lane :smf_send_hipchat_message do |options|
   # Parameter
   title = options[:title]
   message = options[:message]
+  if message
+    UI.message("Inital message: #{message}")
+  end
   exception = options[:exception]
   additional_html_entries = options[:additional_html_entries]
   success = options[:success]
