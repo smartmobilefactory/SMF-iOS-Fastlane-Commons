@@ -37,7 +37,7 @@ private_lane :smf_send_hipchat_message do |options|
     content = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr></table>"
 
     if message != nil && message.length > 0
-      UI.message("Adding message: #{message})
+      UI.message("Adding message: #{message}")
       content << "<table><tr><td><pre>#{message[0..4000]}#{' <br/>... (maxmium length reached)' if message.length > 4000}</pre></td></tr></table>"
     end
 
@@ -56,7 +56,7 @@ private_lane :smf_send_hipchat_message do |options|
 
     if additional_html_entries
       for additional_html_entry in additional_html_entries do
-        UI.message("Adding additional_html_entry: #{additional_html_entry})
+        UI.message("Adding additional_html_entry: #{additional_html_entry}")
         content << ("<table><tr><td>#{additional_html_entry}</td></tr></table>")
       end
     end
