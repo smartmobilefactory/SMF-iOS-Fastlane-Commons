@@ -138,6 +138,8 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
 
   errors = duplicate_build_number_erros + no_matching_editable_app_version
 
+  Spaceship::Tunes.clear_user_cached_data
+
   if errors.length > 0
     raise errors.join("\n")
   end
