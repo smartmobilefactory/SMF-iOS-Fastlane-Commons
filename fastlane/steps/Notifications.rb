@@ -29,7 +29,7 @@ private_lane :smf_send_hipchat_message do |options|
   UI.message("exception.preferred_error_info: #{exception.preferred_error_info}") if exception.respond_to?(:preferred_error_info)
   UI.message("exception.error_info: #{exception.error_info}") if exception.respond_to?(:error_info)
   
-  if hipchat_channel
+  if hipchat_channel && (hipchat_channel.include? "/") == false
 
     project_name = @smf_fastlane_config[:project][:project_name]
     hipchat_channel = URI.unescape(hipchat_channel) == hipchat_channel ? URI.escape(hipchat_channel) : hipchat_channel
@@ -91,6 +91,8 @@ private_lane :smf_send_hipchat_message do |options|
       include_html_header: false,
       from: "#{project_name} iOS CI"
       )
+  elsif hipchat_channel
+        UI.error("Didn't send message as \"hipchat_channel\" contains \"/\"")
   else
     UI.message("Didn't send message as \"hipchat_channel\" is nil")
   end
