@@ -112,7 +112,7 @@ private_lane :smf_handle_exception do |options|
       )
       UI.important("The app version which was uploaded to HockeyApp was removed as something else in the build job failed!")
     rescue
-      UI.message("he app version which was uploaded to HockeyApp wasn't removed. This is fine if it wasn't yet uploaded")
+      UI.message("The app version which was uploaded to HockeyApp wasn't removed. This is fine if it wasn't yet uploaded")
     end
   end
 
