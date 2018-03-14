@@ -78,7 +78,7 @@ def smf_run_linter
     # Sort the report to avoid a changed file altough the warnings are the same
     swiftlint_report_file = File.read("#{workspace}/#{source_path}")
     swiftlint_report_array ||= JSON.parse(swiftlint_report_file)
-    swiftlint_report_array = swiftlint_report_array.sort_by { |entry| entry['file'], entry['line'], entry['character'], entry['reason'] }
+    swiftlint_report_array = swiftlint_report_array.sort_by { |entry| [entry['file'], entry['line'], entry['character'], entry['reason']] }
     File.open("#{workspace}/#{target_path}","w") do |f|
       f.write(JSON.pretty_generate(swiftlint_report_array))
     end
