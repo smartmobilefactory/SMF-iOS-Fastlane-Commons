@@ -44,8 +44,9 @@ private_lane :smf_commit_meta_json do |options|
   # Delete the temporary MetaJSON folder
   sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}; fi"
 
-  # Reset git, add MetaJSON directory and commit
-  sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && git commit -m \"Update MetaJSONs\""
+  # Reset git, add MetaJSON directory and commit. A failing commit is not seen as error as this is fine if there are no changed files
+  sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && (git commit -m \"Update MetaJSONs\" || true)"
+
 end
 
 ##############
