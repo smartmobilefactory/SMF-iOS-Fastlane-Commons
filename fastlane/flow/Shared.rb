@@ -32,16 +32,27 @@ private_lane :smf_check_pr do |options|
         )
     end
     
+    should_run_danger = (build_variant_config["pr.run_danger".to_sym].nil? ? true : build_variant_config["pr.run_danger".to_sym])
+
     # Run the unit tests if the build variant didn't opt-out
     should_perform_unit_test = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
 
-    if should_perform_unit_test && smf_can_unit_tests_be_performed
-      smf_perform_unit_tests
+    begin
+      if should_perform_unit_test && smf_can_unit_tests_be_performed
+        smf_perform_unit_tests
+      end
+    rescue => exception
+
+      # Run Danger if the build variant didn't opt-out even if the unit tests failed
+      if should_run_danger
+        smf_run_danger
+      end
+
+      # Raise the exception as the build job should fail if the unit tests fail
+      raise exception
     end
 
     # Run Danger if the build variant didn't opt-out
-    should_run_danger = (build_variant_config["pr.run_danger".to_sym].nil? ? true : build_variant_config["pr.run_danger".to_sym])
-
     if should_run_danger
       smf_run_danger
     end
