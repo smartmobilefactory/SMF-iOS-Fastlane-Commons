@@ -75,7 +75,13 @@ def smf_run_linter
     # Convert the abosulte path to a path wich is relative to the project root folder
     system "sed -i -e 's/#{a}/#{b}/g' #{workspace}/#{source_path}"
 
-    system "cp \"#{workspace}/#{source_path}\" \"#{workspace}/#{target_path}\""
+    # Sort the report to avoid a changed file altough the warnings are the same
+    swiftlint_report_file = File.read("#{workspace}/#{source_path}")
+    swiftlint_report_array ||= JSON.parse(swiftlint_report_file)
+    swiftlint_report_array = swiftlint_report_array.sort_by { |entry| entry['file'], entry['line'], entry['character'], entry['reason'] }
+    File.open("#{workspace}/#{target_path}","w") do |f|
+      f.write(JSON.pretty_generate(swiftlint_report_array))
+    end
 
   rescue => e
     UI.error("Failed to run SwiftLint. But the build job will continue.")
