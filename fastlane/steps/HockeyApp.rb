@@ -70,11 +70,12 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   project_name = @smf_fastlane_config[:project][:project_name]
+  escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
 
   # Construct path to DSYMs
   version_number = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
-  dsym_path = Pathname.getwd.dirname.to_s + "/#{build_variant_config[:bundle_identifier]}-#{version_number}-#{build_number}.dSYM.zip"
+  dsym_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.dSYM.zip"
   UI.message("Constructed the dsym path \"#{dsym_path}\"")
   unless File.exist?(dsym_path)
     dsym_path = nil
@@ -83,7 +84,6 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   end
 
   NO_APP_FAILURE = "NO_APP_FAILURE"
-  escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
 
   sh "cd ../build; zip -r9 \"#{escaped_filename}.app.zip\" \"#{escaped_filename}.app\" || echo #{NO_APP_FAILURE}"
   app_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.zip"
