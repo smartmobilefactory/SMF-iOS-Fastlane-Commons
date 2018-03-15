@@ -75,7 +75,13 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   version_number = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   dsym_path = Pathname.getwd.dirname.to_s + "/#{build_variant_config[:bundle_identifier]}-#{version_number}-#{build_number}.dSYM.zip"
-  
+  UI.message("Constructed the dsym path \"#{dsym_path}\"")
+  unless File.exist?(dsym_path)
+    dsym_path = nil
+
+    UI.message("Using nil as dsym_path as no file exists at the constructed path.")
+  end
+
   NO_APP_FAILURE = "NO_APP_FAILURE"
   escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
 
@@ -99,7 +105,7 @@ private_lane :smf_upload_ipa_to_hockey do |options|
     notify: "0",
     notes: release_notes,
     public_identifier: build_variant_config[:hockeyapp_id],
-    dsym: File.exist?(dsym_path) ? dsym_path : nil  
+    dsym: dsym_path  
   )
 
 end
