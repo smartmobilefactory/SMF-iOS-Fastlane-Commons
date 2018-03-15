@@ -78,14 +78,24 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   
   NO_APP_FAILURE = "NO_APP_FAILURE"
   escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
+
   sh "cd ../build; zip -r9 \"#{escaped_filename}.app.zip\" \"#{escaped_filename}.app\" || echo #{NO_APP_FAILURE}"
   app_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.zip"
 
+  UI.message("Constructed path \"#{app_path}\" from filename \"#{escaped_filename}\"")
+
+  unless File.exist?(app_path)
+      app_path = lane_context[SharedValues::IPA_OUTPUT_PATH]
+
+      UI.message("Using \"#{app_path}\" as app_path as no file exists at the constructed path.")
+  end
+
+  # Get the release notes
   release_notes = message = "#{ENV[$SMF_CHANGELOG_ENV_KEY][0..4995]}#{'\\n...' if ENV[$SMF_CHANGELOG_ENV_KEY].length > 4995}"
 
   hockey(
     api_token: ENV[$SMF_HOCKEYAPP_API_TOKEN_ENV_KEY],
-    ipa: File.exist?(app_path) ? app_path : lane_context[SharedValues::IPA_OUTPUT_PATH], 
+    ipa: app_path, 
     notify: "0",
     notes: release_notes,
     public_identifier: build_variant_config[:hockeyapp_id],
