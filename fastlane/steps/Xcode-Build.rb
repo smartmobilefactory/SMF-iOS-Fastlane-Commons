@@ -133,7 +133,7 @@ private_lane :smf_perform_unit_tests do |options|
     clean: false,
     destination: destination,
     code_coverage: true,
-    output_types: "html,junit,json-compilation-database",
+    output_types: "html,xml,junit,json-compilation-database",
     output_files: "report.html,report.xml,report.junit,report.json"
     )
 
