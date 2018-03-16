@@ -134,7 +134,7 @@ private_lane :smf_perform_unit_tests do |options|
     destination: destination,
     code_coverage: true,
     output_types: "html,junit,json-compilation-database",
-    output_files: "report.xml,report.junit,report.json"
+    output_files: "report.html,report.xml,report.junit,report.json"
     )
 
   ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY] = "true"
