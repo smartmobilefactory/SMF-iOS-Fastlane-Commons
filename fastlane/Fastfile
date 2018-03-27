@@ -116,7 +116,7 @@ end
 
 def smf_set_build_variants_matching_regex(regex)
   all_build_variants = @smf_fastlane_config[:build_variants].keys
-  matching_build_variants = all_build_variants.grep(/#{regex}/)
+  matching_build_variants = all_build_variants.grep(/#{regex}/).map(&:to_s)
   
   UI.important("Found matching build variants: #{matching_build_variants}")
   
