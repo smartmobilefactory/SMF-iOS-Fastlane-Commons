@@ -17,7 +17,7 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
       smf_send_hipchat_message(
         title: "Failed to sync Strings with PhraseApp for #{smf_default_notification_release_title} 😢",
         message: "The build job will continue but won't contain updated translations!",
-        additional_html_entries: "#{e.message}",
+        exception: e,
         success: false,
         hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
       )
