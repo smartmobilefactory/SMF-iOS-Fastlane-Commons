@@ -153,7 +153,7 @@ private_lane :smf_create_github_release do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
   if build_variant_config[:attach_simulator_build_to_github] == true
-    paths_to_simulator_builds = ["build/SimulatorBuildRelease.app.zip"]
+    paths_to_simulator_builds = ["#{smf_workspace_dir}/build/SimulatorBuildRelease.app.zip"]
   end
 
   # Create the GitHub release
