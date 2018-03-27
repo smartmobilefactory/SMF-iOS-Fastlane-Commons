@@ -14,11 +14,18 @@ private_lane :smf_deploy_app do |options|
     UI.important("Multiple build variants are declared. Deploying apps for #{@smf_build_variants_array}")
   end
 
+  bulk_deploy_params = @smf_build_variants_array.length > 1 ? {index: 0, count: @smf_build_variants_array.length} : nil
   for build_variant in @smf_build_variants_array
 
     smf_set_build_variant(build_variant, false)
 
-    smf_deploy_build_variant
+    smf_deploy_build_variant(
+      bulk_deploy_params: bulk_deploy_params
+      )
+
+    if bulk_deploy_params != nil
+      bulk_deploy_params[:index] += 1
+    end
   end
 end
 
@@ -30,6 +37,9 @@ desc "Builds the current build variant including build number incrementation, Me
 private_lane :smf_deploy_build_variant do |options|
 
   UI.important("Deploying a new app version of \"#{@smf_build_variant}\"")
+
+  # Parameters
+  bulk_deploy_params = options[:bulk_deploy_params]
 
   # Cleanup
 
@@ -77,7 +87,9 @@ private_lane :smf_deploy_build_variant do |options|
   smf_sync_strings_with_phrase_app
 
   # Build and archive the IPA
-  smf_archive_ipa
+  smf_archive_ipa(
+    bulk_deploy_params: bulk_deploy_params
+    )
 
   # Commit generated code. There can be changes eg. from PhraseApp + R.swift
   if push_generated_code

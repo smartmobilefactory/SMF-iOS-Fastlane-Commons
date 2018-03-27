@@ -13,6 +13,7 @@ private_lane :smf_check_pr do |options|
     UI.important("Multiple build variants are declared. Checking the PR for #{@smf_build_variants_array}")
   end
 
+  bulk_deploy_params = @smf_build_variants_array.length > 1 ? {index: 0, count: @smf_build_variants_array.length} : nil
   for build_variant in @smf_build_variants_array
 
     UI.important("Starting PR check for build variant \"#{build_variant}\"")
@@ -28,7 +29,8 @@ private_lane :smf_check_pr do |options|
 
     if should_archive_ipa
       smf_archive_ipa_if_scheme_is_provided(
-        skip_export: true
+        skip_export: true,
+        bulk_deploy_params: bulk_deploy_params
         )
     end
     
@@ -55,6 +57,10 @@ private_lane :smf_check_pr do |options|
     # Run Danger if the build variant didn't opt-out
     if should_run_danger
       smf_run_danger
+    end
+
+    if bulk_deploy_params != nil
+      bulk_deploy_params[:index] += 1
     end
   end
 
