@@ -149,6 +149,13 @@ private_lane :smf_create_github_release do |options|
 
   UI.message("Found \"#{repository_path}\" as GitHub project")
 
+  paths_to_simulator_builds = nil
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+
+  if build_variant_config[:attach_simulator_build_to_github] == true
+    paths_to_simulator_builds = ["build/SimulatorBuildRelease.app.zip"]
+  end
+
   # Create the GitHub release
   set_github_release(
     repository_name: repository_path,
@@ -156,7 +163,8 @@ private_lane :smf_create_github_release do |options|
     name: release_name.to_s,
     tag_name: tag,
     description: ENV[$SMF_CHANGELOG_ENV_KEY],
-    commitish: @smf_git_branch
+    commitish: @smf_git_branch,
+    upload_assets: paths_to_simulator_builds
   )
 end
 

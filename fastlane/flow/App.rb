@@ -138,6 +138,11 @@ private_lane :smf_deploy_build_variant do |options|
     smf_commit_build_number
   end
 
+  # Build a Simulator build if wanted
+  if build_variant_config[:attach_simulator_build_to_github] == true
+    smf_build_simulator_app
+  end
+
   # Collect the changelog 
   smf_collect_changelog
 

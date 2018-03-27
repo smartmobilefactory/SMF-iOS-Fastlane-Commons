@@ -114,6 +114,32 @@ private_lane :smf_archive_ipa do |options|
 
 end
 
+###############################
+### smf_build_simulator_app ###
+###############################
+
+desc "Creates a Release build for simulators"
+private_lane :smf_build_simulator_app do |options|
+
+  # Variables
+  project_name = @smf_fastlane_config[:project][:project_name]
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  build_type = "Release"
+
+  derived_data_path = "simulator-build/derivedData"
+  output_directory_path = "#{derived_data_path}/Build/Products/#{build_type}-iphonesimulator"
+  output_filename = "#{build_variant_config[:scheme]}.app"
+
+  sh "xcodebuild -workspace #{project_name}.xcworkspace -scheme #{build_variant_config[:scheme]} -configuration #{build_type} -arch x86_64 ONLY_ACTIVE_ARCH=NO -sdk iphonesimulator -derivedDataPath #{derived_data_path}"
+
+  # Compress the .app and copy it to the general build folder
+  sh "cd \"#{output_directory_path}\"; zip -rj \"#{output_filename}.zip\" \"#{output_filename}\"/*"
+  sh "cp \"#{output_directory_path}/#{output_filename}.zip\" build/SimulatorBuild#{build_type}.app.zip"
+
+end
+
+
+
 ##############################
 ### smf_perform_unit_tests ###
 ##############################
