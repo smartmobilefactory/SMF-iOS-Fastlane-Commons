@@ -156,8 +156,9 @@ private_lane :smf_create_github_release do |options|
     paths_to_simulator_builds = ["#{smf_workspace_dir}/build/SimulatorBuildRelease.app.zip"]
   end
 
-  # Create the GitHub release
+  # Create the GitHub release as draft
   set_github_release(
+    is_draft: true,
     repository_name: repository_path,
     api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY],
     name: release_name.to_s,
@@ -166,6 +167,19 @@ private_lane :smf_create_github_release do |options|
     commitish: @smf_git_branch,
     upload_assets: paths_to_simulator_builds
   )
+
+  release_id = smf_get_github_release_id_for_tag
+
+  # Publish the release. We do this after the release was created as the assets are uploaded after the release is created on Github which results in release webhooks which doesn't contain the assets!
+  github_api(
+   server_url: "https://api.github.com",
+    api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY],
+    http_method: "PATCH",
+    path: "/repos/#{repository_path}/releases/#{release_id}",
+    body: { 
+      "draft": false 
+    }
+    )
 end
 
 ##############
@@ -222,4 +236,27 @@ end
 
 def smf_default_pod_tag_prefix
   return "releases/"
+end
+
+def smf_get_github_release_id_for_tag(tag, repository_path)
+
+  result = github_api(
+    server_url: "https://api.github.com",
+    api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY],
+    http_method: "GET",
+    path: "/repos/#{repository_path}/releases"
+    )
+
+  releases = JSON.parse(result[:body])
+  release_id = nil
+  for release in releases
+    if release[tag] == name
+      release_id = release["id"]
+      break
+    end
+  end
+
+  UI.message("Found id \"#{release_id}\" for release \"#{tag}\"")
+
+  return release_id
 end
