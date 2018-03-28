@@ -135,7 +135,7 @@ private_lane :smf_build_simulator_app do |options|
 
   # Compress the .app and copy it to the general build folder
   sh "cd \"#{output_directory_path}\"; zip -r \"#{output_filename}.zip\" \"#{output_filename}\"/*"
-  sh "cp \"#{output_directory_path}/#{output_filename}.zip\" #{workspace}/build/SimulatorBuild#{build_type}.app.zip"
+  sh "cp \"#{output_directory_path}/#{output_filename}.zip\" #{workspace}/build/SimulatorBuild#{build_type}.zip"
 
 end
 
