@@ -168,7 +168,7 @@ private_lane :smf_create_github_release do |options|
     upload_assets: paths_to_simulator_builds
   )
 
-  release_id = smf_get_github_release_id_for_tag
+  release_id = smf_get_github_release_id_for_tag(tag, repository_path)
 
   # Publish the release. We do this after the release was created as the assets are uploaded after the release is created on Github which results in release webhooks which doesn't contain the assets!
   github_api(
