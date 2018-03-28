@@ -250,7 +250,7 @@ def smf_get_github_release_id_for_tag(tag, repository_path)
   releases = JSON.parse(result[:body])
   release_id = nil
   for release in releases
-    if release[tag] == name
+    if release["tag_name"] == tag
       release_id = release["id"]
       break
     end
