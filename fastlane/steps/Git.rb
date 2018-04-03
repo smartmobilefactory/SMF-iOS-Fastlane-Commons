@@ -22,7 +22,7 @@ private_lane :smf_collect_changelog do |options|
 
   last_tag = last_tag.strip
 
-  ENV[$SMF_CHANGELOG_ENV_KEY] =  changelog_from_git_commits(
+  ENV[$SMF_CHANGELOG_ENV_KEY] = changelog_from_git_commits(
     between:[last_tag,"HEAD"],
     merge_commit_filtering: "exclude_merges",
     pretty: '- (%an) %s'
@@ -32,6 +32,10 @@ private_lane :smf_collect_changelog do |options|
     merge_commit_filtering: "exclude_merges",
     pretty: '%ae'
     )
+
+  if ENV[$SMF_CHANGELOG_ENV_KEY] == nil
+    ENV[$SMF_CHANGELOG_ENV_KEY] = ""
+  end
 
   # Store the change log in a file if a macOS app is build as the upload to HockeyApp is done in a separate Fastlane call
   if lane_context[SharedValues::PLATFORM_NAME] == "mac"
@@ -163,7 +167,7 @@ private_lane :smf_create_github_release do |options|
     api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY],
     name: release_name.to_s,
     tag_name: tag,
-    description: ENV[$SMF_CHANGELOG_ENV_KEY],
+    description: ,
     commitish: @smf_git_branch,
     upload_assets: paths_to_simulator_builds
   )
