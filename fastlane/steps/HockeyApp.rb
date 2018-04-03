@@ -96,6 +96,8 @@ private_lane :smf_upload_ipa_to_hockey do |options|
       UI.message("Using \"#{app_path}\" as app_path as no file exists at the constructed path.")
   end
 
+  UI.message("ENV[$SMF_CHANGELOG_ENV_KEY]: #{ENV[$SMF_CHANGELOG_ENV_KEY]}")
+
   # Get the release notes
   release_notes = message = "#{ENV[$SMF_CHANGELOG_ENV_KEY][0..4995]}#{'\\n...' if ENV[$SMF_CHANGELOG_ENV_KEY].length > 4995}"
 
