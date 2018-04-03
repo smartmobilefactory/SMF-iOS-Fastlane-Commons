@@ -99,14 +99,10 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   UI.message("ENV[$SMF_CHANGELOG_ENV_KEY]: #{ENV[$SMF_CHANGELOG_ENV_KEY]}")
 
   # Get the release notes
-  release_notes = message = "#{ENV[$SMF_CHANGELOG_ENV_KEY][0..4995]}#{'\\n...' if ENV[$SMF_CHANGELOG_ENV_KEY].length > 4995}"
-
-  UI.message("lane_context: #{lane_context}")
-  UI.message("lane_context[SharedValues::IPA_OUTPUT_PATH]: #{lane_context[SharedValues::IPA_OUTPUT_PATH]}")
-  UI.message("ENV[$SMF_HOCKEYAPP_API_TOKEN_ENV_KEY]: #{ENV[$SMF_HOCKEYAPP_API_TOKEN_ENV_KEY]}")
-  UI.message("release_notes: #{release_notes}")
-  UI.message("build_variant_config[:hockeyapp_id]: #{build_variant_config[:hockeyapp_id]}")
-  UI.message("dsym_path: #{dsym_path}")
+  release_notes = ""
+  if ENV[$SMF_CHANGELOG_ENV_KEY] != nil
+    release_notes = "#{ENV[$SMF_CHANGELOG_ENV_KEY][0..4995]}#{'\\n...' if ENV[$SMF_CHANGELOG_ENV_KEY].length > 4995}"
+  end
 
   hockey(
     api_token: ENV[$SMF_HOCKEYAPP_API_TOKEN_ENV_KEY],
