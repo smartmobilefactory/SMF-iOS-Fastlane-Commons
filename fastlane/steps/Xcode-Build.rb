@@ -319,3 +319,23 @@ end
 def smf_is_build_variant_a_pod
   return (@smf_fastlane_config[:build_variants][@smf_build_variant_sym][:podspec_path] != nil)
 end
+
+def smf_path_to_ipa_or_app
+  
+  # Variables
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  project_name = @smf_fastlane_config[:project][:project_name]
+  escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
+
+  app_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.zip"
+
+  UI.message("Constructed path \"#{app_path}\" from filename \"#{escaped_filename}\"")
+
+  unless File.exist?(app_path)
+      app_path = lane_context[SharedValues::IPA_OUTPUT_PATH]
+
+      UI.message("Using \"#{app_path}\" as app_path as no file exists at the constructed path.")
+  end
+
+  return app_path
+end
