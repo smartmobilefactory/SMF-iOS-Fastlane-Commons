@@ -157,7 +157,13 @@ private_lane :smf_create_github_release do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
   if build_variant_config[:attach_simulator_build_to_github] == true
-    paths_to_simulator_builds = [smf_path_to_ipa_or_app, "#{smf_workspace_dir}/build/SimulatorBuildRelease.zip"]
+    # Zip the release build 
+    path_to_ipa_or_app = smf_path_to_ipa_or_app
+    ipa_or_app_filename = File.basename(path_to_ipa_or_app)
+    ipa_or_app_directory_path = File.dirname(path_to_ipa_or_app)
+    sh "cd \"#{ipa_or_app_directory_path}\"; zip -r \"DeviceBuildRelease.zip\" \"#{ipa_or_app_filename}\"/*"
+
+    paths_to_simulator_builds = ["#{ipa_or_app_directory_path}/DeviceBuildRelease.zip", "#{smf_workspace_dir}/build/SimulatorBuildRelease.zip"]
   end
 
   # Create the GitHub release as draft
