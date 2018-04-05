@@ -161,7 +161,7 @@ private_lane :smf_create_github_release do |options|
     path_to_ipa_or_app = smf_path_to_ipa_or_app
     ipa_or_app_filename = File.basename(path_to_ipa_or_app)
     ipa_or_app_directory_path = File.dirname(path_to_ipa_or_app)
-    sh "cd \"#{ipa_or_app_directory_path}\"; zip -r \"DeviceBuildRelease.zip\" \"#{ipa_or_app_filename}\"/*"
+    sh "cd \"#{ipa_or_app_directory_path}\"; zip -r \"DeviceBuildRelease.zip\" \"#{ipa_or_app_filename}\""
 
     paths_to_simulator_builds = ["#{ipa_or_app_directory_path}/DeviceBuildRelease.zip", "#{smf_workspace_dir}/build/SimulatorBuildRelease.zip"]
   end
