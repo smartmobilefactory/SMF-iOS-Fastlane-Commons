@@ -339,3 +339,16 @@ def smf_path_to_ipa_or_app
 
   return app_path
 end
+
+def smf_get_version_number
+  project_name = @smf_fastlane_config[:project][:project_name]
+  scheme = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
+  target = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:target]
+
+  version_number = get_version_number(
+    xcodeproj: "#{project_name}.xcodeproj"
+    target: (target != nil ? target : scheme)
+    )
+
+  return version_number
+end

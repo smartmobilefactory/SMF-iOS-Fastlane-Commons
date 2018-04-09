@@ -186,7 +186,7 @@ private_lane :smf_deploy_build_variant do |options|
   )
 
   # Create the GitHub release
-  version = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
+  version = smf_get_version_number
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   smf_create_github_release(
     release_name: "#{@smf_build_variant.upcase} #{version} (#{build_number})",

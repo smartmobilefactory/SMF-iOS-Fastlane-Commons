@@ -106,7 +106,7 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
 
   # Variables
   project_name = @smf_fastlane_config[:project][:project_name]
-  version_number = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
+  version_number = smf_get_version_number
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
 
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]

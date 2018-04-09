@@ -73,7 +73,7 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
 
   # Construct path to DSYMs
-  version_number = get_version_number(xcodeproj: "#{project_name}.xcodeproj")
+  version_number = smf_get_version_number
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   dsym_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.dSYM.zip"
   UI.message("Constructed the dsym path \"#{dsym_path}\"")
