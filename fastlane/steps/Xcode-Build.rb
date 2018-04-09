@@ -346,7 +346,7 @@ def smf_get_version_number
   target = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:target]
 
   version_number = get_version_number(
-    xcodeproj: "#{project_name}.xcodeproj"
+    xcodeproj: "#{project_name}.xcodeproj",
     target: (target != nil ? target : scheme)
     )
 
