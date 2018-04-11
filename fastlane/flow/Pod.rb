@@ -13,7 +13,6 @@ private_lane :smf_publish_pod do |options|
   project_config = @smf_fastlane_config[:project]
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   podspec_path = build_variant_config[:podspec_path]
-  specs_repo = build_variant_config[:pods_specs_repo]
   generateMetaJSON = (build_variant_config[:generateMetaJSON].nil? ? true : build_variant_config[:generateMetaJSON])
 
   # Unlock keycahin to enable pull repo with https
@@ -88,15 +87,7 @@ private_lane :smf_publish_pod do |options|
   
   begin
     # Publish the pod. Either to a private specs repo or to the offical one
-    if specs_repo
-      pod_push(
-        repo: specs_repo,
-        path: podspec_path,
-        allow_warnings: true
-        )
-    else
-      pod_push(path: podspec_path)
-    end
+    smf_pod_push
 
   rescue => e 
     # Remove the git tag
