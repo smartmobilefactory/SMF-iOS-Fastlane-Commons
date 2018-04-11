@@ -26,14 +26,15 @@ private_lane :smf_pod_push do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   podspec_path = build_variant_config[:podspec_path]
   specs_repo = build_variant_config[:pods_specs_repo]
+  workspace_dir = smf_workspace_dir
 
   sh "which pod"
   sh "pod --version"
 
   if specs_repo
-  	sh "pod repo push #{specs_repo} #{podspec_path} --allow-warnings"
+  	sh "cd #{workspace_dir}; pod repo push #{specs_repo} #{podspec_path} --allow-warnings"
   else
-  	sh "pod trunk push #{podspec_path}"
+  	sh "cd #{workspace_dir}; pod trunk push #{podspec_path}"
   end
 
 end
