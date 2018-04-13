@@ -88,15 +88,18 @@ if get_config_value("swiftlint.use_feature")
   fail_on_error = get_config_value("swiftlint.fail_on_error")
   pods_swiftlint_binary = "Pods/SwiftLint/swiftlint"
   if File.file?(pods_swiftlint_binary)
-    swiftlint.binary_path = pods_swiftlint_binary
-    binary_message_string = pods_swiftlint_binary
+    expanded_binary_path = File.expand_path(pods_swiftlint_binary)
+    swiftlint.binary_path = expanded_binary_path
+    binary_message_string = expanded_binary_path
   else
     binary_message_string = "Danger SwiftLint Plugin version"
   end
 
   swiftlint_config_message = "Exists in project"
   if File.file?(".swiftlint.yml")
-      swiftlint_config_message = "Does not exist in the project!"
+    swiftlint_config_message = "Does not exist in the project!"
+  else
+    swiftlint.config_file = File.expand_path(".swiftlint.yml")
   end
 
   # Run SwiftLint 
@@ -105,8 +108,8 @@ if get_config_value("swiftlint.use_feature")
   else
     swiftlint.lint_files
   end
-  
-  configuration_message += "<br /><br />SwiftLint is <b>enabled</b> (modified files only)<br />- binary: <b>#{swiftlint.binary_path}</b>,<br />- fail_on_error: <b>#{fail_on_error}</b>,<br />- SwiftLint Config: <b>#{swiftlint_config_message}</b>"
+
+  configuration_message += "<br /><br />SwiftLint is <b>enabled</b> (modified files only)<br />- binary: <b>#{swiftlint.binary_path}</b>,<br />- fail_on_error: <b>#{fail_on_error}</b>,<br />- SwiftLint Config: <b>#{swiftlint.config_file}</b>"
 else
   configuration_message += "<br /><br />SwiftLint is <b>disabled</b>"
 end
