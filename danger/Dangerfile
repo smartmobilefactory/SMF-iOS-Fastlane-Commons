@@ -109,6 +109,8 @@ if get_config_value("swiftlint.use_feature")
     swiftlint.lint_files
   end
 
+  swiftlint.verbose = true
+
   configuration_message += "<br /><br />SwiftLint is <b>enabled</b> (modified files only)<br />- binary: <b>#{swiftlint.binary_path}</b>,<br />- fail_on_error: <b>#{fail_on_error}</b>,<br />- SwiftLint Config: <b>#{swiftlint.config_file}</b>"
 else
   configuration_message += "<br /><br />SwiftLint is <b>disabled</b>"
