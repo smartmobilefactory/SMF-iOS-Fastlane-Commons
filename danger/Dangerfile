@@ -94,6 +94,10 @@ if get_config_value("swiftlint.use_feature")
     binary_message_string = "Danger SwiftLint Plugin version"
   end
 
+  swiftlint_config_message = "Exists in project"
+  if File.file?(".swiftlint.yml")
+      swiftlint_config_message = "Does not exist in the project!"
+  end
 
   # Run SwiftLint 
   if fail_on_error
@@ -102,7 +106,7 @@ if get_config_value("swiftlint.use_feature")
     swiftlint.lint_files
   end
   
-  configuration_message += "<br /><br />SwiftLint is <b>enabled</b> (modified files only)<br />- binary: <b>#{swiftlint.binary_path}</b>,<br />- fail_on_error: <b>#{fail_on_error}</b>"
+  configuration_message += "<br /><br />SwiftLint is <b>enabled</b> (modified files only)<br />- binary: <b>#{swiftlint.binary_path}</b>,<br />- fail_on_error: <b>#{fail_on_error}</b>,<br />- SwiftLint Config: <b>#{swiftlint_config_message}</b>"
 else
   configuration_message += "<br /><br />SwiftLint is <b>disabled</b>"
 end
