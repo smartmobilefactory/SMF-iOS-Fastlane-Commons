@@ -103,6 +103,7 @@ end
 
 private_lane :smf_verify_common_itc_upload_errors do |options|
   require 'spaceship'
+  require 'credentials_manager'
 
   # Variables
   project_name = @smf_fastlane_config[:project][:project_name]
@@ -113,9 +114,18 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
   bundle_identifier = build_variant_config[:bundle_identifier]
   itc_team_id = build_variant_config[:itc_team_id]
 
+  # Use the specified Apple ID to login or take the default one (is automatically chosen if the values are nil)
+  if build_variant_config.key? :itc_apple_id
+    username = build_variant_config[:itc_apple_id]
+  else
+    username = nil
+  end
+
+  credentials = CredentialsManager::AccountManager.new(user: username)
+
   # Setup Spaceship
   ENV["FASTLANE_ITC_TEAM_ID"] = itc_team_id
-  Spaceship::Tunes.login
+  Spaceship::Tunes.login(credentials.user, credentials.password)
   Spaceship::Tunes.select_team
 
   # Get the currently editable version
