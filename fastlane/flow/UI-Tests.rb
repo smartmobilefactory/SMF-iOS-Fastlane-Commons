@@ -16,7 +16,8 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
   tag_name = payload["release"]["tag_name"]
   ui_test_triggering_github_releases = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:ui_test_triggering_github_releases]
 
-  if tag_name =~ /#{ui_test_triggering_github_releases.gsub("\\/", "\/")}/ == nil
+  tag_name_matches_result = tag_name =~ /#{ui_test_triggering_github_releases.gsub("\\/", "\/")}/
+  if tag_name_matches_result == nil
     UI.important("Release \"#{tag_name}\" is not eligible to be tested. Only tags matching \"#{ui_test_triggering_github_releases}\" are allowed.")
     # Stop the execution of this lane
     next
