@@ -6,7 +6,7 @@ desc "Github triggered UITests for Simulators"
 lane :smf_perform_ui_tests_from_github_webhook do |options|
 
   # Parameters
-  payload = JSON.parse(options[:payload])
+  payload = options[:payload]
   report_sync_destination = options[:report_sync_destination]
   github_token = options[:github_token]
   simulators = options[:simulators]
