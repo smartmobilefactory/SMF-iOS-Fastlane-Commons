@@ -99,6 +99,10 @@ def smf_set_build_variant(build_variant, reset_build_variant_array = true)
     smf_set_build_variants_array(nil)
   end
 
+  if @smf_fastlane_config[:build_variants][@smf_build_variant_sym] == nil
+    raise "Error: build variant \"#{@smf_build_variant}\" isn't declared in the configuration file."
+  end
+
   # Modify the platform if needed
   platform = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:platform]
   if platform != nil
