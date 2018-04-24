@@ -64,7 +64,7 @@ def smf_install_app_on_simulators(simulators, path_to_app)
 
   simulators.each { |simulator|
     sh "xcrun simctl boot '#{simulator}' || true"
-    sh "xcrun simctl install '#{simulator}' #{url} || true"
+    sh "xcrun simctl install '#{simulator}' #{path_to_app} || true"
   }
 end
 
