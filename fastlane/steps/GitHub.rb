@@ -96,8 +96,6 @@ def smf_download_asset(asset_name, assets, token)
 
   asset_url = smf_asset_url_from_webhook_event(asset_name, assets)
 
-  sh "mkdir #{downlaod_dir_name}"
-
   sh(
     "curl", "-X", "GET",
     "-H", "Accept: application/octet-stream", 
