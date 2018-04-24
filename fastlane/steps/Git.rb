@@ -124,74 +124,6 @@ private_lane :smf_commit_build_number do |options|
 
 end
 
-
-#################################
-### smf_create_github_release ###
-#################################
-
-# options: release_name (String), tag (String)
-
-private_lane :smf_create_github_release do |options|
-
-  # Parameter
-  release_name = options[:release_name]
-  tag = options[:tag]
-
-  git_remote_origin_url = sh "git config --get remote.origin.url"
-  github_url_match = git_remote_origin_url.match(/.*github.com:(.*)\.git/)
-  # Search fot the https url if the ssh url couldn't be found
-  if github_url_match.nil?
-    github_url_match = git_remote_origin_url.match(/.*github.com\/(.*)\.git/)
-  end
-
-  if github_url_match.nil? or github_url_match.length < 2
-    UI.message("The remote orgin doesn't seem to be GitHub. The GitHub Release won't be created.")
-    return
-  end
-
-  repository_path = github_url_match[1]
-
-  UI.message("Found \"#{repository_path}\" as GitHub project")
-
-  paths_to_simulator_builds = nil
-  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
-
-  if build_variant_config[:attach_simulator_build_to_github] == true
-    # Zip the release build 
-    path_to_ipa_or_app = smf_path_to_ipa_or_app
-    ipa_or_app_filename = File.basename(path_to_ipa_or_app)
-    ipa_or_app_directory_path = File.dirname(path_to_ipa_or_app)
-    sh "cd \"#{ipa_or_app_directory_path}\"; zip -r \"DeviceBuildRelease.zip\" \"#{ipa_or_app_filename}\""
-
-    paths_to_simulator_builds = ["#{ipa_or_app_directory_path}/DeviceBuildRelease.zip", "#{smf_workspace_dir}/build/SimulatorBuildRelease.zip"]
-  end
-
-  # Create the GitHub release as draft
-  set_github_release(
-    is_draft: true,
-    repository_name: repository_path,
-    api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY],
-    name: release_name.to_s,
-    tag_name: tag,
-    description: ENV[$SMF_CHANGELOG_ENV_KEY],
-    commitish: @smf_git_branch,
-    upload_assets: paths_to_simulator_builds
-  )
-
-  release_id = smf_get_github_release_id_for_tag(tag, repository_path)
-
-  # Publish the release. We do this after the release was created as the assets are uploaded after the release is created on Github which results in release webhooks which doesn't contain the assets!
-  github_api(
-   server_url: "https://api.github.com",
-    api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY],
-    http_method: "PATCH",
-    path: "/repos/#{repository_path}/releases/#{release_id}",
-    body: { 
-      "draft": false 
-    }
-    )
-end
-
 ##############
 ### Helper ###
 ##############
@@ -246,27 +178,4 @@ end
 
 def smf_default_pod_tag_prefix
   return "releases/"
-end
-
-def smf_get_github_release_id_for_tag(tag, repository_path)
-
-  result = github_api(
-    server_url: "https://api.github.com",
-    api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY],
-    http_method: "GET",
-    path: "/repos/#{repository_path}/releases"
-    )
-
-  releases = JSON.parse(result[:body])
-  release_id = nil
-  for release in releases
-    if release["tag_name"] == tag
-      release_id = release["id"]
-      break
-    end
-  end
-
-  UI.message("Found id \"#{release_id}\" for release \"#{tag}\"")
-
-  return release_id
 end
