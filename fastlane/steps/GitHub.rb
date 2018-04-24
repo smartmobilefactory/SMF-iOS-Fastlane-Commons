@@ -105,6 +105,7 @@ def smf_download_asset(asset_name, assets, token)
   )
 
   unzip_dir = "#{asset_name.downcase}-unzipped"
+  sh "mkdir #{unzip_dir}"
 
   sh "cd #{unzip_dir} && unzip ../#{asset_name}"
 
