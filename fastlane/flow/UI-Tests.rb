@@ -23,11 +23,9 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
     next
   end 
 
-  simulator_build_asset_url = assetForSimulatorReleaseBuild(assets)
-  simulator_build_asset_path = downloadApp(simulator_build_asset_url, github_token)
+  simulator_build_asset_path = smf_download_asset($SMF_SIMULATOR_RELEASE_APP_ZIP_FILENAME, assets, github_token)
 
-  device_build_asset_url = assetForDeviceReleaseBuild(assets)
-  device_build_asset_path = downloadAppForDevices(device_build_asset_url, github_token)
+  device_build_asset_path = smf_download_asset($SMF_DEVICE_RELEASE_APP_ZIP_FILENAME, assets, github_token)
 
   smf_perform_all_ui_tests(
     simulators: simulators,
