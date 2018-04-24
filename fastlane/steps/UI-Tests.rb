@@ -30,7 +30,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     UI.important("Failed to perform the unit tests, exception: #{exception}")
 
     if should_create_report
-      smf_create_and_sync_report("/../DerivedData", "/../Results", report_sync_destination, report_name)
+      smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", "Results", report_sync_destination, report_name)
       next
     else
       raise exception
@@ -38,7 +38,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   end
 
   if should_create_report
-    smf_create_and_sync_report("/../DerivedData", "/../Results", report_sync_destination, report_name)
+    smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", "Results", report_sync_destination, report_name)
   end
 end
 
@@ -46,17 +46,20 @@ end
 ### Helper ###
 ##############
 
-def smf_create_and_sync_report(derivedDataURL, resultsURL, report_sync_destination, report_name)
+def smf_create_and_sync_report(derivedDataURL, results_directory, results_foldername, report_sync_destination, report_name)
   local_remote_path = "#{report_sync_destination}/#{report_name}-#{Time.now.strftime("%Y-%m-%d_%H:%M")}"
 
   # Create the report based on the derived data
   sh("java", "-jar", "reporting.jar", Dir.pwd + derivedDataURL + "/Logs/Test", Dir.pwd + resultsURL, 400.to_s)
 
+  # Zip the report
+  sh("cd #{results_directory} && zip -r #{results_foldername}.zip #{results_foldername}")
+
   # Create the path in the target directory
   sh("mkdir -p #{local_remote_path}")
 
   # Sync the report to the target directory
-  sh("rsync -rvc --size-only --no-whole-file " + Dir.pwd + resultsURL + " " + local_remote_path)
+  sh("rsync -rvc --size-only --no-whole-file  #{results_directory}/#{results_foldername}.zip #{local_remote_path}")
 end
 
 def smf_install_app_on_simulators(simulators, path_to_app)
