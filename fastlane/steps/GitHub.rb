@@ -29,7 +29,7 @@ private_lane :smf_create_github_release do |options|
   paths_to_simulator_builds = nil
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
-  if build_variant_config[:attach_simulator_build_to_github] == true
+  if build_variant_config[:attach_build_outputs_to_github] == true
     # Zip the release build 
     path_to_ipa_or_app = smf_path_to_ipa_or_app
     ipa_or_app_filename = File.basename(path_to_ipa_or_app)
