@@ -49,8 +49,10 @@ end
 def smf_create_and_sync_report(derivedDataURL, results_directory, results_foldername, report_sync_destination, report_name)
   local_remote_path = "#{report_sync_destination}/#{report_name}-#{Time.now.strftime("%Y-%m-%d_%H:%M")}"
 
+  reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
+
   # Create the report based on the derived data
-  sh("java", "-jar", "reporting.jar", Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{results_foldername}", 400.to_s)
+  sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{results_foldername}", 400.to_s)
 
   # Zip the report
   sh("cd #{results_directory} && zip -r #{results_foldername}.zip #{results_foldername}")
