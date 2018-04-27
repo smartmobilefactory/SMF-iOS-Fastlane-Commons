@@ -48,7 +48,7 @@ lane :smf_perform_all_ui_tests do |options|
   device_build_asset_path = options[:device_build_asset_path]
   report_name = options[:report_name]
   report_sync_destination = options[:report_sync_destination]
-  simulators = options[:simulators]
+  simulators = options[:simulators].split(',').map{ |x| x.gsub('\n', '') }
 
   # Variables
   bundle_identifier = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]["ui_test.target.bundle_identifier".to_sym]
@@ -57,11 +57,11 @@ lane :smf_perform_all_ui_tests do |options|
 
   # Add the simulators to the destinations and install the app which should be tested
 
-  destinations = simulators.split(',').map{ |x| "platform=iOS Simulator,name=#{x.gsub('\n', '')}" }
+  destinations = simulators.map{ |x| "platform=iOS Simulator,name=#{x}" }
 
-  smf_install_app_on_simulators(destinations, simulator_build_asset_path)
+  smf_install_app_on_simulators(simulators, simulator_build_asset_path)
 
-  UI.message("Chosen simulators: #{destinations}")
+  UI.message("Created destination: \"#{destinations}\" from simulators: \"#{simulators}\"")
 
   # Add the real devices to the destinations and install the app which should be tested
 
@@ -100,10 +100,10 @@ lane :smf_perform_all_ui_tests do |options|
       should_create_report: true
       )
 
-      smf_uninstall_app_on_simulators(destinations, bundle_identifier)
+      smf_uninstall_app_on_simulators(simulators, bundle_identifier)
       smf_uninstall_app_on_devices(udids, bundle_identifier)
   rescue => exception
-    smf_uninstall_app_on_simulators(destinations, bundle_identifier)
+    smf_uninstall_app_on_simulators(simulators, bundle_identifier)
     smf_uninstall_app_on_devices(udids, bundle_identifier)
 
     raise exception
