@@ -50,6 +50,9 @@ lane :smf_perform_all_ui_tests do |options|
   report_sync_destination = options[:report_sync_destination]
   simulators = options[:simulators]
 
+  # Variables
+  bundle_identifier = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]["ui_test.target.bundle_identifier".to_sym]
+
   smf_install_pods_if_project_contains_podfile
 
   # Add the simulators to the destinations and install the app which should be tested
@@ -89,11 +92,20 @@ lane :smf_perform_all_ui_tests do |options|
 
   UI.message("All destinations: #{destinations}")
 
-  smf_perform_uitests_on_given_destinations(
-    destinations: destinations,
-    report_sync_destination: report_sync_destination,
-    report_name: report_name,
-    should_create_report: true
-    )
+  begin
+    smf_perform_uitests_on_given_destinations(
+      destinations: destinations,
+      report_sync_destination: report_sync_destination,
+      report_name: report_name,
+      should_create_report: true
+      )
 
+      smf_uninstall_app_on_simulators(destinations, bundle_identifier)
+      smf_uninstall_app_on_devices(udids, bundle_identifier)
+  rescue => exception
+    smf_uninstall_app_on_simulators(destinations, bundle_identifier)
+    smf_uninstall_app_on_devices(udids, bundle_identifier)
+
+    raise exception
+  end
 end

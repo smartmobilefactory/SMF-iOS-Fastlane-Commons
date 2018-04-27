@@ -73,11 +73,28 @@ def smf_install_app_on_simulators(simulators, path_to_app)
   }
 end
 
+def smf_uninstall_app_on_simulators(simulators, bundle_identifier)
+  UI.message("Removing the APP \"#{bundle_identifier}\" from the simulators: \"#{simulators}\"")
+
+  simulators.each { |simulator|
+    sh "xcrun simctl boot '#{simulator}' || true"
+    sh "xcrun simctl uninstall '#{simulator}' #{bundle_identifier} || true"
+  }
+end
+
 def smf_install_app_on_devices(devices, path_to_app)
   UI.message("Copying the IPA \"#{path_to_app}\"to the devices: \"#{devices}\"")
 
   sh "cfgutil -f install-app #{path_to_app}"
 
   UI.message("Waiting 60 seconds to let the devices time to install the app")
+  sleep(60)
+end
+
+def smf_uninstall_app_on_devices(devices, bundle_identifier)
+  UI.message("Removing the IPA \"#{bundle_identifier}\"from the devices: \"#{devices}\"")
+
+  sh "cfgutil -f remove-app #{bundle_identifier}"
+
   sleep(60)
 end
