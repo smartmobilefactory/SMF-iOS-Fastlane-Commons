@@ -89,7 +89,7 @@ def smf_run_linter
 
     smf_send_hipchat_message(
         title: "Failed to run Swiftlint for #{smf_default_notification_release_title} 😢",
-        success: false,
+        type: "error",
         hipchat_channel: "CI"
       )
   end

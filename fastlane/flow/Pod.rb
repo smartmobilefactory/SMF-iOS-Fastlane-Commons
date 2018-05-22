@@ -51,7 +51,7 @@ private_lane :smf_publish_pod do |options|
 
       smf_send_hipchat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
-        success: false,
+        type: "error",
         exception: exception,
         hipchat_channel: "CI"
       )

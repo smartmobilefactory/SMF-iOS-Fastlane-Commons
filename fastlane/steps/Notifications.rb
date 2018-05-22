@@ -19,7 +19,18 @@ private_lane :smf_send_hipchat_message do |options|
   end
   exception = options[:exception]
   additional_html_entries = options[:additional_html_entries]
-  success = options[:success]
+
+  type = options[:type]
+
+  color = "gray"
+  if type == "success"
+    color = "green"
+  elsif type == "error"
+    color = "red"
+  elsif type == "warning"
+    color = "yellow"
+  end
+
   use_build_job_link_footer = options[:use_build_job_link_footer]
   hipchat_channel = options[:hipchat_channel]
 
@@ -72,11 +83,11 @@ private_lane :smf_send_hipchat_message do |options|
     UI.message("Sending message \"#{content}\" to room \"#{hipchat_channel}\"")
 
     # Send failure messages also to CI to notice them so that we can see if they can be improved
-    if success == false && ((hipchat_channel.eql? "CI") == false)
+    if type == "error" && ((hipchat_channel.eql? "CI") == false)
       hipchat(
       message: content,
       channel: "CI",
-      success: success,
+      custom_color: color,
       api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
       notify_room: true,
       version: "2",
@@ -89,7 +100,7 @@ private_lane :smf_send_hipchat_message do |options|
     hipchat(
       message: content,
       channel: hipchat_channel,
-      success: success,
+      custom_color: color,
       api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
       notify_room: true,
       version: "2",

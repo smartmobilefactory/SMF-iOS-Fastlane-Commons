@@ -126,7 +126,7 @@ private_lane :smf_deploy_build_variant do |options|
 
       smf_send_hipchat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
-        success: false,
+        type: "warning",
         exception: exception,
         hipchat_channel: "CI"
       )
@@ -166,7 +166,7 @@ private_lane :smf_deploy_build_variant do |options|
 
       smf_send_hipchat_message(
         title: "Failed to send APN to SMF HockeyApp for #{smf_default_notification_release_title} 😢",
-        success: false,
+        type: "warning",
         exception: exception,
         hipchat_channel: "CI"
       )
@@ -207,7 +207,7 @@ private_lane :smf_deploy_build_variant do |options|
 
     notification_title = nil
     notification_message = nil
-    did_itc_upload_succeed = false
+    notification_type = "error"
     exception = nil
 
     begin
@@ -219,10 +219,11 @@ private_lane :smf_deploy_build_variant do |options|
       notification_title = "Uploaded #{smf_default_notification_release_title} to iTunes Connect 🎉"
       if skip_waiting
         notification_message = "The build job didn't wait until iTunes Connect processed the build. Errors might still occur! ⚠️"
+        notification_type = "message"
       else
         notification_message = "The IPA was processed by Apple without any errors 👍"
+        notification_type = "success"
       end
-      did_itc_upload_succeed = true
 
       # Download the dsym if the waiting of the processing wasn't skipped
       if skip_waiting == false
@@ -241,7 +242,7 @@ private_lane :smf_deploy_build_variant do |options|
       # Construct the HipChat notification content
       notification_title = "Failed to upload #{smf_default_notification_release_title} to iTunes Connect 😢"
       notification_message = "As iTunes Connect often response with an error altough the IPA was successfully uploaded, you may want to check iTunes Connect to know if the upload worked or not."
-      did_itc_upload_succeed = false
+      notification_type = "error"
 
       UI.important("Warning: The upload to iTunes Connect failed!")
 
@@ -251,7 +252,7 @@ private_lane :smf_deploy_build_variant do |options|
     smf_send_hipchat_message(
         title: notification_title,
         message: notification_message,
-        success: did_itc_upload_succeed,
+        type: notification_type,
         exception: exception,
         hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
       )

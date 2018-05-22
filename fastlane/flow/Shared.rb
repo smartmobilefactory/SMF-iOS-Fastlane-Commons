@@ -98,7 +98,7 @@ private_lane :smf_send_deploy_success_notifications do |options|
     smf_send_hipchat_message(
       title: title,
       message: ENV[$SMF_CHANGELOG_ENV_KEY],
-      success: true,
+      type: "success",
       hipchat_channel: hipchat_channel
       )
   end
@@ -151,7 +151,7 @@ private_lane :smf_handle_exception do |options|
       title: title,
       message: "#{exception.message}",
       exception: exception,
-      success: false,
+      type: "error",
       hipchat_channel: hipchat_channel
       )
   end
