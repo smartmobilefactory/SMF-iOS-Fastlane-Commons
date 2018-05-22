@@ -113,6 +113,7 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   bundle_identifier = build_variant_config[:bundle_identifier]
   itc_team_id = build_variant_config[:itc_team_id]
+  itc_skip_version_check = build_variant_config[:itc_skip_version_check]
 
   # Use the specified Apple ID to login or take the default one (is automatically chosen if the values are nil)
   if build_variant_config.key? :itc_apple_id
@@ -143,10 +144,14 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
 
   duplicate_build_number_erros = smf_check_if_itc_already_contains_buildnumber(app, versions, build_number)
 
-  # Check if there is a matching editable app version
-  no_matching_editable_app_version = smf_check_if_app_version_is_editable_in_itc(app, version_number)
+  errors = duplicate_build_number_erros
 
-  errors = duplicate_build_number_erros + no_matching_editable_app_version
+  # Check if there is a matching editable app version
+  if itc_skip_version_check != true
+    no_matching_editable_app_version = smf_check_if_app_version_is_editable_in_itc(app, version_number)
+
+    errors = errors + no_matching_editable_app_version
+  end
 
   Spaceship::Tunes.client = nil
 
