@@ -81,7 +81,7 @@ lane :smf_perform_all_ui_tests do |options|
     begin
 
       # Install the app on the devices
-      smf_install_app_on_devices(udids, device_build_asset_path)
+      smf_install_app_on_devices(device_build_asset_path)
 
       destinations = destinations + udids.map{ |x| "platform=ios,id=#{x.gsub('\n', '')}" }
 
@@ -101,10 +101,10 @@ lane :smf_perform_all_ui_tests do |options|
       )
 
       smf_uninstall_app_on_simulators(simulators, bundle_identifier)
-      smf_uninstall_app_on_devices(udids, bundle_identifier)
+      smf_uninstall_app_on_devices(bundle_identifier)
   rescue => exception
     smf_uninstall_app_on_simulators(simulators, bundle_identifier)
-    smf_uninstall_app_on_devices(udids, bundle_identifier)
+    smf_uninstall_app_on_devices(bundle_identifier)
 
     raise exception
   end

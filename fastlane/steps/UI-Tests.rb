@@ -82,19 +82,28 @@ def smf_uninstall_app_on_simulators(simulators, bundle_identifier)
   }
 end
 
-def smf_install_app_on_devices(devices, path_to_app)
-  UI.message("Copying the IPA \"#{path_to_app}\"to the devices: \"#{devices}\"")
+def smf_install_app_on_devices(path_to_app)
+  UI.message("Copying the IPA \"#{path_to_app}\"to all connected devices")
 
-  sh "cfgutil -f install-app #{path_to_app}"
+  connected_devices = sh "cfgutil list"
 
-  UI.message("Waiting 60 seconds to let the devices time to install the app")
-  sleep(60)
+  if connected_devices.length > 0
+    sh "cfgutil -f install-app #{path_to_app}"
+
+    UI.message("Waiting 60 seconds to let the devices time to install the app")
+    sleep(60)
+  end
 end
 
-def smf_uninstall_app_on_devices(devices, bundle_identifier)
-  UI.message("Removing the IPA \"#{bundle_identifier}\"from the devices: \"#{devices}\"")
+def smf_uninstall_app_on_devices(bundle_identifier)
+  UI.message("Removing the IPA \"#{bundle_identifier}\" from all connected devices")
 
-  sh "cfgutil -f remove-app #{bundle_identifier}"
+  connected_devices = sh "cfgutil list"
 
-  sleep(60)
+  if connected_devices.length > 0
+    sh "cfgutil -f remove-app #{bundle_identifier}"
+
+    sleep(60)
+  end
+
 end
