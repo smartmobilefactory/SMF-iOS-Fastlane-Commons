@@ -1,0 +1,153 @@
+############################
+###### General config ######
+############################
+
+ENV['BUILD_VARIANT'] == nil ? build_variant = "" : build_variant = ENV['BUILD_VARIANT']
+ENV['FASTLANE_CONFIG_PATH'] == nil ? fastlane_config_path = "fastlane/Config.json" : fastlane_config_path = ENV['FASTLANE_CONFIG_PATH']
+ENV['DID_RUN_UNIT_TESTS'] == nil ? did_run_unit_tests = "false" : did_run_unit_tests = ENV['DID_RUN_UNIT_TESTS']
+
+@project_danger_config = nil
+@commons_danger_config = nil
+
+message("Analysing build variant <b>#{build_variant}</b>")
+
+configuration_message = ""
+
+if File.file?(fastlane_config_path)
+  fastlane_config = JSON.parse(File.read(fastlane_config_path), :symbolize_names => true)
+  build_variant_config = fastlane_config[:build_variants][build_variant.to_sym]
+  target_depended_config = build_variant_config[:danger_config_name]
+  if target_depended_config
+    @project_danger_config = fastlane_config[target_depended_config.to_sym]
+  else
+    @project_danger_config = fastlane_config[:danger_config]
+  end
+else
+  fail "Error: SMF Fastlane config couldn't be found in #{ENV['FASTLANE_CONFIG_PATH']}"
+end
+
+if File.file?("#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json")
+  @commons_danger_config = JSON.parse(File.read("#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/danger_defaults.json"), :symbolize_names => true)
+  if @commons_danger_config.nil?
+      fail "The default Danger config is nil"
+  end
+else
+  fail "The Fastlane commons repo doesn't contain danger/danger_defaults.json"
+end
+
+###################
+##### Helpers #####
+###################
+
+def get_config_value(key)
+  if @project_danger_config != nil && @project_danger_config[key.to_sym] != nil
+    return @project_danger_config[key.to_sym]
+  else
+    if @commons_danger_config == nil
+      return nil
+    else
+      return @commons_danger_config[key.to_sym]
+    end
+  end
+end
+
+#####################
+###### General ######
+#####################
+
+if get_config_value("github.pr.big_length.use_feature")
+  if git.lines_of_code > get_config_value("github.pr.big_length.lines_of_code")
+    warn("There amount of changed code is huge (#{git.lines_of_code} lines). Please try to create many small pull requests instead of a few big ones!")
+  end
+  configuration_message += "<br />GitHub PR length is <b>enabled</b><br />- lines_of_code: <b>#{get_config_value("github.pr.big_length.lines_of_code")}</b>"
+else
+  configuration_message += "<br />GitHub PR length is <b>disabled</b>"
+end
+
+###################
+###### Xcode ######
+###################
+
+if get_config_value("xcode_build_warnings.use_feature")
+  if File.file?("build/reports/errors.json")
+    xcode_summary.report 'build/reports/errors.json'
+    configuration_message += "<br /><br />Xcode warnings are <b>enabled</b>"
+  else
+    configuration_message += "<br /><br />Xcode warnings are <b>disabled</b> as the build output couldn't be found"
+  end
+else
+  configuration_message += "<br /><br />Xcode warnings are <b>disabled</b>"
+end
+
+#######################
+###### Swiftlint ######
+#######################
+
+if get_config_value("swiftlint.use_feature")
+  # Use the SwiftLint Pod if available. Otherwise the SwiftLint version from the Danger plugin is used.
+  fail_on_error = get_config_value("swiftlint.fail_on_error")
+  pods_swiftlint_binary = "Pods/SwiftLint/swiftlint"
+  if File.file?(pods_swiftlint_binary)
+    expanded_binary_path = File.expand_path(pods_swiftlint_binary)
+    swiftlint.binary_path = expanded_binary_path
+  end
+
+  swiftlint_config_message = "Exists in project"
+  if File.file?(".swiftlint.yml")
+    swiftlint.config_file = File.expand_path(".swiftlint.yml")
+  end
+
+  # Run SwiftLint 
+  if fail_on_error
+    swiftlint.lint_files fail_on_error: true
+  else
+    swiftlint.lint_files
+  end
+
+  swiftlint.verbose = true
+
+  configuration_message += "<br /><br />SwiftLint is <b>enabled</b> (modified files only)<br />- binary: <b>#{swiftlint.binary_path}</b>,<br />- fail_on_error: <b>#{fail_on_error}</b>,<br />- SwiftLint configuration: <b>#{swiftlint.config_file}</b>"
+else
+  configuration_message += "<br /><br />SwiftLint is <b>disabled</b>"
+end
+
+#####################
+###### Slather ######
+#####################
+
+if get_config_value("code_coverage.slather.use_feature")
+  perform_unit_tests = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
+  if perform_unit_tests && did_run_unit_tests == "true"
+
+    project_name = fastlane_config[:project][:project_name]
+    scheme = build_variant_config[:scheme]
+
+    slather.configure("#{project_name}.xcodeproj", scheme, options: {
+      workspace: "#{project_name}.xcworkspace",
+      output_directory: 'build/reports',
+    })
+
+    min_total_coverage = get_config_value("code_coverage.slather.notify_if_coverage_is_less_than").to_i
+    min_file_coverage = get_config_value("code_coverage.slather.notify_if_modified_file_is_less_than").to_i
+    notify_level_string = get_config_value("code_coverage.slather.notify_level")
+    notify_level = notify_level_string == "warn" ? :warn : :fail
+
+    slather.notify_if_coverage_is_less_than(minimum_coverage: min_total_coverage, notify_level: notify_level)
+    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_coverage, notify_level: notify_level)
+    slather.show_coverage
+
+    configuration_message += "<br /><br />Slather is <b>enabled</b><br />- notify_if_coverage_is_less_than: <b>#{min_total_coverage}</b><br />- notify_if_modified_file_is_less_than: <b>#{min_file_coverage}</b><br />- notify_level: <b>#{notify_level_string}</b>"
+  elsif did_run_unit_tests == "false"
+    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests weren't runned during the PR check"
+  else
+    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests shouldn't be runned"
+  end
+else
+  warn("Slather is <b>disabled</b>")
+end
+
+# Put the configuration message inside an expandable element
+configuration_message = "<details><summary>Danger configuration:</summary>#{configuration_message}</details>"
+
+message(configuration_message)
+
