@@ -1,5 +1,6 @@
-$FASTLANE_COMMONS_FOLDER_NAME = ".SMF-iOS-Fastlane-Commons"
-$METAJSON_TEMP_FOLDERNAME = ".MetaJSON-temp"
+
+@fastlane_commons_dir_path = File.expand_path(File.dirname(__FILE__))
+@should_commons_repo_be_downloaded = (File.exist?("#{@fastlane_commons_dir_path}/flow") == false || File.exist?("#{@fastlane_commons_dir_path}/steps") == false)
 
 #################
 ### Lifecycle ###
@@ -11,35 +12,40 @@ before_all do
   smf_load_fastlane_config
 
   # Clone the Commons Repo
-  smf_remove_fastlane_commons_repo
-  smf_clone_fastlane_commons_repo
+  if @should_commons_repo_be_downloaded
+    UI.message("Downloading Fastlane Commons Repo as it's not locally available yet")
+    @fastlane_commons_dir_path = "#{smf_workspace_dir}/.fastlane-smf-commons"
+    smf_remove_fastlane_commons_repo
+    smf_clone_fastlane_commons_repo
+  else
+    UI.message("The Fastlane Commons Repo won't be downloaded as it's already available locally")
+  end
 
   # Import the splitted Fastlane classes
-  import_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/flow"
-  import_all "#{$FASTLANE_COMMONS_FOLDER_NAME}/Fastlane/steps"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
+
+  @smf_original_platform = ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]
 end
 
+desc "Called on success"
 after_all do
-  smf_remove_fastlane_commons_repo
+  if @should_commons_repo_be_downloaded
+    smf_remove_fastlane_commons_repo
+  end
 end
 
+desc "Called on error"
 error do |lane, exception|
-  if ENV["SMF_SHOULD_SEND_DEPLOY_FAILURE_NOTIFICATIONS"] == "true"
-    project_config = @smf_fastlane_config["project"]
-
-    # Create the release title with the framework config if it's a framework
-    framework_identifier = ENV["SMF_FRAMEWORK_IDENTIFIER"]
-    release_title = nil
-    if framework_identifier
-      release_title = smf_default_pod_notification_release_title(project_config["project_name"], @smf_fastlane_config["build_variants"][framework_identifier])
-    end
-
+  if @smf_set_should_send_deploy_notifications == true
     smf_handle_exception(
-      build_variant: ENV["SMF_BUILD_VARIANT"],
-      project_config: project_config,
-      release_title: release_title,
       exception: exception,
       )
+  end
+
+  if @should_commons_repo_be_downloaded
+    smf_remove_fastlane_commons_repo
   end
 end
 
@@ -61,10 +67,10 @@ def smf_value_for_keypath_in_hash_map(hash_map, keypath)
   keys = keypath.split("/")
   value = hash_map
   for key in keys
-    if value.key?(key)
-      value = value[key]
+    if value.key?(key.to_sym)
+      value = value[key.to_sym]
     else
-      raise "Error: Couldn't find keypath \"#{keypath}\" in \"#{hash_map}\"".red
+      raise "Error: Couldn't find keypath \"#{keypath}\" in \"#{hash_map}\""
     end
   end
   return value
@@ -75,11 +81,58 @@ def smf_load_fastlane_config
   UI.message("Reading the SMF Fastlane config from \"#{config_path}\"")
   config_file = File.read(config_path)
   if config_file
-    @smf_fastlane_config ||= JSON.parse(config_file)
+    @smf_fastlane_config ||= JSON.parse(config_file, :symbolize_names => true)
     UI.success("Parsed config file into the hash map")
   else
-    raise "Error: The SMF Fastlane config file doesn't exist at path \"#{config_path}\"".red
+    raise "Error: The SMF Fastlane config file doesn't exist at path \"#{config_path}\""
   end
+end
+
+def smf_set_should_send_deploy_notifications(should_notify)
+  @smf_set_should_send_deploy_notifications = should_notify
+end
+
+def smf_set_build_variant(build_variant, reset_build_variant_array = true)
+  @smf_build_variant = build_variant.downcase
+  @smf_build_variant_sym = @smf_build_variant.to_sym
+  if reset_build_variant_array
+    smf_set_build_variants_array(nil)
+  end
+
+  if @smf_fastlane_config[:build_variants][@smf_build_variant_sym] == nil
+    raise "Error: build variant \"#{@smf_build_variant}\" isn't declared in the configuration file."
+  end
+
+  # Modify the platform if needed
+  platform = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:platform]
+  if platform != nil
+    # Change the platform to the declared one
+    ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] = platform
+  else
+    # Reset the platform to one which was active in "befor_all" if no platform is specified
+    ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] = @smf_original_platform
+  end
+end
+
+def smf_set_build_variants_array(build_variants)
+  @smf_build_variants_array = build_variants
+end
+
+def smf_set_build_variants_matching_regex(regex)
+  all_build_variants = @smf_fastlane_config[:build_variants].keys
+  matching_build_variants = all_build_variants.grep(/#{regex}/).map(&:to_s)
+  
+  UI.important("Found matching build variants: #{matching_build_variants}")
+  
+  smf_set_build_variants_array(matching_build_variants)
+end
+
+def smf_set_bump_type(bump_type)
+  @smf_bump_type = bump_type
+end
+
+def smf_set_git_branch(branch)
+  @smf_git_branch = branch
 end
 
 ####################
@@ -87,10 +140,26 @@ end
 ####################
 
 private_lane :smf_clone_fastlane_commons_repo do
-  fastlane_commons_branch = @smf_fastlane_config["project"]["fastlane_commons_branch"]
-  sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git #{$FASTLANE_COMMONS_FOLDER_NAME}"
+  fastlane_commons_branch = @smf_fastlane_config[:project][:fastlane_commons_branch]
+  sh "git clone -b \"" + fastlane_commons_branch + "\" git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git #{@fastlane_commons_dir_path}"
 end
 
 private_lane :smf_remove_fastlane_commons_repo do
-  sh "if [ -d #{$FASTLANE_COMMONS_FOLDER_NAME} ]; then rm -rf #{$FASTLANE_COMMONS_FOLDER_NAME}; fi"
+  sh "if [ -d #{@fastlane_commons_dir_path} ]; then rm -rf #{@fastlane_commons_dir_path}; fi"
+end
+
+#####################################################
+### Helper (needed without commons repo available)###
+#####################################################
+
+def smf_is_jenkins_environment
+  return ENV["JENKINS_URL"]
+end
+
+def smf_workspace_dir
+  path = "#{Dir.pwd}"
+  if path.end_with?("/fastlane")
+    path = path.chomp("/fastlane") 
+  end
+  return path
 end
