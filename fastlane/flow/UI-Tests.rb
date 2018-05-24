@@ -20,6 +20,16 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
   if tag_name_matches_result == nil
     UI.important("Release \"#{tag_name}\" is not eligible to be tested. Only tags matching \"#{ui_test_triggering_github_releases}\" are allowed.")
     # Stop the execution of this lane
+
+    jenkins_build_job_url = ENV["BUILD_URL"]
+    jenkins_username = ENV[$SMF_JENKINS_UI_TEST_USER_USERNAME]
+    jenkins_password = ENV[$SMF_JENKINS_UI_TEST_USER_PASSWORD]
+
+    jenkins_build_job_url = jenkins_build_job_url.gsub("http://", "http://#{jenkins_username}:#{jenkins_password}@")
+    jenkins_build_job_url = jenkins_build_job_url.gsub("https://", "https://#{jenkins_username}:#{jenkins_password}@")
+
+    sh "curl -X POST #{jenkins_build_job_url}stop"
+
     next
   end 
 
