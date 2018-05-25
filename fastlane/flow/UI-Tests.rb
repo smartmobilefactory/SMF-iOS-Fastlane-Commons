@@ -14,6 +14,8 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
   # Variables
   assets = payload["release"]["assets"]
   tag_name = payload["release"]["tag_name"]
+  report_name = tag_name.gsub("build/", "")
+  report_name = tag_name.gsub!("/", "-")
   ui_test_triggering_github_releases = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:ui_test_triggering_github_releases]
 
   tag_name_matches_result = tag_name =~ /#{ui_test_triggering_github_releases.gsub("\\/", "\/")}/
@@ -41,7 +43,7 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
     simulators: simulators,
     simulator_build_asset_path: simulator_build_asset_path,
     device_build_asset_path: device_build_asset_path,
-    report_name: tag_name,
+    report_name: report_name,
     report_sync_destination: report_sync_destination
     )
 end
