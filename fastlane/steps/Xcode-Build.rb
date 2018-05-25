@@ -151,6 +151,7 @@ private_lane :smf_perform_unit_tests do |options|
   # Variables
   project_name = @smf_fastlane_config[:project][:project_name]
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  device = build_variant_config["tests.device_to_test_against".to_sym]
 
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
@@ -165,6 +166,7 @@ private_lane :smf_perform_unit_tests do |options|
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
     clean: false,
+    device: device,
     destination: destination,
     code_coverage: true,
     output_types: "html,junit,json-compilation-database",
