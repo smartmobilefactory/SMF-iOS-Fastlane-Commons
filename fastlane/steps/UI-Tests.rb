@@ -66,7 +66,6 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
 
   # Sync the report to HiDrive
   local_path = "#{results_directory}/#{results_foldername}.zip"
-  local_path = local_path.gsub!(" ", "\\ ")
   remote_path = "#{report_sync_destination}/#{results_foldername}"
   remote_path = remote_path.gsub!(" ", "\\ ")
   sh("rsync -rltDvzre \"ssh\" \"#{local_path}\" \"#{remote_path}.zip\"")
