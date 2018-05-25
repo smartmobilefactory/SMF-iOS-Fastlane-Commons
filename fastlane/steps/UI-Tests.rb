@@ -47,7 +47,7 @@ end
 ##############
 
 def smf_create_and_sync_report(derivedDataURL, results_directory, results_foldername, report_sync_destination, report_name)
-  remote_path = "#{report_sync_destination}/#{report_name}-#{Time.now.strftime("%Y-%m-%d_%H:%M")}"
+  remote_path = "#{report_sync_destination}/#{report_name} (#{Time.now.strftime("%Y-%m-%d %H:%M")})"
 
   reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
 
