@@ -30,7 +30,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     UI.important("Failed to perform the unit tests, exception: #{exception}")
 
     if should_create_report
-      smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", "Results", report_sync_destination, report_name)
+      smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
       next
     else
       raise exception
@@ -38,7 +38,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   end
 
   if should_create_report
-    smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", "Results", report_sync_destination, report_name)
+    smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
   end
 end
 
@@ -46,24 +46,26 @@ end
 ### Helper ###
 ##############
 
-def smf_create_and_sync_report(derivedDataURL, results_directory, results_foldername, report_sync_destination, report_name)
-  remote_path = "#{report_sync_destination}/#{report_name} (#{Time.now.strftime("%Y-%m-%d %H:%M")})"
+def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_destination, report_name)
+  results_foldername = "#{report_name} (#{Time.now.strftime("%Y-%m-%d %H:%M")})"
 
   reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
 
   # Create the report based on the derived data
-  sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{results_foldername}", 400.to_s)
+  sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "\"#{results_directory}/#{results_foldername}\"", 400.to_s)
 
   # Wait for a short time. This is a try to avoid errors like "rsync error: some files/attrs were not transferred"
   sleep(10)
 
   # Zip the report
-  sh("cd #{results_directory} && zip -r #{results_foldername}.zip #{results_foldername}")
+  sh("cd #{results_directory} && zip -r \"#{results_foldername}.zip\" \"#{results_foldername}\"")
 
   # Wait for a short time. This is a try to avoid errors like "rsync error: some files/attrs were not transferred"
   sleep(10)
 
   # Sync the report to HiDrive
+  remote_path = "#{report_sync_destination}/#{results_foldername}"
+  remote_path = remote_path.gsub!(" ", "\ ")
   sh("rsync -rltDvzre \"ssh\" \"#{results_directory}/#{results_foldername}.zip\" \"#{remote_path}.zip\"")
 end
 
