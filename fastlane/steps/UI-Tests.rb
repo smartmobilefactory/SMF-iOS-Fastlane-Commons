@@ -64,7 +64,7 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, results_folder
   sleep(10)
 
   # Sync the report to HiDrive
-  sh("rsync -rltDvzre \"ssh\" \"#{results_directory}/#{results_foldername}.zip\" \"#{remote_path}/#{results_foldername}.zip\"")
+  sh("rsync -rltDvzre \"ssh\" \"#{results_directory}/#{results_foldername}.zip\" \"#{remote_path}.zip\"")
 end
 
 def smf_install_app_on_simulators(simulators, path_to_app)
