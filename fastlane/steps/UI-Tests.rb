@@ -47,7 +47,7 @@ end
 ##############
 
 def smf_create_and_sync_report(derivedDataURL, results_directory, results_foldername, report_sync_destination, report_name)
-  local_remote_path = "#{report_sync_destination}/#{report_name}-#{Time.now.strftime("%Y-%m-%d_%H:%M")}"
+  remote_path = "#{report_sync_destination}/#{report_name}-#{Time.now.strftime("%Y-%m-%d_%H:%M")}"
 
   reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
 
@@ -63,11 +63,8 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, results_folder
   # Wait for a short time. This is a try to avoid errors like "rsync error: some files/attrs were not transferred"
   sleep(10)
 
-  # Create the path in the target directory
-  sh("mkdir -p #{local_remote_path}")
-
-  # Sync the report to the target directory
-  sh("rsync -rvc --size-only --no-whole-file  #{results_directory}/#{results_foldername}.zip #{local_remote_path}")
+  # Sync the report to HiDrive
+  sh("rsync -rltDvzre \"ssh\" \"#{results_directory}/#{results_foldername}.zip\" \"#{remote_path}\"")
 end
 
 def smf_install_app_on_simulators(simulators, path_to_app)
