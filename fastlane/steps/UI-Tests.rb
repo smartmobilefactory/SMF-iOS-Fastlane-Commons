@@ -59,7 +59,7 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
   sleep(10)
 
   # Zip the report
-  sh("cd #{results_directory} && zip -r \"#{results_foldername}.zip\" \"#{temp_results_foldername}\"")
+  sh("cd #{results_directory} && mv \"#{temp_results_foldername}\" \"#{results_foldername}\" && zip -r \"#{results_foldername}.zip\" \"#{results_foldername}\"")
 
   # Wait for a short time. This is a try to avoid errors like "rsync error: some files/attrs were not transferred"
   sleep(10)
