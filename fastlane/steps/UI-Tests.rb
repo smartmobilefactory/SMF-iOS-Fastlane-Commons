@@ -15,6 +15,17 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   # Variables
   scheme = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
   buildlog_path = "#{smf_workspace_dir}/Scanlog"
+  hipchat_channel = "CI" #@smf_fastlane_config[:project][:hipchat_channel]
+  is_report_already_uploaded = false
+
+  if hipchat_channel
+    smf_send_hipchat_message(
+      title: "Starting to perform UI tests for #{report_name} 🔎",
+      message: "It may take multiple hours until the report is completed. Enjoy life and check for new notifications later...",
+      type: "message",
+      hipchat_channel: hipchat_channel
+      )
+  end
 
   begin
 
@@ -43,16 +54,40 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
 
     if should_create_report
       smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+      is_report_already_uploaded = true
     end
 
     if were_ui_tests_performed == false
+
+      if hipchat_channel
+        smf_send_hipchat_message(
+          title: "Failed to perform UI-Tests for #{report_name} 😢",
+          message: "The UI tests couldn't be executed. Check the build log for more information.",
+          type: "error",
+          hipchat_channel: hipchat_channel
+          )
+      end
+
       raise exception
     end
   end
 
+  notification_message = "The UI tests were performed."
   if should_create_report
-    smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+    if is_report_already_uploaded == false
+      smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+    end
+    notification_message = "#{notification_message} The report was uploaded to HiDrive. Check it for more details."
+  else
+    notification_message = "#{notification_message} See the build log for more details"
   end
+
+  smf_send_hipchat_message(
+    title: "Done performing the UI tests for #{report_name} ✍🏻",
+    message: notification_message,
+    type: "success",
+    hipchat_channel: hipchat_channel
+    )
 end
 
 ##############
