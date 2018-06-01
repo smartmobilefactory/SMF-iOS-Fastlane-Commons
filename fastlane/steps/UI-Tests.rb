@@ -14,6 +14,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
 
   # Variables
   scheme = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
+  buildlog_path = "#{smf_workspace_dir}/Scanlog"
 
   begin
 
@@ -24,15 +25,27 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     scan(
       scheme: scheme,
       destination: destinations,
-      derived_data_path: "./DerivedData"
+      derived_data_path: "./DerivedData",
+      buildlog_path: buildlog_path
       )
   rescue => exception
     UI.important("Failed to perform the unit tests, exception: #{exception}")
 
+    # Inspect the logs to see if the exception is due to failing tests or a failing building. A failed test (not complete testing, just single tests) isn't concidered as build job failure
+    were_ui_tests_performed = false
+    Dir.glob("#{buildlog_path}/*.log") { |file|
+      filelines = File.readlines(file)
+      if filelines.grep(/Running tests.../).size > 0 && filelines.grep(/Generating coverage data.../).size > 0
+        UI.message("Found running tests and generating coverage data logs. We concider the tests as runned...")
+        were_ui_tests_performed = true
+      end
+    }
+
     if should_create_report
       smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
-      next
-    else
+    end
+
+    if were_ui_tests_performed == false
       raise exception
     end
   end
