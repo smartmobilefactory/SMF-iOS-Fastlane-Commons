@@ -38,7 +38,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
       destination: destinations,
       derived_data_path: "./DerivedData",
       buildlog_path: buildlog_path,
-      max_concurrent_simulators: 1
+      disable_concurrent_testing: true
       )
   rescue => exception
     UI.important("Failed to perform the unit tests, exception: #{exception}")
