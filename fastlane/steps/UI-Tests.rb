@@ -15,7 +15,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   # Variables
   scheme = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
   buildlog_path = "#{smf_workspace_dir}/Scanlog"
-  hipchat_channel = "CI" #@smf_fastlane_config[:project][:hipchat_channel]
+  hipchat_channel = @smf_fastlane_config[:project][:hipchat_channel]
   is_report_already_uploaded = false
 
   if hipchat_channel
