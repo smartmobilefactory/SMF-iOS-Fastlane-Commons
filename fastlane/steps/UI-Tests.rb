@@ -72,18 +72,18 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     end
   end
 
-  notification_message = "The UI tests were performed."
+  notification_message = "The UI tests were performed"
   if should_create_report
     if is_report_already_uploaded == false
       smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
     end
-    notification_message = "#{notification_message} The report was uploaded to HiDrive. Check it for more details."
+    notification_message = "#{notification_message} and the report was uploaded to HiDrive. Check it for more details."
   else
-    notification_message = "#{notification_message} See the build log for more details"
+    notification_message = "#{notification_message}. See the build log for more details"
   end
 
   smf_send_hipchat_message(
-    title: "Done performing the UI tests for #{report_name} ✍🏻",
+    title: "Done performing UI tests for #{report_name} ✍🏻",
     message: notification_message,
     type: "success",
     hipchat_channel: hipchat_channel
