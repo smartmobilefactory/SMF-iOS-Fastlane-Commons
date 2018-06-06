@@ -70,6 +70,8 @@ lane :smf_perform_all_ui_tests do |options|
 
   # Add the simulators to the destinations and install the app which should be tested
 
+  smf_shutdown_simulators
+
   destinations = simulators.map{ |x| "platform=iOS Simulator,name=#{x}" }
 
   smf_install_app_on_simulators(simulators, simulator_build_asset_path)
