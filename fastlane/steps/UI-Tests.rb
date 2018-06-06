@@ -119,6 +119,11 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
   sh("rsync -rltDvzre \"ssh\" \"#{local_path}\" \"#{remote_path}.zip\"")
 end
 
+def smf_shutdown_simulators()
+  UI.message("Shutting down all simulators to save system resources.")
+  sh "xcrun simctl shutdown all"
+end
+
 def smf_install_app_on_simulators(simulators, path_to_app)
   UI.message("Copying the APP \"#{path_to_app}\" to the simulators: \"#{simulators}\"")
 
