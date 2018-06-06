@@ -14,6 +14,18 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
 
   # Variables
   scheme = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
+  buildlog_path = "#{smf_workspace_dir}/Scanlog"
+  hipchat_channel = @smf_fastlane_config[:project][:hipchat_channel]
+  is_report_already_uploaded = false
+
+  if hipchat_channel
+    smf_send_hipchat_message(
+      title: "Starting to perform UI tests for #{report_name} 🔎",
+      message: "It may take multiple hours until the report is completed. Enjoy life and check for new notifications later...",
+      type: "message",
+      hipchat_channel: hipchat_channel
+      )
+  end
 
   begin
 
@@ -24,22 +36,58 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     scan(
       scheme: scheme,
       destination: destinations,
-      derived_data_path: "./DerivedData"
+      derived_data_path: "./DerivedData",
+      buildlog_path: buildlog_path
       )
   rescue => exception
     UI.important("Failed to perform the unit tests, exception: #{exception}")
 
+    # Inspect the logs to see if the exception is due to failing tests or a failing building. A failed test (not complete testing, just single tests) isn't concidered as build job failure
+    were_ui_tests_performed = false
+    Dir.glob("#{buildlog_path}/*.log") { |file|
+      filelines = File.readlines(file)
+      if filelines.grep(/Running tests.../).size > 0 && filelines.grep(/Generating coverage data.../).size > 0
+        UI.message("Found running tests and generating coverage data logs. We concider the tests as runned...")
+        were_ui_tests_performed = true
+      end
+    }
+
     if should_create_report
       smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
-      next
-    else
+      is_report_already_uploaded = true
+    end
+
+    if were_ui_tests_performed == false
+
+      if hipchat_channel
+        smf_send_hipchat_message(
+          title: "Failed to perform UI-Tests for #{report_name} 😢",
+          message: "The UI tests couldn't be executed. Check the build log for more information.",
+          type: "error",
+          hipchat_channel: hipchat_channel
+          )
+      end
+
       raise exception
     end
   end
 
+  notification_message = "The UI tests were performed"
   if should_create_report
-    smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+    if is_report_already_uploaded == false
+      smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+    end
+    notification_message = "#{notification_message} and the report was uploaded to HiDrive. Check it for more details."
+  else
+    notification_message = "#{notification_message}. See the build log for more details"
   end
+
+  smf_send_hipchat_message(
+    title: "Done performing UI tests for #{report_name} ✍🏻",
+    message: notification_message,
+    type: "success",
+    hipchat_channel: hipchat_channel
+    )
 end
 
 ##############
@@ -69,6 +117,11 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
   remote_path = "#{report_sync_destination}/#{results_foldername}"
   remote_path = remote_path.gsub!(" ", "\\ ")
   sh("rsync -rltDvzre \"ssh\" \"#{local_path}\" \"#{remote_path}.zip\"")
+end
+
+def smf_shutdown_simulators()
+  UI.message("Shutting down all simulators to save system resources.")
+  sh "xcrun simctl shutdown all"
 end
 
 def smf_install_app_on_simulators(simulators, path_to_app)
