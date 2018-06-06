@@ -22,20 +22,45 @@ private_lane :smf_collect_changelog do |options|
 
   last_tag = last_tag.strip
 
-  ENV[$SMF_CHANGELOG_ENV_KEY] = changelog_from_git_commits(
+  changelog_messages = changelog_from_git_commits(
     between:[last_tag,"HEAD"],
     merge_commit_filtering: "exclude_merges",
     pretty: '- (%an) %s'
     )
-  ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_from_git_commits(
+  changelog_authors = changelog_from_git_commits(
     between:[last_tag,"HEAD"],
     merge_commit_filtering: "exclude_merges",
     pretty: '%ae'
     )
 
-  if ENV[$SMF_CHANGELOG_ENV_KEY] == nil
-    ENV[$SMF_CHANGELOG_ENV_KEY] = ""
+  if changelog_messages == nil
+    changelog_messages = ""
   end
+
+  cleaned_changelog_messages = []
+  changelog_messages.split(/\n+/).each{ |commit_message|
+    if commit_message.match(/^- \(.*\) Update MetaJSONs/)
+      next
+    elsif commit_message.match(/^- \(.*\) Increment build number to [0-9\.]*/) && (smf_is_build_variant_internal == false)
+      next
+    end
+
+    # Remove the author and use uppercase at line starts for non internal builds
+    if smf_is_build_variant_internal == false
+      commit_message = commit_message.sub(/^- \([^\)]*\) /, "- ")
+      letters = commit_message.split('')
+      if letters.length > 2
+        letters[2] = letters[2].upcase
+      end
+      commit_message = letters.join("")
+    end
+
+    cleaned_changelog_messages.push(commit_message)
+
+  end
+
+  ENV[$SMF_CHANGELOG_ENV_KEY] = cleaned_changelog_messages.join("\n")
+  ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_authors
 
   # Store the change log in a file if a macOS app is build as the upload to HockeyApp is done in a separate Fastlane call
   if lane_context[SharedValues::PLATFORM_NAME] == "mac"

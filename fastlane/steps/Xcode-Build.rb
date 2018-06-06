@@ -305,6 +305,10 @@ def smf_can_unit_tests_be_performed
 
 end
 
+def smf_is_build_variant_internal
+  return @smf_build_variant.include? "alpha" || smf_is_build_variant_a_pod
+end
+
 def smf_increment_build_number_prefix_string
   return "Increment build number to "
 end
