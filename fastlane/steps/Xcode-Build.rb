@@ -323,7 +323,7 @@ def smf_is_bitcode_enabled
 end
 
 def smf_is_build_variant_a_pod
-  is_pod (@smf_fastlane_config[:build_variants][@smf_build_variant_sym][:podspec_path] != nil)
+  is_pod = (@smf_fastlane_config[:build_variants][@smf_build_variant_sym][:podspec_path] != nil)
 
   UI.message("Build variant is a pod: #{is_pod}, as the config is #{@smf_fastlane_config[:build_variants][@smf_build_variant_sym]}")
 
