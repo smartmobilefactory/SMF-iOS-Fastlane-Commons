@@ -39,9 +39,9 @@ private_lane :smf_collect_changelog do |options|
 
   cleaned_changelog_messages = []
   changelog_messages.split(/\n+/).each{ |commit_message|
-    if commit_message.match(/^- \(.*\) Update MetaJSONs/)
+    if smf_should_commit_be_ignored_in_changelog(commit_message, [/Update MetaJSONs/, /\[MetaJSON\].*/])
       next
-    elsif commit_message.match(/^- \(.*\) Increment build number to [0-9\.]*/) && (smf_is_build_variant_internal == false)
+    elsif smf_should_commit_be_ignored_in_changelog(commit_message, [/Increment build number to [0-9\.]*/, /(U|u)pdate Generated files.*/, /\[Fastlane\].*/]) && (smf_is_build_variant_internal == false)
       next
     end
 
@@ -58,7 +58,7 @@ private_lane :smf_collect_changelog do |options|
     cleaned_changelog_messages.push(commit_message)
   }
 
-  ENV[$SMF_CHANGELOG_ENV_KEY] = cleaned_changelog_messages.join("\n")
+  ENV[$SMF_CHANGELOG_ENV_KEY] = cleaned_changelog_messages.uniq.join("\n")
   ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_authors
 
   # Store the change log in a file if a macOS app is build as the upload to HockeyApp is done in a separate Fastlane call
@@ -202,4 +202,15 @@ end
 
 def smf_default_pod_tag_prefix
   return "releases/"
+end
+
+def smf_should_commit_be_ignored_in_changelog(commit_message, regexes_to_match)
+  regexes_to_match.each{ |regex|
+    if commit_message.match(regex)
+      UI.message("Ignoring commit: #{commit_message}")
+      return true
+    end
+  }
+
+  return false
 end
