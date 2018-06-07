@@ -56,8 +56,7 @@ private_lane :smf_collect_changelog do |options|
     end
 
     cleaned_changelog_messages.push(commit_message)
-
-  end
+  }
 
   ENV[$SMF_CHANGELOG_ENV_KEY] = cleaned_changelog_messages.join("\n")
   ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_authors
