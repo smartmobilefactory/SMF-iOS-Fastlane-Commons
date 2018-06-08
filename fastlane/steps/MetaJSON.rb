@@ -20,7 +20,8 @@ private_lane :smf_generate_meta_json do |options|
     desc "Create the meta JSON files"
 
     metajson = "#{@fastlane_commons_dir_path}/tools/metajson"
-
+    workspace_dir = smf_workspace_dir
+    
     # Create and commit the MetaJSON files
     sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch master --output \"#{workspace_dir}/.MetaJSON\"|| true"
   end
