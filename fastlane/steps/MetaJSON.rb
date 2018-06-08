@@ -18,12 +18,11 @@ private_lane :smf_generate_meta_json do |options|
 
   if (build_variants_contains_whitelist.nil?) || (build_variants_contains_whitelist.any? { |whitelist_item| @smf_build_variant.include?(whitelist_item) })
     desc "Create the meta JSON files"
-    # Fetch the MetaJSON scripts repo
-    sh "git clone git@github.com:smartmobilefactory/SMF-iOS-MetaJSON.git"
+
+    metajson = "#{@fastlane_commons_dir_path}/tools/metajson"
+
     # Create and commit the MetaJSON files
-    sh "cd .. && fastlane/SMF-iOS-MetaJSON/scripts/create-meta-jsons.sh \"#{@smf_fastlane_config[:project][:project_name]}\" \"#{@smf_git_branch}\" || true"
-    # Remove the MetaJSON scripts repo
-    sh "rm -rf SMF-iOS-MetaJSON"
+    sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch master --output \"#{workspace_dir}/.MetaJSON\"|| true"
   end
 
 end
