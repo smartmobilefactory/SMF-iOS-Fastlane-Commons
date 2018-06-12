@@ -117,7 +117,16 @@ private_lane :smf_publish_pod do |options|
   )
 
   # Update the CocoaPods repo to avoid unknown Pod version issues if this Pod is integrated into another project
-  sh "pod repo update"
+  begin
+    sh "pod repo update"    
+  rescue => exception
+    smf_send_hipchat_message(
+        title: "Failed to update the specs repo after publishing the Pod #{smf_default_notification_release_title} 😢",
+        type: "warning",
+        exception: exception,
+        hipchat_channel: "CI"
+      )
+  end
 
   smf_send_deploy_success_notifications(
     app_link: ""
