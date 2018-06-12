@@ -40,7 +40,7 @@ private_lane :smf_archive_ipa do |options|
 
   scheme = build_variant_config[:scheme]
   bundle_identifier = build_variant_config[:bundle_identifier]
-  extensions_suffixes = build_variant_config[:extensions_suffixes]
+  extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
 
   upload_itc = (build_variant_config[:upload_itc].nil? ? false : build_variant_config[:upload_itc])
   upload_bitcode = (build_variant_config[:upload_bitcode].nil? ? true : build_variant_config[:upload_bitcode])
