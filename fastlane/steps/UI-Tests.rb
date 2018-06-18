@@ -13,9 +13,11 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   report_name = options[:report_name]
 
   # Variables
-  scheme = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  scheme = build_variant_config[:scheme]
   buildlog_path = "#{smf_workspace_dir}/Scanlog"
   hipchat_channel = @smf_fastlane_config[:project][:hipchat_channel]
+  disable_concurrent_testing = (build_variant_config[:disable_concurrent_testing] ? build_variant_config[:disable_concurrent_testing] : false)
   is_report_already_uploaded = false
 
   if hipchat_channel
@@ -38,7 +40,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
       destination: destinations,
       derived_data_path: "./DerivedData",
       buildlog_path: buildlog_path,
-      disable_concurrent_testing: true
+      disable_concurrent_testing: disable_concurrent_testing
       )
   rescue => exception
     UI.important("Failed to perform the unit tests, exception: #{exception}")
