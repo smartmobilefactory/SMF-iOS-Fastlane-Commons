@@ -19,6 +19,7 @@ private_lane :smf_upload_ipa_to_testflight do |options|
   pilot(
     username: username,
     skip_waiting_for_build_processing: should_skip_waiting_after_itc_upload,
+    wait_for_uploaded_build: (should_skip_waiting_after_itc_upload == false),
     changelog: ""
     )
 
