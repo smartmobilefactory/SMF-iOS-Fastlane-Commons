@@ -153,8 +153,8 @@ def smf_install_app_on_devices(path_to_app)
   if connected_devices.length > 0
     sh "cfgutil -f install-app #{path_to_app}"
 
-    UI.message("Waiting 60 seconds to let the devices time to install the app")
-    sleep(60)
+    UI.message("Waiting 90 seconds to let the devices time to install the app")
+    sleep(90)
   end
 end
 
