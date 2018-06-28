@@ -42,7 +42,7 @@ private_lane :smf_send_hipchat_message do |options|
   UI.message("exception.backtrace_locations: #{exception.backtrace_locations}") if exception.respond_to?(:backtrace_locations)
   UI.message("exception.preferred_error_info: #{exception.preferred_error_info}") if exception.respond_to?(:preferred_error_info)
   UI.message("exception.error_info: #{exception.error_info}") if exception.respond_to?(:error_info)
-  
+
   if hipchat_channel && (hipchat_channel.include? "/") == false
 
     project_name = @smf_fastlane_config[:project][:project_name]
@@ -300,13 +300,16 @@ end
 def smf_default_pod_notification_release_title
 
   # Variables
-  project_name = @smf_fastlane_config[:project][:project_name]
   podspec_path = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:podspec_path]
-  branch = @smf_git_branch
-
   version = read_podspec(path: podspec_path)["version"]
+  pod_name = read_podspec(path: podspec_path)["name"]
+
+  # Project name
+  project_name = @smf_fastlane_config[:project][:project_name]
+  project_name = (project_name.nil? ? pod_name : project_name)
 
   # Create the branch name string
+  branch = @smf_git_branch
   branch_suffix = ""
   if branch.nil? == false and branch.length > 0
     branch_suffix = " from branch \"#{branch}\""
