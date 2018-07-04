@@ -108,7 +108,7 @@ end
 ### smf_handle_exception ###
 ############################
 
-# options: exception (exception)
+# options: message (String) [optional], exception (exception)
 
 desc "Handle the exception by sending email to the authors"
 private_lane :smf_handle_exception do |options|
@@ -116,6 +116,7 @@ private_lane :smf_handle_exception do |options|
   UI.important("Handling the build job exception")
 
   # Parameter
+  message = options[:message]
   exception = options[:exception]
 
   # Variables
@@ -143,13 +144,14 @@ private_lane :smf_handle_exception do |options|
   smf_send_mail_to_contributors(
     title: title,
     success: false,
+    message: message,
     exception_message: "#{exception.message}"
     )
 
   if hipchat_channel
     smf_send_hipchat_message(
       title: title,
-      message: "#{exception.message}",
+      message: message,
       exception: exception,
       type: "error",
       hipchat_channel: hipchat_channel
