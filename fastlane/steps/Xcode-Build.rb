@@ -67,11 +67,15 @@ private_lane :smf_archive_ipa do |options|
 
     is_adhoc_build = @smf_build_variant.include? "adhoc"
 
-    sigh(
-      adhoc: is_adhoc_build,
-      skip_certificate_verification:true,
-      app_identifier: bundle_identifier
-      )
+    begin
+      sigh(
+        adhoc: is_adhoc_build,
+        app_identifier: bundle_identifier,
+        readonly: true
+        )
+    rescue => exception
+      raise "Couldn't download the provisioning profiles. The profile did either expire or there is no matching certificate available locally."
+    end
 
     if extensions_suffixes
       for extension_suffix in extensions_suffixes do
@@ -79,8 +83,8 @@ private_lane :smf_archive_ipa do |options|
         begin
           sigh(
             adhoc: is_adhoc_build,
-            skip_certificate_verification:true,
-            app_identifier: "#{bundle_identifier}.#{extension_suffix}"
+            app_identifier: "#{bundle_identifier}.#{extension_suffix}",
+            readonly: true
             )
         rescue
           UI.important("Seems like #{bundle_identifier}.#{extension_suffix} is not yet included in this project! Skipping sigh!")
