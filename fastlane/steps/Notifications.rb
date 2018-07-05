@@ -59,7 +59,7 @@ private_lane :smf_send_hipchat_message do |options|
     end
 
     # Show the error info if it's provided
-    if exception != nil
+    if exception != nil && (message == nil || message.length == 0)
       error_info = exception.respond_to?(:preferred_error_info) ? exception.preferred_error_info : nil
       error_info = exception.respond_to?(:error_info) ? exception.error_info : nil
       if (error_info == nil)
