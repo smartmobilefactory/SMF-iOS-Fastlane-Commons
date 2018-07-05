@@ -39,9 +39,6 @@ private_lane :smf_archive_ipa do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
   scheme = build_variant_config[:scheme]
-  bundle_identifier = build_variant_config[:bundle_identifier]
-  use_wildcard_signing = build_variant_config[:use_wildcard_signing]
-  extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
 
   upload_itc = (build_variant_config[:upload_itc].nil? ? false : build_variant_config[:upload_itc])
   upload_bitcode = (build_variant_config[:upload_bitcode].nil? ? true : build_variant_config[:upload_bitcode])
@@ -55,47 +52,12 @@ private_lane :smf_archive_ipa do |options|
   end
 
   apple_team_id = build_variant_config[:team_id]
-  use_sigh = (build_variant_config[:download_provisioning_profiles].nil? ? true : build_variant_config[:download_provisioning_profiles])
   code_signing_identity = build_variant_config[:code_signing_identity]
 
   # Set the Apple Team ID
   team_id apple_team_id
 
-  if use_sigh
-    if smf_is_jenkins_environment
-      unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
-    end
-
-    is_adhoc_build = @smf_build_variant.include? "adhoc"
-    app_identifier = (use_wildcard_signing == true ? "*" : bundle_identifier)
-
-    begin
-      sigh(
-        adhoc: is_adhoc_build,
-        app_identifier: app_identifier,
-        readonly: true
-        )
-    rescue => exception
-      raise "Couldn't download the provisioning profiles. The profile did either expire or there is no matching certificate available locally."
-    end
-
-    if extensions_suffixes
-      for extension_suffix in extensions_suffixes do
-        
-        begin
-          sigh(
-            adhoc: is_adhoc_build,
-            app_identifier: "#{bundle_identifier}.#{extension_suffix}",
-            readonly: true
-            )
-        rescue
-          UI.important("Seems like #{bundle_identifier}.#{extension_suffix} is not yet included in this project! Skipping sigh!")
-          next   
-        end
-
-      end
-    end
-  end
+  smf_download_provisioning_profiles_if_needed
 
   if smf_is_jenkins_environment
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
@@ -367,4 +329,52 @@ def smf_get_version_number
     )
 
   return version_number
+end
+
+def smf_download_provisioning_profiles_if_needed
+
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+
+  use_sigh = (build_variant_config[:download_provisioning_profiles].nil? ? true : build_variant_config[:download_provisioning_profiles])
+
+  if use_sigh
+
+    bundle_identifier = build_variant_config[:bundle_identifier]
+    use_wildcard_signing = build_variant_config[:use_wildcard_signing]
+    extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
+
+    if smf_is_jenkins_environment
+      unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+    end
+
+    is_adhoc_build = @smf_build_variant.include? "adhoc"
+    app_identifier = (use_wildcard_signing == true ? "*" : bundle_identifier)
+
+    begin
+      sigh(
+        adhoc: is_adhoc_build,
+        app_identifier: app_identifier,
+        readonly: true
+        )
+    rescue => exception
+      raise "Couldn't download the provisioning profiles. The profile did either expire or there is no matching certificate available locally."
+    end
+
+    if extensions_suffixes
+      for extension_suffix in extensions_suffixes do
+        
+        begin
+          sigh(
+            adhoc: is_adhoc_build,
+            app_identifier: "#{bundle_identifier}.#{extension_suffix}",
+            readonly: true
+            )
+        rescue
+          UI.important("Seems like #{bundle_identifier}.#{extension_suffix} is not yet included in this project! Skipping sigh!")
+          next   
+        end
+
+      end
+    end
+  end
 end
