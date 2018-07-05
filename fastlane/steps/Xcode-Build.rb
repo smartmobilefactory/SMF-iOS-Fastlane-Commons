@@ -40,6 +40,7 @@ private_lane :smf_archive_ipa do |options|
 
   scheme = build_variant_config[:scheme]
   bundle_identifier = build_variant_config[:bundle_identifier]
+  use_wildcard_signing = build_variant_config[:use_wildcard_signing]
   extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
 
   upload_itc = (build_variant_config[:upload_itc].nil? ? false : build_variant_config[:upload_itc])
@@ -66,11 +67,12 @@ private_lane :smf_archive_ipa do |options|
     end
 
     is_adhoc_build = @smf_build_variant.include? "adhoc"
+    app_identifier = (use_wildcard_signing == true ? "*" : bundle_identifier)
 
     begin
       sigh(
         adhoc: is_adhoc_build,
-        app_identifier: bundle_identifier,
+        app_identifier: app_identifier,
         readonly: true
         )
     rescue => exception
