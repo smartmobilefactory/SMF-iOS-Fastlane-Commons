@@ -66,7 +66,7 @@ private_lane :smf_send_hipchat_message do |options|
       UI.message("Found error_info: #{error_info}")
       if error_info != nil && error_info.to_s.length > 0
         UI.message("Adding error_info: #{error_info.to_s}")
-        content << ("<tr><td>#{error_info.to_s[0..4000]}#{' <br/>... (maxmium length reached)' if error_info.to_s.length > 4000}</td></tr></table>")
+        content << ("<table><tr><td>#{error_info.to_s[0..4000]}#{' <br/>... (maxmium length reached)' if error_info.to_s.length > 4000}</td></tr></table>")
       end
     end
 
