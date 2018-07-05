@@ -16,6 +16,8 @@ private_lane :smf_send_hipchat_message do |options|
   message = options[:message]
   if message
     UI.message("Inital message: #{message}")
+  else
+    message = ""
   end
   exception = options[:exception]
   additional_html_entries = options[:additional_html_entries]
