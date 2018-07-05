@@ -62,6 +62,9 @@ private_lane :smf_send_hipchat_message do |options|
     if exception != nil
       error_info = exception.respond_to?(:preferred_error_info) ? exception.preferred_error_info : nil
       error_info = exception.respond_to?(:error_info) ? exception.error_info : nil
+      if (error_info == nil)
+        error_info = exception.exception
+      end
 
       UI.message("Found error_info: #{error_info}")
       if error_info != nil && error_info.to_s.length > 0
