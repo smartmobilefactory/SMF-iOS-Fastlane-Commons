@@ -139,7 +139,11 @@ private_lane :smf_handle_exception do |options|
     smf_collect_changelog
   end
 
-  title = "Failed to build #{smf_default_notification_release_title} 😢"
+  if smf_is_build_variant_a_decoupled_ui_test == true
+    title = "Failed to perform UI-Tests for #{smf_default_notification_release_title} 😢"
+  else
+    title = "Failed to build #{smf_default_notification_release_title} 😢"
+  end 
 
   smf_send_mail_to_contributors(
     title: title,
