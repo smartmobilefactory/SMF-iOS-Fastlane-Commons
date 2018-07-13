@@ -61,17 +61,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     end
 
     if were_ui_tests_performed == false
-
-      if hipchat_channel
-        smf_send_hipchat_message(
-          title: "Failed to perform UI-Tests for #{report_name} 😢",
-          message: "The UI tests couldn't be executed. Check the build log for more information.",
-          type: "error",
-          hipchat_channel: hipchat_channel
-          )
-      end
-
-      raise exception
+      raise "The UI tests couldn't be executed. Check the build log for more information."
     end
   end
 

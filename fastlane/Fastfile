@@ -38,7 +38,7 @@ end
 
 desc "Called on error"
 error do |lane, exception|
-  if @smf_set_should_send_deploy_notifications == true
+  if @smf_set_should_send_deploy_notifications == true || @smf_set_should_send_build_job_failure_notifications == true
     smf_handle_exception(
       exception: exception,
       )
@@ -90,6 +90,10 @@ end
 
 def smf_set_should_send_deploy_notifications(should_notify)
   @smf_set_should_send_deploy_notifications = should_notify
+end
+
+def smf_set_should_send_build_job_failure_notifications(should_notify)
+  @smf_set_should_send_build_job_failure_notifications = should_notify
 end
 
 def smf_set_build_variant(build_variant, reset_build_variant_array = true)
