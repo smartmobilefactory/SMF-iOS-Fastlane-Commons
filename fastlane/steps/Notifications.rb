@@ -285,6 +285,8 @@ def smf_default_notification_release_title
   release_title = nil
   if smf_is_build_variant_a_pod == true
     release_title = smf_default_pod_notification_release_title
+  elsif smf_is_build_variant_a_decoupled_ui_test == true
+    release_title = smf_default_decoupled_ui_test_notification_name_title
   else
     release_title = smf_default_app_notification_release_title
   end
@@ -330,4 +332,8 @@ def smf_default_pod_notification_release_title
   end
 
   return "#{project_name} #{version}#{branch_suffix}"
+end
+
+def smf_default_decoupled_ui_test_notification_name_title
+  return "#{ENV[$SMF_UI_TEST_REPORT_NAME_FOR_NOTIFICATIONS]}"
 end

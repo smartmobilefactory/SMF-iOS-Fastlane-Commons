@@ -17,6 +17,8 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
   report_name = tag_name
   report_name = report_name.gsub("build/", "")
   report_name = report_name.gsub!("/", "-")
+  ENV[$SMF_UI_TEST_REPORT_NAME_FOR_NOTIFICATIONS] = report_name
+
   ui_test_triggering_github_releases = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:ui_test_triggering_github_releases]
 
   tag_name_matches_result = tag_name =~ /#{ui_test_triggering_github_releases.gsub("\\/", "\/")}/

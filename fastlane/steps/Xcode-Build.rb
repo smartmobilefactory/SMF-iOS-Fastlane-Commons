@@ -298,6 +298,14 @@ def smf_is_build_variant_a_pod
   return is_pod
 end
 
+def smf_is_build_variant_a_decoupled_ui_test
+  is_ui_test = (@smf_fastlane_config[:build_variants][@smf_build_variant_sym][:"ui_test.target.bundle_identifier".to_sym] != nil)
+
+  UI.message("Build variant is a is_ui_test: #{is_ui_test}, as the config is #{@smf_fastlane_config[:build_variants][@smf_build_variant_sym]}")
+
+  return is_ui_test
+end
+
 def smf_path_to_ipa_or_app
   
   # Variables
