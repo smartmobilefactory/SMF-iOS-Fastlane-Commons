@@ -35,8 +35,6 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
       unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
     end
 
-    smf_download_provisioning_profiles_if_needed
-
     scan(
       scheme: scheme,
       destination: destinations,

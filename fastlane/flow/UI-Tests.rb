@@ -36,6 +36,9 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
     next
   end 
 
+  # First download the provisioning profiles. We don't nee to continue if they aren't valid
+  smf_download_provisioning_profiles_if_needed
+
   simulator_build_asset_path = smf_download_asset($SMF_SIMULATOR_RELEASE_APP_ZIP_FILENAME, assets, github_token)
 
   device_build_asset_path = smf_download_asset($SMF_DEVICE_RELEASE_APP_ZIP_FILENAME, assets, github_token)
