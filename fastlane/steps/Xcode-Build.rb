@@ -51,11 +51,7 @@ private_lane :smf_archive_ipa do |options|
     should_clean_project = build_variant_config[:should_clean_project]
   end
 
-  apple_team_id = build_variant_config[:team_id]
   code_signing_identity = build_variant_config[:code_signing_identity]
-
-  # Set the Apple Team ID
-  team_id apple_team_id
 
   smf_download_provisioning_profiles_if_needed
 
@@ -350,6 +346,10 @@ def smf_download_provisioning_profiles_if_needed
     bundle_identifier = build_variant_config[:bundle_identifier]
     use_wildcard_signing = build_variant_config[:use_wildcard_signing]
     extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
+    apple_team_id = build_variant_config[:team_id]
+
+    # Set the Apple Team ID
+    team_id apple_team_id
 
     if smf_is_jenkins_environment
       unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
