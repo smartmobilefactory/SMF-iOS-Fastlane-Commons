@@ -1,3 +1,6 @@
+require 'rest-client'
+require 'json'
+
 ################################################
 ### smf_perform_ui_tests_from_github_webhook ###
 ################################################
