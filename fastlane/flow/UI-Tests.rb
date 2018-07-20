@@ -2,6 +2,28 @@
 ### smf_perform_ui_tests_from_github_webhook ###
 ################################################
 
+lane :smf_perform_ui_tests_with_tag_name do |options|
+
+  # Parameters
+  tag_name = options[:tag_name]
+  report_sync_destination = options[:report_sync_destination]
+  github_token = options[:github_token]
+  simulators = options[:simulators]
+
+  # Variables
+  assets = smf_fetch_assets_for_tag(tag_name, github_token)
+
+  # Call lane
+  smf_perform_ui_tests_with_assets(
+    assets: assets,
+    tag_name: tag_name,
+    report_sync_destination: report_sync_destination,
+    github_token: github_token,
+    simulators: simulators
+  )
+end
+
+
 desc "Github triggered UITests for Simulators"
 lane :smf_perform_ui_tests_from_github_webhook do |options|
 
@@ -14,6 +36,27 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
   # Variables
   assets = payload["release"]["assets"]
   tag_name = payload["release"]["tag_name"]
+  
+  # Call lane
+  smf_perform_ui_tests_with_assets(
+    assets: assets,
+    tag_name: tag_name,
+    report_sync_destination: report_sync_destination,
+    github_token: github_token,
+    simulators: simulators
+  )
+end
+
+lane :smf_perform_ui_tests_with_assets do |options|
+
+  # Parameters
+  assets = options[:assets]
+  tag_name = options[:tag_name]
+  report_sync_destination = options[:report_sync_destination]
+  github_token = options[:github_token]
+  simulators = options[:simulators]
+
+  # Variables
   report_name = tag_name
   report_name = report_name.gsub("build/", "")
   report_name = report_name.gsub!("/", "-")
@@ -51,7 +94,7 @@ lane :smf_perform_ui_tests_from_github_webhook do |options|
     device_build_asset_path: device_build_asset_path,
     report_name: report_name,
     report_sync_destination: report_sync_destination
-    )
+  )
 end
 
 ################################
@@ -128,4 +171,17 @@ lane :smf_perform_all_ui_tests do |options|
 
     raise exception
   end
+end
+
+def smf_fetch_release_for_tag(tag, token)
+
+  url = "https://#{token}@api.github.com/repos/smartmobilefactory/HiDrive-iOS/releases/tags/#{tag}"
+
+  return JSON.parse(RestClient.get(url, {:params => {:access_token => token}}))
+end
+
+def smf_fetch_assets_for_tag(tag, token)
+  release = smf_fetch_release_for_tag(tag, token)
+
+  return release["assets"]
 end
