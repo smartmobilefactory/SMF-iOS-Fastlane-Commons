@@ -5,6 +5,7 @@ require 'json'
 ### smf_perform_ui_tests_from_github_webhook ###
 ################################################
 
+desc "Trigger UITests from a given tag_name"
 lane :smf_perform_ui_tests_with_tag_name do |options|
 
   # Parameters
@@ -14,6 +15,7 @@ lane :smf_perform_ui_tests_with_tag_name do |options|
   simulators = options[:simulators]
 
   # Variables
+  # fetch assets from github API
   assets = smf_fetch_assets_for_tag(tag_name, github_token)
 
   # Call lane
@@ -174,17 +176,4 @@ lane :smf_perform_all_ui_tests do |options|
 
     raise exception
   end
-end
-
-def smf_fetch_release_for_tag(tag, token)
-
-  url = "https://#{token}@api.github.com/repos/smartmobilefactory/HiDrive-iOS/releases/tags/#{tag}"
-
-  return JSON.parse(RestClient.get(url, {:params => {:access_token => token}}))
-end
-
-def smf_fetch_assets_for_tag(tag, token)
-  release = smf_fetch_release_for_tag(tag, token)
-
-  return release["assets"]
 end
