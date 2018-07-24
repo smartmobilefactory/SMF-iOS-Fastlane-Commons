@@ -13,10 +13,9 @@ lane :smf_perform_ui_tests_with_tag_name do |options|
   report_sync_destination = options[:report_sync_destination]
   github_token = options[:github_token]
   simulators = options[:simulators]
-  project_path = config["project"]["github_repo_path"]
 
   # Variables
-  # fetch assets from github API
+  project_path = @smf_fastlane_config[:project][:github_repo_path]
   assets = smf_fetch_assets_for_tag(tag_name, github_token, project_path)
 
   # Call lane
