@@ -13,7 +13,7 @@ lane :smf_perform_ui_tests_with_tag_name do |options|
   report_sync_destination = options[:report_sync_destination]
   github_token = options[:github_token]
   simulators = options[:simulators]
-  project_path = options[:project_path]
+  project_path = config["project"]["github_repo_path"]
 
   # Variables
   # fetch assets from github API
