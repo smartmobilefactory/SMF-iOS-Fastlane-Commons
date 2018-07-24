@@ -126,3 +126,18 @@ def smf_asset_url_from_webhook_event(asset_name, assets)
 
   raise "Couldn't find a matching asset with the name \"#{asset_name}\" in \"#{assets}\""
 end
+
+# Download release from Github, by tag.
+def smf_fetch_release_for_tag(tag, token, project)
+
+  url = "https://#{token}@api.github.com/repos/#{project}/releases/tags/#{tag}"
+
+  return JSON.parse(RestClient.get(url, {:params => {:access_token => token}}))
+end
+
+# return assets from the downloaded Asset.
+def smf_fetch_assets_for_tag(tag, token, project)
+  release = smf_fetch_release_for_tag(tag, token, project)
+
+  return release["assets"]
+end
