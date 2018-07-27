@@ -116,6 +116,10 @@ private_lane :smf_publish_pod do |options|
     tag: tag
   )
 
+  smf_send_deploy_success_notifications(
+    app_link: ""
+    )
+
   # Update the CocoaPods repo to avoid unknown Pod version issues if this Pod is integrated into another project
   begin
     sh "pod repo update"    
@@ -127,9 +131,5 @@ private_lane :smf_publish_pod do |options|
         hipchat_channel: "CI"
       )
   end
-
-  smf_send_deploy_success_notifications(
-    app_link: ""
-    )
 
 end
