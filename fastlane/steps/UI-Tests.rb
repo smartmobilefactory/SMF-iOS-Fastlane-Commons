@@ -91,7 +91,7 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
   temp_results_foldername = "Results"
   results_foldername = "#{report_name} (#{Time.now.strftime("%Y-%m-%d %H:%M")})"
 
-  reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting-nightly.jar"
+  reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
 
   # Create the report based on the derived data
   sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{temp_results_foldername}", 400.to_s)
