@@ -7,26 +7,7 @@
 #################
 
 before_all do
-
-  # Load the Fastlane config from the disk into memory
-  smf_load_fastlane_config
-
-  # Clone the Commons Repo
-  if @should_commons_repo_be_downloaded
-    UI.message("Downloading Fastlane Commons Repo as it's not locally available yet")
-    @fastlane_commons_dir_path = "#{smf_workspace_dir}/.fastlane-smf-commons"
-    smf_remove_fastlane_commons_repo
-    smf_clone_fastlane_commons_repo
-  else
-    UI.message("The Fastlane Commons Repo won't be downloaded as it's already available locally")
-  end
-
-  # Import the splitted Fastlane classes
-  import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
-  import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
-  import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
-
-  @smf_original_platform = ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]
+  smf_setup_fastlane_commons
 end
 
 desc "Called on success"
@@ -47,6 +28,28 @@ error do |lane, exception|
   if @should_commons_repo_be_downloaded
     smf_remove_fastlane_commons_repo
   end
+end
+
+def smf_setup_fastlane_commons()
+  # Load the Fastlane config from the disk into memory
+  smf_load_fastlane_config
+
+  # Clone the Commons Repo
+  if @should_commons_repo_be_downloaded
+    UI.message("Downloading Fastlane Commons Repo as it's not locally available yet")
+    @fastlane_commons_dir_path = "#{smf_workspace_dir}/.fastlane-smf-commons"
+    smf_remove_fastlane_commons_repo
+    smf_clone_fastlane_commons_repo
+  else
+    UI.message("The Fastlane Commons Repo won't be downloaded as it's already available locally")
+  end
+
+  # Import the splitted Fastlane classes
+  import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
+
+  @smf_original_platform = ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]
 end
 
 ##############
