@@ -19,6 +19,13 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   hipchat_channel = @smf_fastlane_config[:project][:hipchat_channel]
   disable_concurrent_testing = (build_variant_config[:disable_concurrent_testing] ? build_variant_config[:disable_concurrent_testing] : false)
   is_report_already_uploaded = false
+  app_to_test = build_variant_config["ui_test.target.bundle_identifier".to_sym]
+
+  # Setup APP_TO_TEST argument, if a bundle identifier was given
+  if app_to_test != nil
+    app_to_test = "APP_TO_TEST=#{app_to_test}"
+  end
+
 
   if hipchat_channel
     smf_send_hipchat_message(
@@ -35,12 +42,16 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
       unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
     end
 
+     # The derived data folder has to be deleted to support the testing of diferent apps. Otherwise the formerly tested app will be opened again
+    sh "rm -r #{Dir.pwd}/../DerivedData || true"
+
     scan(
       scheme: scheme,
       destination: destinations,
       derived_data_path: "./DerivedData",
       buildlog_path: buildlog_path,
-      disable_concurrent_testing: disable_concurrent_testing
+      disable_concurrent_testing: disable_concurrent_testing,
+      xcargs: app_to_test
       )
   rescue => exception
     UI.important("Failed to perform the unit tests, exception: #{exception}")
