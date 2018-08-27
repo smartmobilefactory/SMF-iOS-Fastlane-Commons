@@ -105,7 +105,7 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
   reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
 
   # Create the report based on the derived data
-  sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{temp_results_foldername}", 400.to_s)
+  sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{temp_results_foldername}", 400.to_s, "?", "?", "?")
 
   # Wait for a short time. This is a try to avoid errors like "rsync error: some files/attrs were not transferred"
   sleep(10)
