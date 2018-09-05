@@ -366,6 +366,7 @@ def smf_create_dmg_from_app
 
   # TODO_DMG_CREATION
   # Create the dmg with the script and store it in the same directory as the app
+  sh "#{@fastlane_commons_dir_path}/tools/create_dmg.sh -p #{app_path} -ci #{sparkle_code_signing_identity}"
 
 end
 
