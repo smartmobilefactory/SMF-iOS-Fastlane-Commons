@@ -35,7 +35,7 @@ private_lane :smf_send_hipchat_message do |options|
   end
 
   use_build_job_link_footer = options[:use_build_job_link_footer]
-  hipchat_channel = (options[:hipchat_channel] != nil ? options[:hipchat_channel] : "CI")
+  #hipchat_channel = (options[:hipchat_channel] != nil ? options[:hipchat_channel] : "CI")
 
   # Log the exceptions to find out if there is useful information which can be added to the message
   UI.message("exception.inspect: #{exception.inspect}")
