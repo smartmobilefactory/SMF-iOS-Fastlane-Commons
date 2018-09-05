@@ -35,7 +35,7 @@ private_lane :smf_send_hipchat_message do |options|
   end
 
   use_build_job_link_footer = options[:use_build_job_link_footer]
-  #hipchat_channel = (options[:hipchat_channel] != nil ? options[:hipchat_channel] : "CI")
+  hipchat_channel = (options[:hipchat_channel] != nil ? options[:hipchat_channel] : "CI")
 
   # Log the exceptions to find out if there is useful information which can be added to the message
   UI.message("exception.inspect: #{exception.inspect}")
@@ -87,34 +87,34 @@ private_lane :smf_send_hipchat_message do |options|
     # Send failure messages also to CI to notice them so that we can see if they can be improved
     begin
       if type == "error" && ((hipchat_channel.eql? "CI") == false)
-        hipchat(
-        message: content,
-        channel: "CI",
-        custom_color: color,
-        api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
-        notify_room: true,
-        version: "2",
-        message_format: "html",
-        include_html_header: false,
-        from: "#{project_name} iOS CI"
-        )
+#        hipchat(
+#        message: content,
+#        channel: "CI",
+#        custom_color: color,
+#        api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
+#        notify_room: true,
+#        version: "2",
+#        message_format: "html",
+#        include_html_header: false,
+#        from: "#{project_name} iOS CI"
+#        )
       end
     rescue => exception
       UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
     end
 
     begin
-      hipchat(
-        message: content,
-        channel: hipchat_channel,
-        custom_color: color,
-        api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
-        notify_room: true,
-        version: "2",
-        message_format: "html",
-        include_html_header: false,
-        from: "#{project_name} iOS CI"
-        )
+#      hipchat(
+#        message: content,
+#        channel: hipchat_channel,
+#        custom_color: color,
+#        api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
+#        notify_room: true,
+#        version: "2",
+#        message_format: "html",
+#        include_html_header: false,
+#        from: "#{project_name} iOS CI"
+#        )
     rescue => exception
       UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
       if fail_build_job_on_error
