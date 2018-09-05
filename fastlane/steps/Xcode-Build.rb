@@ -58,7 +58,7 @@ private_lane :smf_archive_ipa do |options|
   smf_download_provisioning_profiles_if_needed
 
   if smf_is_jenkins_environment
-    unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+    #unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
   gym(
@@ -424,7 +424,7 @@ def smf_download_provisioning_profiles_if_needed
     team_id apple_team_id
 
     if smf_is_jenkins_environment
-      unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+      #unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
     end
 
     is_adhoc_build = @smf_build_variant.include? "adhoc"

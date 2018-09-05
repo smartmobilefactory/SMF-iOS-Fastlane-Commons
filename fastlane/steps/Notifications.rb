@@ -212,17 +212,17 @@ private_lane :smf_send_mail do |options|
   end
 
   authors_emails.each do |receiver|
-    mailgun(
-      subject: title,
-      postmaster:"postmaster@mailgun.smfhq.com",
-      apikey: ENV["MAILGUN_KEY"],
-      to: receiver,
-      success: success,
-      message: message,
-      app_link: app_link,
-      ci_build_link: ENV["BUILD_URL"],
-      template_path: template_path
-      )
+    #mailgun(
+    #  subject: title,
+    #  postmaster:"postmaster@mailgun.smfhq.com",
+    #  apikey: ENV["MAILGUN_KEY"],
+    #  to: receiver,
+    #  success: success,
+    #  message: message,
+    #  app_link: app_link,
+    #  ci_build_link: ENV["BUILD_URL"],
+    #  template_path: template_path
+    #  )
   end
 
 end
