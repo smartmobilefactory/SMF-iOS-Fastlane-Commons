@@ -53,6 +53,8 @@ private_lane :smf_archive_ipa do |options|
 
   code_signing_identity = build_variant_config[:code_signing_identity]
 
+  use_sparkle = (build_variant_config[:use_sparkle].nil? ? false : build_variant_config[:use_sparkle])
+
   smf_download_provisioning_profiles_if_needed
 
   if smf_is_jenkins_environment
@@ -76,6 +78,9 @@ private_lane :smf_archive_ipa do |options|
     xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
     )
 
+  if use_sparkle
+    smf_create_dmg_from_app
+  end
 end
 
 ###############################
@@ -346,6 +351,22 @@ def smf_is_build_variant_a_decoupled_ui_test
   return is_ui_test
 end
 
+def smf_create_dmg_from_app
+
+  if ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] != "mac"
+    raise "Wrong platform configuration: dmg's are only created for macOS apps."
+  end
+
+  # Variables
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  sparke_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
+  app_path = smf_path_to_ipa_or_app
+
+  # TODO_DMG_CREATION
+  # Create the dmg with the script and store it in the same directory as the app
+
+end
+
 def smf_path_to_ipa_or_app
   
   # Variables
@@ -364,6 +385,11 @@ def smf_path_to_ipa_or_app
   end
 
   return app_path
+end
+
+def smf_path_to_dmg
+  # TODO_DMG_CREATION
+  # Construct the dmg path, check if it's existing and return the path
 end
 
 def smf_get_version_number
