@@ -20,8 +20,7 @@ export PATH
 #
 
 CREATE_DMG=true
-CODE_SIGN=false
-CODE_SIGN_ID="JZ2H644EU7"
+CODE_SIGN_ID=
 UPLOAD_TO_HOCKEY=false
 HOCKEYAPP_TOKEN=
 
@@ -43,7 +42,6 @@ function usage() {
 	# should we separate app name from dmg name?
 	echo
 	echo "Optional"
-	echo -e "--codesign, -cs\t\t: Enable code signing of the DMG; default off"
 	echo -e "--codesignid, -ci\t: Code signing identity, required if --codesign or -cs was used"
 	echo -e "--upload, -u\t\t: Upload the DMG to HockeyApp; HockeyApp Token and HockeyApp AppID need to be configurated; default off"
 	echo
@@ -60,10 +58,6 @@ while [ $# -gt 0 ]; do
 			# Path where the App is stored after a successful build
 			APPPATH="$2"
 			shift 2
-			;;
-		--codesign | -cs)
-			CODE_SIGN=true
-			shift
 			;;
 		--codesignid | -ci)
 			CODE_SIGN_ID=$2
@@ -115,11 +109,7 @@ fi
 # Code Sign
 #
 
-if [ $CODE_SIGN = true ]; then
-	if [ -z $CODE_SIGN_ID ]; then
-		echo "Abort: Code Sign Identity is missing"
-		exit 1
-	fi
+if [ -n $CODE_SIGN_ID ]; then
 	codesign -s $CODE_SIGN_ID ${APPDIR}/${NAME}.dmg
 	if [ $? -gt 0 ]; then
 		echo "Abort: Error code signing the DMG"
