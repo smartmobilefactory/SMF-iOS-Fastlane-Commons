@@ -184,6 +184,9 @@ private_lane :smf_deploy_build_variant do |options|
     end
   end
 
+  # TODO_DMG_CREATION
+  # Create appcast
+
   tag = smf_add_git_tag
 
   smf_git_pull
