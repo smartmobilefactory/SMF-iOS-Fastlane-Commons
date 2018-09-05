@@ -359,8 +359,10 @@ def smf_create_dmg_from_app
 
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
-  sparke_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
+  sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
   app_path = smf_path_to_ipa_or_app
+
+  path_to_pem = "#{CUSTOM_CERTIFICATES}/#{sparkle_code_signing_identity}"
 
   # TODO_DMG_CREATION
   # Create the dmg with the script and store it in the same directory as the app
