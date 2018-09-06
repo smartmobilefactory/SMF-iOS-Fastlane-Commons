@@ -186,6 +186,12 @@ private_lane :smf_deploy_build_variant do |options|
 
   # TODO_DMG_CREATION
   # Create appcast
+  sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
+  sparkle_private_key = ENV["CUSTOM_CERTIFICATES"] + "/" + sparkle_code_signing_identity
+  update_dir = "#{workspace}/build/"
+  sh "#{@fastlane_commons_dir_path}/tools/generate_appcast -f #{sparkle_private_key} #{update_dir}"
+
+  # Upload appcast
 
   tag = smf_add_git_tag
 

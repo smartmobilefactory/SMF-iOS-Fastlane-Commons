@@ -362,6 +362,8 @@ def smf_create_dmg_from_app
   sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
   app_path = smf_path_to_ipa_or_app
 
+  # TODO: Remove me vvvvvv
+  ENV["CUSTOM_CERTIFICATES"] = "/Users/bartosz/Certificates"
   path_to_pem = "#{CUSTOM_CERTIFICATES}/#{sparkle_code_signing_identity}"
 
   # TODO_DMG_CREATION
