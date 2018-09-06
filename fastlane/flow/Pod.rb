@@ -41,9 +41,9 @@ private_lane :smf_publish_pod do |options|
   # Update the MetaJSONS if wanted
   if generateMetaJSON != false
     begin
-      smf_generate_meta_json
+      #smf_generate_meta_json
       
-      smf_commit_meta_json
+      #smf_commit_meta_json
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
