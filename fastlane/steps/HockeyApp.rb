@@ -101,7 +101,9 @@ private_lane :smf_upload_ipa_to_hockey do |options|
 
   hockey(
     api_token: ENV[$SMF_HOCKEYAPP_API_TOKEN_ENV_KEY],
-    ipa: app_path, 
+    ipa: app_path,
+    bundle_short_version: version_number,
+    bundle_version: version_number + "-" + build_number,
     notify: "0",
     notes: release_notes,
     public_identifier: build_variant_config[:hockeyapp_id],
