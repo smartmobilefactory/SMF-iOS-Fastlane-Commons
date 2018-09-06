@@ -90,6 +90,11 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   # TODO_DMG_CREATION
   # Upload the dmg instead of the app if sparkle is enabled
   app_path = smf_path_to_ipa_or_app
+  app_path = File.join(File.dirname(app_path), File.basename(app_path, File.extname(app_path)))
+  app_path = app_path + ".dmg"
+  if ( ! File.exists?(app_path))
+    raise("DMG file #{app_path} does not exit. Nothing to upload.")
+  end
 
   # Get the release notes
   release_notes = "#{ENV[$SMF_CHANGELOG_ENV_KEY][0..4995]}#{'\\n...' if ENV[$SMF_CHANGELOG_ENV_KEY].length > 4995}"
