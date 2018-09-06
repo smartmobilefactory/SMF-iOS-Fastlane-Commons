@@ -364,7 +364,8 @@ def smf_create_dmg_from_app
 
   # TODO: Remove me vvvvvv
   ENV["CUSTOM_CERTIFICATES"] = "/Users/bartosz/Certificates"
-  path_to_pem = "#{CUSTOM_CERTIFICATES}/#{sparkle_code_signing_identity}"
+  custom_certificates = ENV["CUSTOM_CERTIFICATES"]
+  path_to_pem = "#{custom_certificates}/#{sparkle_code_signing_identity}"
 
   # TODO_DMG_CREATION
   # Create the dmg with the script and store it in the same directory as the app
