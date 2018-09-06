@@ -186,6 +186,7 @@ private_lane :smf_deploy_build_variant do |options|
 
   # TODO_DMG_CREATION
   # Create appcast
+  ENV["CUSTOM_CERTIFICATES"] = "/Users/bartosz/Certificates"
   sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
   sparkle_private_key = ENV["CUSTOM_CERTIFICATES"] + "/" + sparkle_code_signing_identity
   update_dir = "#{workspace}/build/"
@@ -197,13 +198,13 @@ private_lane :smf_deploy_build_variant do |options|
 
   smf_git_pull
 
-  push_to_git_remote(
-    remote: 'origin',
-    local_branch: @smf_git_branch,
-    remote_branch: @smf_git_branch,
-    force: false,
-    tags: true
-  )
+  #push_to_git_remote(
+  #  remote: 'origin',
+  #  local_branch: @smf_git_branch,
+  #  remote_branch: @smf_git_branch,
+  #  force: false,
+  #  tags: true
+  #)
 
   # Create the GitHub release
   version = smf_get_version_number
