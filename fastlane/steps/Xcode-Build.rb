@@ -359,17 +359,12 @@ def smf_create_dmg_from_app
 
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
-  sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
+  code_signing_identity = build_variant_config["team_id".to_sym]
   app_path = smf_path_to_ipa_or_app
-
-  # TODO: Remove me vvvvvv
-  ENV["CUSTOM_CERTIFICATES"] = "/Users/bartosz/Certificates"
-  custom_certificates = ENV["CUSTOM_CERTIFICATES"]
-  path_to_pem = "#{custom_certificates}/#{sparkle_code_signing_identity}"
 
   # TODO_DMG_CREATION
   # Create the dmg with the script and store it in the same directory as the app
-  sh "#{@fastlane_commons_dir_path}/tools/create_dmg.sh -p #{app_path} -ci #{sparkle_code_signing_identity}"
+  sh "#{@fastlane_commons_dir_path}/tools/create_dmg.sh -p #{app_path} -ci #{code_signing_identity}"
 
 end
 
@@ -381,6 +376,9 @@ def smf_path_to_ipa_or_app
   escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
 
   app_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.zip"
+  if ( ! File.exists?(app_path))
+     app_path =  Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app"
+  end
 
   UI.message("Constructed path \"#{app_path}\" from filename \"#{escaped_filename}\"")
 
