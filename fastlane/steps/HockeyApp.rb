@@ -104,6 +104,7 @@ private_lane :smf_upload_ipa_to_hockey do |options|
     ipa: app_path,
     bundle_short_version: version_number,
     bundle_version: version_number + "-" + build_number,
+    create_update: "1",
     notify: "0",
     notes: release_notes,
     public_identifier: build_variant_config[:hockeyapp_id],
