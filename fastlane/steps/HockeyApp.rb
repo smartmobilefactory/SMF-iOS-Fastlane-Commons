@@ -85,7 +85,7 @@ private_lane :smf_upload_ipa_to_hockey do |options|
 
   NO_APP_FAILURE = "NO_APP_FAILURE"
 
-  if (build_variant_config[:use_sparkle])
+  if ( ! build_variant_config[:use_sparkle])
      sh "cd ../build; zip -r9 \"#{escaped_filename}.app.zip\" \"#{escaped_filename}.app\" || echo #{NO_APP_FAILURE}"
   end
 
