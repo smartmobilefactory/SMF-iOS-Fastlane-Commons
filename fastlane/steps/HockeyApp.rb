@@ -89,10 +89,8 @@ private_lane :smf_upload_ipa_to_hockey do |options|
      sh "cd ../build; zip -r9 \"#{escaped_filename}.app.zip\" \"#{escaped_filename}.app\" || echo #{NO_APP_FAILURE}"
   end
 
-  # TODO_DMG_CREATION
   # Upload the dmg instead of the app if sparkle is enabled
   app_path = smf_path_to_ipa_or_app
-  #app_path = File.join(File.dirname(app_path), File.basename(app_path, File.extname(app_path)))
   if (build_variant_config[:use_sparkle])
   app_path = app_path.sub(".app", ".dmg")
      if ( ! File.exists?(app_path))

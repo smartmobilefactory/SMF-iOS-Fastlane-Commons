@@ -362,7 +362,6 @@ def smf_create_dmg_from_app
   code_signing_identity = build_variant_config["team_id".to_sym]
   app_path = smf_path_to_ipa_or_app
 
-  # TODO_DMG_CREATION
   # Create the dmg with the script and store it in the same directory as the app
   sh "#{@fastlane_commons_dir_path}/tools/create_dmg.sh -p #{app_path} -ci #{code_signing_identity}"
 
