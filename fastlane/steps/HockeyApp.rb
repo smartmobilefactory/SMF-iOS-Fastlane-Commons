@@ -85,7 +85,8 @@ private_lane :smf_upload_ipa_to_hockey do |options|
 
   NO_APP_FAILURE = "NO_APP_FAILURE"
 
-  sh "cd ../build; zip -r9 \"#{escaped_filename}.app.zip\" \"#{escaped_filename}.app\" || echo #{NO_APP_FAILURE}"
+  # Don't zip the .app, we're using .dmg
+  #sh "cd ../build; zip -r9 \"#{escaped_filename}.app.zip\" \"#{escaped_filename}.app\" || echo #{NO_APP_FAILURE}"
   
   # TODO_DMG_CREATION
   # Upload the dmg instead of the app if sparkle is enabled
