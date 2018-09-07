@@ -17,11 +17,11 @@ private_lane :smf_publish_pod do |options|
 
   # Unlock keycahin to enable pull repo with https
   if smf_is_jenkins_environment
-    #unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+    unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
   end
 
   if smf_is_jenkins_environment
-    #unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+    unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
   
   # Make sure the repo is up to date and clean
@@ -41,9 +41,9 @@ private_lane :smf_publish_pod do |options|
   # Update the MetaJSONS if wanted
   if generateMetaJSON != false
     begin
-      #smf_generate_meta_json
+      smf_generate_meta_json
       
-      #smf_commit_meta_json
+      smf_commit_meta_json
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
