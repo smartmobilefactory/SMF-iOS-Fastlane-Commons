@@ -191,6 +191,7 @@ private_lane :smf_deploy_build_variant do |options|
   sparkle_private_key = ENV["CUSTOM_CERTIFICATES"] + "/" + sparkle_code_signing_identity
   update_dir = "#{workspace}/build/"
   hockey_download_link = lane_context[SharedValues::HOCKEY_DOWNLOAD_LINK]
+  UI.message("Hockey env: #{lane_context[SharedValues::HOCKEY_BUILD_INFORMATION]}")
   sh "#{@fastlane_commons_dir_path}/tools/generate_appcast -f #{sparkle_private_key} #{update_dir} #{hockey_download_link}"
 
   # Upload appcast
