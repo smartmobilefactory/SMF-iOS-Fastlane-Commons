@@ -19,6 +19,7 @@ function usage() {
         echo
         echo "Required parameters:"
         echo -e "--bucket, -b\t\t: Bucket name"
+        echo -e "--directory, -d\t\t: Directory under which to save the file in the bucket"
         echo -e "--file, -f\t\t: Path to file"
         echo -e "--accesskey, -a\t\t: S3 Access Key"
         echo -e "--secretkey, -s\t\t: S3 Secret Access Key"
@@ -31,6 +32,7 @@ function usage() {
 #
 
 BUCKET=""
+DIRECTORY=""
 FILE=""
 ACCESS_KEY=""
 SECRET_KEY=""
@@ -43,6 +45,10 @@ while [ $# -gt 0 ]; do
         case "$1" in
                 --bucket | -b) 
                         BUCKET="$2"
+                        shift 2
+                        ;;  
+                --directory | -d) 
+                        DIRECTORY="$2"
                         shift 2
                         ;;  
                 --file | -f)
@@ -72,6 +78,10 @@ if [ -z $BUCKET ] || [ -z $FILE ] || [ -z $ACCESS_KEY ] || [ -z $SECRET_KEY ]; t
         usage
 fi
 
+if [ ! -z $DIRECTORY ]; then
+	DIRECTORY="/${DIRECTORY}"
+fi
+
 region="eu-central-1"
 timestamp=$(date -u "+%Y-%m-%d %H:%M:%S")
 signed_headers="date;host;x-amz-acl;x-amz-content-sha256;x-amz-date"
@@ -87,7 +97,7 @@ payload_hash() {
 
 canonical_request() {
   echo "PUT"
-  echo "/${BUCKET}/${file_basename}"
+  echo "${DIRECTORY}/${file_basename}"
   echo ""
   echo "date:${date_header}"
   echo "host:${BUCKET}.s3.amazonaws.com"
@@ -136,7 +146,8 @@ curl \
   -T "${FILE}" \
   -H "Authorization: AWS4-HMAC-SHA256 Credential=${ACCESS_KEY?}/${date_scope}/${region}/s3/aws4_request,SignedHeaders=${signed_headers},Signature=$(signature)" \
   -H "Date: ${date_header}" \
+  -H "Content-Type: text/html" \
   -H "x-amz-acl: public-read" \
   -H "x-amz-content-sha256: $(payload_hash)" \
   -H "x-amz-date: ${iso_timestamp}" \
-  "https://${BUCKET}.s3.amazonaws.com/${BUCKET}/${file_basename}"
+  "https://${BUCKET}.s3.amazonaws.com${DIRECTORY}/${file_basename}"
