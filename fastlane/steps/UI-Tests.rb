@@ -67,7 +67,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     }
 
     if should_create_report
-      smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
       is_report_already_uploaded = true
     end
 
@@ -79,10 +79,10 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   notification_message = "The UI tests were performed"
   if should_create_report
     if is_report_already_uploaded == false
-      smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
     end
-    new_report_image_path = "/../Results/Report_#{report_name}.png"
-    sh "mv /../Results/screenshot.png #{new_report_image_path}"
+    new_report_image_path = "/../Report_#{report_name}.png"
+    sh "mv /../#{results_foldername}/screenshot.png #{new_report_image_path}"
     attachment_path = new_report_image_path
     notification_message = "#{notification_message} and the report was uploaded to HiDrive. Check it for more details."
   else
@@ -125,6 +125,8 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
   remote_path = "#{report_sync_destination}/#{results_foldername}"
   remote_path = remote_path.gsub!(" ", "\\ ")
   sh("rsync -rltDvzre ssh -i \"#{local_path}\" \"#{remote_path}.zip\"")
+
+  return results_foldername
 end
 
 def smf_shutdown_simulators()
