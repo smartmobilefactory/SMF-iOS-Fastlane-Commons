@@ -120,7 +120,7 @@ private_lane :smf_send_hipchat_message do |options|
       if attachment_path != nil
         sh(
           "curl", "-X", "POST",
-          "-H", "Authorization: Bearer #{api_token}", 
+          "-H", "Authorization: Bearer #{ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY]}", 
           "-H", "Content-Type:  multipart/related; boundary=boundary123456", 
           "-F", "file=@#{attachment_path}",
           "https://hipchat.com/v2/room/#{hipchat_channel}/share/file"
