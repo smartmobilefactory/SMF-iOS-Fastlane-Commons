@@ -97,7 +97,7 @@ if [ $CREATE_DMG = true ]; then
 	cd ${SRCFOLDER}
 	ln -s /Applications .
 	cd ..
-	hdiutil create ${NAME}.dmg -fs HFS+ -volname ${VOLNAME} -srcfolder ${SRCFOLDER}
+	hdiutil create ${NAME}.dmg -fs UDF -format UDZO -volname ${VOLNAME} -srcfolder ${SRCFOLDER}
 	if [ $? -gt 0 ]; then
 		echo "Abort: Error creating DMG"
 		exit 1
