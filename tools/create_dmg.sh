@@ -3,7 +3,7 @@
 # Script to create a DMG from build App.
 # 
 # The script creates a dmg from new app,
-# code signes the .dmg file and then uploads it to server
+# code signes the .dmg file
 #
 # Bartosz Swiatek
 # (c) Smart Mobile Factory
@@ -39,7 +39,6 @@ function usage() {
 	echo
 	echo "Required parameters:"
 	echo -e "--appPath, -p\t\t: Path to the .app"
-	# should we separate app name from dmg name?
 	echo
 	echo "Optional"
 	echo -e "--codesignid, -ci\t: Code signing identity, required if --codesign or -cs was used"
@@ -119,32 +118,5 @@ fi
 
 # check if signed correctly
 # spctl -a -t open --context context:primary-signature -v MyImage.dmg
-
-#
-# Upload
-#
-# HockeyApp create version, then update version will upload dmg
-#
-
-HOCKEYAPP_APPID=$(defaults read $INFO_PLIST HockeyAppId)
-
-if [ $UPLOAD_TO_HOCKEY = true ]; then
-	if [ -z $HOCKEYAPP_TOKEN ]; then
-		echo "Abort: Missing HockeyApp Token"
-		exit 1
-	fi
-
-	if [ -z $HOCKEYAPP_APPID ]; then
-		echo "Abort: Missing HockeyApp AppID"
-		exit 1
-	fi
-
-	curl \
-	-F "bundle_short_version=${VERSION}" \
-	-F "bundle_version=${SHORT_VERSION}" \
-	-H "X-HockeyAppToken: ${HOCKEYAPP_TOKEN}" \
-	https://rink.hockeyapp.net/api/2/apps/${HOCKEYAPP_APPID}/app_versions/${VERSION}-${SHORT_VERSION}
-fi
-
 
 echo "Done."
