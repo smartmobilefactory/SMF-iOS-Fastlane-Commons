@@ -81,8 +81,8 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     if is_report_already_uploaded == false
       results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
     end
-    new_report_image_path = "/../Report_#{report_name}.png"
-    sh "mv \"/../#{results_foldername}/screenshot.png\" \"#{new_report_image_path}\""
+    new_report_image_path = "../Report_#{report_name}.png"
+    sh "mv \"../#{results_foldername}/screenshot.png\" \"#{new_report_image_path}\""
     attachment_path = new_report_image_path
     notification_message = "#{notification_message} and the report was uploaded to HiDrive. Check it for more details."
   else
