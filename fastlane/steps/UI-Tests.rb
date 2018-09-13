@@ -67,7 +67,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     }
 
     if should_create_report
-      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name, smf_path_to_ipa_or_app)
       is_report_already_uploaded = true
     end
 
@@ -79,7 +79,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   notification_message = "The UI tests were performed"
   if should_create_report
     if is_report_already_uploaded == false
-      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name)
+      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name, smf_path_to_ipa_or_app)
     end
     new_report_image_path = "../Report_#{report_name}.png"
     sh "mv \"../#{results_foldername}/screenshot.png\" \"#{new_report_image_path}\""
