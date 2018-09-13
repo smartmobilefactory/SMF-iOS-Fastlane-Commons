@@ -66,12 +66,6 @@ private_lane :smf_collect_changelog do |options|
   ENV[$SMF_CHANGELOG_ENV_KEY] = changelog
   ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_authors
 
-  # Store the change log in a file if a macOS app is build as the upload to HockeyApp is done in a separate Fastlane call
-  if lane_context[SharedValues::PLATFORM_NAME] == "mac"
-    File.open("changelog.properties", 'w') { |file| file.write("#{$SMF_CHANGELOG_ENV_KEY}='#{ENV[$SMF_CHANGELOG_ENV_KEY]}'") }
-    File.open("emails.properties", 'w') { |file| file.write("#{$SMF_CHANGELOG_EMAILS_ENV_KEY}='#{ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY]}'") }
-  end
-
 end
 
 ##########################################################
