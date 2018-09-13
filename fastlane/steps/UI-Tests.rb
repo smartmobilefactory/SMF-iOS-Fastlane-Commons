@@ -102,14 +102,27 @@ end
 ### Helper ###
 ##############
 
-def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_destination, report_name)
-  temp_results_foldername = "Results"
-  results_foldername = "#{report_name} (#{Time.now.strftime("%Y-%m-%d %H:%M")})"
+def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_destination, report_name, path_to_app)
+	temp_results_foldername = "Results"
+	results_foldername = "#{report_name} (#{Time.now.strftime("%Y-%m-%d %H:%M")})"
 
-  reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
+	reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
 
-  # Create the report based on the derived data
-  sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{temp_results_foldername}", 400.to_s, "?", "?", "?")
+	def get_plist_value(plist_key)
+		pwd = Dir.pwd
+		path_to_plist = "#{results_directory}/ipa/Payload/toGrade.app/Info"
+		value = sh("defaults read #{path_to_plist} #{plist_key}")
+		return value
+	end
+
+	# Unzip the ipa for reading the Info.plist
+	sh("unzip -d #{results_directory}/ipa #{path_to_app}")
+
+	# Create the report based on the derived data
+	sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{temp_results_foldername}", 400.to_s, get_plist_value("CFBundleShortVersionString"), get_plist_value("CFBundleVersion"), get_plist_value("CFBundleName"))
+
+	# Remove ipa
+	sh("rm -rf #{results_directory}/ipa")
 
   # Wait for a short time. This is a try to avoid errors like "rsync error: some files/attrs were not transferred"
   sleep(10)
