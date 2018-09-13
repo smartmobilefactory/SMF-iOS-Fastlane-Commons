@@ -58,7 +58,12 @@ private_lane :smf_collect_changelog do |options|
     cleaned_changelog_messages.push(commit_message)
   }
 
-  ENV[$SMF_CHANGELOG_ENV_KEY] = cleaned_changelog_messages.uniq.join("\n")
+  # Limit the size of changelog as it's crashes if it's too long
+  changelog = cleaned_changelog_messages.uniq.join("\n")
+  changelog = "#{changelog[0..20000]}#{'\\n...' if changelog.length > 20000}"
+
+
+  ENV[$SMF_CHANGELOG_ENV_KEY] = changelog
   ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_authors
 
   # Store the change log in a file if a macOS app is build as the upload to HockeyApp is done in a separate Fastlane call
