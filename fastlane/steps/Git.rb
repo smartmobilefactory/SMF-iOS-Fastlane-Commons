@@ -61,7 +61,7 @@ private_lane :smf_collect_changelog do |options|
   # Limit the size of changelog as it's crashes if it's too long
   changelog = cleaned_changelog_messages.uniq.join("\n")
   changelog = "#{changelog[0..20000]}#{'\\n...' if changelog.length > 20000}"
-
+  changelog_authors = "#{changelog_authors[0..20000]}#{'\\n...' if changelog_authors.length > 20000}"
 
   ENV[$SMF_CHANGELOG_ENV_KEY] = changelog
   ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_authors
