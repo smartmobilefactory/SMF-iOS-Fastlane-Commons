@@ -166,7 +166,7 @@ lane :smf_perform_all_ui_tests do |options|
       report_sync_destination: report_sync_destination,
       report_name: report_name,
       should_create_report: true,
-      path_to_app: simulator_build_asset_path
+      path_to_app: device_build_asset_path
       )
 
       smf_uninstall_app_on_simulators(simulators, bundle_identifier)
