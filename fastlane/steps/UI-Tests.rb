@@ -116,6 +116,7 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
 	end
 
 	# Unzip the ipa for reading the Info.plist
+	puts "RESULT_DIR: #{results_directory}/ipa; PATH_TO_APP: #{path_to_app};"
 	sh("unzip -d #{results_directory}/ipa #{path_to_app}")
 
 	# Create the report based on the derived data
