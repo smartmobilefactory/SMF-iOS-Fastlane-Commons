@@ -109,7 +109,7 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
 
 	reporting_tool = "#{@fastlane_commons_dir_path}/tools/ui-test-reporting.jar"
 
-	def get_plist_value(plist_key)
+	def get_plist_value(plist_key, path_to_app)
 		pwd = Dir.pwd
 		path_to_plist = "#{path_to_app}/Info"
 		value = sh("defaults read #{path_to_plist} #{plist_key}")
@@ -117,7 +117,7 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
 	end
 
 	# Create the report based on the derived data
-	sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{temp_results_foldername}", 400.to_s, get_plist_value("CFBundleShortVersionString"), get_plist_value("CFBundleVersion"), get_plist_value("CFBundleName"))
+	sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{temp_results_foldername}", 400.to_s, get_plist_value("CFBundleShortVersionString", path_to_app), get_plist_value("CFBundleVersion", path_to_app), get_plist_value("CFBundleName", path_to_app))
 
   # Wait for a short time. This is a try to avoid errors like "rsync error: some files/attrs were not transferred"
   sleep(10)
