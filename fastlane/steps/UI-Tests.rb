@@ -11,6 +11,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   should_create_report = (options[:should_create_report] != nil ? options[:should_create_report] : true)
   report_sync_destination = options[:report_sync_destination]
   report_name = options[:report_name]
+  path_to_app = options[:path_to_app]
 
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
@@ -67,7 +68,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     }
 
     if should_create_report
-      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name, smf_path_to_ipa_or_app)
+      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name, path_to_app)
       is_report_already_uploaded = true
     end
 
@@ -79,7 +80,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   notification_message = "The UI tests were performed"
   if should_create_report
     if is_report_already_uploaded == false
-      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name, smf_path_to_ipa_or_app)
+      results_foldername = smf_create_and_sync_report("/../DerivedData", "#{Dir.pwd}/..", report_sync_destination, report_name, path_to_app)
     end
     new_report_image_path = "../Report_#{report_name}.png"
     sh "mv \"../#{results_foldername}/screenshot.png\" \"#{new_report_image_path}\""
@@ -110,20 +111,13 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
 
 	def get_plist_value(plist_key)
 		pwd = Dir.pwd
-		path_to_plist = "#{results_directory}/ipa/Payload/toGrade.app/Info"
+		path_to_plist = "#{path_to_app}/Info"
 		value = sh("defaults read #{path_to_plist} #{plist_key}")
 		return value
 	end
 
-	# Unzip the ipa for reading the Info.plist
-	puts "RESULT_DIR: #{results_directory}/ipa; PATH_TO_APP: #{path_to_app};"
-	sh("unzip -d #{results_directory}/ipa #{path_to_app}")
-
 	# Create the report based on the derived data
 	sh("java", "-jar", reporting_tool, Dir.pwd + derivedDataURL + "/Logs/Test", "#{results_directory}/#{temp_results_foldername}", 400.to_s, get_plist_value("CFBundleShortVersionString"), get_plist_value("CFBundleVersion"), get_plist_value("CFBundleName"))
-
-	# Remove ipa
-	sh("rm -rf #{results_directory}/ipa")
 
   # Wait for a short time. This is a try to avoid errors like "rsync error: some files/attrs were not transferred"
   sleep(10)
