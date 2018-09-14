@@ -111,7 +111,7 @@ def smf_create_and_sync_report(derivedDataURL, results_directory, report_sync_de
 
 	def get_plist_value(plist_key, path_to_app)
 		pwd = Dir.pwd
-		path_to_plist = "#{path_to_app}/Info"
+		path_to_plist = "#{pwd}/#{path_to_app}/Info"
 		value = sh("defaults read #{path_to_plist} #{plist_key}")
 		return value
 	end
