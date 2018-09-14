@@ -1,0 +1,57 @@
+require 'net/http'
+require 'json'
+
+def find_submodule_common_project_setup_files_commit()
+  # Get submodules as string array
+  submodules_array = `git submodule status`.split('\n')
+  
+  # Find SMF-iOS-CommonProjectSetupFiles submodule
+  common_project_setup_files_submodule = submodules_array.find { |submodule|
+    submodule.include?('SMF-iOS-CommonProjectSetupFiles')
+  }
+  
+  # If SMF-iOS-CommonProjectSetupFiles was found then return latest commit
+  if (common_project_setup_files_submodule != nil)
+    return common_project_setup_files_submodule.split(' ').first
+  end
+    return nil
+end
+
+def fetch_github_common_project_setup_files_branches()
+  uri = URI.parse('https://api.github.com/repos/smartmobilefactory/SMF-iOS-CommonProjectSetupFiles/branches')
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+  request = Net::HTTP::Get.new(uri.request_uri)
+  request['Authentication'] = "Bearer #{ENV['GITHUB_TOKEN']}"
+  response = http.request(request)
+  branches_array = JSON.parse(response.body)
+  
+  return branches_array
+end
+
+def is_commit_outdated(commit)
+  # Fetch remote branches and find first branch matching the commit
+  matching_branch = fetch_github_common_project_setup_files_branches().find { |branch|
+    # Fetched branches always have the latest commit
+    branch['commit']['sha'] == commit
+  }
+
+   # Return true if no branch with matching commit was found 
+  if (matching_branch == nil)
+    return true
+  end
+    return false
+end
+
+# Search for project's submodule SMF-iOS-CommonProjectSetupFiles latest commit
+project_commit = find_submodule_common_project_setup_files_commit()
+
+# Send a warning or error if submodule commit is outdated
+if (project_commit != nil && is_commit_outdated(project_commit) == true)
+notify_level_string = get_config_value("smf_common.notify_level")
+  if (notify_level_string == 'warn')
+    warn('SMF-iOS-CommonProjectSetupFiles is outdated. Please check your submodules and update them if possible.')
+  elsif (notify_level_string == 'fail')
+    fail('SMF-iOS-CommonProjectSetupFiles is outdated. Please check your submodules and update them if possible.')
+  end
+end

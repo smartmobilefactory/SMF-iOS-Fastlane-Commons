@@ -151,3 +151,10 @@ configuration_message = "<details><summary>Danger configuration:</summary>#{conf
 
 message(configuration_message)
 
+#####################################
+###### CommonProjectSetupFiles ######
+#####################################
+
+if (File.exist?("#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/SMF-iOS-CommonProjectSetupFiles/Dangerfile"))
+  danger.import_dangerfile(path: "#{ENV['FASTLANE_COMMONS_FOLDER']}/danger/SMF-iOS-CommonProjectSetupFiles")
+end
