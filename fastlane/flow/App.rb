@@ -128,9 +128,9 @@ private_lane :smf_deploy_build_variant do |options|
 
       smf_run_linter
 
-      #smf_generate_meta_json
+      smf_generate_meta_json
       
-      #smf_commit_meta_json
+      smf_commit_meta_json
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
@@ -186,15 +186,12 @@ private_lane :smf_deploy_build_variant do |options|
 
   # Create appcast
   sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
-  ENV["CUSTOM_CERTIFICATES"] = "/Users/bartosz/Certificates"
   sparkle_private_key = ENV["CUSTOM_CERTIFICATES"] + "/" + sparkle_code_signing_identity
   update_dir = "#{workspace}/build/"
   hockey_download_link = lane_context[SharedValues::HOCKEY_BUILD_INFORMATION]["build_url"]
   sh "#{@fastlane_commons_dir_path}/tools/generate_appcast -f #{sparkle_private_key} #{update_dir} #{hockey_download_link}"
 
   # Upload appcast
-  ENV["SMF_SPARKLE_S3_ACCESS_KEY"] = "AKIAIJT6V3UXAZISYJ5Q"
-  ENV["SMF_SPARKLE_S3_SECRET_ACCESS_KEY"] = "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"
   access_key = ENV["SMF_SPARKLE_S3_ACCESS_KEY"]
   secret_key = ENV["SMF_SPARKLE_S3_SECRET_ACCESS_KEY"]
   sparkle_s3aws_bucket = build_variant_config["sparkle_s3aws_bucket".to_sym]
@@ -205,13 +202,13 @@ private_lane :smf_deploy_build_variant do |options|
 
   smf_git_pull
 
-  #push_to_git_remote(
-  #  remote: 'origin',
-  #  local_branch: @smf_git_branch,
-  #  remote_branch: @smf_git_branch,
-  #  force: false,
-  #  tags: true
-  #)
+  push_to_git_remote(
+    remote: 'origin',
+    local_branch: @smf_git_branch,
+    remote_branch: @smf_git_branch,
+    force: false,
+    tags: true
+  )
 
   # Create the GitHub release
   version = smf_get_version_number
@@ -277,13 +274,13 @@ private_lane :smf_deploy_build_variant do |options|
       exception = e
     end
 
-    #smf_send_hipchat_message(
-    #    title: notification_title,
-    #    message: notification_message,
-    #    type: notification_type,
-    #    exception: exception,
-    #    hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
-    #  )
+    smf_send_hipchat_message(
+        title: notification_title,
+        message: notification_message,
+        type: notification_type,
+        exception: exception,
+        hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
+      )
   end
 
 end
