@@ -87,17 +87,17 @@ private_lane :smf_send_hipchat_message do |options|
     # Send failure messages also to CI to notice them so that we can see if they can be improved
     begin
       if type == "error" && ((hipchat_channel.eql? "CI") == false)
-        hipchat(
-        message: content,
-        channel: "CI",
-        custom_color: color,
-        api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
-        notify_room: true,
-        version: "2",
-        message_format: "html",
-        include_html_header: false,
-        from: "#{project_name} iOS CI"
-        )
+        #hipchat(
+        #message: content,
+        #channel: "CI",
+        #custom_color: color,
+        #api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
+        #notify_room: true,
+        #version: "2",
+        #message_format: "html",
+        #include_html_header: false,
+        #from: "#{project_name} iOS CI"
+        #)
       end
     rescue => exception
       UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
@@ -105,16 +105,16 @@ private_lane :smf_send_hipchat_message do |options|
 
     begin
       hipchat(
-        message: content,
-        channel: hipchat_channel,
-        custom_color: color,
-        api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
-        notify_room: true,
-        version: "2",
-        message_format: "html",
-        include_html_header: false,
-        from: "#{project_name} iOS CI"
-        )
+        #message: content,
+        #channel: hipchat_channel,
+        #custom_color: color,
+        #api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
+        #notify_room: true,
+        #version: "2",
+        #message_format: "html",
+        #include_html_header: false,
+        #from: "#{project_name} iOS CI"
+        #)
     rescue => exception
       UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
       if fail_build_job_on_error
@@ -212,17 +212,17 @@ private_lane :smf_send_mail do |options|
   end
 
   authors_emails.each do |receiver|
-    mailgun(
-      subject: title,
-      postmaster:"postmaster@mailgun.smfhq.com",
-      apikey: ENV["MAILGUN_KEY"],
-      to: receiver,
-      success: success,
-      message: message,
-      app_link: app_link,
-      ci_build_link: ENV["BUILD_URL"],
-      template_path: template_path
-      )
+    #mailgun(
+    #  subject: title,
+    #  postmaster:"postmaster@mailgun.smfhq.com",
+    #  apikey: ENV["MAILGUN_KEY"],
+    #  to: receiver,
+    #  success: success,
+    #  message: message,
+    #  app_link: app_link,
+    #  ci_build_link: ENV["BUILD_URL"],
+    #  template_path: template_path
+    #  )
   end
 
 end

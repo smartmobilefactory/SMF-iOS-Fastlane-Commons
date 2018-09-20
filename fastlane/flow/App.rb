@@ -202,13 +202,13 @@ private_lane :smf_deploy_build_variant do |options|
 
   smf_git_pull
 
-  push_to_git_remote(
-    remote: 'origin',
-    local_branch: @smf_git_branch,
-    remote_branch: @smf_git_branch,
-    force: false,
-    tags: true
-  )
+  #push_to_git_remote(
+  #  remote: 'origin',
+  #  local_branch: @smf_git_branch,
+  #  remote_branch: @smf_git_branch,
+  #  force: false,
+  #  tags: true
+  #)
 
   # Create the GitHub release
   version = smf_get_version_number
@@ -274,13 +274,13 @@ private_lane :smf_deploy_build_variant do |options|
       exception = e
     end
 
-    smf_send_hipchat_message(
-        title: notification_title,
-        message: notification_message,
-        type: notification_type,
-        exception: exception,
-        hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
-      )
+    #smf_send_hipchat_message(
+    #    title: notification_title,
+    #    message: notification_message,
+    #    type: notification_type,
+    #    exception: exception,
+    #    hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
+    #  )
   end
 
 end
