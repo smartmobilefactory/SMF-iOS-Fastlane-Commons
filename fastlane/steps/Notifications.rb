@@ -104,7 +104,7 @@ private_lane :smf_send_hipchat_message do |options|
     end
 
     begin
-      hipchat(
+      #hipchat(
         #message: content,
         #channel: hipchat_channel,
         #custom_color: color,
