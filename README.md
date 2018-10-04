@@ -60,7 +60,7 @@ Most logic is written in Ruby, only some precompiled code is written in Java and
 
 The documentation will split into the following areas:
 
-- [Flows](documetnation/Flows.md)
-- [Steps](documetnation/Steps.md)
-- [Configuration](documetnation/Configuation.md)
-- [What is needed in a project?](documetnation/What_is_needed_in_a_project.md)
+- [Flows](documentation/Flows.md)
+- [Steps](documentation/Steps.md)
+- [Configuration](documentation/Configuation.md)
+- [What is needed in a project?](documentation/What_is_needed_in_a_project.md)
