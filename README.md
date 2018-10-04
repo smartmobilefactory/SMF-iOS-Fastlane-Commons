@@ -62,5 +62,5 @@ The documentation will split into the following areas:
 
 - [Flows](documentation/Flows.md)
 - [Steps](documentation/Steps.md)
-- [Configuration](documentation/Configuation.md)
+- [Configuration](documentation/Configuration.md)
 - [What is needed in a project?](documentation/What_is_needed_in_a_project.md)
