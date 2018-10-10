@@ -24,11 +24,7 @@ private_lane :smf_deploy_app do |options|
         bulk_deploy_params: bulk_deploy_params
       )
     rescue => exception
-     notification_title = "Failed to upload #{smf_default_notification_release_title} to iTunes Connect 😢"
-     notification_message = "As iTunes Connect often response with an error altough the IPA was successfully uploaded, you may want to check iTunes Connect to know if the upload worked or not."
-     notification_type = "error"
-     UI.important("Warning: The upload to iTunes Connect failed!")
-
+      UI.important("Warning: Building variant #{build_variant} failed! Exception #{exception}")
     end
 
     if bulk_deploy_params != nil
