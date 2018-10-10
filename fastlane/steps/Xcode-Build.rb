@@ -219,7 +219,7 @@ def smf_get_decremented_build_number(version)
      version_string += parts[i].to_s + "."
     end
 
-    version_string = decremented_version.to_s
+    version_string += decremented_version.to_s
   else
    version_string = (version.to_i - 1).to_s
   end
