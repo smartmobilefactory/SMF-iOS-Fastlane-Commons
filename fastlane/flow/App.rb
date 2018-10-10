@@ -77,6 +77,7 @@ private_lane :smf_deploy_build_variant do |options|
   # Increment the build number only if it should
   if smf_should_build_number_be_incremented
     smf_increment_build_number
+    smf_set_should_revert_build_number(true)
   end
 
   # Check if the New Tag already exists
@@ -140,7 +141,11 @@ private_lane :smf_deploy_build_variant do |options|
   # Commit the build number if it was incremented
   if smf_should_build_number_be_incremented
     smf_commit_build_number
+    smf_set_should_revert_build_number(false)
   end
+
+  # Revert build number if needed
+  smf_decrement_build_number
 
   # Build a Simulator build if wanted
   if build_variant_config[:attach_build_outputs_to_github] == true
