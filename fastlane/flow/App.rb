@@ -24,6 +24,10 @@ private_lane :smf_deploy_app do |options|
         bulk_deploy_params: bulk_deploy_params
       )
     rescue => exception
+      
+      # Revert build number if needed
+      smf_decrement_build_number
+
       UI.important("Warning: Building variant #{build_variant} failed! Exception #{exception}")
     end
 
@@ -143,9 +147,6 @@ private_lane :smf_deploy_build_variant do |options|
     smf_commit_build_number
     smf_set_should_revert_build_number(false)
   end
-
-  # Revert build number if needed
-  smf_decrement_build_number
 
   # Build a Simulator build if wanted
   if build_variant_config[:attach_build_outputs_to_github] == true
