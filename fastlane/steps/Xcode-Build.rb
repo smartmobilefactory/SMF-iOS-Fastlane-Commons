@@ -150,14 +150,29 @@ private_lane :smf_increment_build_number do |options|
 
   UI.important("increment build number")
 
-  # Variables
-  project_name = @smf_fastlane_config[:project][:project_name]
-
-  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+  version = smf_current_build_number
 
   increment_build_number(
     build_number: smf_get_incremented_build_number(version)
     )
+
+end
+
+##################################
+### smf_decrement_build_number ###
+##################################
+
+desc "Decrement the build number"
+private_lane :smf_decrement_build_number do |options|
+
+  if smf_should_build_number_be_reverted
+    UI.important("decrement build number")
+    version = smf_previous_build_number
+
+    increment_build_number(
+      build_number: version
+      )
+  end
 
 end
 
@@ -231,6 +246,35 @@ end
 ##############
 ### HELPER ###
 ##############
+
+def smf_set_should_revert_build_number(value)
+  newValue = value ? "true" : "false"
+  ENV[$SMF_SHOULD_REVERT_BUILD_NUMBER] = newValue
+end
+
+def smf_should_build_number_be_reverted
+  return ENV[$SMF_SHOULD_REVERT_BUILD_NUMBER] == "true"
+end
+
+def smf_current_build_number
+  # Variables
+  project_name = @smf_fastlane_config[:project][:project_name]
+  version = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
+  return version
+end
+
+def smf_store_current_build_number
+  version = smf_current_build_number
+  smf_set_previous_build_number(version)
+end
+
+def smf_set_previous_build_number(version)
+  ENV[$SMF_PREVIOUS_BUILD_NUMBER] = version
+end
+
+def smf_previous_build_number
+  return ENV[$SMF_PREVIOUS_BUILD_NUMBER]
+end
 
 def smf_can_unit_tests_be_performed
 

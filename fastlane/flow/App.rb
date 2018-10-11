@@ -19,9 +19,17 @@ private_lane :smf_deploy_app do |options|
 
     smf_set_build_variant(build_variant, false)
 
-    smf_deploy_build_variant(
-      bulk_deploy_params: bulk_deploy_params
+    begin
+      smf_deploy_build_variant(
+        bulk_deploy_params: bulk_deploy_params
       )
+    rescue => exception
+      
+      # Revert build number if needed
+      smf_decrement_build_number
+
+      UI.important("Warning: Building variant #{build_variant} failed! Exception #{exception}")
+    end
 
     if bulk_deploy_params != nil
       bulk_deploy_params[:index] += 1
@@ -72,7 +80,9 @@ private_lane :smf_deploy_build_variant do |options|
   
   # Increment the build number only if it should
   if smf_should_build_number_be_incremented
+    smf_store_current_build_number
     smf_increment_build_number
+    smf_set_should_revert_build_number(true)
   end
 
   # Check if the New Tag already exists
@@ -136,6 +146,7 @@ private_lane :smf_deploy_build_variant do |options|
   # Commit the build number if it was incremented
   if smf_should_build_number_be_incremented
     smf_commit_build_number
+    smf_set_should_revert_build_number(false)
   end
 
   # Build a Simulator build if wanted
