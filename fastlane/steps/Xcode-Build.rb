@@ -59,22 +59,22 @@ private_lane :smf_archive_ipa do |options|
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
-  #gym(
-  #  clean: should_clean_project,
-  #  workspace: "#{project_name}.xcworkspace",
-  #  scheme: scheme,
-  #  configuration: 'Release',
-  #  codesigning_identity: code_signing_identity,
-  #  output_directory: "build",
-  #  archive_path:"build/",
-  #  output_name: scheme,
-  #  include_symbols: true,
-  #  include_bitcode: (upload_itc && upload_bitcode),
-  #  export_method: export_method,
-  #  export_options: { iCloudContainerEnvironment: icloud_environment },
-  #  skip_package_ipa: skip_package_ipa,
-  #  xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
-  #  )
+  gym(
+    clean: should_clean_project,
+    workspace: "#{project_name}.xcworkspace",
+    scheme: scheme,
+    configuration: 'Release',
+    codesigning_identity: code_signing_identity,
+    output_directory: "build",
+    archive_path:"build/",
+    output_name: scheme,
+    include_symbols: true,
+    include_bitcode: (upload_itc && upload_bitcode),
+    export_method: export_method,
+    export_options: { iCloudContainerEnvironment: icloud_environment },
+    skip_package_ipa: skip_package_ipa,
+    xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
+    )
 
 end
 
@@ -403,11 +403,11 @@ def smf_download_provisioning_profiles_if_needed
     app_identifier = (use_wildcard_signing == true ? "*" : bundle_identifier)
 
     begin
-      #sigh(
-      #  adhoc: is_adhoc_build,
-      #  app_identifier: app_identifier,
-      #  readonly: true
-      #  )
+      sigh(
+        adhoc: is_adhoc_build,
+        app_identifier: app_identifier,
+        readonly: true
+        )
     rescue => exception
       raise "Couldn't download the provisioning profiles. The profile did either expire or there is no matching certificate available locally."
     end
@@ -416,11 +416,11 @@ def smf_download_provisioning_profiles_if_needed
       for extension_suffix in extensions_suffixes do
         
         begin
-          #sigh(
-          #  adhoc: is_adhoc_build,
-          #  app_identifier: "#{bundle_identifier}.#{extension_suffix}",
-          #  readonly: true
-          #  )
+          sigh(
+            adhoc: is_adhoc_build,
+            app_identifier: "#{bundle_identifier}.#{extension_suffix}",
+            readonly: true
+            )
         rescue
           UI.important("Seems like #{bundle_identifier}.#{extension_suffix} is not yet included in this project! Skipping sigh!")
           next   
