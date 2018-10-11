@@ -59,22 +59,22 @@ private_lane :smf_archive_ipa do |options|
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
-  gym(
-    clean: should_clean_project,
-    workspace: "#{project_name}.xcworkspace",
-    scheme: scheme,
-    configuration: 'Release',
-    codesigning_identity: code_signing_identity,
-    output_directory: "build",
-    archive_path:"build/",
-    output_name: scheme,
-    include_symbols: true,
-    include_bitcode: (upload_itc && upload_bitcode),
-    export_method: export_method,
-    export_options: { iCloudContainerEnvironment: icloud_environment },
-    skip_package_ipa: skip_package_ipa,
-    xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
-    )
+  #gym(
+  #  clean: should_clean_project,
+  #  workspace: "#{project_name}.xcworkspace",
+  #  scheme: scheme,
+  #  configuration: 'Release',
+  #  codesigning_identity: code_signing_identity,
+  #  output_directory: "build",
+  #  archive_path:"build/",
+  #  output_name: scheme,
+  #  include_symbols: true,
+  #  include_bitcode: (upload_itc && upload_bitcode),
+  #  export_method: export_method,
+  #  export_options: { iCloudContainerEnvironment: icloud_environment },
+  #  skip_package_ipa: skip_package_ipa,
+  #  xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
+  #  )
 
 end
 
