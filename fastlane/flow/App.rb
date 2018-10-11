@@ -80,6 +80,7 @@ private_lane :smf_deploy_build_variant do |options|
   
   # Increment the build number only if it should
   if smf_should_build_number_be_incremented
+    smf_store_current_build_number
     smf_increment_build_number
     smf_set_should_revert_build_number(true)
   end
