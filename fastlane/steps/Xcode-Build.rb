@@ -59,7 +59,6 @@ private_lane :smf_archive_ipa do |options|
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
-  exit(1)
   gym(
     clean: should_clean_project,
     workspace: "#{project_name}.xcworkspace",
@@ -402,7 +401,7 @@ def smf_download_provisioning_profiles_if_needed
 
     is_adhoc_build = @smf_build_variant.include? "adhoc"
     app_identifier = (use_wildcard_signing == true ? "*" : bundle_identifier)
-
+    exit(1)
     begin
       sigh(
         adhoc: is_adhoc_build,
