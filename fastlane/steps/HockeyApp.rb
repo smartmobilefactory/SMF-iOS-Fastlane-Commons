@@ -92,10 +92,10 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   # Upload the dmg instead of the app if sparkle is enabled
   app_path = smf_path_to_ipa_or_app
   if (build_variant_config[:use_sparkle])
-  app_path = app_path.sub(".app", ".dmg")
-     if ( ! File.exists?(app_path))
-        raise("DMG file #{app_path} does not exit. Nothing to upload.")
-     end
+    app_path = app_path.sub(".app", ".dmg")
+       if ( ! File.exists?(app_path))
+          raise("DMG file #{app_path} does not exit. Nothing to upload.")
+       end
   end
 
   # Get the release notes

@@ -390,11 +390,6 @@ def smf_path_to_ipa_or_app
   return app_path
 end
 
-def smf_path_to_dmg
-  # TODO_DMG_CREATION
-  # Construct the dmg path, check if it's existing and return the path
-end
-
 def smf_get_version_number
   project_name = @smf_fastlane_config[:project][:project_name]
   scheme = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:scheme]

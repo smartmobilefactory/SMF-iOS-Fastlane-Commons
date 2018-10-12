@@ -31,7 +31,6 @@ private_lane :smf_create_github_release do |options|
 
   if build_variant_config[:attach_build_outputs_to_github] == true
     # Zip the release build
-    # TODO_DMG_CREATION
     # Upload dmg instead of app if Sparkle is enabled
     path_to_ipa_or_app = smf_path_to_ipa_or_app
     ipa_or_app_filename = File.basename(path_to_ipa_or_app)
