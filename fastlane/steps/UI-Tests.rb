@@ -27,7 +27,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   end
 
 
-  if hipchat_channel
+  if hipchat_channel && smf_is_hipchat_enabled
     smf_send_hipchat_message(
       title: "Starting to perform UI tests for #{report_name} 🔎",
       message: "It may take multiple hours until the report is completed. Enjoy life and check for new notifications later...",
@@ -38,7 +38,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
 
   begin
 
-    if smf_is_jenkins_environment
+    if smf_is_keychain_enabled
       unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
     end
 
@@ -86,12 +86,14 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     notification_message = "#{notification_message}. See the build log for more details"
   end
 
+  if smf_is_hipchat_enabled
   smf_send_hipchat_message(
     title: "Done performing UI tests for #{report_name} ✍🏻",
     message: notification_message,
     type: "success",
     hipchat_channel: hipchat_channel
     )
+  end
 end
 
 ##############

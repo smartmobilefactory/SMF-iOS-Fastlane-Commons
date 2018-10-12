@@ -8,7 +8,7 @@
 
 before_all do |lane, options|
   puts "Inline options: #{options}"
-  smf_setup_fastlane_commons
+  smf_setup_fastlane_commons(options)
 end
 
 desc "Called on success"
@@ -31,7 +31,7 @@ error do |lane, exception|
   end
 end
 
-def smf_setup_fastlane_commons()
+def smf_setup_fastlane_commons(options)
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
 
@@ -39,11 +39,24 @@ def smf_setup_fastlane_commons()
   smf_set_mailgun_enabled(true)
   smf_set_hipchat_enabled(true)
   smf_set_keychain_enabled(true)
+  @build_type = options[:build_type]
+  puts "Build Type: #{@build_type}"
+  if @build_type == "local"
+    smf_set_keychain_enabled(false)
+  elsif @build_type == "quiet"
+    smf_set_mailgun_enabled(false)
+    smf_set_hipchat_enabled(false)
+  elsif @build_type == "develop"
+    smf_set_mailgun_enabled(false)
+    smf_set_hipchat_enabled(false)
+    smf_set_keychain_enabled(false)
+  end
 
   # Clone the Commons Repo
+  @fastlane_commons_dir_path = "#{smf_workspace_dir}/.fastlane-smf-commons"
+
   if @should_commons_repo_be_downloaded
     UI.message("Downloading Fastlane Commons Repo as it's not locally available yet")
-    @fastlane_commons_dir_path = "#{smf_workspace_dir}/.fastlane-smf-commons"
     smf_remove_fastlane_commons_repo
     smf_clone_fastlane_commons_repo
   else

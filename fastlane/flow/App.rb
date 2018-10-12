@@ -134,12 +134,14 @@ private_lane :smf_deploy_build_variant do |options|
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
+      if smf_is_hipchat_enabled
       smf_send_hipchat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
         type: "warning",
         exception: exception,
         hipchat_channel: "CI"
       )
+      end
     end
   end
 
@@ -175,12 +177,14 @@ private_lane :smf_deploy_build_variant do |options|
     rescue => exception
       UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
 
+      if smf_is_hipchat_enabled
       smf_send_hipchat_message(
         title: "Failed to send APN to SMF HockeyApp for #{smf_default_notification_release_title} 😢",
         type: "warning",
         exception: exception,
         hipchat_channel: "CI"
       )
+      end
     end
   end
 
@@ -260,13 +264,14 @@ private_lane :smf_deploy_build_variant do |options|
       exception = e
     end
 
-    smf_send_hipchat_message(
+    if smf_is_hipchat_enabled
+      smf_send_hipchat_message(
         title: notification_title,
         message: notification_message,
         type: notification_type,
         exception: exception,
         hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
       )
+    end
   end
-
 end

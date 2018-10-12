@@ -16,11 +16,11 @@ private_lane :smf_publish_pod do |options|
   generateMetaJSON = (build_variant_config[:generateMetaJSON].nil? ? true : build_variant_config[:generateMetaJSON])
 
   # Unlock keycahin to enable pull repo with https
-  if smf_is_jenkins_environment
+  if smf_is_keychain_enabled
     unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
   end
 
-  if smf_is_jenkins_environment
+  if smf_is_keychain_enabled
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
   
@@ -49,12 +49,14 @@ private_lane :smf_publish_pod do |options|
 
       project_name = project_config[:project_name]
 
+      if smf_is_hipchat_enabled
       smf_send_hipchat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
         type: "error",
         exception: exception,
         hipchat_channel: "CI"
       )
+      end
       next
     end
   end
@@ -124,12 +126,14 @@ private_lane :smf_publish_pod do |options|
   begin
     sh "pod repo update"    
   rescue => exception
+    if smf_is_hipchat_enabled
     smf_send_hipchat_message(
         title: "Failed to update the specs repo after publishing the Pod #{smf_default_notification_release_title} 😢",
         type: "warning",
         exception: exception,
         hipchat_channel: "CI"
       )
+    end
   end
 
 end
