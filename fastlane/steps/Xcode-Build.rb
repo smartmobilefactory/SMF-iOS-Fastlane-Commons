@@ -53,6 +53,8 @@ private_lane :smf_archive_ipa do |options|
 
   code_signing_identity = build_variant_config[:code_signing_identity]
 
+  use_sparkle = (build_variant_config[:use_sparkle].nil? ? false : build_variant_config[:use_sparkle])
+
   smf_download_provisioning_profiles_if_needed
 
   if smf_is_jenkins_environment
@@ -76,6 +78,9 @@ private_lane :smf_archive_ipa do |options|
     xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
     )
 
+  if use_sparkle
+    smf_create_dmg_from_app
+  end
 end
 
 ###############################
@@ -346,6 +351,22 @@ def smf_is_build_variant_a_decoupled_ui_test
   return is_ui_test
 end
 
+def smf_create_dmg_from_app
+
+  if ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] != "mac"
+    raise "Wrong platform configuration: dmg's are only created for macOS apps."
+  end
+
+  # Variables
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  code_signing_identity = build_variant_config["team_id".to_sym]
+  app_path = smf_path_to_ipa_or_app
+
+  # Create the dmg with the script and store it in the same directory as the app
+  sh "#{@fastlane_commons_dir_path}/tools/create_dmg.sh -p #{app_path} -ci #{code_signing_identity}"
+
+end
+
 def smf_path_to_ipa_or_app
   
   # Variables
@@ -354,6 +375,9 @@ def smf_path_to_ipa_or_app
   escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
 
   app_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.zip"
+  if ( ! File.exists?(app_path))
+     app_path =  Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app"
+  end
 
   UI.message("Constructed path \"#{app_path}\" from filename \"#{escaped_filename}\"")
 

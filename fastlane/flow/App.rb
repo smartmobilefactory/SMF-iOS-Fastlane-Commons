@@ -184,6 +184,22 @@ private_lane :smf_deploy_build_variant do |options|
     end
   end
 
+  if (build_variant_config[:use_sparkle])
+    # Create appcast
+    sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
+    sparkle_private_key = ENV["CUSTOM_CERTIFICATES"] + "/" + sparkle_code_signing_identity
+    update_dir = "#{smf_workspace_dir}/build/"
+    hockey_download_link = lane_context[SharedValues::HOCKEY_BUILD_INFORMATION]["build_url"]
+    sh "#{@fastlane_commons_dir_path}/tools/generate_appcast -f #{sparkle_private_key} #{update_dir} #{hockey_download_link}"
+
+    # Upload appcast
+    access_key = ENV["SMF_SPARKLE_S3_ACCESS_KEY"]
+    secret_key = ENV["SMF_SPARKLE_S3_SECRET_ACCESS_KEY"]
+    sparkle_s3aws_bucket = build_variant_config["sparkle_s3aws_bucket".to_sym]
+    directory = build_variant_config["scheme".to_sym]
+    sh "#{@fastlane_commons_dir_path}/tools/upload2aws.sh -f #{update_dir}/appcast.xml -a #{access_key} -s #{secret_key} -b #{sparkle_s3aws_bucket} -d #{directory}"
+  end
+
   tag = smf_add_git_tag
 
   smf_git_pull
