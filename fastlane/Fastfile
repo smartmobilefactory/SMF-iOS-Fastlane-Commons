@@ -39,18 +39,13 @@ def smf_setup_fastlane_commons(options)
   smf_set_mailgun_enabled(true)
   smf_set_hipchat_enabled(true)
   smf_set_keychain_enabled(true)
-  @build_type = options[:build_type]
-  puts "Build Type: #{@build_type}"
-  if @build_type == "local"
-    smf_set_keychain_enabled(false)
-  elsif @build_type == "quiet"
-    smf_set_mailgun_enabled(false)
-    smf_set_hipchat_enabled(false)
-  elsif @build_type == "develop"
-    smf_set_mailgun_enabled(false)
-    smf_set_hipchat_enabled(false)
-    smf_set_keychain_enabled(false)
-  end
+
+  # Override build type options if set in Config.json
+  smf_override_build_type_options(options)
+
+  # Override build type options by inline
+  build_type = options[:build_type]
+  smf_override_build_type_options_by_type(build_type)
 
   # Clone the Commons Repo
   @fastlane_commons_dir_path = "#{smf_workspace_dir}/.fastlane-smf-commons"
@@ -179,13 +174,46 @@ end
 ### Helper (needed without commons repo available)###
 #####################################################
 
+def smf_override_build_type_options(options)
+  build_variant = options[:build_variant]
+  smf_build_variant = build_variant.downcase
+  smf_build_variant_sym = smf_build_variant.to_sym
+  build_variant_config = @smf_fastlane_config[:build_variants][smf_build_variant_sym]
+  
+  is_mailgun_enabled = (build_variant_config[:mailgun_enabled].nil? ? true : build_variant_config[:mailgun_enabled])
+  is_hipchat_enabled = (build_variant_config[:hipchat_enabled].nil? ? true : build_variant_config[:hipchat_enabled])
+  is_keychain_enabled = (build_variant_config[:keychain_enabled].nil? ? true : build_variant_config[:keychain_enabled])
+
+  puts "Overriding build type options:\n mailgun_enabled: #{is_mailgun_enabled}\n hipchat_enabled: #{is_hipchat_enabled}\n keychain_enabled: #{is_keychain_enabled}"
+  
+  smf_set_mailgun_enabled(is_mailgun_enabled)
+  smf_set_hipchat_enabled(is_hipchat_enabled)
+  smf_set_keychain_enabled(is_keychain_enabled)
+end
+
+def smf_override_build_type_options_by_type(build_type)
+  if not build_type.nil?
+    puts "Overriding build type options with build type: #{build_type}"
+    if build_type == "local"
+      smf_set_keychain_enabled(false)
+    elsif build_type == "quiet"
+      smf_set_mailgun_enabled(false)
+      smf_set_hipchat_enabled(false)
+    elsif build_type == "develop"
+      smf_set_mailgun_enabled(false)
+      smf_set_hipchat_enabled(false)
+      smf_set_keychain_enabled(false)
+    end
+  end
+end
+
 def smf_is_jenkins_environment
   return ENV["JENKINS_URL"]
 end
 
 def smf_set_mailgun_enabled(value)
-  @newValue = value ? "true" : "false"
-  return ENV["SMF_IS_MAILGUN_ENABLED"] = @newValue
+  newValue = value ? "true" : "false"
+  return ENV["SMF_IS_MAILGUN_ENABLED"] = newValue
 end
 
 def smf_is_mailgun_enabled
@@ -193,8 +221,8 @@ def smf_is_mailgun_enabled
 end
 
 def smf_set_hipchat_enabled(value)
-  @newValue = value ? "true" : "false"
-  return ENV["SMF_IS_HIPCHAT_ENABLED"] = @newValue
+  newValue = value ? "true" : "false"
+  return ENV["SMF_IS_HIPCHAT_ENABLED"] = newValue
 end
 
 def smf_is_hipchat_enabled
@@ -202,8 +230,8 @@ def smf_is_hipchat_enabled
 end
 
 def smf_set_keychain_enabled(value)
-  @newValue = value ? "true" : "false"
-  return ENV["SMF_IS_KEYCHAIN_ENABLED"] = @newValue
+  newValue = value ? "true" : "false"
+  return ENV["SMF_IS_KEYCHAIN_ENABLED"] = newValue
 end
 
 def smf_is_keychain_enabled
