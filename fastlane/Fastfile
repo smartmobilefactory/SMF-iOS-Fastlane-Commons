@@ -56,6 +56,7 @@ def smf_setup_fastlane_commons()
   import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
 
   @smf_original_platform = ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]
+  puts "Original Platform #{@smf_original_platform}"
 end
 
 ##############
