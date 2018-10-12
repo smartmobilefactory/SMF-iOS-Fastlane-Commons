@@ -6,7 +6,8 @@
 ### Lifecycle ###
 #################
 
-before_all do
+before_all do |lane, options|
+  puts "Inline options: #{options}"
   smf_setup_fastlane_commons
 end
 
@@ -33,6 +34,11 @@ end
 def smf_setup_fastlane_commons()
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
+
+  # Set default values for mailgun, hipchat and keychain
+  smf_set_mailgun_enabled(true)
+  smf_set_hipchat_enabled(true)
+  smf_set_keychain_enabled(true)
 
   # Clone the Commons Repo
   if @should_commons_repo_be_downloaded
@@ -161,6 +167,33 @@ end
 
 def smf_is_jenkins_environment
   return ENV["JENKINS_URL"]
+end
+
+def smf_set_mailgun_enabled(value)
+  @newValue = value ? "true" : "false"
+  return ENV["SMF_IS_MAILGUN_ENABLED"] = @newValue
+end
+
+def smf_is_mailgun_enabled
+  return ENV["SMF_IS_MAILGUN_ENABLED"] == "true"
+end
+
+def smf_set_hipchat_enabled(value)
+  @newValue = value ? "true" : "false"
+  return ENV["SMF_IS_HIPCHAT_ENABLED"] = @newValue
+end
+
+def smf_is_hipchat_enabled
+  return ENV["SMF_IS_HIPCHAT_ENABLED"] == "true"
+end
+
+def smf_set_keychain_enabled(value)
+  @newValue = value ? "true" : "false"
+  return ENV["SMF_IS_KEYCHAIN_ENABLED"] = @newValue
+end
+
+def smf_is_keychain_enabled
+  return ENV["SMF_IS_KEYCHAIN_ENABLED"] == "true"
 end
 
 def smf_workspace_dir
