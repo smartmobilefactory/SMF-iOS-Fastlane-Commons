@@ -96,7 +96,7 @@ private_lane :smf_send_deploy_success_notifications do |options|
     )
   end
 
-  if hipchat_channel && smf_is_hipchat_enabled
+  if hipchat_channel
     smf_send_hipchat_message(
       title: title,
       message: ENV[$SMF_CHANGELOG_ENV_KEY],
@@ -156,7 +156,7 @@ private_lane :smf_handle_exception do |options|
     )
   end
 
-  if hipchat_channel && smf_is_hipchat_enabled
+  if hipchat_channel
     smf_send_hipchat_message(
       title: title,
       message: message,

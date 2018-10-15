@@ -90,7 +90,6 @@ private_lane :smf_itunes_precheck do |options|
     )
     end
 
-    if smf_is_hipchat_enabled
     smf_send_hipchat_message(
       title: title,
       message: message,
@@ -98,7 +97,6 @@ private_lane :smf_itunes_precheck do |options|
       exception: exception,
       hipchat_channel: hipchat_channel
       )
-    end
   end
 end
 

@@ -14,7 +14,6 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
     rescue => e
       UI.error("Failed to sync Strings with PhraseApp: #{e.message}")
 
-      if smf_is_hipchat_enabled
       smf_send_hipchat_message(
         title: "Failed to sync Strings with PhraseApp for #{smf_default_notification_release_title} 😢",
         message: "The build job will continue but won't contain updated translations!",
@@ -22,7 +21,6 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
         type: "warning",
         hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
       )
-      end
     end
   else
     UI.important("String are not synced with PhraseApp as the build variant didn't declare a \"phrase_app_script\"")
