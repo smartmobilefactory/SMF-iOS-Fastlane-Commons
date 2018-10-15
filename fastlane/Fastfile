@@ -120,13 +120,18 @@ def smf_set_build_variant(build_variant, reset_build_variant_array = true)
   if reset_build_variant_array
     smf_set_build_variants_array(nil)
   end
+  
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
-  if @smf_fastlane_config[:build_variants][@smf_build_variant_sym] == nil
+  if build_variant_config == nil
     raise "Error: build variant \"#{@smf_build_variant}\" isn't declared in the configuration file."
   end
 
+  # Override build type options if set in Config.json
+  smf_override_build_type_by_variant_config(build_variant_config)
+
   # Modify the platform if needed
-  platform = @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:platform]
+  platform = build_variant_config[:platform]
   if platform != nil
     # Change the platform to the declared one
     ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] = platform
@@ -174,12 +179,7 @@ end
 ### Helper (needed without commons repo available)###
 #####################################################
 
-def smf_override_build_type_options(options)
-  build_variant = options[:build_variant]
-  smf_build_variant = build_variant.downcase
-  smf_build_variant_sym = smf_build_variant.to_sym
-  build_variant_config = @smf_fastlane_config[:build_variants][smf_build_variant_sym]
-  
+def smf_override_build_type_options_by_variant_config(build_variant_config)
   is_mailgun_enabled = (build_variant_config[:mailgun_enabled].nil? ? true : build_variant_config[:mailgun_enabled])
   is_hipchat_enabled = (build_variant_config[:hipchat_enabled].nil? ? true : build_variant_config[:hipchat_enabled])
   is_keychain_enabled = (build_variant_config[:keychain_enabled].nil? ? true : build_variant_config[:keychain_enabled])
@@ -189,6 +189,14 @@ def smf_override_build_type_options(options)
   smf_set_mailgun_enabled(is_mailgun_enabled)
   smf_set_hipchat_enabled(is_hipchat_enabled)
   smf_set_keychain_enabled(is_keychain_enabled)
+end
+
+def smf_override_build_type_options(options)
+  build_variant = options[:build_variant]
+  smf_build_variant = build_variant.downcase
+  smf_build_variant_sym = smf_build_variant.to_sym
+  build_variant_config = @smf_fastlane_config[:build_variants][smf_build_variant_sym]
+  smf_override_build_type_options_by_variant_config(build_variant_config) 
 end
 
 def smf_override_build_type_options_by_type(build_type)
