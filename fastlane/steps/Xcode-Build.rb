@@ -353,6 +353,7 @@ def smf_download_provisioning_profiles_if_needed
 
     if smf_is_jenkins_environment
       unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+      unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
     end
 
     is_adhoc_build = @smf_build_variant.include? "adhoc"
