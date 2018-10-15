@@ -29,6 +29,12 @@ private_lane :smf_deploy_app do |options|
       smf_decrement_build_number
 
       UI.important("Warning: Building variant #{build_variant} failed! Exception #{exception}")
+
+      if @smf_set_should_send_deploy_notifications == true || @smf_set_should_send_build_job_failure_notifications == true
+        smf_handle_exception(
+          exception: exception,
+        )
+      end
     end
 
     if bulk_deploy_params != nil
