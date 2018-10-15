@@ -88,13 +88,11 @@ private_lane :smf_send_deploy_success_notifications do |options|
 
   title = "Built #{smf_default_notification_release_title} 🎉"
 
-  if smf_is_mailgun_enabled
   smf_send_mail_to_contributors(
     title: title,
     success: true,
     app_link: app_link
     )
-  end
 
   if hipchat_channel
     smf_send_hipchat_message(
@@ -147,14 +145,12 @@ private_lane :smf_handle_exception do |options|
     title = "Failed to build #{smf_default_notification_release_title} 😢"
   end 
 
-  if smf_is_mailgun_enabled
   smf_send_mail_to_contributors(
     title: title,
     success: false,
     message: message,
     exception_message: "#{exception.message}"
     )
-  end
 
   if hipchat_channel
     smf_send_hipchat_message(

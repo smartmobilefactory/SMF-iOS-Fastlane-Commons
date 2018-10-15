@@ -177,6 +177,9 @@ end
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
 private_lane :smf_send_mail do |options|
 
+  # Skip sending if mailgun is disabled
+  return unless smf_is_mailgun_enabled
+
   # Parameter
   title = options[:title]
   message = (options[:message].nil? ? "" : options[:message])
