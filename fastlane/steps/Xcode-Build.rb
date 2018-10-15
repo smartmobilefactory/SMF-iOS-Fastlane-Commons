@@ -297,6 +297,9 @@ def smf_can_unit_tests_be_performed
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
 
+  use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : "Release"
+
   UI.important("Checking whether the unit tests with the scheme \"#{scheme}\" can be performed.")
 
   destination = (ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] == "mac" ? "platform=macOS,arch=x86_64" : nil)
@@ -308,6 +311,7 @@ def smf_can_unit_tests_be_performed
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
     destination: destination,
+    configuration: xcconfig_name,
     clean: false,
     skip_build: true,
     xcargs: "-dry-run"
