@@ -42,6 +42,10 @@ private_lane :smf_archive_ipa do |options|
 
   upload_itc = (build_variant_config[:upload_itc].nil? ? false : build_variant_config[:upload_itc])
   upload_bitcode = (build_variant_config[:upload_bitcode].nil? ? true : build_variant_config[:upload_bitcode])
+
+  use_xcconfig = build_variant_config[:use_xcconfig].nil? ? false : build_variant_config[:use_xcconfig]
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : "Release"
+  output_name = use_xcconfig ? "#{scheme}-#{xcconfig_name}" : scheme
   
   export_method = (build_variant_config[:export_method].nil? ? nil : build_variant_config[:export_method])
   icloud_environment = (build_variant_config[:icloud_environment].nil? ? "Development" : build_variant_config[:icloud_environment])
@@ -65,11 +69,11 @@ private_lane :smf_archive_ipa do |options|
     clean: should_clean_project,
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
-    configuration: 'Release',
+    configuration: xcconfig_name,
     codesigning_identity: code_signing_identity,
     output_directory: "build",
     archive_path:"build/",
-    output_name: scheme,
+    output_name: output_name,
     include_symbols: true,
     include_bitcode: (upload_itc && upload_bitcode),
     export_method: export_method,
@@ -121,6 +125,8 @@ private_lane :smf_perform_unit_tests do |options|
   project_name = @smf_fastlane_config[:project][:project_name]
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   device = build_variant_config["tests.device_to_test_against".to_sym]
+  use_xcconfig = build_variant_config[:use_xcconfig].nil? ? false : build_variant_config[:use_xcconfig]
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : "Release"
 
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
@@ -137,6 +143,7 @@ private_lane :smf_perform_unit_tests do |options|
     clean: false,
     device: device,
     destination: destination,
+    configuration: xcconfig_name,
     code_coverage: true,
     output_types: "html,junit,json-compilation-database",
     output_files: "report.html,report.junit,report.json"
