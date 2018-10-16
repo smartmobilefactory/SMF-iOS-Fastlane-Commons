@@ -126,7 +126,7 @@ private_lane :smf_perform_unit_tests do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   device = build_variant_config["tests.device_to_test_against".to_sym]
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
-  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : nil
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : "Release"
 
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
@@ -137,17 +137,30 @@ private_lane :smf_perform_unit_tests do |options|
 
   UI.message("Use destination \"#{destination}\" for platform \"#{ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]}\"")
 
-  scan(
-    workspace: "#{project_name}.xcworkspace",
-    scheme: scheme,
-    clean: true,
-    device: device,
-    destination: destination,
-    configuration: xcconfig_name,
-    code_coverage: true,
-    output_types: "html,junit,json-compilation-database",
-    output_files: "report.html,report.junit,report.json"
+  if use_xcconfig
+    scan(
+      workspace: "#{project_name}.xcworkspace",
+      scheme: scheme,
+      clean: true,
+      device: device,
+      destination: destination,
+      configuration: xcconfig_name,
+      code_coverage: true,
+      output_types: "html,junit,json-compilation-database",
+      output_files: "report.html,report.junit,report.json"
     )
+  elsif
+    scan(
+      workspace: "#{project_name}.xcworkspace",
+      scheme: scheme,
+      clean: true,
+      device: device,
+      destination: destination,
+      code_coverage: true,
+      output_types: "html,junit,json-compilation-database",
+      output_files: "report.html,report.junit,report.json"
+    )
+  end
 
   ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY] = "true"
 
@@ -298,7 +311,7 @@ def smf_can_unit_tests_be_performed
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
 
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
-  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : nil
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : "Release"
 
   UI.important("Checking whether the unit tests with the scheme \"#{scheme}\" can be performed.")
 
@@ -307,15 +320,26 @@ def smf_can_unit_tests_be_performed
   UI.message("Use destination \"#{destination}\" for platform \"#{ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]}\"")
 
   begin
-    scan(
-      workspace: "#{project_name}.xcworkspace",
-      scheme: scheme,
-      destination: destination,
-      configuration: xcconfig_name,
-      clean: true,
-      skip_build: true,
-      xcargs: "-dry-run"
-    )
+    if use_xcconfig
+      scan(
+        workspace: "#{project_name}.xcworkspace",
+        scheme: scheme,
+        destination: destination,
+        configuration: xcconfig_name,
+        clean: true,
+        skip_build: true,
+        xcargs: "-dry-run"
+      )
+    elsif
+      scan(
+        workspace: "#{project_name}.xcworkspace",
+        scheme: scheme,
+        destination: destination,
+        clean: true,
+        skip_build: true,
+        xcargs: "-dry-run"
+      )
+    end
 
     UI.important("Unit tests can be performed")
     
