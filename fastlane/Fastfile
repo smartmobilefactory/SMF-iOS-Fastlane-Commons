@@ -36,9 +36,12 @@ def smf_setup_fastlane_commons(options)
   smf_load_fastlane_config
 
   # Set default values for mailgun, hipchat and keychain
-  smf_set_mailgun_enabled(true)
-  smf_set_hipchat_enabled(true)
-  smf_set_keychain_enabled(true)
+  # if we are on the CI
+  if smf_is_jenkins_environment
+    smf_set_mailgun_enabled(true)
+    smf_set_hipchat_enabled(true)
+    smf_set_keychain_enabled(true)
+  end
 
   # Override build type options if set in Config.json
   smf_override_build_type_options(options)
