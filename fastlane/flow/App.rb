@@ -260,7 +260,7 @@ private_lane :smf_deploy_build_variant do |options|
       exception = e
     end
 
-    smf_send_hipchat_message(
+      smf_send_hipchat_message(
         title: notification_title,
         message: notification_message,
         type: notification_type,
@@ -268,5 +268,4 @@ private_lane :smf_deploy_build_variant do |options|
         hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
       )
   end
-
 end

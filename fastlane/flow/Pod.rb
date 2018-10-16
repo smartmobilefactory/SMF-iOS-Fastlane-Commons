@@ -16,11 +16,11 @@ private_lane :smf_publish_pod do |options|
   generateMetaJSON = (build_variant_config[:generateMetaJSON].nil? ? true : build_variant_config[:generateMetaJSON])
 
   # Unlock keycahin to enable pull repo with https
-  if smf_is_jenkins_environment
+  if smf_is_keychain_enabled
     unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
   end
 
-  if smf_is_jenkins_environment
+  if smf_is_keychain_enabled
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
   
