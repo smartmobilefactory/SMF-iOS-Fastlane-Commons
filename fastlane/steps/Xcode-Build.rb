@@ -61,7 +61,7 @@ private_lane :smf_archive_ipa do |options|
 
   smf_download_provisioning_profiles_if_needed
 
-  if smf_is_jenkins_environment
+  if smf_is_keychain_enabled
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
@@ -430,7 +430,7 @@ def smf_download_provisioning_profiles_if_needed
     # Set the Apple Team ID
     team_id apple_team_id
 
-    if smf_is_jenkins_environment
+    if smf_is_keychain_enabled
       unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
     end
 

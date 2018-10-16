@@ -11,6 +11,9 @@ fastlane_require 'json'
 desc "Sending a message to the given HipChat room"
 private_lane :smf_send_hipchat_message do |options|
 
+  # Skip sending if hipchat is disabled
+  return unless smf_is_hipchat_enabled
+
   # Parameter
   title = options[:title]
   message = options[:message]
@@ -173,6 +176,9 @@ end
 
 desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
 private_lane :smf_send_mail do |options|
+
+  # Skip sending if mailgun is disabled
+  return unless smf_is_mailgun_enabled
 
   # Parameter
   title = options[:title]
