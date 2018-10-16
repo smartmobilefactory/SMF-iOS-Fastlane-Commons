@@ -193,6 +193,8 @@ end
 
 def smf_override_build_type_options(options)
   build_variant = options[:build_variant]
+  return unless build_variant.nil? == false
+
   smf_build_variant = build_variant.downcase
   smf_build_variant_sym = smf_build_variant.to_sym
   build_variant_config = @smf_fastlane_config[:build_variants][smf_build_variant_sym]
