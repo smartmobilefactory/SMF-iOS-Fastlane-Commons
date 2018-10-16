@@ -140,7 +140,7 @@ private_lane :smf_perform_unit_tests do |options|
   scan(
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
-    clean: false,
+    clean: true,
     device: device,
     destination: destination,
     configuration: xcconfig_name,
@@ -312,7 +312,7 @@ def smf_can_unit_tests_be_performed
     scheme: scheme,
     destination: destination,
     configuration: xcconfig_name,
-    clean: false,
+    clean: true,
     skip_build: true,
     xcargs: "-dry-run"
     )
