@@ -123,7 +123,7 @@ def smf_set_build_variant(build_variant, reset_build_variant_array = true)
   end
 
   # Override build type options if set in Config.json
-  smf_override_build_type_by_variant_config(build_variant_config)
+  smf_override_build_type_options_by_variant_config(build_variant_config)
 
   # Modify the platform if needed
   platform = build_variant_config[:platform]
