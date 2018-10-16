@@ -126,7 +126,7 @@ private_lane :smf_perform_unit_tests do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   device = build_variant_config["tests.device_to_test_against".to_sym]
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
-  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : "Release"
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : nil
 
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
@@ -298,7 +298,7 @@ def smf_can_unit_tests_be_performed
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
 
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
-  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : "Release"
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : nil
 
   UI.important("Checking whether the unit tests with the scheme \"#{scheme}\" can be performed.")
 
@@ -308,13 +308,13 @@ def smf_can_unit_tests_be_performed
 
   begin
     scan(
-    workspace: "#{project_name}.xcworkspace",
-    scheme: scheme,
-    destination: destination,
-    configuration: xcconfig_name,
-    clean: false,
-    skip_build: true,
-    xcargs: "-dry-run"
+      workspace: "#{project_name}.xcworkspace",
+      scheme: scheme,
+      destination: destination,
+      configuration: xcconfig_name,
+      clean: false,
+      skip_build: true,
+      xcargs: "-dry-run"
     )
 
     UI.important("Unit tests can be performed")
