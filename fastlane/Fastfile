@@ -35,11 +35,6 @@ def smf_setup_fastlane_commons(options)
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
 
-  # Set default values for mailgun, hipchat and keychain
-  smf_set_mailgun_enabled(true)
-  smf_set_hipchat_enabled(true)
-  smf_set_keychain_enabled(true)
-
   # Override build type options if set in Config.json
   smf_override_build_type_options(options)
 
@@ -227,7 +222,7 @@ def smf_set_mailgun_enabled(value)
 end
 
 def smf_is_mailgun_enabled
-  return ENV[$SMF_IS_MAILGUN_ENABLED] == "true"
+  return ENV[$SMF_IS_MAILGUN_ENABLED].nil? ? true : ENV[$SMF_IS_MAILGUN_ENABLED] == "true"
 end
 
 def smf_set_hipchat_enabled(value)
@@ -236,7 +231,7 @@ def smf_set_hipchat_enabled(value)
 end
 
 def smf_is_hipchat_enabled
-  return ENV[$SMF_IS_HIPCHAT_ENABLED] == "true"
+  return ENV[$SMF_IS_HIPCHAT_ENABLED].nil? ? true : ENV[$SMF_IS_HIPCHAT_ENABLED] == "true"
 end
 
 def smf_set_keychain_enabled(value)
@@ -245,7 +240,7 @@ def smf_set_keychain_enabled(value)
 end
 
 def smf_is_keychain_enabled
-  return ENV[$SMF_IS_KEYCHAIN_ENABLED] == "true"
+  return ENV[$SMF_IS_KEYCHAIN_ENABLED].nil? ? true : ENV[$SMF_IS_KEYCHAIN_ENABLED] == "true"
 end
 
 def smf_workspace_dir
