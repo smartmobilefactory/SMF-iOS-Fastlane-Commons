@@ -39,7 +39,6 @@ def smf_setup_fastlane_commons(options)
   import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
   import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
   import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
-  import("#{@fastlane_commons_dir_path}/utils/Constants.rb")
 
   # Override build type options if set in Config.json
   smf_override_build_type_options(options)
