@@ -34,6 +34,12 @@ end
 def smf_setup_fastlane_commons(options)
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
+  
+# Import the splitted Fastlane classes
+  import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
+  import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
+  import("#{@fastlane_commons_dir_path}/utils/Constants.rb")
 
   # Override build type options if set in Config.json
   smf_override_build_type_options(options)
@@ -53,10 +59,6 @@ def smf_setup_fastlane_commons(options)
     UI.message("The Fastlane Commons Repo won't be downloaded as it's already available locally")
   end
 
-  # Import the splitted Fastlane classes
-  import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
-  import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
-  import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
 
   @smf_original_platform = ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]
   puts "Original Platform #{@smf_original_platform}"
