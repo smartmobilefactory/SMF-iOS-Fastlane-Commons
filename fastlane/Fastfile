@@ -36,6 +36,7 @@ def smf_setup_fastlane_commons(options)
   smf_load_fastlane_config
   
 # Import the splitted Fastlane classes
+  puts "DIR: #{@fastlane_commons_dir_path}"
   import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
   import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
   import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
