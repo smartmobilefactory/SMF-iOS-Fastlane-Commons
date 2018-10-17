@@ -34,14 +34,7 @@ end
 def smf_setup_fastlane_commons(options)
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
-
-  # Override build type options if set in Config.json
-  smf_override_build_type_options(options)
-
-  # Override build type options by inline
-  build_type = options[:build_type]
-  smf_override_build_type_options_by_type(build_type)
-
+  
   # Clone the Commons Repo
   @fastlane_commons_dir_path = "#{smf_workspace_dir}/.fastlane-smf-commons"
 
@@ -57,6 +50,13 @@ def smf_setup_fastlane_commons(options)
   import_all "#{@fastlane_commons_dir_path}/fastlane/flow"
   import_all "#{@fastlane_commons_dir_path}/fastlane/steps"
   import_all "#{@fastlane_commons_dir_path}/fastlane/utils"
+
+  # Override build type options if set in Config.json
+  smf_override_build_type_options(options)
+
+  # Override build type options by inline
+  build_type = options[:build_type]
+  smf_override_build_type_options_by_type(build_type)
 
   @smf_original_platform = ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY]
   puts "Original Platform #{@smf_original_platform}"
