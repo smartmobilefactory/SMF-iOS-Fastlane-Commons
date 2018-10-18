@@ -31,7 +31,7 @@ error do |lane, exception|
   end
 end
 
-def smf_setup_fastlane_commons(options)
+def smf_setup_fastlane_commons(options = Hash.new)
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
   
