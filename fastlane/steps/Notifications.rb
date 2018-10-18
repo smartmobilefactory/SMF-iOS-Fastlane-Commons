@@ -25,6 +25,7 @@ private_lane :smf_send_hipchat_message do |options|
   exception = options[:exception]
   additional_html_entries = options[:additional_html_entries]
   fail_build_job_on_error = (options[:fail_build_job_on_error] == nil ? false : options[:additional_html_entries])
+  attachment_path = options[:attachment_path]
 
   type = options[:type]
 
@@ -118,6 +119,17 @@ private_lane :smf_send_hipchat_message do |options|
         include_html_header: false,
         from: "#{project_name} iOS CI"
         )
+
+      if attachment_path != nil
+        sh(
+          "curl", "-X", "POST",
+          "-H", "Authorization: Bearer #{ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY]}", 
+          "-H", "Content-Type:  multipart/related; boundary=boundary123456", 
+          "-F", "file=@#{attachment_path}",
+          "https://hipchat.com/v2/room/#{hipchat_channel}/share/file"
+        )
+      end
+      
     rescue => exception
       UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
       if fail_build_job_on_error
