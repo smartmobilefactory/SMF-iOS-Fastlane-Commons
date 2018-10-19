@@ -1,0 +1,22 @@
+_Note: This is a auto generated page. Do not modify it manually!_
+
+h1. Table of Contents
+
+{toc:printable=true|maxLevel=2|minLevel=2|class=bigpink|exclude=[1//2]|type=list|outline=clear|style=disc|numbering=false|include=.*}
+
+h2. RSS Feed
+
+GitHub provides a RSS Atom Feed which contains the newest release version of a repository.
+
+Use [^{{ rssFeedFilename }}] to import all the feeds from the used Pods into a RSS Reader App.
+
+The OPML file contains all used Pods which are hosted on GitHub.
+
+{{ noneGithubRepositorySection }}
+
+h2. Used Pods
+
+The table contains all used Pods of projects which are analyzed by MetaJSON.
+
+{{ podsTable }}
+

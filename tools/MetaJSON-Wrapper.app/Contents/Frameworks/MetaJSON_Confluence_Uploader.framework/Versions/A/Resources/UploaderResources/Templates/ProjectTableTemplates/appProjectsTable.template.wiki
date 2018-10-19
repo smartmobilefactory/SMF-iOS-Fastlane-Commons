@@ -1,0 +1,2 @@
+{% if apps %}{% if not single %}|| \# || Project {% endif %}|| Xcode || Language || Fastlane Jobs || CocoaPods || Pods Licenses || SwiftLint || MetaJSON || SMF-Commons || ATS || Bitcode || IDFA || Codebeat || CPCL || UI Optimization ||
+{% if not single %}{% for app in apps %}{{ app }}{% endfor %}{% else %}{{ apps.first }}{% endif %}{% endif %}

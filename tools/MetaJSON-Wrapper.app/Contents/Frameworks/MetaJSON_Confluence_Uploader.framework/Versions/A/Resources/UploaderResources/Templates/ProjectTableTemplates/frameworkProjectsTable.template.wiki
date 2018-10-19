@@ -1,0 +1,2 @@
+{% if frameworks %}{% if not single %}|| \# || Project {% endif %}|| Xcode || Language || Fastlane Jobs || CocoaPods || SwiftLint || MetaJSON || SMF-Commons || Codebeat || CPCL ||
+{% if not single %}{% for framework in frameworks %}{{ framework }}{% endfor %}{% else %}{{ frameworks.first }}{% endif %}{% endif %}

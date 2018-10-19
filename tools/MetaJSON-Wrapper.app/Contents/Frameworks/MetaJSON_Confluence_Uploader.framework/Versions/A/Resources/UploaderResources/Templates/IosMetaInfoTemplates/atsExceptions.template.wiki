@@ -1,0 +1,5 @@
+{% if atsExceptions %}h2. Application Transport Security (ATS): Exceptions
+
+|| PList || Highest level ||
+{% for exception in atsExceptions %}| {{ exception.plist }} | {{ exception.levelMarkup }} |
+{% endfor %}{% endif %}

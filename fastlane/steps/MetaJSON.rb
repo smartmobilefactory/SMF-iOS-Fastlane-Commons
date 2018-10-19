@@ -19,11 +19,11 @@ private_lane :smf_generate_meta_json do |options|
   if (build_variants_contains_whitelist.nil?) || (build_variants_contains_whitelist.any? { |whitelist_item| @smf_build_variant.include?(whitelist_item) })
     desc "Create the meta JSON files"
 
-    metajson = "#{@fastlane_commons_dir_path}/tools/metajson"
+    metajson = "#{@fastlane_commons_dir_path}/tools/MetaJSON-Wrapper.app/Contents/Frameworks/metajson"
     workspace_dir = smf_workspace_dir
     
     # Create and commit the MetaJSON files
-    sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch master --output \"#{workspace_dir}/.MetaJSON\"|| true"
+    sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch master --output \"#{workspace_dir}/.MetaJSON\" --verbose || true"
   end
 
 end

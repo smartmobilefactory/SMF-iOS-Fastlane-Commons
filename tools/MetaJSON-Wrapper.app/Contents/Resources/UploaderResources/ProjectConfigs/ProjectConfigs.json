@@ -1,0 +1,534 @@
+{
+	"confluence_server" : "https://smartmobilefactory.atlassian.net/wiki",
+	"overview_pages": [
+
+		{
+			"type"	: "CocoaPodsOverview",
+			"id"	: "151608452"
+		},
+		{
+			"type"	: "ProjectsOverview",
+			"id"	: "151608521"
+		}
+	],
+
+	"projects": {
+
+		"apps": [
+			{
+				"project_name"			: "Charite ACUD 2",
+				"project_short_name"	: "ACUD2",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Charite-ACUD-Swift-iOS",
+				"ios_meta_page_id"		: "152347069",
+				"codebeat_badge"		: "https://codebeat.co/badges/7a43c8e7-aa13-46e6-a433-6ff5e45282bc",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/charite-acud-swift-ios-master"
+			},
+			{
+				"project_name"			: "Coach Number One",
+				"project_short_name"	: "Coach",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/CoachNumberOne-iOS",
+				"ios_meta_page_id"		: "152474981",
+				"codebeat_badge"		: "https://codebeat.co/badges/30895546-9091-431d-9e08-29e7724f3962",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/coachnumberone-ios-master",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "Eismann",
+				"project_short_name"	: "Eismann",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Eismann-iOS",
+				"ios_meta_page_id"		: "152475071",
+				"codebeat_badge"		: "https://codebeat.co/badges/b9633602-5b24-49e1-8072-e2bc7ab6e9b9",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/eismann-ios-development"
+			},
+			{
+				"project_name"			: "HiDrive iOS",
+				"project_short_name"	: "HiDrive iOS",
+				"branch"				: "3.5.0/master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS",
+				"ios_meta_page_id"		: "152472132",
+				"codebeat_badge"		: "https://codebeat.co/badges/e1d1c22d-9a04-4aff-bd89-d57f57211851",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-development"
+			},
+			{
+				"project_name"			: "HiDrive UI-Tests",
+				"project_short_name"	: "HiDrive UI-Tests",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS-UITests",
+				"ios_meta_page_id"		: "237830371",
+				"codebeat_badge"		: "https://codebeat.co/badges/76781423-5f89-46f7-9a3a-b779be877591",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hidrive-ios-uitests-master"
+			},
+			{
+				"project_name"			: "BSR",
+				"project_short_name"	: "BSR",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/BSR-iOS",
+				"ios_meta_page_id"		: "152475179",
+				"codebeat_badge"		: "https://codebeat.co/badges/f4141b32-840d-42cb-9566-243735459e77",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/bsr-ios-master"
+			},
+			{
+				"project_name"			: "MagentaCLOUD iOS",
+				"project_short_name"	: "Magenta iOS",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/MagentaCLOUD-Swift-iOS",
+				"ios_meta_page_id"		: "152475311",
+				"codebeat_badge"		: "https://codebeat.co/badges/c7472c9f-691b-434d-b6a2-91e766edb3a8",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/magentacloud-swift-ios-development"
+			},
+			{
+				"project_name"			: "MagentaCLOUD UI-Tests",
+				"project_short_name"	: "Magenta UI-Tests",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/MagentaCLOUD-iOS-App-UITests",
+				"ios_meta_page_id"		: "338198603",
+				"codebeat_badge"		: "https://codebeat.co/badges/22396a4e-d141-4913-a264-3ce9e353e970",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-magentacloud-ios-app-uitests-master"
+			},
+			{
+				"project_name"			: "MagentaCLOUD macOS",
+				"project_short_name"	: "Magenta macOS",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/MagentaCLOUD-OSX",
+				"ios_meta_page_id"		: "221609988",
+				"codebeat_badge"		: "https://codebeat.co/badges/f60a5e46-eca8-45cf-a125-12aaad0ab7d8",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-magentacloud-osx-master"
+			},
+			{
+				"project_name"			: "German Design Award",
+				"project_short_name"	: "GDA",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/GermanDesignAward-iOS",
+				"ios_meta_page_id"		: "152475355",
+				"codebeat_badge"		: "https://codebeat.co/badges/6195efec-c5a3-477b-92a4-0f3e4bf5abfd",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/germandesignaward-ios-master"
+			},
+			{
+				"project_name"			: "Baur",
+				"project_short_name"	: "Baur",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Baur-iOS",
+				"ios_meta_page_id"		: "152475265",
+				"codebeat_badge"		: "https://codebeat.co/badges/49784ef0-3cad-4b73-be27-58b04eed6fee",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-baur-ios-master",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "Universal POS",
+				"project_short_name"	: "POS",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Universal-POS-iOS",
+				"ios_meta_page_id"		: "152475623",
+				"codebeat_badge"		: "https://codebeat.co/badges/8bbcd2c3-cd07-4b60-b63d-a84ffc013f01",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/universal-pos-ios-development"
+			},
+			{
+				"project_name"			: "Schneider Intercom",
+				"project_short_name"	: "SI",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Schneider-Intercom-iOS",
+				"ios_meta_page_id"		: "152475544",
+				"codebeat_badge"		: "https://codebeat.co/badges/7b267545-7b34-4c86-bb71-3b7abbba5c68",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/schneider-intercom-ios-master"
+			},
+			{
+				"project_name"			: "DBG Bibel",
+				"project_short_name"	: "DBG",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/DBG-iOS",
+				"ios_meta_page_id"		: "152475428",
+				"codebeat_badge"		: "https://codebeat.co/badges/52cd9426-b579-4adb-9550-e857c1108832",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/dbg-ios-development"
+			},
+			{
+				"project_name"			: "Wheelmap",
+				"project_short_name"	: "Wheelmap",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/wheelmap-iOS",
+				"ios_meta_page_id"		: "152475477",
+				"codebeat_badge"		: "https://codebeat.co/badges/1fd52a18-6a31-4ddc-986a-64fb822de6b8",
+				"codebeat_link"			: "https://codebeat.co/projects/github-com-smartmobilefactory-wheelmap-iphone2-master",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "ArtMapp",
+				"project_short_name"	: "ArtMapp",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/JAM-iOS",
+				"ios_meta_page_id"		: "153966892",
+				"codebeat_badge"		: "https://codebeat.co/badges/4534e5ea-aaa8-4538-9438-a8402a351d77",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-jam-ios-development"
+			},
+			{
+				"project_name"			: "Heinemann",
+				"project_short_name"	: "Heinemann",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Heinemann-iOS",
+				"ios_meta_page_id"		: "154274459",
+				"codebeat_badge"		: "https://codebeat.co/badges/1ee41b12-8796-4d4d-a917-48278bb1ec32",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/heinemann-ios-development",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "CityShopper",
+				"project_short_name"	: "CityShopper",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/CityShopper-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/86db99c1-7097-482e-aee0-fa582ecbf433",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/cityshopper-ios-master",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "DeutschlandRadio",
+				"project_short_name"	: "DRadio",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/DeutschlandRadio-iOS",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "Ferring",
+				"project_short_name"	: "Ferring",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Ferring-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/8d658f13-75c6-4cca-8616-7698184cdc47",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/ferring-ios-master",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "goDentis",
+				"project_short_name"	: "goDentis",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/goDentis-iOS",
+				"ios_meta_page_id"		: "181534794",
+				"codebeat_badge"		: "https://codebeat.co/badges/2003fe2d-1730-4f4d-a986-6894ddf4ef42",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/godentis-ios-master"
+			},
+			{
+				"project_name"			: "HandHelp",
+				"project_short_name"	: "HandHelp",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HandHelp-IOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/7a03c7ab-d0d1-429c-9db8-79a4f8cbe2f8",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/handhelp-ios-development"
+			},
+			{
+				"project_name"			: "Herder Beten",
+				"project_short_name"	: "Herder Beten",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HerderBeten-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/f1fd9f85-be64-456b-aa9b-adce87022d65",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-herderbeten-ios-development"
+			},
+			{
+				"project_name"			: "Minimax",
+				"project_short_name"	: "Minimax",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Minimax-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/f1390b7f-ff99-4a43-af4d-ed1e09238fd3",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-minimax-ios-development"
+			},
+			{
+				"project_name"			: "PONS Bildwoerterbuch",
+				"project_short_name"	: "PONS BWB",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Pons-Bildwoerterbuch-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/6fb4d2f9-7a34-471d-bcb8-0de13e2d166e",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-pons-bildwoerterbuch-ios-master"
+			},
+			{
+				"project_name"			: "RKITouren",
+				"project_short_name"	: "RKI",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/RKITouren-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/cdd12497-9d9e-44d1-87e2-2fab5590c87a",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-rkitouren-ios-development"
+			},
+			{
+				"project_name"			: "WhiteWall",
+				"project_short_name"	: "WhiteWall",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/WhiteWall",
+				"codebeat_badge"		: "https://codebeat.co/badges/b8f8b590-6f30-4e11-8e78-b0f4af2b0202",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/whitewall-master",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "Herder Bibel",
+				"project_short_name"	: "Herder Bibel",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Herder-Bibel-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/f5d72b03-6551-42b3-959e-7ca84b6c172e",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-herder-bibel-ios-development"
+			},
+			{
+				"project_name"			: "Huethig",
+				"project_short_name"	: "Huethig",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Huethig-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/e7def25e-ca6e-4d45-baa1-4ccba188fab8",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-huethig-ios-development"
+			},
+			{
+				"project_name"			: "HockeyApp",
+				"project_short_name"	: "HockeyApp",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HockeyApp-iOS",
+				"codebeat_badge"		: "https://codebeat.co/badges/df822c4e-76e6-4130-ae6f-2d6f703b5daf",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hockeyapp-ios-master"
+			},
+			{
+				"project_name"			: "PS Team",
+				"project_short_name"	: "PS Team",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/PS-Team-iOS",
+				"ios_meta_page_id"		: "154930602",
+				"codebeat_badge"		: "https://codebeat.co/badges/6dae85f9-537e-44e1-b72a-ab96d620da6c",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-ps-team-ios-master"
+			},
+			{
+				"project_name"			: "Urbia BabyApp",
+				"project_short_name"	: "Urbia Baby",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Urbia-BabyApp-iOS",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "PM Magazin",
+				"project_short_name"	: "PM",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/GrunerJahrPM-iOS",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "Corporate Benefits",
+				"project_short_name"	: "CB",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/corporate-benefits-iOS",
+				"ios_meta_page_id"		: "156357064",
+				"codebeat_badge"		: "https://codebeat.co/badges/517f732b-f690-4eb2-a7dc-7ad69467076b",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-corporate-benefits-ios-master"
+			},
+			{
+				"project_name"			: "Normfest",
+				"project_short_name"	: "Normfest",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Normfest-iOS-App",
+				"ios_meta_page_id"		: "173080589",
+				"codebeat_badge"		: "https://codebeat.co/badges/aa65d0a2-013f-419b-91c2-e6bceb48822e",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-normfest-ios-app-master"
+			},
+			{
+				"project_name"			: "SelfieStar",
+				"project_short_name"	: "Selfie",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/SelfieStar-iOS-App",
+				"ios_meta_page_id"		: "174456876",
+				"codebeat_badge"		: "https://codebeat.co/badges/e4570a1e-ff63-49e7-801a-c1102ec9b8d1",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-selfiestar-ios-app-master"
+			},
+			{
+				"project_name"			: "Ergo: Meine Zahn-App",
+				"project_short_name"	: "Ergo Zahn",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/MeineZahnApp-iOS",
+				"ios_meta_page_id"		: "181633062",
+				"codebeat_badge"		: "https://codebeat.co/badges/bacaec1c-f596-496b-ab70-a8a9a62fea2f",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-meinezahnapp-ios-development"
+			}
+		],
+		"frameworks": [
+			{
+				"project_name"			: "HiDrive API Framework",
+				"project_short_name"	: "HiDrive API",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS-API-Framework",
+				"ios_meta_page_id"		: "154535239",
+				"codebeat_badge"		: "https://codebeat.co/badges/290ed09b-9ea5-4b29-b945-b7284631bc21",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-api-framework-development"
+			},
+			{
+				"project_name"			: "HiDrive Settings Framework",
+				"project_short_name"	: "HiDrive Settings",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Settings-Framework",
+				"ios_meta_page_id"		: "154535367",
+				"codebeat_badge"		: "https://codebeat.co/badges/f418c032-5b40-4b0e-94fd-fdc640b522b3",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-settings-framework-development"
+			},
+			{
+				"project_name"			: "HiDrive Caching Framework",
+				"project_short_name"	: "HiDrive Caching",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Caching-Framework",
+				"ios_meta_page_id"		: "154535301",
+				"codebeat_badge"		: "https://codebeat.co/badges/0aef8171-b190-4195-a28f-0b78074862c6",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-caching-framework-development"
+			},
+			{
+				"project_name"			: "HiDrive Crypto Framework",
+				"project_short_name"	: "HiDrive Crpyto",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Crypto-Framework",
+				"ios_meta_page_id"		: "197591287",
+				"codebeat_badge"		: "https://codebeat.co/badges/69354d79-c706-499d-a31f-4eb0e0645cf6",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hidrive-ios-crypto-framework-development"
+			},
+			{
+				"project_name"			: "HiDrive Backup Framework",
+				"project_short_name"	: "HiDrive Backup",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Backup-Framework",
+				"ios_meta_page_id"		: "154535529",
+				"codebeat_badge"		: "https://codebeat.co/badges/5d02810c-b997-4a2d-a358-6f85114e4966",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-backup-framework-development"
+			},
+			{
+				"project_name"			: "HiDrive Business Framework",
+				"project_short_name"	: "HiDrive Business",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Business-Framework",
+				"ios_meta_page_id"		: "154535169",
+				"codebeat_badge"		: "https://codebeat.co/badges/2114e423-b250-493c-8717-58b636710ede",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-business-framework-development"
+			},
+			{
+				"project_name"			: "Baur API Framework",
+				"project_short_name"	: "Baur API",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Baur-iOS-API-Framework",
+				"ios_meta_page_id"		: "154536205",
+				"codebeat_badge"		: "https://codebeat.co/badges/d9b2a1d7-5ee6-44b4-8e21-e4e2419f0083",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-baur-ios-api-framework-development",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "Baur Business Framework",
+				"project_short_name"	: "Baur Business",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Baur-iOS-Business-Framework",
+				"ios_meta_page_id"		: "154536142",
+				"codebeat_badge"		: "https://codebeat.co/badges/3dfa20c2-f45f-4224-af71-3668f62fc0b8",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-baur-ios-business-framework-development",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "Baur Caching Framework",
+				"project_short_name"	: "Baur Caching",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Baur-iOS-Caching-Framework",
+				"ios_meta_page_id"		: "155687447",
+				"codebeat_badge"		: "https://codebeat.co/badges/8b4bf788-0dd9-46bd-a0d4-4e59ab324dff",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-baur-ios-caching-framework-development",
+				"is_outdated"			: true
+			},
+			{
+				"project_name"			: "DIG API Framework",
+				"project_short_name"	: "DIG API",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/DIG-iOS-Api-Framework",
+				"ios_meta_page_id"		: "172359871",
+				"codebeat_badge"		: "https://codebeat.co/badges/23458ae1-81e7-42c8-acba-2536ad9a8204",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-dig-ios-api-framework-master"
+			},
+			{
+				"project_name"			: "DIG Business Framework",
+				"project_short_name"	: "DIG Business",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/DIG-iOS-Business-Framework",
+				"ios_meta_page_id"		: "172425394",
+				"codebeat_badge"		: "https://codebeat.co/badges/0f5c1735-627a-4b5e-af5a-63fcd48678ef",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-dig-ios-business-framework-master"
+			},
+			{
+				"project_name"			: "DIG Caching Framework",
+				"project_short_name"	: "DIG Caching",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/DIG-iOS-Caching-Framework",
+				"ios_meta_page_id"		: "172425398",
+				"codebeat_badge"		: "https://codebeat.co/badges/accba95e-de67-4efe-94bc-77f1c811aa4c",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-dig-ios-caching-framework-master"
+			},
+			{
+				"project_name"			: "SelfieStar Api Framework",
+				"project_short_name"	: "Selfie Api",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/SelfieStar-iOS-Api-Framework",
+				"ios_meta_page_id"		: "174260364",
+				"codebeat_badge"		: "https://codebeat.co/badges/860b06a2-2e20-45ab-b50c-c8f699ef5773",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-selfiestar-ios-api-framework-master"
+			},
+			{
+				"project_name"			: "SelfieStar Business Framework",
+				"project_short_name"	: "Selfie Business",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/SelfieStar-iOS-Business-Framework",
+				"ios_meta_page_id"		: "174424107",
+				"codebeat_badge"		: "https://codebeat.co/badges/41125974-24dc-4cf5-80ac-3b51168c213f",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-selfiestar-ios-business-framework-master"
+			},
+			{
+				"project_name"			: "HockeyApp Browser Framework",
+				"project_short_name"	: "HockeyApp Browser",
+				"branch"				: "master",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/HockeyApp-iOS-Framework",
+				"codebeat_badge"		: "https://codebeat.co/badges/c7e31ac3-892e-4390-8375-f4bdbb922bed",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hockeyapp-ios-framework-development"
+			}
+		]
+	}
+}
