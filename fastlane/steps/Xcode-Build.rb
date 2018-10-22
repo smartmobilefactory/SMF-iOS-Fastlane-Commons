@@ -44,7 +44,7 @@ private_lane :smf_archive_ipa do |options|
   upload_bitcode = (build_variant_config[:upload_bitcode].nil? ? true : build_variant_config[:upload_bitcode])
 
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
-  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : "Release"
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name][:archive] : "Release"
   output_name = use_xcconfig ? "#{scheme}-#{xcconfig_name}" : scheme
   
   export_method = (build_variant_config[:export_method].nil? ? nil : build_variant_config[:export_method])
@@ -126,7 +126,7 @@ private_lane :smf_perform_unit_tests do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   device = build_variant_config["tests.device_to_test_against".to_sym]
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
-  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : nil
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name][:unittests] : nil
 
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
@@ -298,7 +298,7 @@ def smf_can_unit_tests_be_performed
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
 
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
-  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name] : nil
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name][:unittests] : nil
 
   UI.important("Checking whether the unit tests with the scheme \"#{scheme}\" can be performed.")
 
