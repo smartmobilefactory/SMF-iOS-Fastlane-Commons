@@ -47,13 +47,13 @@ private_lane :smf_publish_pod do |options|
       version_appendix: "0"
       )
     elsif bump_type == "internal"
-      appendix = "0"
+      appendix = 0
       currentVersionNumberComponents = version_get_podspec(path: podspec_path).split(".").map { |s| s.to_i }
       if currentVersionNumberComponents.length >= 4
-        appendix = (currentVersionNumberComponents[3])
+        appendix = currentVersionNumberComponents[3]
       end
 
-      appendix += 1
+      appendix = appendix.next
 
       version_bump_podspec(
         path: podspec_path,
