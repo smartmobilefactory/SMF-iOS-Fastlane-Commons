@@ -33,6 +33,36 @@ private_lane :smf_publish_pod do |options|
       path: podspec_path,
       bump_type: bump_type
       )
+  elsif ["breaking", "internal"].include? bump_type
+    # STRATO specific framework versionning here
+    # We have a versionning like w.x.y.z
+    # w & x are set manually
+    # Only y and z are incremented via Fastlane
+    # y: breaking
+    # z: internal
+    if bump_type == "breaking" {
+    version_bump_podspec(
+      path: podspec_path,
+      bump_type: "patch",
+      version_appendix: "0"
+      )
+    }
+    elsif bump_type == "internal" {
+      appendix = "0"
+      currentVersionNumberComponents = version_get_podspec(path: podspec_path).split(".").map { |s| s.to_i }
+      if currentVersionNumberComponents.length >= 4 {
+        appendix = (currentVersionNumberComponents[3])
+      }
+      end
+
+      appendix += 1
+
+      version_bump_podspec(
+        path: podspec_path,
+        version_appendix: appendix.to_s
+      )
+    }
+    end
   end
 
   # Check if the New Tag already exists
