@@ -41,10 +41,9 @@ private_lane :smf_publish_pod do |options|
     # y: breaking
     # z: internal
     if bump_type == "breaking"
-    version_bump_podspec(
-      path: podspec_path,
-      bump_type: "patch",
-      version_appendix: "0"
+      version_bump_podspec(
+       path: podspec_path,
+       bump_type: "patch"
       )
     elsif bump_type == "internal"
       appendix = 0
