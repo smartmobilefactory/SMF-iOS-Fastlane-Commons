@@ -41,11 +41,13 @@ private_lane :smf_publish_pod do |options|
     # y: breaking
     # z: internal
     if bump_type == "breaking"
+      # Here we need to bump the patch component
       version_bump_podspec(
        path: podspec_path,
        bump_type: "patch"
       )
-
+      
+      # And set back the appendix to 0
       version_bump_podspec(
         path: podspec_path,
         version_appendix: "0"
