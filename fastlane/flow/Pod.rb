@@ -45,6 +45,11 @@ private_lane :smf_publish_pod do |options|
        path: podspec_path,
        bump_type: "patch"
       )
+
+      version_bump_podspec(
+        path: podspec_path,
+        version_appendix: "0"
+      )
     elsif bump_type == "internal"
       appendix = 0
       currentVersionNumberComponents = version_get_podspec(path: podspec_path).split(".").map { |s| s.to_i }
