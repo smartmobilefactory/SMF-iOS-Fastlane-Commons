@@ -34,12 +34,9 @@ private_lane :smf_publish_pod do |options|
       bump_type: bump_type
       )
   elsif ["breaking", "internal"].include? bump_type
-    # STRATO specific framework versionning here.
-    # We have a versionning like w.x.y.z
-    # w & x are set manually
-    # Only y and z are incremented via Fastlane
-    # y: breaking
-    # z: internal
+    # The versionning here is major.minor.breaking.internal
+    # major & minor are set manually
+    # Only breaking and internal are incremented via Fastlane
     if bump_type == "breaking"
       # Here we need to bump the patch component
       version_bump_podspec(
@@ -55,6 +52,7 @@ private_lane :smf_publish_pod do |options|
     elsif bump_type == "internal"
       appendix = 0
       currentVersionNumberComponents = version_get_podspec(path: podspec_path).split(".").map { |s| s.to_i }
+
       if currentVersionNumberComponents.length >= 4
         appendix = currentVersionNumberComponents[3]
       end
