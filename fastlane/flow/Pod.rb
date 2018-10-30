@@ -93,7 +93,7 @@ private_lane :smf_publish_pod do |options|
   version = read_podspec(path: podspec_path)["version"]
 
   # Commit the version bump if needed
-  if ["major", "minor", "patch"].include? bump_type
+  if ["major", "minor", "patch", "breaking", "internal"].include? bump_type
     git_commit(
       path: podspec_path,
       message: "Release Pod #{version}"
