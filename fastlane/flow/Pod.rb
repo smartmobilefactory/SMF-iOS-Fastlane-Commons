@@ -90,6 +90,9 @@ private_lane :smf_publish_pod do |options|
     end
   end
 
+  # Sync Phrase App
+  smf_sync_strings_with_phrase_app
+  
   version = read_podspec(path: podspec_path)["version"]
 
   # Commit the version bump if needed
