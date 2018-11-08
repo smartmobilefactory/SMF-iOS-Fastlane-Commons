@@ -94,23 +94,31 @@ private_lane :smf_send_slack_message do |options|
     end
 
     begin
-      slack(
-        message: content,
-        pretext: title,
-	success: success,
-        channel: slack_channel,
-        username: "#{project_name} iOS CI",
         if attachment_path != nil
-          attachment_properties: {
-            fields: [
-              {
-                 title: "Attachment",
-                 value: "#{attachment_path}"
-              }
-            ]
-          }
+          slack(
+            message: content,
+            pretext: title,
+	    success: success,
+            channel: slack_channel,
+            username: "#{project_name} iOS CI",
+            attachment_properties: {
+              fields: [
+                {
+                   title: "Attachment",
+                   value: "#{attachment_path}"
+                }
+              ]
+            }
+          )
+        elsif
+          slack(
+            message: content,
+            pretext: title,
+	    success: success,
+            channel: slack_channel,
+            username: "#{project_name} iOS CI",
+          )
         end
-        )
     rescue => exception
       UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
       if fail_build_job_on_error
