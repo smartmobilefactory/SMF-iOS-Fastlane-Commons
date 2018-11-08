@@ -95,7 +95,7 @@ private_lane :smf_send_deploy_success_notifications do |options|
     )
 
   if slack_channel
-    smf_send_slack_message(
+    smf_send_chat_message(
       title: title,
       message: ENV[$SMF_CHANGELOG_ENV_KEY],
       success: true,
@@ -153,7 +153,7 @@ private_lane :smf_handle_exception do |options|
     )
 
   if slack_channel
-    smf_send_slack_message(
+    smf_send_chat_message(
       title: title,
       message: message,
       exception: exception,

@@ -3,13 +3,13 @@ fastlane_require 'uri'
 fastlane_require 'json'
 
 ################################
-### smf_send_slack_message ###
+### smf_send_chat_message ###
 ################################
 
 # options: title (String), message (String), additional_html_entries (Array of Strings), success (String), use_build_job_link_footer (Boolean) [Optional], slack_channel (String), fail_build_job_on_error (Boolean) [Optional]
 
 desc "Sending a message to the given HipChat room"
-private_lane :smf_send_slack_message do |options|
+private_lane :smf_send_chat_message do |options|
 
   # Skip sending if slack is disabled
   return unless smf_is_slack_enabled

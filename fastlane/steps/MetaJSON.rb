@@ -87,7 +87,7 @@ def smf_run_linter
   rescue => e
     UI.error("Failed to run SwiftLint. But the build job will continue.")
 
-    smf_send_slack_message(
+    smf_send_chat_message(
         title: "Failed to run Swiftlint for #{smf_default_notification_release_title} 😢",
         success: false,
         slack_channel: "CI"

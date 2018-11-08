@@ -88,7 +88,7 @@ private_lane :smf_itunes_precheck do |options|
       template_path: "/Users/smf/jenkins/template_mail_ios_precheck.erb"
     )
 
-    smf_send_slack_message(
+    smf_send_chat_message(
       title: title,
       message: message,
       success: false,

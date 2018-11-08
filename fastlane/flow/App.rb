@@ -140,7 +140,7 @@ private_lane :smf_deploy_build_variant do |options|
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
-      smf_send_slack_message(
+      smf_send_chat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
         success: false,
         exception: exception,
@@ -181,7 +181,7 @@ private_lane :smf_deploy_build_variant do |options|
     rescue => exception
       UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
 
-      smf_send_slack_message(
+      smf_send_chat_message(
         title: "Failed to send APN to SMF HockeyApp for #{smf_default_notification_release_title} 😢",
         success: false,
         exception: exception,
@@ -282,7 +282,7 @@ private_lane :smf_deploy_build_variant do |options|
       exception = e
     end
 
-      smf_send_slack_message(
+      smf_send_chat_message(
         title: notification_title,
         message: notification_message,
         success: notification_success,

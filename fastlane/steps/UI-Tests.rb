@@ -29,7 +29,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
 
 
   if slack_channel
-    smf_send_slack_message(
+    smf_send_chat_message(
       title: "Starting to perform UI tests for #{report_name} 🔎",
       message: "It may take multiple hours until the report is completed. Enjoy life and check for new notifications later...",
       success: true,
@@ -91,7 +91,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     notification_message = "#{notification_message}. See the build log for more details"
   end
 
-  smf_send_slack_message(
+  smf_send_chat_message(
     title: "Done performing UI tests for #{report_name} ✍🏻",
     message: notification_message,
     success: true,
