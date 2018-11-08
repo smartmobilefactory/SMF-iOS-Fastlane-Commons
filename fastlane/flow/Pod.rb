@@ -80,11 +80,11 @@ private_lane :smf_publish_pod do |options|
 
       project_name = project_config[:project_name]
 
-      smf_send_hipchat_message(
+      smf_send_slack_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
-        type: "error",
+        success: false,
         exception: exception,
-        hipchat_channel: "CI"
+        slack_channel: "CI"
       )
       next
     end
@@ -155,11 +155,11 @@ private_lane :smf_publish_pod do |options|
   begin
     sh "pod repo update"    
   rescue => exception
-    smf_send_hipchat_message(
+    smf_send_slack_message(
         title: "Failed to update the specs repo after publishing the Pod #{smf_default_notification_release_title} 😢",
-        type: "warning",
+        success: false,
         exception: exception,
-        hipchat_channel: "CI"
+        slack_channel: "CI"
       )
   end
 

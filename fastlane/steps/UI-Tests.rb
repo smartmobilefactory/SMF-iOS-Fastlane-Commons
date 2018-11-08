@@ -17,7 +17,7 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   scheme = build_variant_config[:scheme]
   buildlog_path = "#{smf_workspace_dir}/Scanlog"
-  hipchat_channel = @smf_fastlane_config[:project][:hipchat_channel]
+  slack_channel = @smf_fastlane_config[:project][:slack_channel]
   disable_concurrent_testing = (build_variant_config[:disable_concurrent_testing] ? build_variant_config[:disable_concurrent_testing] : false)
   is_report_already_uploaded = false
   app_to_test = build_variant_config["ui_test.target.bundle_identifier".to_sym]
@@ -28,12 +28,12 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   end
 
 
-  if hipchat_channel
-    smf_send_hipchat_message(
+  if slack_channel
+    smf_send_slack_message(
       title: "Starting to perform UI tests for #{report_name} 🔎",
       message: "It may take multiple hours until the report is completed. Enjoy life and check for new notifications later...",
-      type: "message",
-      hipchat_channel: hipchat_channel
+      success: true,
+      slack_channel: slack_channel
       )
   end
 
@@ -91,11 +91,11 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     notification_message = "#{notification_message}. See the build log for more details"
   end
 
-  smf_send_hipchat_message(
+  smf_send_slack_message(
     title: "Done performing UI tests for #{report_name} ✍🏻",
     message: notification_message,
-    type: "success",
-    hipchat_channel: hipchat_channel,
+    success: true,
+    slack_channel: slack_channel,
     attachment_path: attachment_path
     )
 end

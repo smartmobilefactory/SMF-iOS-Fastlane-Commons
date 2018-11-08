@@ -3,20 +3,21 @@ fastlane_require 'uri'
 fastlane_require 'json'
 
 ################################
-### smf_send_hipchat_message ###
+### smf_send_slack_message ###
 ################################
 
-# options: title (String), message (String), additional_html_entries (Array of Strings), success (String), use_build_job_link_footer (Boolean) [Optional], hipchat_channel (String), fail_build_job_on_error (Boolean) [Optional]
+# options: title (String), message (String), additional_html_entries (Array of Strings), success (String), use_build_job_link_footer (Boolean) [Optional], slack_channel (String), fail_build_job_on_error (Boolean) [Optional]
 
 desc "Sending a message to the given HipChat room"
-private_lane :smf_send_hipchat_message do |options|
+private_lane :smf_send_slack_message do |options|
 
-  # Skip sending if hipchat is disabled
-  return unless smf_is_hipchat_enabled
+  # Skip sending if slack is disabled
+  return unless smf_is_slack_enabled
 
   # Parameter
   title = options[:title]
   message = options[:message]
+  success = options[:success]
   if message
     UI.message("Inital message: #{message}")
   else
@@ -27,19 +28,8 @@ private_lane :smf_send_hipchat_message do |options|
   fail_build_job_on_error = (options[:fail_build_job_on_error] == nil ? false : options[:additional_html_entries])
   attachment_path = options[:attachment_path]
 
-  type = options[:type]
-
-  color = "gray"
-  if type == "success"
-    color = "green"
-  elsif type == "error"
-    color = "red"
-  elsif type == "warning"
-    color = "yellow"
-  end
-
   use_build_job_link_footer = options[:use_build_job_link_footer]
-  hipchat_channel = (options[:hipchat_channel] != nil ? options[:hipchat_channel] : "CI")
+  slack_channel = (options[:slack_channel] != nil ? options[:slack_channel] : "CI")
 
   # Log the exceptions to find out if there is useful information which can be added to the message
   UI.message("exception.inspect: #{exception.inspect}")
@@ -50,10 +40,10 @@ private_lane :smf_send_hipchat_message do |options|
   UI.message("exception.preferred_error_info: #{exception.preferred_error_info}") if exception.respond_to?(:preferred_error_info)
   UI.message("exception.error_info: #{exception.error_info}") if exception.respond_to?(:error_info)
 
-  if hipchat_channel && (hipchat_channel.include? "/") == false
+  if slack_channel && (slack_channel.include? "/") == false
 
     project_name = @smf_fastlane_config[:project][:project_name]
-    hipchat_channel = URI.unescape(hipchat_channel) == hipchat_channel ? URI.escape(hipchat_channel) : hipchat_channel
+    slack_channel = URI.unescape(slack_channel) == slack_channel ? URI.escape(slack_channel) : slack_channel
 
     content = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr></table>"
 
@@ -86,21 +76,16 @@ private_lane :smf_send_hipchat_message do |options|
         content << ("<table><tr><td><strong>Source: </strong><a href=#{ENV["BUILD_URL"]}>Build Job Console</a></td></tr></table>")
     end
 
-    UI.message("Sending message \"#{content}\" to room \"#{hipchat_channel}\"")
+    UI.message("Sending message \"#{content}\" to room \"#{slack_channel}\"")
 
     # Send failure messages also to CI to notice them so that we can see if they can be improved
     begin
-      if type == "error" && ((hipchat_channel.eql? "CI") == false)
-        hipchat(
+      if type == "error" && ((slack_channel.eql? "CI") == false)
+        slack(
         message: content,
+	success: success,
         channel: "CI",
-        custom_color: color,
-        api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
-        notify_room: true,
-        version: "2",
-        message_format: "html",
-        include_html_header: false,
-        from: "#{project_name} iOS CI"
+        username: "#{project_name} iOS CI"
         )
       end
     rescue => exception
@@ -108,38 +93,22 @@ private_lane :smf_send_hipchat_message do |options|
     end
 
     begin
-      hipchat(
+      slack(
         message: content,
-        channel: hipchat_channel,
-        custom_color: color,
-        api_token: ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY],
-        notify_room: true,
-        version: "2",
-        message_format: "html",
-        include_html_header: false,
-        from: "#{project_name} iOS CI"
+	success: success,
+        channel: slack_channel,
+        username: "#{project_name} iOS CI"
         )
-
-      if attachment_path != nil
-        sh(
-          "curl", "-X", "POST",
-          "-H", "Authorization: Bearer #{ENV[$SMF_HIPCHAT_API_TOKEN_ENV_KEY]}", 
-          "-H", "Content-Type:  multipart/related; boundary=boundary123456", 
-          "-F", "file=@#{attachment_path}",
-          "https://hipchat.com/v2/room/#{hipchat_channel}/share/file"
-        )
-      end
-      
     rescue => exception
       UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
       if fail_build_job_on_error
         raise exception
       end
     end
-  elsif hipchat_channel
-        UI.error("Didn't send message as \"hipchat_channel\" contains \"/\"")
+  elsif slack_channel
+        UI.error("Didn't send message as \"slack_channel\" contains \"/\"")
   else
-    UI.message("Didn't send message as \"hipchat_channel\" is nil")
+    UI.message("Didn't send message as \"slack_channel\" is nil")
   end
 
 end

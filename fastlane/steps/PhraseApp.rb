@@ -14,12 +14,12 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
     rescue => e
       UI.error("Failed to sync Strings with PhraseApp: #{e.message}")
 
-      smf_send_hipchat_message(
+      smf_send_slack_message(
         title: "Failed to sync Strings with PhraseApp for #{smf_default_notification_release_title} 😢",
         message: "The build job will continue but won't contain updated translations!",
         exception: e,
-        type: "warning",
-        hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
+	success: false,
+        slack_channel: @smf_fastlane_config[:project][:slack_channel]
       )
     end
   else
