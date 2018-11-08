@@ -73,7 +73,7 @@ private_lane :smf_send_slack_message do |options|
 
     if use_build_job_link_footer != false
         UI.message("Adding use_build_job_link_footer")
-        content << ("#{ENV["BUILD_URL"]}")
+        content << (" #{ENV["BUILD_URL"]}")
     end
 
     UI.message("Sending message \"#{content}\" to room \"#{slack_channel}\"")
@@ -82,8 +82,8 @@ private_lane :smf_send_slack_message do |options|
     begin
       if type == "error" && ((slack_channel.eql? "CI") == false)
         slack(
-        message: title,
-        pretext: content,
+        message: content,
+        pretext: title,
 	success: success,
         channel: "CI",
         username: "#{project_name} iOS CI"
@@ -95,8 +95,8 @@ private_lane :smf_send_slack_message do |options|
 
     begin
       slack(
-        message: title,
-        pretext: content,
+        message: content,
+        pretext: title,
 	success: success,
         channel: slack_channel,
         username: "#{project_name} iOS CI"
