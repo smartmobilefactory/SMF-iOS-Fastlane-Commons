@@ -45,11 +45,11 @@ private_lane :smf_send_slack_message do |options|
     project_name = @smf_fastlane_config[:project][:project_name]
     slack_channel = URI.unescape(slack_channel) == slack_channel ? URI.escape(slack_channel) : slack_channel
 
-    content = "<table><tr><td><strong>#{title}</strong></td></tr><tr></tr></table>"
+    content = ""
 
     if message != nil && message.length > 0
       UI.message("Adding message: #{message}")
-      content << "<table><tr><td><pre>#{message[0..4000]}#{' <br/>... (maxmium length reached)' if message.length > 4000}</pre></td></tr></table>"
+      content << "#{message[0..4000]}#{'... (maxmium length reached)' if message.length > 4000}"
     elsif exception != nil
       error_info = exception.respond_to?(:preferred_error_info) ? exception.preferred_error_info : nil
       error_info = exception.respond_to?(:error_info) ? exception.error_info : nil
@@ -60,20 +60,20 @@ private_lane :smf_send_slack_message do |options|
       UI.message("Found error_info: #{error_info}")
       if error_info != nil && error_info.to_s.length > 0
         UI.message("Adding error_info: #{error_info.to_s}")
-        content << ("<table><tr><td>#{error_info.to_s[0..4000]}#{' <br/>... (maxmium length reached)' if error_info.to_s.length > 4000}</td></tr></table>")
+        content << ("#{error_info.to_s[0..4000]}#{'... (maxmium length reached)' if error_info.to_s.length > 4000}")
       end
     end
 
     if additional_html_entries
       for additional_html_entry in additional_html_entries do
         UI.message("Adding additional_html_entry: #{additional_html_entry}")
-        content << ("<table><tr><td>#{additional_html_entry}</td></tr></table>")
+        content << ("#{additional_html_entry}")
       end
     end
 
     if use_build_job_link_footer != false
         UI.message("Adding use_build_job_link_footer")
-        content << ("<table><tr><td><strong>Source: </strong><a href=#{ENV["BUILD_URL"]}>Build Job Console</a></td></tr></table>")
+        content << ("#{ENV["BUILD_URL"]}")
     end
 
     UI.message("Sending message \"#{content}\" to room \"#{slack_channel}\"")
@@ -82,7 +82,8 @@ private_lane :smf_send_slack_message do |options|
     begin
       if type == "error" && ((slack_channel.eql? "CI") == false)
         slack(
-        message: content,
+        message: title,
+        pretext: content,
 	success: success,
         channel: "CI",
         username: "#{project_name} iOS CI"
@@ -94,7 +95,8 @@ private_lane :smf_send_slack_message do |options|
 
     begin
       slack(
-        message: content,
+        message: title,
+        pretext: content,
 	success: success,
         channel: slack_channel,
         username: "#{project_name} iOS CI"
