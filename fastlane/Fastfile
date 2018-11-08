@@ -176,19 +176,19 @@ end
 
 def smf_setup_default_build_type_values
   smf_set_mailgun_enabled(true)
-  smf_set_slack_enabled(true)
+  smf_set_chat_enabled(true)
   smf_set_keychain_enabled(true)
 end
 
 def smf_override_build_type_options_by_variant_config(build_variant_config)
   is_mailgun_enabled = (build_variant_config[:mailgun_enabled].nil? ? smf_is_mailgun_enabled : build_variant_config[:mailgun_enabled])
-  is_slack_enabled = (build_variant_config[:slack_enabled].nil? ? smf_is_slack_enabled : build_variant_config[:slack_enabled])
+  is_chat_enabled = (build_variant_config[:chat_enabled].nil? ? smf_is_chat_enabled : build_variant_config[:chat_enabled])
   is_keychain_enabled = (build_variant_config[:keychain_enabled].nil? ? smf_is_keychain_enabled : build_variant_config[:keychain_enabled])
 
-  puts "Overriding build type options:\n mailgun_enabled: #{is_mailgun_enabled}\n slack_enabled: #{is_slack_enabled}\n keychain_enabled: #{is_keychain_enabled}"
+  puts "Overriding build type options:\n mailgun_enabled: #{is_mailgun_enabled}\n chat_enabled: #{is_chat_enabled}\n keychain_enabled: #{is_keychain_enabled}"
   
   smf_set_mailgun_enabled(is_mailgun_enabled)
-  smf_set_slack_enabled(is_slack_enabled)
+  smf_set_chat_enabled(is_chat_enabled)
   smf_set_keychain_enabled(is_keychain_enabled)
 end
 
@@ -199,10 +199,10 @@ def smf_override_build_type_options_by_type(build_type)
       smf_set_keychain_enabled(false)
     elsif build_type == "quiet"
       smf_set_mailgun_enabled(false)
-      smf_set_slack_enabled(false)
+      smf_set_chat_enabled(false)
     elsif build_type == "develop"
       smf_set_mailgun_enabled(false)
-      smf_set_slack_enabled(false)
+      smf_set_chat_enabled(false)
       smf_set_keychain_enabled(false)
     end
   end
@@ -221,12 +221,12 @@ def smf_is_mailgun_enabled
   return ENV[$SMF_IS_MAILGUN_ENABLED].nil? ? true : ENV[$SMF_IS_MAILGUN_ENABLED] == "true"
 end
 
-def smf_set_slack_enabled(value)
+def smf_set_chat_enabled(value)
   newValue = value ? "true" : "false"
   return ENV[$SMF_IS_HIPCHAT_ENABLED] = newValue
 end
 
-def smf_is_slack_enabled
+def smf_is_chat_enabled
   return ENV[$SMF_IS_HIPCHAT_ENABLED].nil? ? true : ENV[$SMF_IS_HIPCHAT_ENABLED] == "true"
 end
 
