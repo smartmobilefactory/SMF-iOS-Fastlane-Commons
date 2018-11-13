@@ -71,11 +71,6 @@ private_lane :smf_send_chat_message do |options|
       end
     end
 
-    if use_build_job_link_footer != false
-        UI.message("Adding use_build_job_link_footer")
-        content << (" #{ENV["BUILD_URL"]}")
-    end
-
     UI.message("Sending message \"#{content}\" to room \"#{slack_channel}\"")
 
     # Send failure messages also to CI to notice them so that we can see if they can be improved
