@@ -88,7 +88,7 @@ private_lane :smf_send_chat_message do |options|
         channel: "CI",
         username: "#{project_name} iOS CI",
         payload: {
-          "Build Job" => "#{ENV["BUILD_URL"]}"
+          "Build Job" => "#{ENV["BUILD_URL"]}",
         },
         default_payloads: [:git_branch]
         )
@@ -106,7 +106,7 @@ private_lane :smf_send_chat_message do |options|
             channel: slack_channel,
             username: "#{project_name} iOS CI",
             payload: {
-              "Build Job" => "#{ENV["BUILD_URL"]}"
+              "Build Job" => "#{ENV["BUILD_URL"]}",
             },
             default_payloads: [:git_branch],
             attachment_properties: {
@@ -126,7 +126,7 @@ private_lane :smf_send_chat_message do |options|
             channel: slack_channel,
             username: "#{project_name} iOS CI",
             payload: {
-              "Build Job" => "#{ENV["BUILD_URL"]}"
+              "Build Job" => "#{ENV["BUILD_URL"]}",
             },
             default_payloads: [:git_branch]
           )
