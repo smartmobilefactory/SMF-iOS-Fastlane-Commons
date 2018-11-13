@@ -223,11 +223,11 @@ end
 
 def smf_set_slack_enabled(value)
   newValue = value ? "true" : "false"
-  return ENV[$SMF_IS_HIPCHAT_ENABLED] = newValue
+  return ENV[$SMF_IS_SLACK_ENABLED] = newValue
 end
 
 def smf_is_slack_enabled
-  return ENV[$SMF_IS_HIPCHAT_ENABLED].nil? ? true : ENV[$SMF_IS_HIPCHAT_ENABLED] == "true"
+  return ENV[$SMF_IS_SLACK_ENABLED].nil? ? true : ENV[$SMF_IS_SLACK_ENABLED] == "true"
 end
 
 def smf_set_keychain_enabled(value)
