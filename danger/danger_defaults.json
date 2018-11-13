@@ -8,5 +8,6 @@
       "code_coverage.slather.notify_level": "fail",
       "swiftlint.use_feature": true,
       "swiftlint.fail_on_error": false,
-      "smf_common.notify_level": "warn"
+      "smf_common.notify_level": "warn",
+      "slack.use_feature": true
 }
