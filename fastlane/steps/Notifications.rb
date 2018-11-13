@@ -14,15 +14,6 @@ private_lane :smf_send_chat_message do |options|
   # Skip sending if slack is disabled
   return unless smf_is_slack_enabled
 
-  # Skip sending if slack is misconfigured
-  hipchat_channel = fastlane_config[:project][:hipchat_channel]
-  slack_channel = fastlane_config[:project][:slack_channel]
-  if hipchat_channel.nil? == false && slack_channel.nil?
-    UI.important("Please update your Fastlane configuration (Config.json) to use Slack (slack_channel) instead of HipChat (hipchat_channel). Please also check your spelling if you think you've done everything right.")
-    return
-  end
-
-
   # Parameter
   title = "*#{options[:title]}*"
   message = options[:message]
