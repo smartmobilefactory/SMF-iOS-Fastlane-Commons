@@ -115,11 +115,11 @@ end
 ###### Slack #######
 ####################
 
-hipchat_channel = fastlane_config[:project][:hipchat_channel]
-slack_channel = fastlane_config[:project][:slack_channel]
-if hipchat_channel.nil? == false && slack_channel.nil?
-  configuration_message += "<br/><br/>Please update your Fastlane configuration (Config.json) to use <b>Slack</b> instead of HipChat."
-end
+#hipchat_channel = fastlane_config[:project][:hipchat_channel]
+#slack_channel = fastlane_config[:project][:slack_channel]
+#if hipchat_channel.nil? == false && slack_channel.nil?
+#  configuration_message += "<br/><br/>Please update your Fastlane configuration (Config.json) to use <b>Slack</b> instead of HipChat."
+#end
 
 #####################
 ###### Slather ######
