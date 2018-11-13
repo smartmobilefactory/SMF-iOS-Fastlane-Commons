@@ -77,15 +77,16 @@ private_lane :smf_send_chat_message do |options|
     begin
       if type == "error" && ((slack_channel.eql? "CI") == false)
         slack(
-        message: content,
-        pretext: title,
-	success: success,
-        channel: "CI",
-        username: "#{project_name} iOS CI",
-        payload: {
-          "Build Job" => "#{ENV["BUILD_URL"]}",
-        },
-        default_payloads: [:git_branch]
+          slack_url: "https://hooks.slack.com/services/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",
+          message: content,
+          pretext: title,
+	  success: success,
+          channel: "CI",
+          username: "#{project_name} iOS CI",
+          payload: {
+            "Build Job" => "#{ENV["BUILD_URL"]}",
+          },
+          default_payloads: [:git_branch]
         )
       end
     rescue => exception
@@ -95,6 +96,7 @@ private_lane :smf_send_chat_message do |options|
     begin
         if attachment_path != nil
           slack(
+            slack_url: "https://hooks.slack.com/services/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",
             message: content,
             pretext: title,
 	    success: success,
@@ -115,6 +117,7 @@ private_lane :smf_send_chat_message do |options|
           )
         elsif
           slack(
+            slack_url: "https://hooks.slack.com/services/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",
             message: content,
             pretext: title,
 	    success: success,
