@@ -12,7 +12,7 @@ desc "Sending a message to the given HipChat room"
 private_lane :smf_send_chat_message do |options|
 
   # Skip sending if slack is disabled
-  return unless smf_is_chat_enabled
+  return unless smf_is_slack_enabled
 
   # Parameter
   title = options[:title]
