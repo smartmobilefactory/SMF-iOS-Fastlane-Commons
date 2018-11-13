@@ -15,7 +15,7 @@ private_lane :smf_send_chat_message do |options|
   return unless smf_is_slack_enabled
 
   # Parameter
-  title = options[:title]
+  title = "*#{options[:title]}*"
   message = options[:message]
   success = options[:success]
   if message
