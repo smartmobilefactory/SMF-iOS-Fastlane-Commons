@@ -86,11 +86,15 @@ private_lane :smf_send_chat_message do |options|
         pretext: title,
 	success: success,
         channel: "CI",
-        username: "#{project_name} iOS CI"
+        username: "#{project_name} iOS CI",
+        payload: {
+          "Build Job" => "#{ENV["BUILD_URL"]}"
+        },
+        default_payloads: [:git_branch]
         )
       end
     rescue => exception
-      UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
+      UI.important("Failed to send error message to CI Slack room. Exception: #{exception}")
     end
 
     begin
@@ -101,6 +105,10 @@ private_lane :smf_send_chat_message do |options|
 	    success: success,
             channel: slack_channel,
             username: "#{project_name} iOS CI",
+            payload: {
+              "Build Job" => "#{ENV["BUILD_URL"]}"
+            },
+            default_payloads: [:git_branch],
             attachment_properties: {
               fields: [
                 {
@@ -117,6 +125,10 @@ private_lane :smf_send_chat_message do |options|
 	    success: success,
             channel: slack_channel,
             username: "#{project_name} iOS CI",
+            payload: {
+              "Build Job" => "#{ENV["BUILD_URL"]}"
+            },
+            default_payloads: [:git_branch]
           )
         end
     rescue => exception
