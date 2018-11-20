@@ -207,7 +207,11 @@ private_lane :smf_send_mail do |options|
   authors_emails = options[:authors_emails]
   send_only_to_internal_adresses = (options[:send_only_to_internal_adresses].nil? ? true : options[:send_only_to_internal_adresses])
   app_link = (options[:app_link].nil? ? "" : options[:app_link])
-  template_path = (options[:template_path] ? options[:template_path] : "/Users/smf/jenkins/template_mail_ios.erb")
+  template_path = (options[:template_path] ? options[:template_path] : "#{@fastlane_commons_dir_path}/mailgun/template_mail_ios.erb")
+
+  if File.file?(template_path) == false
+    UI.error("File #{template_path} doesn't exist! Wrong path!")
+  end
 
   if send_only_to_internal_adresses == true
     # Only allow internal mail adresses
@@ -246,6 +250,9 @@ private_lane :smf_send_mail do |options|
       message: message,
       app_link: app_link,
       ci_build_link: ENV["BUILD_URL"],
+      custom_placeholders: {
+        :git_branch => @smf_git_branch,
+      },
       template_path: template_path
       )
   end
