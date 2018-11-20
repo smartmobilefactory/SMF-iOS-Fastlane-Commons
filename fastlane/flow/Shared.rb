@@ -72,14 +72,14 @@ end
 
 # options: app_link (String) [optional]
 
-desc "Handle the success of a deploy by sending email to the authors and post to the hipchat channel"
+desc "Handle the success of a deploy by sending email to the authors and post to the slack channel"
 private_lane :smf_send_deploy_success_notifications do |options|
 
   # Parameter
   app_link = (options[:app_link].nil? ? Actions.lane_context[Actions::SharedValues::HOCKEY_DOWNLOAD_LINK] : options[:app_link])
 
   # Variables
-  hipchat_channel = @smf_fastlane_config[:project][:hipchat_channel]
+  slack_channel = @smf_fastlane_config[:project][:slack_channel]
 
   if ENV[$SMF_CHANGELOG_ENV_KEY].nil?
     # Collect the changelog (again) in case the build job failed before the former changelog collecting
@@ -94,12 +94,12 @@ private_lane :smf_send_deploy_success_notifications do |options|
     app_link: app_link
     )
 
-  if hipchat_channel
-    smf_send_hipchat_message(
+  if slack_channel
+    smf_send_chat_message(
       title: title,
       message: ENV[$SMF_CHANGELOG_ENV_KEY],
       type: "success",
-      hipchat_channel: hipchat_channel
+      slack_channel: slack_channel
       )
   end
 end
@@ -120,7 +120,7 @@ private_lane :smf_handle_exception do |options|
   exception = options[:exception]
 
   # Variables
-  hipchat_channel = @smf_fastlane_config[:project][:hipchat_channel]
+  slack_channel = @smf_fastlane_config[:project][:slack_channel]
 
   apps_hockey_id = ENV[$SMF_APP_HOCKEY_ID_ENV_KEY]
   if not apps_hockey_id.nil?
@@ -152,13 +152,13 @@ private_lane :smf_handle_exception do |options|
     exception_message: "#{exception.message}"
     )
 
-  if hipchat_channel
-    smf_send_hipchat_message(
+  if slack_channel
+    smf_send_chat_message(
       title: title,
       message: message,
       exception: exception,
       type: "error",
-      hipchat_channel: hipchat_channel
+      slack_channel: slack_channel
       )
   end
 end
