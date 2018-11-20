@@ -29,7 +29,7 @@ private_lane :smf_send_chat_message do |options|
   attachment_path = options[:attachment_path]
 
   use_build_job_link_footer = options[:use_build_job_link_footer]
-  slack_channel = (options[:slack_channel] != nil ? options[:slack_channel] : "CI")
+  slack_channel = (options[:slack_channel] != nil ? options[:slack_channel] : ci_ios_error_log)
 
   # Log the exceptions to find out if there is useful information which can be added to the message
   UI.message("exception.inspect: #{exception.inspect}")
@@ -75,13 +75,13 @@ private_lane :smf_send_chat_message do |options|
 
     # Send failure messages also to CI to notice them so that we can see if they can be improved
     begin
-      if type == "error" && ((slack_channel.eql? "CI") == false)
+      if type == "error" && ((slack_channel.eql? ci_ios_error_log) == false)
         slack(
           slack_url: "https://hooks.slack.com/services/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",
           message: content,
           pretext: title,
 	  success: success,
-          channel: "CI",
+          channel: ci_ios_error_log,
           username: "#{project_name} iOS CI",
           payload: {
             "Build Job" => "#{ENV["BUILD_URL"]}",

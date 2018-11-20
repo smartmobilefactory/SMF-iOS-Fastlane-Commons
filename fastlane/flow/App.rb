@@ -144,7 +144,7 @@ private_lane :smf_deploy_build_variant do |options|
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
         success: false,
         exception: exception,
-        slack_channel: "CI"
+        slack_channel: ci_ios_error_log
       )
     end
   end
@@ -185,7 +185,7 @@ private_lane :smf_deploy_build_variant do |options|
         title: "Failed to send APN to SMF HockeyApp for #{smf_default_notification_release_title} 😢",
         success: false,
         exception: exception,
-        slack_channel: "CI"
+        slack_channel: ci_ios_error_log
       )
     end
   end
