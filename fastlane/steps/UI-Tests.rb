@@ -33,7 +33,6 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
       title: "Starting to perform UI tests for #{report_name} 🔎",
       message: "It may take multiple hours until the report is completed. Enjoy life and check for new notifications later...",
       type: "message",
-      success: true,
       slack_channel: slack_channel
       )
   end
@@ -96,7 +95,6 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
     title: "Done performing UI tests for #{report_name} ✍🏻",
     message: notification_message,
     type: "success",
-    success: true,
     slack_channel: slack_channel,
     attachment_path: attachment_path
     )

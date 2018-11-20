@@ -29,6 +29,12 @@ private_lane :smf_send_chat_message do |options|
   attachment_path = options[:attachment_path]
   
   type = options[:type]
+  if success.nil? 
+    success = false
+    if type == "success" || type == "message"
+      success = true
+    end
+  end
 
   use_build_job_link_footer = options[:use_build_job_link_footer]
   slack_channel = (options[:slack_channel] != nil ? options[:slack_channel] : ci_ios_error_log)
