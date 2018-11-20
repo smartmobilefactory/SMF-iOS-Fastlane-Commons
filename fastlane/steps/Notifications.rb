@@ -318,20 +318,12 @@ end
 def smf_default_app_notification_release_title
 
   # Variables
-  branch = @smf_git_branch
   project_name = @smf_fastlane_config[:project][:project_name]
   build_variant = @smf_build_variant
 
-  # Create the branch name string
-  branch_suffix = ""
-  if branch.nil? == false and branch.length > 0
-    branch_suffix = " from branch \"#{branch}\""
-    branch_suffix.sub!("origin/", "")
-  end
-
   build_number = get_build_number(xcodeproj: "#{project_name}.xcodeproj")
   version = smf_get_version_number
-  return "#{project_name} #{build_variant.upcase} #{version} (#{build_number})#{branch_suffix}"
+  return "#{project_name} #{build_variant.upcase} #{version} (#{build_number})"
 end
 
 def smf_default_pod_notification_release_title
@@ -345,15 +337,7 @@ def smf_default_pod_notification_release_title
   project_name = @smf_fastlane_config[:project][:project_name]
   project_name = (project_name.nil? ? pod_name : project_name)
 
-  # Create the branch name string
-  branch = @smf_git_branch
-  branch_suffix = ""
-  if branch.nil? == false and branch.length > 0
-    branch_suffix = " from branch \"#{branch}\""
-    branch_suffix.sub!("origin/", "")
-  end
-
-  return "#{project_name} #{version}#{branch_suffix}"
+  return "#{project_name} #{version}"
 end
 
 def smf_default_decoupled_ui_test_notification_name_title
