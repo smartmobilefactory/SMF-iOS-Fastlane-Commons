@@ -82,7 +82,7 @@ private_lane :smf_send_chat_message do |options|
           message: content,
           pretext: title,
 	  success: success,
-          channel: ci_ios_error_log,
+          channel: "#{ci_ios_error_log}",
           username: "#{project_name} iOS CI",
           payload: {
             "Build Job" => "#{ENV["BUILD_URL"]}",
@@ -92,7 +92,7 @@ private_lane :smf_send_chat_message do |options|
         )
       end
     rescue => exception
-      UI.important("Failed to send error message to CI Slack room. Exception: #{exception}")
+      UI.important("Failed to send error message to #{ci_ios_error_log} Slack room. Exception: #{exception}")
     end
 
     begin
@@ -101,7 +101,7 @@ private_lane :smf_send_chat_message do |options|
             message: content,
             pretext: title,
 	    success: success,
-            channel: slack_channel,
+            channel: "#{slack_channel}",
             username: "#{project_name} iOS CI",
             payload: {
               "Build Job" => "#{ENV["BUILD_URL"]}",
@@ -122,7 +122,7 @@ private_lane :smf_send_chat_message do |options|
             message: content,
             pretext: title,
 	    success: success,
-            channel: slack_channel,
+            channel: "#{slack_channel}",
             username: "#{project_name} iOS CI",
             payload: {
               "Build Job" => "#{ENV["BUILD_URL"]}",
@@ -132,7 +132,7 @@ private_lane :smf_send_chat_message do |options|
           )
         end
     rescue => exception
-      UI.important("Failed to send error message to CI HipChat room. Exception: #{exception}")
+      UI.important("Failed to send error message to #{slack_channel} Slack room. Exception: #{exception}")
       if fail_build_job_on_error
         raise exception
       end
