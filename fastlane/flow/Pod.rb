@@ -82,6 +82,7 @@ private_lane :smf_publish_pod do |options|
 
       smf_send_chat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
+        type: "error",
         success: false,
         exception: exception,
         slack_channel: ci_ios_error_log
@@ -157,6 +158,7 @@ private_lane :smf_publish_pod do |options|
   rescue => exception
     smf_send_chat_message(
         title: "Failed to update the specs repo after publishing the Pod #{smf_default_notification_release_title} 😢",
+        type: "warning",
         success: false,
         exception: exception,
         slack_channel: ci_ios_error_log

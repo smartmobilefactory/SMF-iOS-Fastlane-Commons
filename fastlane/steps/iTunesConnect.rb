@@ -91,6 +91,7 @@ private_lane :smf_itunes_precheck do |options|
     smf_send_chat_message(
       title: title,
       message: message,
+      type: "warning",
       success: false,
       exception: exception,
       slack_channel: slack_channel

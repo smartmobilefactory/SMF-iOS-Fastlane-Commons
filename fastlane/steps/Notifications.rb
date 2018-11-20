@@ -27,6 +27,8 @@ private_lane :smf_send_chat_message do |options|
   additional_html_entries = options[:additional_html_entries]
   fail_build_job_on_error = (options[:fail_build_job_on_error] == nil ? false : options[:additional_html_entries])
   attachment_path = options[:attachment_path]
+  
+  type = options[:type]
 
   use_build_job_link_footer = options[:use_build_job_link_footer]
   slack_channel = (options[:slack_channel] != nil ? options[:slack_channel] : ci_ios_error_log)
@@ -85,6 +87,7 @@ private_lane :smf_send_chat_message do |options|
           username: "#{project_name} iOS CI",
           payload: {
             "Build Job" => "#{ENV["BUILD_URL"]}",
+            "Build Type" => "#{type}",
           },
           default_payloads: [:git_branch]
         )
@@ -104,6 +107,7 @@ private_lane :smf_send_chat_message do |options|
             username: "#{project_name} iOS CI",
             payload: {
               "Build Job" => "#{ENV["BUILD_URL"]}",
+              "Build Type" => "#{type}",
             },
             default_payloads: [:git_branch],
             attachment_properties: {
@@ -125,6 +129,7 @@ private_lane :smf_send_chat_message do |options|
             username: "#{project_name} iOS CI",
             payload: {
               "Build Job" => "#{ENV["BUILD_URL"]}",
+              "Build Type" => "#{type}",
             },
             default_payloads: [:git_branch]
           )

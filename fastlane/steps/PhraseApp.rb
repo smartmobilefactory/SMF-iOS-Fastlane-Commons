@@ -18,6 +18,7 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
         title: "Failed to sync Strings with PhraseApp for #{smf_default_notification_release_title} 😢",
         message: "The build job will continue but won't contain updated translations!",
         exception: e,
+        type: "warning",
 	success: false,
         slack_channel: @smf_fastlane_config[:project][:slack_channel]
       )
