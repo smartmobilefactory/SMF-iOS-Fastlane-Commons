@@ -85,7 +85,7 @@ private_lane :smf_itunes_precheck do |options|
       success: false,
       exception_message: "#{exception}",
       authors_emails: ["development@smfhq.com"],
-      template_path: "../mailgun/template_mail_ios_precheck.erb"
+      template_path: "#{ENV['FASTLANE_COMMONS_FOLDER']}/mailgun/template_mail_ios_precheck.erb"
     )
 
     smf_send_chat_message(
