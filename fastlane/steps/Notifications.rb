@@ -246,7 +246,9 @@ private_lane :smf_send_mail do |options|
       message: message,
       app_link: app_link,
       ci_build_link: ENV["BUILD_URL"],
-      git_branch: @smf_git_branch,
+      custom_placeholders: {
+        :git_branch => @smf_git_branch,
+      },
       template_path: template_path
       )
   end
