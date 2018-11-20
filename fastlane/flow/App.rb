@@ -241,7 +241,6 @@ private_lane :smf_deploy_build_variant do |options|
     notification_title = nil
     notification_message = nil
     notification_type = "error"
-    notification_success = false
     exception = nil
 
     begin
@@ -254,11 +253,9 @@ private_lane :smf_deploy_build_variant do |options|
       if skip_waiting
         notification_message = "The build job didn't wait until iTunes Connect processed the build. Errors might still occur! ⚠️"
         notification_type = "message"
-        notification_success = false
       else
         notification_message = "The IPA was processed by Apple without any errors 👍"
         notification_type = "success"
-        notification_success = true
       end
 
       # Download the dsym if the waiting of the processing wasn't skipped
@@ -279,7 +276,6 @@ private_lane :smf_deploy_build_variant do |options|
       notification_title = "Failed to upload #{smf_default_notification_release_title} to iTunes Connect 😢"
       notification_message = "As iTunes Connect often response with an error altough the IPA was successfully uploaded, you may want to check iTunes Connect to know if the upload worked or not."
       notification_type = "error"
-      notification_success = false
 
       UI.important("Warning: The upload to iTunes Connect failed!")
 
@@ -290,7 +286,6 @@ private_lane :smf_deploy_build_variant do |options|
         title: notification_title,
         message: notification_message,
         type: notification_type,
-        success: notification_success,
         exception: exception,
         slack_channel: @smf_fastlane_config[:project][:slack_channel]
       )

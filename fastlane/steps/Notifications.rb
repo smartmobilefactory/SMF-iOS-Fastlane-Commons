@@ -17,7 +17,6 @@ private_lane :smf_send_chat_message do |options|
   # Parameter
   title = "*#{options[:title]}*"
   message = options[:message]
-  success = options[:success]
   if message
     UI.message("Inital message: #{message}")
   else
@@ -29,11 +28,9 @@ private_lane :smf_send_chat_message do |options|
   attachment_path = options[:attachment_path]
   
   type = options[:type]
-  if success.nil? 
-    success = false
-    if type == "success" || type == "message"
-      success = true
-    end
+  success = false
+  if type == "success" || type == "message"
+    success = true
   end
 
   use_build_job_link_footer = options[:use_build_job_link_footer]
