@@ -250,3 +250,7 @@ end
 def ci_ios_error_log
   return ENV[$SMF_CI_IOS_ERROR_LOG]
 end
+
+def slack_url
+  return ENV[$SLACK_URL]
+end
