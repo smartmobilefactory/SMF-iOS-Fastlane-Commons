@@ -79,7 +79,6 @@ private_lane :smf_send_chat_message do |options|
     begin
       if type == "error" && ((slack_channel.eql? ci_ios_error_log) == false)
         slack(
-          slack_url: "#{ENV["SLACK_URL"]}",
           message: content,
           pretext: title,
 	  success: success,
@@ -99,7 +98,6 @@ private_lane :smf_send_chat_message do |options|
     begin
         if attachment_path != nil
           slack(
-            slack_url: "#{ENV["SLACK_URL"]}",
             message: content,
             pretext: title,
 	    success: success,
@@ -121,7 +119,6 @@ private_lane :smf_send_chat_message do |options|
           )
         elsif
           slack(
-            slack_url: "#{ENV["SLACK_URL"]}",
             message: content,
             pretext: title,
 	    success: success,
