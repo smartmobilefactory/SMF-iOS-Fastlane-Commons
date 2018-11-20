@@ -103,7 +103,7 @@ private_lane :smf_send_chat_message do |options|
             message: content,
             pretext: title,
 	    success: success,
-            channel: "#{slack_channel}",
+            channel: "ci",
             username: "#{project_name} iOS CI",
             payload: {
               "Build Job" => "#{ENV["BUILD_URL"]}",
@@ -125,7 +125,7 @@ private_lane :smf_send_chat_message do |options|
             message: content,
             pretext: title,
 	    success: success,
-            channel: "#{slack_channel}",
+            channel: "ci",
             username: "#{project_name} iOS CI",
             payload: {
               "Build Job" => "#{ENV["BUILD_URL"]}",
