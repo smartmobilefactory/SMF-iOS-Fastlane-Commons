@@ -209,6 +209,12 @@ private_lane :smf_send_mail do |options|
   app_link = (options[:app_link].nil? ? "" : options[:app_link])
   template_path = (options[:template_path] ? options[:template_path] : "../mailgun/template_mail_ios.erb")
 
+  if File.file?(template_path)
+    UI.message("File exists under #{template_path}")
+  else 
+    UI.error("File #{template_path} doesn't exist! Wrong path!")
+  end
+
   if send_only_to_internal_adresses == true
     # Only allow internal mail adresses
     authors_emails.delete_if do |e_mail|
