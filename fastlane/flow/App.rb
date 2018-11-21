@@ -29,6 +29,12 @@ private_lane :smf_deploy_app do |options|
       smf_decrement_build_number
 
       UI.important("Warning: Building variant #{build_variant} failed! Exception #{exception}")
+
+      if @smf_set_should_send_deploy_notifications == true || @smf_set_should_send_build_job_failure_notifications == true
+        smf_handle_exception(
+          exception: exception,
+        )
+      end
     end
 
     if bulk_deploy_params != nil
@@ -134,11 +140,11 @@ private_lane :smf_deploy_build_variant do |options|
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
-      smf_send_hipchat_message(
+      smf_send_chat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
         type: "warning",
         exception: exception,
-        hipchat_channel: "CI"
+        slack_channel: ci_ios_error_log
       )
     end
   end
@@ -175,13 +181,29 @@ private_lane :smf_deploy_build_variant do |options|
     rescue => exception
       UI.important("Warning: The APN to the SMF HockeyApp couldn't be sent!")
 
-      smf_send_hipchat_message(
+      smf_send_chat_message(
         title: "Failed to send APN to SMF HockeyApp for #{smf_default_notification_release_title} 😢",
         type: "warning",
         exception: exception,
-        hipchat_channel: "CI"
+        slack_channel: ci_ios_error_log
       )
     end
+  end
+
+  if (build_variant_config[:use_sparkle])
+    # Create appcast
+    sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
+    sparkle_private_key = ENV["CUSTOM_CERTIFICATES"] + "/" + sparkle_code_signing_identity
+    update_dir = "#{smf_workspace_dir}/build/"
+    hockey_download_link = lane_context[SharedValues::HOCKEY_BUILD_INFORMATION]["build_url"]
+    sh "#{@fastlane_commons_dir_path}/tools/generate_appcast -f #{sparkle_private_key} #{update_dir} #{hockey_download_link}"
+
+    # Upload appcast
+    access_key = ENV["SMF_SPARKLE_S3_ACCESS_KEY"]
+    secret_key = ENV["SMF_SPARKLE_S3_SECRET_ACCESS_KEY"]
+    sparkle_s3aws_bucket = build_variant_config["sparkle_s3aws_bucket".to_sym]
+    directory = build_variant_config["scheme".to_sym]
+    sh "#{@fastlane_commons_dir_path}/tools/upload2aws.sh -f #{update_dir}/appcast.xml -a #{access_key} -s #{secret_key} -b #{sparkle_s3aws_bucket} -d #{directory}"
   end
 
   tag = smf_add_git_tag
@@ -260,13 +282,12 @@ private_lane :smf_deploy_build_variant do |options|
       exception = e
     end
 
-    smf_send_hipchat_message(
+      smf_send_chat_message(
         title: notification_title,
         message: notification_message,
         type: notification_type,
         exception: exception,
-        hipchat_channel: @smf_fastlane_config[:project][:hipchat_channel]
+        slack_channel: @smf_fastlane_config[:project][:slack_channel]
       )
   end
-
 end

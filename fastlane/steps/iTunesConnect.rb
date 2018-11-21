@@ -61,7 +61,7 @@ private_lane :smf_itunes_precheck do |options|
   # Variables
   project_config = @smf_fastlane_config[:project]
   project_name = project_config[:project_name]
-  hipchat_channel = project_config[:hipchat_channel]
+  slack_channel = project_config[:slack_channel]
 
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
@@ -85,15 +85,15 @@ private_lane :smf_itunes_precheck do |options|
       success: false,
       exception_message: "#{exception}",
       authors_emails: ["development@smfhq.com"],
-      template_path: "/Users/smf/jenkins/template_mail_ios_precheck.erb"
+      template_path: "#{@fastlane_commons_dir_path}/mailgun/template_mail_ios_precheck.erb"
     )
 
-    smf_send_hipchat_message(
+    smf_send_chat_message(
       title: title,
       message: message,
       type: "warning",
       exception: exception,
-      hipchat_channel: hipchat_channel
+      slack_channel: slack_channel
       )
   end
 end

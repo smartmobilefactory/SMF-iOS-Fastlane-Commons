@@ -42,6 +42,10 @@ private_lane :smf_archive_ipa do |options|
 
   upload_itc = (build_variant_config[:upload_itc].nil? ? false : build_variant_config[:upload_itc])
   upload_bitcode = (build_variant_config[:upload_bitcode].nil? ? true : build_variant_config[:upload_bitcode])
+
+  use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name][:archive] : "Release"
+  output_name = use_xcconfig ? "#{scheme}-#{xcconfig_name}" : scheme
   
   export_method = (build_variant_config[:export_method].nil? ? nil : build_variant_config[:export_method])
   icloud_environment = (build_variant_config[:icloud_environment].nil? ? "Development" : build_variant_config[:icloud_environment])
@@ -53,9 +57,11 @@ private_lane :smf_archive_ipa do |options|
 
   code_signing_identity = build_variant_config[:code_signing_identity]
 
+  use_sparkle = (build_variant_config[:use_sparkle].nil? ? false : build_variant_config[:use_sparkle])
+
   smf_download_provisioning_profiles_if_needed
 
-  if smf_is_jenkins_environment
+  if smf_is_keychain_enabled
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
@@ -63,11 +69,11 @@ private_lane :smf_archive_ipa do |options|
     clean: should_clean_project,
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
-    configuration: 'Release',
+    configuration: xcconfig_name,
     codesigning_identity: code_signing_identity,
     output_directory: "build",
     archive_path:"build/",
-    output_name: scheme,
+    output_name: output_name,
     include_symbols: true,
     include_bitcode: (upload_itc && upload_bitcode),
     export_method: export_method,
@@ -76,6 +82,9 @@ private_lane :smf_archive_ipa do |options|
     xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
     )
 
+  if use_sparkle
+    smf_create_dmg_from_app
+  end
 end
 
 ###############################
@@ -116,6 +125,8 @@ private_lane :smf_perform_unit_tests do |options|
   project_name = @smf_fastlane_config[:project][:project_name]
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   device = build_variant_config["tests.device_to_test_against".to_sym]
+  use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name][:unittests] : nil
 
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
@@ -132,6 +143,7 @@ private_lane :smf_perform_unit_tests do |options|
     clean: false,
     device: device,
     destination: destination,
+    configuration: xcconfig_name,
     code_coverage: true,
     output_types: "html,junit,json-compilation-database",
     output_files: "report.html,report.junit,report.json"
@@ -285,6 +297,9 @@ def smf_can_unit_tests_be_performed
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
 
+  use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
+  xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name][:unittests] : nil
+
   UI.important("Checking whether the unit tests with the scheme \"#{scheme}\" can be performed.")
 
   destination = (ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] == "mac" ? "platform=macOS,arch=x86_64" : nil)
@@ -293,12 +308,13 @@ def smf_can_unit_tests_be_performed
 
   begin
     scan(
-    workspace: "#{project_name}.xcworkspace",
-    scheme: scheme,
-    destination: destination,
-    clean: false,
-    skip_build: true,
-    xcargs: "-dry-run"
+      workspace: "#{project_name}.xcworkspace",
+      scheme: scheme,
+      destination: destination,
+      configuration: xcconfig_name,
+      clean: false,
+      skip_build: true,
+      xcargs: "-dry-run"
     )
 
     UI.important("Unit tests can be performed")
@@ -346,6 +362,22 @@ def smf_is_build_variant_a_decoupled_ui_test
   return is_ui_test
 end
 
+def smf_create_dmg_from_app
+
+  if ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] != "mac"
+    raise "Wrong platform configuration: dmg's are only created for macOS apps."
+  end
+
+  # Variables
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  code_signing_identity = build_variant_config["team_id".to_sym]
+  app_path = smf_path_to_ipa_or_app
+
+  # Create the dmg with the script and store it in the same directory as the app
+  sh "#{@fastlane_commons_dir_path}/tools/create_dmg.sh -p #{app_path} -ci #{code_signing_identity}"
+
+end
+
 def smf_path_to_ipa_or_app
   
   # Variables
@@ -354,6 +386,9 @@ def smf_path_to_ipa_or_app
   escaped_filename = build_variant_config[:scheme].gsub(" ", "\ ")
 
   app_path = Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app.zip"
+  if ( ! File.exists?(app_path))
+     app_path =  Pathname.getwd.dirname.to_s + "/build/#{escaped_filename}.app"
+  end
 
   UI.message("Constructed path \"#{app_path}\" from filename \"#{escaped_filename}\"")
 
@@ -395,8 +430,9 @@ def smf_download_provisioning_profiles_if_needed
     # Set the Apple Team ID
     team_id apple_team_id
 
-    if smf_is_jenkins_environment
+    if smf_is_keychain_enabled
       unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+      unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
     end
 
     is_adhoc_build = @smf_build_variant.include? "adhoc"

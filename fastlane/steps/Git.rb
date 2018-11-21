@@ -65,7 +65,6 @@ private_lane :smf_collect_changelog do |options|
 
   ENV[$SMF_CHANGELOG_ENV_KEY] = changelog
   ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_authors
-
 end
 
 ##########################################################
