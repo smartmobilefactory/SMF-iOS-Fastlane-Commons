@@ -1,0 +1,5 @@
+# Import the Dangerfile of the SMF-iOS-Fastlane commons repo
+fastlane_commmons_folder = ENV['FASTLANE_COMMONS_FOLDER']
+danger.import_dangerfile(path: "#{fastlane_commmons_folder}/danger")
+
+# Add custom logic here

@@ -1,0 +1,45 @@
+require "json"
+
+default_platform :ios
+
+platform :ios do
+
+  config = JSON.parse(File.read('Config.json'))
+
+  private_lane :fastlane_config_path do
+    # Return the path to the Fastlane config file
+    "#{Dir.pwd}/Config.json"
+  end
+
+  before_all do
+    # Import the Fastlane Commons Repo
+    fastlane_commons_branch = config["project"]["fastlane_commons_branch"]
+    import_from_git(url: "git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git", branch: fastlane_commons_branch)
+  end
+
+  desc "Clean, build the development variant and run the unit tests"
+  lane :check_pr do
+
+    smf_set_build_variants_matching_regex(".*_alpha")
+
+    smf_check_pr
+  end
+
+  desc "Build and upload a new version to HockeyApp"
+  lane :deploy_app do |options|
+
+    smf_set_should_send_deploy_notifications(true)
+
+    smf_set_git_branch(options[:branch])
+
+    build_variant = options[:build_variant].downcase
+    if ["alpha", "beta"].include? build_variant
+      smf_set_build_variants_matching_regex(".*_#{build_variant}")
+    else
+      smf_set_build_variant(build_variant)
+    end
+
+    smf_deploy_app
+  end
+
+end
