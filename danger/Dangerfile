@@ -157,8 +157,6 @@ if get_config_value("code_coverage.slather.use_feature")
   else
     configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests shouldn't be runned"
   end
-else
-  warn("Slather is <b>disabled</b>")
 end
 
 # Put the configuration message inside an expandable element
