@@ -84,11 +84,11 @@ end
 #######################
 
 if get_config_value("swiftlint.use_feature")
-  # Use the SwiftLint Pod if available. Otherwise the SwiftLint version from the Danger plugin is used.
+  # Use the SwiftLint from SMF-iOS-CommonProjectSetupFiles if available. Otherwise the SwiftLint version from the Danger plugin is used.
   fail_on_error = get_config_value("swiftlint.fail_on_error")
-  pods_swiftlint_binary = "Pods/SwiftLint/swiftlint"
-  if File.file?(pods_swiftlint_binary)
-    expanded_binary_path = File.expand_path(pods_swiftlint_binary)
+  smf_common_swiftlint_binary = Dir["./**/SwiftLint/portable_swiftlint/swiftlint"].first
+  if File.file?(smf_common_swiftlint_binary)
+    expanded_binary_path = File.expand_path(smf_common_swiftlint_binary)
     swiftlint.binary_path = expanded_binary_path
   end
 
