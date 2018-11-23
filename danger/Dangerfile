@@ -87,7 +87,7 @@ if get_config_value("swiftlint.use_feature")
   # Use the SwiftLint from SMF-iOS-CommonProjectSetupFiles if available. Otherwise the SwiftLint version from the Danger plugin is used.
   fail_on_error = get_config_value("swiftlint.fail_on_error")
   smf_common_swiftlint_binary = Dir["./**/SwiftLint/portable_swiftlint/swiftlint"].first
-  if File.file?(smf_common_swiftlint_binary)
+  if !smf_common_swiftlint_binary.nil? && File.file?(smf_common_swiftlint_binary)
     expanded_binary_path = File.expand_path(smf_common_swiftlint_binary)
     swiftlint.binary_path = expanded_binary_path
   end
