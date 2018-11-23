@@ -1,66 +1,86 @@
-# SMF-iOS-Fastlane-Commons
-
-This repo contains the shared Fastlane code which is used across the iOS and macOS apps of Smart Mobile Factory GmbH.
+# Configuration
 
 # Goal
 
-There is one vision behind Fastlane Commons:
+A huge part of the logic to support the [Fastlane commons vision](../README.md#Goal) is the configuration json. It contains all the information which is needed to support different types of projects, enable or disables features in flows etc. As it's stored in a special file - which can be accessed everywhere in Fastlane Commons - it's easy to add new features without changing many lines of source code - e.g. in the projects Fastfile.
 
-> Provide all Continuous Integration features we use to all apps and implement features and fixes only once
+# Structure
 
-Result of this vision are a few rules / concepts:
+The configuration is stored in a JSON file. There is a set of available keys, which you can find here. In general there is a separation of things which are depended on the complete project and depended on a single build variant.
 
-### Commons first
-Each project should contain as less Fastlane logic as possible. If new features are needed in a project, they should be placed in almost all cases in the shared Commons code instead of a project itself. It's very likely that a feature will also be needed in other projects.
+## Project
 
-Some exceptions are eg. features which are needed for Strato for their UI tests usage. In this case it's clear that only one project is affected, there is no intersection with our environment and the client shouldn't need our Commons repo to do his things.
+The project configuration is nested in the root level key `project`.
 
-### Opt-out
+|Key|Default Value|Mandatory|Description|
+|---|---|---|---|
+|project\_name|`nil`|☑️|The name of the Xcode project and / or workspace files|
+|slack\_channel|`nil`||The name of the Slack channel (without `#`)|
+|fastlane\_commons\_branch|`nil`|☑️|The branch which will be used to download Fastlane Commons|
+|tag\_prefix|`"build/#{build\_variant}/"` (App) or `"releases/"` (Pod)||The prefix which is added to the Git tag of an app or Pod release|
+|tag\_suffix|`nil`||The suffix which is added to the Git tag of an app or Pod release|
+|github\_repo\_path|`nil`|☑️ (for UI Tests)| The GitHub repo path (<organisation/user>/<repo name>) of the project which contains the .app and .ipa to test against|
 
-The projects shouldn't be updated to support new features or bugfixes if possible. This is archived by referencing to a branch in Fastlane Commons instead of a specific release or commit. The Fastfile of a project downloads the shared Commons as first step during the execution. This ensures that always the newest codebase is used.
-  
-### Config.json instead of function parameters
+## Danger
 
-To allow the opt-out idea, the configuration should be done in the Config.json instead of passing parameters to Fastlane functions.
-It's unclear which configuration is needed in which place in the future. By storing and accessing it in one central place, we can use it in any place which knows where the Congig.json is stored.
+The project configuration is nested in the root level key `danger_config`.
 
-If we would only provide the parameters which are currently needed, we would need to modify the projects once the content is also needed somewhere else deep inside the Fastlane Commons codebase.
+Each feature from Danger can be en- and disabled. You can see [default Danger config](../danger/danger_defaults.json) to learn about the existing keys and features. The Danger configuration of the project will be merged with the default configuration. If you only need to modify e.g. one feature, you can only declare this one and still all the other default values will be used.
 
-## Features
+If you need to have a special configuration for one build variant, you can create a custom root level key and declare its name in the build variant key `danger_config_name`. Otherwise `danger_config` is used.
 
-### Pull Requests
+## Build Variants
 
-- [x] Builds iOS and macOS apps to verify that they can be compiled
-- [x] Builds framework targets to verify that they can be compiled
-- [x] Performs unit tests
-- [x] Runs Danger
-- [x] Collects project insights which are added to MetaJSON
+The build variants configuration is nested in the root level key `build_variants`. You need to add the build variants as map.
 
-### Deploying
+|Key|Default Value|Mandatory|Description|
+|---|---|---|---|
+|attach\_build\_outputs\_to\_github|`false`|||
+|bundle\_identifier|`nil`|☑️ (for Apps)||
+|code\_signing\_identity| `nil` |☑️ (for Apps)||
+|disable\_concurrent\_testing|`false`|||
+|download\_provisioning\_profiles|`true`|||
+|export\_method|`nil`|||
+|generateMetaJSON|`true`|||
+|hockeyapp\_id|`nil`|||
+|icloud\_environment|`"Development"`|||
+|itc\_apple\_id|`nil`|||
+|itc\_skip\_version\_check|`true`|||
+|itc\_skip\_waiting|`false`|||
+|itc\_team\_id|`nil`|||
+|keychain\_enabled|`true`|||
+|mailgun\_enabled|`true`|||
+|phrase\_app\_script|`nil`|||
+|platform|original platform|||
+|pods\_specs\_repo|`nil`|☑️ (for Pods)||
+|podspec\_path|`nil`|☑️ (for Pods)||
+|pr.archive\_ipa|`true` (App), `false` (Pod)|||
+|pr.perform\_unit\_test|`true`|||
+|pr.run\_danger|`true`|||
+|push\_generated\_code|`false` (no PhraseApp), `true` (with PhraseApp snyc)|||
+|scheme|`nil`|☑️ (for Apps)||
+|should\_clean\_project|`true` (single or first build variant), `false` (second or later build variant in a row)|||
+|slack\_enabled|`true`|||
+|sparkle.signing\_identity||||
+|sparkle\_s3aws\_bucket|`nil`|||
+|target|`nil`|||
+|team\_id|`nil`|☑️ (for Apps)||
+|tests.device\_to\_test\_against|`nil`|||
+|ui\_test.target.bundle\_identifier|`nil`|||
+|ui\_test\_triggering\_github\_releases|`nil`|||
+|unit\_test\_scheme|scheme of the build variant|||
+|upload\_bitcode|`true`|||
+|upload\_itc|`false`|||
+|use\_hockey|`true`|||
+|use\_sparkle|`false`|||
+|use\_wildcard\_signing|`false`|||
+|xcconfig\_name|`nil`|||
 
-- [x] Builds iOS and macOS apps
-- [x] Uploads apps to HockeyApp and App Store Connect
-- [x] Builds CocoaPod Pods
-- [x] Releases CocoaPod Pods in the official and private Spec repos
-- [x] Creates special build outputs for UI tests
-- [x] Creates release notes based on the commit history
-- [x] Syncs Strings with PhraseApp
-- [x] Sends notifications via mail and HipChat with status updates
-- [x] Collects project insights which are added to MetaJSON
+## Extension Suffixes
 
-### Dedicated UI-Test projects
+The extension suffixes are nested in the root level key `extensions_suffixes`. It's an array which should contain the app extension bundle identifier suffixes.
 
-- [x] Performs UI tests which are stored in a separated project
-- [x] Sends notifications via mail and HipChat with status updates
+If you have an app with the bundle identifier `my.app` and an extensions `my.app.findersync`, the extension suffix would be `findersync`. This is needed to let Fastlane download the correct provisioning profiles.
 
 
-Most logic is written in Ruby, only some precompiled code is written in Java and Swift.
 
-## Documentation
-
-The documentation will split into the following areas:
-
-- Flow
-- Configuration
-- Steps
-- What is needed in a project?
