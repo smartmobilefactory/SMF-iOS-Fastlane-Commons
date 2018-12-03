@@ -115,7 +115,7 @@ private_lane :smf_publish_pod do |options|
     remote: 'origin',
     local_branch: branch,
     remote_branch: "jenkins_build/#{branch}",
-    force: false,
+    force: true,
     tags: true
   )
   
