@@ -33,6 +33,37 @@ private_lane :smf_publish_pod do |options|
       path: podspec_path,
       bump_type: bump_type
       )
+  elsif ["breaking", "internal"].include? bump_type
+    # The versionning here is major.minor.breaking.internal
+    # major & minor are set manually
+    # Only breaking and internal are incremented via Fastlane
+    if bump_type == "breaking"
+      # Here we need to bump the patch component
+      version_bump_podspec(
+       path: podspec_path,
+       bump_type: "patch"
+      )
+      
+      # And set back the appendix to 0
+      version_bump_podspec(
+        path: podspec_path,
+        version_appendix: "0"
+      )
+    elsif bump_type == "internal"
+      appendix = 0
+      currentVersionNumberComponents = version_get_podspec(path: podspec_path).split(".").map { |s| s.to_i }
+
+      if currentVersionNumberComponents.length >= 4
+        appendix = currentVersionNumberComponents[3]
+      end
+
+      appendix = appendix.next
+
+      version_bump_podspec(
+        path: podspec_path,
+        version_appendix: appendix.to_s
+      )
+    end
   end
 
   # Check if the New Tag already exists
@@ -49,20 +80,23 @@ private_lane :smf_publish_pod do |options|
 
       project_name = project_config[:project_name]
 
-      smf_send_hipchat_message(
+      smf_send_chat_message(
         title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
         type: "error",
         exception: exception,
-        hipchat_channel: "CI"
+        slack_channel: ci_ios_error_log
       )
       next
     end
   end
 
+  # Sync Phrase App
+  smf_sync_strings_with_phrase_app
+  
   version = read_podspec(path: podspec_path)["version"]
 
   # Commit the version bump if needed
-  if ["major", "minor", "patch"].include? bump_type
+  if ["major", "minor", "patch", "breaking", "internal"].include? bump_type
     git_commit(
       path: podspec_path,
       message: "Release Pod #{version}"
@@ -81,7 +115,7 @@ private_lane :smf_publish_pod do |options|
     remote: 'origin',
     local_branch: branch,
     remote_branch: "jenkins_build/#{branch}",
-    force: false,
+    force: true,
     tags: true
   )
   
@@ -124,11 +158,11 @@ private_lane :smf_publish_pod do |options|
   begin
     sh "pod repo update"    
   rescue => exception
-    smf_send_hipchat_message(
+    smf_send_chat_message(
         title: "Failed to update the specs repo after publishing the Pod #{smf_default_notification_release_title} 😢",
         type: "warning",
         exception: exception,
-        hipchat_channel: "CI"
+        slack_channel: ci_ios_error_log
       )
   end
 

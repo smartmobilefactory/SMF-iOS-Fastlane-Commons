@@ -92,7 +92,7 @@ This flow is meant to be called from the Fastfile of a project and performs all 
 
 | Precondition |
 |:---|
-| A bump type ist set |
+| A bump type is set |
 | A git branch is set |
 | Failure notifications are enabled - if wanted |
 
@@ -102,7 +102,7 @@ This flow is meant to be called from the Fastfile of a project and performs all 
 |:---|---|---|
 | Unlocks the Jenkins keychains | | ☑️ |
 | Verifies the Git repo is on the chosen branch |
-| Bumps the major, minor or patch version | | ☑️ |
+| Bumps version number.<br>Depending on the project configuration:<br>- major, minor, patch<br>- internal, breaking | | ☑️ |
 | Verifies that the Git tag is not already existing | smf\_verify\_git\_tag\_is\_not\_already\_existing |
 | Generates MetaJSON | smf\_generate\_meta\_json | ☑️ |
 | - Sends a failure message to the CI HipChat room in case MetaJSON couldn't be created|
