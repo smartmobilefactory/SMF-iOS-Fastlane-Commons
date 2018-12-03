@@ -2,6 +2,7 @@
 use warnings;
 use strict;
 use Test::More;
+use Cwd;
 my @Tests = (
                 {
                     'name' => 'Agda',
@@ -177,6 +178,11 @@ my @Tests = (
                     'name' => 'Embedded Crystal',
                     'ref'  => '../tests/outputs/capture.ecr.yaml',
                     'args' => '../tests/inputs/capture.ecr',
+                },
+                {
+                    'name' => 'Fennel',    
+                    'ref'  => '../tests/outputs/generate.fnl.yaml',
+                    'args' => '../tests/inputs/generate.fnl',
                 },
                 {
                     'name' => 'Fish Shell',
@@ -546,7 +552,17 @@ my @Tests = (
                     'args' => '../tests/inputs/i18n_de.ts',
                 },
                 {
-                    'name' => 'R_2',
+                    'name' => 'R 1',
+                    'ref'  => '../tests/outputs/sample.R.yaml',
+                    'args' => '../tests/inputs/sample.R',
+                },
+                {
+                    'name' => 'R 2',
+                    'ref'  => '../tests/outputs/utilities.R.yaml',
+                    'args' => '../tests/inputs/utilities.R',
+                },
+                {
+                    'name' => 'R 3',
                     'ref'  => '../tests/outputs/acpclust.R.yaml',
                     'args' => '../tests/inputs/acpclust.R',
                 },
@@ -566,19 +582,19 @@ my @Tests = (
                     'args' => '../tests/inputs/razor.cshtml',
                 },
                 {
+                    'name' => 'ReasonML',
+                    'ref'  => '../tests/outputs/LogMain.re.yaml',
+                    'args' => '../tests/inputs/LogMain.re',
+                },
+                {
+                    'name' => 'reStructuredText',
+                    'ref'  => '../tests/outputs/reStructuredText.rst.yaml',
+                    'args' => '../tests/inputs/reStructuredText.rst',
+                },
+                {
                     'name' => 'RobotFramework',
                     'ref'  => '../tests/outputs/robotframework.tsv.yaml',
                     'args' => '../tests/inputs/robotframework.tsv',
-                },
-                {
-                    'name' => 'R',
-                    'ref'  => '../tests/outputs/sample.R.yaml',
-                    'args' => '../tests/inputs/sample.R',
-                },
-                {
-                    'name' => 'R',
-                    'ref'  => '../tests/outputs/utilities.R.yaml',
-                    'args' => '../tests/inputs/utilities.R',
                 },
                 {
                     'name' => 'Rmd',
@@ -641,6 +657,11 @@ my @Tests = (
                     'args' => '../tests/inputs/stata.do',
                 },
                 {
+                    'name' => 'SVG',
+                    'ref'  => '../tests/outputs/SVG_logo.svg.yaml',
+                    'args' => '../tests/inputs/SVG_logo.svg',
+                },
+                {
                     'name' => 'Swift',
                     'ref'  => '../tests/outputs/tour.swift.yaml',
                     'args' => '../tests/inputs/tour.swift',
@@ -677,11 +698,16 @@ my @Tests = (
                 },
                 {
                     'name' => 'TypeScript 2',
+                    'ref'  => '../tests/outputs/TypeScript_2.ts.yaml',
+                    'args' => '../tests/inputs/TypeScript_2.ts',
+                },
+                {
+                    'name' => 'TypeScript 3',
                     'ref'  => '../tests/outputs/warship.ts.yaml',
                     'args' => '../tests/inputs/warship.ts',
                 },
                 {
-                    'name' => 'TypeScript 3',
+                    'name' => 'TypeScript 4',
                     'ref'  => '../tests/outputs/greeter.tsx.yaml',
                     'args' => '../tests/inputs/greeter.tsx',
                 },
@@ -754,8 +780,11 @@ my @Tests = (
 
 my $Verbose = 0;
 
-my $results = 'results.yaml';
-my $Run = "../cloc --quiet --yaml --out $results ";
+my $results  = 'results.yaml';
+my $work_dir = getcwd;
+my $cloc     = "$work_dir/../cloc";   # all-purpose version
+#my $cloc     = "$work_dir/cloc";      # Unix-tuned version
+my $Run = "$cloc --quiet --yaml --out $results ";
 foreach my $t (@Tests) {
     print  $Run . $t->{'args'} if $Verbose;
     system($Run . $t->{'args'});

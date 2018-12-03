@@ -14,9 +14,17 @@ The OPML file contains all used Pods which are hosted on GitHub.
 
 {{ noneGithubRepositorySection }}
 
+{% if currentPodsTable %}
 h2. Used Pods
 
 The table contains all used Pods of projects which are analyzed by MetaJSON.
 
-{{ podsTable }}
+{{ currentPodsTable }}{% endif %}
+
+{% if outdatedPodsTable %}
+h2. Used Pods (Outdated Projects)
+
+The table contains all used Pods of projects which are analyzed by MetaJSON.
+
+{{ outdatedPodsTable }}{% endif %}
 

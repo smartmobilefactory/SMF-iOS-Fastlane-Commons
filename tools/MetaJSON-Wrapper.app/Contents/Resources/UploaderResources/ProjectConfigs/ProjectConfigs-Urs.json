@@ -20,8 +20,20 @@
 			"id"	: "422379786"
 		},
 		{
+			"type"	: "CocoaPodsOverviewApps",
+			"id"	: "450232703"
+		},
+		{
 			"type"	: "CocoaPodsOverviewFrameworks",
 			"id"	: "422576386"
+		},
+		{
+			"type"	: "CocoaPodsOverviewLibraries",
+			"id"	: "450265572"
+		},
+		{
+			"type"	: "CocoaPodsOverviewUiTests",
+			"id"	: "450265578"
 		},
 		{
 			"type"	: "ProjectsOverview",

@@ -4,6 +4,10 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>Resources/AnalyserResources/cloc/.gitignore</key>
+		<data>
+		SWY4r9X39O8HluVmvBRtwrp7Zd8=
+		</data>
 		<key>Resources/AnalyserResources/cloc/.gitmodules</key>
 		<data>
 		ePRjISNhFu47Hw8ScGUO3a0Yi8I=
@@ -14,7 +18,7 @@
 		</data>
 		<key>Resources/AnalyserResources/cloc/README.md</key>
 		<data>
-		ODqDNCZkG/ZhP9HXkDxy1D+2G/8=
+		ACh4WrQ3QgKRVCPXLP6q7ycJ3ZU=
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/AUTHORS</key>
 		<data>
@@ -30,11 +34,11 @@
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/Makefile</key>
 		<data>
-		RqU5NZtY3EPfM+9XHOCDC74WBNE=
+		T41bOeX1GL+7WqzBgqk91gmQPIw=
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/NEWS</key>
 		<data>
-		opEbg4EirywXW7xnzJe/1jZhjzc=
+		4DBKlJIyUGXwWx2dTvabs51XLL4=
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/README</key>
 		<data>
@@ -42,11 +46,11 @@
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/cloc</key>
 		<data>
-		sC0aHj7pUYF0Z6amuEqKYH8NCwU=
+		DLi6Ug4dvoCOpJMqn4nrDSzjfEs=
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/cloc.1.pod</key>
 		<data>
-		J06hAmyqne2jIciwuKgAP7tUNZ8=
+		8pT9fV/Bhq+YJaHKIMvyNdZwm8s=
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/pod2man.mk</key>
 		<data>
@@ -54,11 +58,15 @@
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/t/00_C.t</key>
 		<data>
-		CQLE7OkiSJCrq4tRXuUsEB5XyeY=
+		hrKSdj3w1kCuiofwJSOTesqFiek=
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/t/01_opts.t</key>
 		<data>
-		tu2higuHJuJiucKwj5bhfbn3FS8=
+		eimJ79m4lFd15BHlNf8wshFy3qU=
+		</data>
+		<key>Resources/AnalyserResources/cloc/Unix/t/02_git.t</key>
+		<data>
+		U4HOx1HctvN5HjRRSKgwa8FKX4c=
 		</data>
 		<key>Resources/AnalyserResources/cloc/Unix/why_this_directory_exists.txt</key>
 		<data>
@@ -66,7 +74,7 @@
 		</data>
 		<key>Resources/AnalyserResources/cloc/cloc</key>
 		<data>
-		GpaSviCrGafZvlpDdOgnWDGKAvg=
+		zfz7MJ6krJaEMwmE+5cX113veu0=
 		</data>
 		<key>Resources/AnalyserResources/cloc/sqlite_formatter</key>
 		<data>
@@ -176,6 +184,10 @@
 		<data>
 		VymAvrHXhikJQTZl6462IaokiDA=
 		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/LogMain.re</key>
+		<data>
+		eVdtfd6WFnyARfCrduXYnAEfT+8=
+		</data>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/Lookup.agda</key>
 		<data>
 		n9Trp8uRf2b0Ylv3wRYTI4k5Jtc=
@@ -216,6 +228,10 @@
 		<data>
 		OV9IcZ2yox18us+0j9RWgNZYJV0=
 		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/SVG_logo.svg</key>
+		<data>
+		Hb/UZroiRDzJ6LOowJGDOmo72kM=
+		</data>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/Sample.mc</key>
 		<data>
 		OWPwdwAOv/2LuOeB04jIvKVYCVQ=
@@ -239,6 +255,10 @@
 		<key>Resources/AnalyserResources/cloc/tests/inputs/TypeScript.ts</key>
 		<data>
 		NZo1u+4o+YVgwojWmuG32XUKe54=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/TypeScript_2.ts</key>
+		<data>
+		pYvVFS8GgT46pExaSrfpFr6RHS4=
 		</data>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/VisualBasic.Net.vba</key>
 		<data>
@@ -396,9 +416,17 @@
 		<data>
 		ITKC72iR45NBNmYjglZhzqZHR2o=
 		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/generate.fnl</key>
+		<data>
+		jRI8IG+w3O+vw7ALOpmBz0MtZGE=
+		</data>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/git_helpers.fish</key>
 		<data>
 		jrVCdg9YkmAK0JQZZutAp5LLkq0=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/git_tests/contents_f647093e8.tar.gz</key>
+		<data>
+		Hrr/blyDciP+9n11iVfOdIkqC4o=
 		</data>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/glade-search-popover.ui</key>
 		<data>
@@ -576,6 +604,30 @@
 		<data>
 		WO+NNwIgMkP9Zivuj19RrgsGPi8=
 		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/318/Rcs.yaml</key>
+		<data>
+		nQ2UL++P/lxOM0AoGsDJTr7A0JA=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/318/Réponse.cs</key>
+		<data>
+		wCowQIxQz+ueoi5VadJpe4qhlj8=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/327/example.smarty2</key>
+		<data>
+		hrGEhrXQtH1+YXPcLZDWyZWFGPM=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/327/lang.config</key>
+		<data>
+		g6/S77M40tD0R0PE3zAPfTg2N9w=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/341/cItems.cls</key>
+		<data>
+		XUHgt/3Bx/dDobaw/qv3EJM2IM0=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/341/thesis.cls</key>
+		<data>
+		7SFYranBZNSawCHsqHp/ArzTPuk=
+		</data>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/julia.jl</key>
 		<data>
 		7MnB5WXQ7y6v+xPA6fJmcR2kfW0=
@@ -639,6 +691,10 @@
 		<key>Resources/AnalyserResources/cloc/tests/inputs/razor.cshtml</key>
 		<data>
 		dfdwPR4QGsqqDrUqVCXwi+MyCjk=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/reStructuredText.rst</key>
+		<data>
+		O4RubUofl7BScPj8esi++ROsGgU=
 		</data>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/regex_limit.gradle</key>
 		<data>
@@ -880,6 +936,10 @@
 		<data>
 		c8a9XMUHI33vFlEHBbGTdctJdcs=
 		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/LogMain.re.yaml</key>
+		<data>
+		ZTen9m4LMjBIuFxFC8vR4r6SVX0=
+		</data>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/Lookup.agda.yaml</key>
 		<data>
 		Td2owgKqcndz5AO8B0EmnJHP0kw=
@@ -920,6 +980,10 @@
 		<data>
 		arQ3oMlpHo8/UzIBgMrnKkHDktc=
 		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/SVG_logo.svg.yaml</key>
+		<data>
+		+LTbepu8862Nje0mQbLchTBaiOU=
+		</data>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/Sample.mc.yaml</key>
 		<data>
 		YZM1Zo8FIGRSELf/6O/Im+Ue42c=
@@ -943,6 +1007,10 @@
 		<key>Resources/AnalyserResources/cloc/tests/outputs/TypeScript.ts.yaml</key>
 		<data>
 		72ZiKuLb69k7GeRXGUQv9JLwZfM=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/TypeScript_2.ts.yaml</key>
+		<data>
+		lL4SZ3fmR8hlUGyG/b7ispIum9E=
 		</data>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/VisualBasic.Net.vba.yaml</key>
 		<data>
@@ -1092,9 +1160,45 @@
 		<data>
 		SxTf0C0NPG3tATQCywQfHTsvdTU=
 		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/generate.fnl.yaml</key>
+		<data>
+		Z8oxscV2Q5QrjtObPFsibCAndhI=
+		</data>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/git_helpers.fish.yaml</key>
 		<data>
 		C1D7jrpOuo33G9mhcwdbCV4pz2E=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/contents_f647093e8.tar.yaml</key>
+		<data>
+		z2dMw1Ohcc+NRQfEkSigXOSj+KA=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/count_and_diff.yaml.HEAD</key>
+		<data>
+		9U8tz9CHzeXBWYp8PukiciOewb0=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/count_and_diff.yaml.HEAD~1</key>
+		<data>
+		Rf9woExPq1JQcrjQ7HO5gyu/Udo=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/count_and_diff.yaml.diff.HEAD~1.HEAD</key>
+		<data>
+		oBLbQCV1wpNwEd/GZgS3rZPGbXI=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/d9b672643d.yaml</key>
+		<data>
+		NMiYbOHbWqyuLFxqn6vWpLkMOAQ=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/diff_contents_f647093e8.tar.yaml</key>
+		<data>
+		1Uz0nnKT8GXRnHX0zw/aOhxdPCg=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/diff_f15bf042b_f647093e8b.yaml</key>
+		<data>
+		KRclFgxJIxJgYgIpfFw2BvOm0Tc=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/f647093e8be3.yaml</key>
+		<data>
+		zvfywdaWdigyTewMUPUn0viXdKE=
 		</data>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/glade-search-popover.ui.yaml</key>
 		<data>
@@ -1312,6 +1416,14 @@
 		<data>
 		lqekEMmxdkjIRhQpN5IG9g5IstA=
 		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/issues/327/results.yaml</key>
+		<data>
+		9j9xHcATOVsxKLgpUmm4ufJ+xr4=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/issues/341/results.yaml</key>
+		<data>
+		73aij4bPUnwis23NEW9/xQW/sUo=
+		</data>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/julia.jl.yaml</key>
 		<data>
 		I32wozbCTqAnIKQFeGtIRXRfuu8=
@@ -1375,6 +1487,10 @@
 		<key>Resources/AnalyserResources/cloc/tests/outputs/razor.cshtml.yaml</key>
 		<data>
 		Rz+7mgNdgtuqBytYFLR7zqOPPIE=
+		</data>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/reStructuredText.rst.yaml</key>
+		<data>
+		BfXr/1dQSmjWcdxBpjZCGBN/IE4=
 		</data>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/regex_limit.gradle.yaml</key>
 		<data>
@@ -1610,7 +1726,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/commands/detect.rb</key>
 		<data>
-		2ADqaPqh2mofKTFEosHy/JDSPns=
+		0pJsWI+t7SscW1MomlnbJ6Y+eBU=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/commands/diff.rb</key>
 		<data>
@@ -1626,7 +1742,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/content_helper.rb</key>
 		<data>
-		MIAxSbaHFyjiEixPmcpPRiuZjZQ=
+		QLq1Y+u56+JrakEPsLSUbMmN3Zs=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/hash_helper.rb</key>
 		<data>
@@ -1634,15 +1750,15 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/license.rb</key>
 		<data>
-		0H1FyxPJQZ3BXYECeqNELzPrt3w=
+		LkZi7i2ikFLJTwIxxHun2Sym13w=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/license_field.rb</key>
 		<data>
-		NzPqOicIl85rAesvfVt1NYZ+onE=
+		G/iWWJYk/+PInRKxy+4TmLtzCKQ=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/license_meta.rb</key>
 		<data>
-		jfIyDvecwe7qm/bAJ/xQ94ziBEc=
+		E/DSVzv2AKsO4II9wwlc+fnn7Uc=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/license_rules.rb</key>
 		<data>
@@ -1654,19 +1770,19 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/cabal.rb</key>
 		<data>
-		9NKcKpY6kJVEU+P1D3yQQo+Hz+k=
+		JVjDKCJHCMBb+1s/fs2CLvxnGAk=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/cargo.rb</key>
 		<data>
-		jtQAIRoVrxBvZyWAtvX+dsr5jGE=
+		KrNnqRIUMhRPuoBQ0ub4yKUbrwI=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/copyright.rb</key>
 		<data>
-		xM/skE8HTpNhkEQBQCr3JLKhSr8=
+		kacKgZEg7tY9uvWv9aHkbpS0ta8=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/cran.rb</key>
 		<data>
-		MPpLlOm+P8VWt0Gl59ZaavIjOZQ=
+		UVn8hBV+leK85UncNan/A/T4Wz8=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/dice.rb</key>
 		<data>
@@ -1674,35 +1790,35 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/dist_zilla.rb</key>
 		<data>
-		j8NC0wcDJa6o8BIYtJW6gz8PGZU=
+		Q7fcqPA2TZRXnsfG78zZbxE5IC4=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/exact.rb</key>
 		<data>
-		VxjaF2RfSXmnrDb/6CMeQXF+vZM=
+		cFgaCgHoHGxduxaDmEGGCoqiEyc=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/gemspec.rb</key>
 		<data>
-		pC5rRcyLzOFgjCpLFuK4ke6gAfg=
+		ZLO+Z7r1HlWxQm6eSehSY9wf9AA=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/matcher.rb</key>
 		<data>
-		DoKrSfvkIoCqgeNj1vcIuZ6W5rI=
+		Uo+Tiaa7nX+Tn/3ZE2m0ubHEBo0=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/npm_bower.rb</key>
 		<data>
-		jR0EmV9QOGjjtj/nYllfvYvM+tE=
+		1kr+KD8Cso1DA1LLUumoIUQYCWc=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/package.rb</key>
 		<data>
-		FvrnmoJQtLJiRnfpWSaesL3VWCw=
+		p/AAMB3AjsIOvaYSaVOFu0LTOD0=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/reference.rb</key>
 		<data>
-		3s1atieVNogbBThVwiEgbmoAIe0=
+		a1rPJA9SAIMlqX342vRyselZCno=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/spdx.rb</key>
 		<data>
-		QmOf1ZW3ROjr7RVhx7tOWOm3zQc=
+		PeQE9kPFalX9kx57YrsJMuzujp0=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files.rb</key>
 		<data>
@@ -1710,19 +1826,19 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files/license_file.rb</key>
 		<data>
-		TBZ/OLkKUwum9rwEHNATpyxBWZY=
+		h7SAHmfOGjFd+bj0h8cNpPI+sFM=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files/package_manager_file.rb</key>
 		<data>
-		j/IpXcPMCWEvO8f7HT8PLcIsMDs=
+		d2YxENIdwahcsrOGhY0BHK6+V0w=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files/project_file.rb</key>
 		<data>
-		FCdc70BG0PIcuHBNhI+L7BkPoiQ=
+		K0RtAyMOXrBD6PNI1HF0mMVrsGY=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files/readme_file.rb</key>
 		<data>
-		QWsHGfuq3n9+9Z0f/EcDoPefGIM=
+		jqokZZgHTZELZoMy07GX117HjZw=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/projects.rb</key>
 		<data>
@@ -1730,7 +1846,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/projects/fs_project.rb</key>
 		<data>
-		XbF7+i2AlEV24oh618DqKwUEJQ4=
+		pYNpVV+8vHhCgQzSu0HAJ0h+s2k=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/projects/git_project.rb</key>
 		<data>
@@ -1738,11 +1854,11 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/projects/github_project.rb</key>
 		<data>
-		1ljj1uBS+Tnix5RzGBW2Ct5eX+A=
+		Tkobz5qs7etmgaV9CZCEAeL3PVo=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/projects/project.rb</key>
 		<data>
-		w3+8Agt56LyNj38QUDqriaPFPC4=
+		wIftiWF+aW4Fw9EkrbqxUhCI5pQ=
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/rule.rb</key>
 		<data>
@@ -1750,7 +1866,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/version.rb</key>
 		<data>
-		VIDTS866Ks//lSYKIkZsTLbr4ls=
+		wR37mU5OBG8RuPAJvSUIe6mnP+E=
 		</data>
 		<key>Resources/AnalyserResources/licensee/licensee.gemspec</key>
 		<data>
@@ -1779,6 +1895,10 @@
 		<key>Resources/AnalyserResources/licensee/script/git-repo</key>
 		<data>
 		JaN85ynWWgmrP4anzO1WJfvPqMI=
+		</data>
+		<key>Resources/AnalyserResources/licensee/script/hash-licenses</key>
+		<data>
+		Dn4kXMiCHRFiShFfRTJDhUen+Os=
 		</data>
 		<key>Resources/AnalyserResources/licensee/script/license-path</key>
 		<data>
@@ -1858,7 +1978,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/fixtures/detect.json</key>
 		<data>
-		qWD936lVkkkAHjSoFJMa293OogU=
+		DnoASnX0werA218FdVbMWhIXAUI=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/fixtures/fcpl-modified-mpl/LICENSE</key>
 		<data>
@@ -1887,6 +2007,10 @@
 		<key>Resources/AnalyserResources/licensee/spec/fixtures/license-folder/README.md</key>
 		<data>
 		2jmj7l5rSw0yVb/vlWAYkK/YBwk=
+		</data>
+		<key>Resources/AnalyserResources/licensee/spec/fixtures/license-hashes.json</key>
+		<data>
+		P6maM94FKxn2gci62puPvgIQAO4=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/fixtures/license-in-parent-folder/LICENSE.txt</key>
 		<data>
@@ -1958,7 +2082,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/commands/detect_spec.rb</key>
 		<data>
-		h6TTaMvdTVsOYiXRS+q3KMe5H2E=
+		J4SPPWLSRNCFWPp3M6Lc1c5e+HQ=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/commands/license_path_spec.rb</key>
 		<data>
@@ -1970,7 +2094,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/content_helper_spec.rb</key>
 		<data>
-		0dhSJSbx+fdrV5ZrtxaiPkgewuY=
+		u1gHN93GtiLydtgJTK7IeCWnHuI=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/hash_helper_spec.rb</key>
 		<data>
@@ -1978,7 +2102,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/license_field_spec.rb</key>
 		<data>
-		e10pTSU09cIqnwNsrImGMJiXlCU=
+		ZfcloU2gnXXwlFQYjQNjq+IiCnM=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/license_meta_spec.rb</key>
 		<data>
@@ -1990,7 +2114,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/license_spec.rb</key>
 		<data>
-		+dZ/aD2JjN4QfzjZZhHqMgXQQaI=
+		uDVeggLjz9X5G017tgu2AtaP2/0=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/matchers/cabal_matcher_spec.rb</key>
 		<data>
@@ -2010,7 +2134,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/matchers/dice_matcher_spec.rb</key>
 		<data>
-		gfqpS/h4w1B29G7iWuQdpBjDxOM=
+		XJ/YRr7XHoPm+Lqf6AQkn6H/2fo=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/matchers/dist_zilla_matcher_spec.rb</key>
 		<data>
@@ -2046,7 +2170,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/project_files/license_file_spec.rb</key>
 		<data>
-		lFsz4Z+O1wXIsIITDR8c8Dv3tp8=
+		pjCKF1YmCXSwodNGyM4HOiye/58=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/project_files/package_info_spec.rb</key>
 		<data>
@@ -2058,7 +2182,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/project_files/readme_file_spec.rb</key>
 		<data>
-		OSPv2ARjsq95A4levu1/vvORQKE=
+		YjkYBOLAxzj6m9+hSvY+SfW5n9w=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/project_spec.rb</key>
 		<data>
@@ -2078,11 +2202,11 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/spec_helper.rb</key>
 		<data>
-		16gYuh08QiAVNFtRhLYwg4ZNGSo=
+		XxXl0elHFUjdPh1TgJqyLzktIhA=
 		</data>
 		<key>Resources/AnalyserResources/licensee/spec/vendored_license_spec.rb</key>
 		<data>
-		T/QeWJhRnFnQhYpHmL492H48zbs=
+		CfztUYGpIR59T0mNIWant/Ouqgw=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_data/fields.yml</key>
 		<data>
@@ -2090,7 +2214,7 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_data/meta.yml</key>
 		<data>
-		STanhUPOqK+mvhIhqhkCKwojHo0=
+		uNce7Pgi8Ajrc407YtQKmGvWFcw=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_data/rules.yml</key>
 		<data>
@@ -2098,151 +2222,151 @@
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/afl-3.0.txt</key>
 		<data>
-		Q/gh48UXgxpFpCp69h/hUOCy/yw=
+		cWtFNMMpufyHGSfs7mOtnQ8coHg=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/agpl-3.0.txt</key>
 		<data>
-		MDAL7nHCQCxN817tbRNIKso+V9U=
+		AHNH5fNGKdg7C2NOGmTke8idIWk=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/apache-2.0.txt</key>
 		<data>
-		G6Ey8r6oOH6uGEManvAoqo3vW0Q=
+		bm5h8CiUgnggGD37W+TORPpf28Y=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/artistic-2.0.txt</key>
 		<data>
-		kH0HyRaxDwokB0+VI3TF3iFyhRA=
+		/YzfX+Nr06Htg0PEXs74qPRsIaw=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/bsd-2-clause.txt</key>
 		<data>
-		qEs3fSmA+P7fWXUjvakthcwAnBw=
+		RXp5KNbpWm4G9x5PYw7x15MQO0M=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/bsd-3-clause-clear.txt</key>
 		<data>
-		6V/OSX+Uu6TRH4J61a6ebQEjyyE=
+		1cSOdgVKd3Jkq66TS9CQ4nJqS6I=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/bsd-3-clause.txt</key>
 		<data>
-		Sf2u4OEw5hSbeLSIMn47E0FRIwA=
+		c6zGIM4OKyZtngQqK+XOrN3eO+Q=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/bsl-1.0.txt</key>
 		<data>
-		ryZtOqrLYuQvInswlXm1SEgI3p8=
+		3YaOgRMmLGG+lhFXZIPMDu3csJw=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/cc-by-4.0.txt</key>
 		<data>
-		sxTwKn4dlRD8NOGB+a+3rw0NBxA=
+		wvvAIM1fyFQOIO083lQ6TlrSw6c=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/cc-by-sa-4.0.txt</key>
 		<data>
-		NDMiezhhJfihfX9XiUZId61toYU=
+		zkjg6Bj6F8CPeX6TPFM5ZsC56uo=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/cc0-1.0.txt</key>
 		<data>
-		msEHfTbKYIeKc4El02lNCQjga4Y=
+		hDJXvUhpHjoFs28qmFmqWujMzKA=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ecl-2.0.txt</key>
 		<data>
-		3cZsKjC7b0+SRVRq74mnSQmLl9c=
+		EnrhCsC5BY3CMJ3vr+ZyRwmzKzg=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/epl-1.0.txt</key>
 		<data>
-		tOCrl5BodI4Q+ZCNFWrdlQgHfgQ=
+		AJyTiOQP9zeMndPLbnXRV73zwpo=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/epl-2.0.txt</key>
 		<data>
-		vWuoGUsSoQu3O9RUxvKzAP1kXSw=
+		TCkAO4VoPwel1ySjfXnux38wqX4=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/eupl-1.1.txt</key>
 		<data>
-		rmeHWeFZFTnLPtwNKCXx5AqrxDk=
+		H3KaT7yGXAHmaRxiuArsqnL3F5I=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/eupl-1.2.txt</key>
 		<data>
-		lArSHzF7O5bGCbtSvUqZk641cQY=
+		2NuUu4srBy2dgAPYRhgdMOGUI+w=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/gpl-2.0.txt</key>
 		<data>
-		v4Ttw/9if/tOXTiiYqhm5zfneKM=
+		afeVIx/P+KtfKFldyZg09uXKACo=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/gpl-3.0.txt</key>
 		<data>
-		/llvFvAWChEH9gu+YjdJGiLVs3A=
+		pxEBNDSLM3yKxMDMP0wWWKq5C+E=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/isc.txt</key>
 		<data>
-		0sn0jkhdTuZun6u6tbRMO/ApKzw=
+		yyoqgqxOnIDuRAahWzwHIkaOVtg=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/lgpl-2.1.txt</key>
 		<data>
-		sfwOtUZZYD9JNdw/TPi1FtcZxqY=
+		E35f/l5XOBQkxX/oXMsCcCeZsCc=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/lgpl-3.0.txt</key>
 		<data>
-		qQDCIdH3Jphb+yd5F9zDHXKB2yg=
+		s001s8CsFOSupr2svvS8EBGOR78=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/lppl-1.3c.txt</key>
 		<data>
-		dpedxXv2v7NOcNhr2T9W4z3PZAA=
+		yr93GDTOI082kWgU8TosK9Ql3bg=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/mit.txt</key>
 		<data>
-		EC1zCDSIHD0UDvgWdj8lfPW7SqE=
+		b/aXbrJsvXu200Jl3BuDcLi1dz4=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/mpl-2.0.txt</key>
 		<data>
-		myTg0WcxSXyAwMgwEdCrPA/xXek=
+		V7llHBNTQJKeZAMaDgkCCGfZpcs=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ms-pl.txt</key>
 		<data>
-		CWRk4xbffTHRsZrp8PlpYtPbkZE=
+		XEptX+OSIOWFZHI8rJEpL6IJQx0=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ms-rl.txt</key>
 		<data>
-		xPjCX+dr/F01Ci5ajXeOKyk2DB4=
+		PCftE7Q1XUlNvQwfsaU2QNm8hLs=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ncsa.txt</key>
 		<data>
-		RjTQmaj67tp8gX5rqhkMPPOSQZM=
+		DnQE+CB3Z4fwjayOBZBks62xnm8=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ofl-1.1.txt</key>
 		<data>
-		WFc2wewUe7ynWg22Dny5a3Om+Vg=
+		4MOPl988UFAQD3/XeSzjIEPkIe8=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/osl-3.0.txt</key>
 		<data>
-		IZgcRN+fIXMcBc9Jk3oUtu316SI=
+		UknIUFHKLr7PxGLEW2YIkt7UpcU=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/postgresql.txt</key>
 		<data>
-		oG1/MkrGw4THjCzbduXiL/k1xd0=
+		WqVW3rj3pSGBymiBHB1G0zsrnTY=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/unlicense.txt</key>
 		<data>
-		7WzKiyCg0IoHVDsRs7XVZRRJESw=
+		RVezlinUlofj1d1fxosbYq4flXo=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/upl-1.0.txt</key>
 		<data>
-		jcWK9pceNjCUaPxbYBAgd0pfELA=
+		3dkr/oCfz0qCb6MF+S3ELhQAx1g=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/wtfpl.txt</key>
 		<data>
-		s4FFQGRFmb8by837CsSwTtpyew8=
+		7lwKY0fyVJRpqBxFbKTKF7dRiJ4=
 		</data>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/zlib.txt</key>
 		<data>
-		KlxUK5jVJbcq1JQ3Hk+EjXGW/qo=
+		TuJu6SHk8+OcGl3F74zaIY9tCx8=
 		</data>
 		<key>Resources/Main.storyboardc/Info.plist</key>
 		<data>
-		fwuNmhLMcYrZ4ckjqIi+79EMuOE=
+		vgycf4HDK95oYSXi/9KfUoevRF4=
 		</data>
 		<key>Resources/Main.storyboardc/MainMenu.nib</key>
 		<data>
-		GHTyNqwa/sGgLUKFK1w/egq6Jo8=
+		uzyHpamV3IzfFQ12VFwQR7bilNg=
 		</data>
 		<key>Resources/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib</key>
 		<data>
-		5H1AjgYEIrb0orB+bQuG6ICSQOc=
+		Oat4f+HSo6yBxSjQowmcxPLlavw=
 		</data>
 		<key>Resources/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib</key>
 		<data>
@@ -2522,7 +2646,7 @@
 		</data>
 		<key>Resources/UploaderResources/ProjectConfigs/ProjectConfigs-Urs.json</key>
 		<data>
-		B1HtkfZvaYLgeNO4Fa4S4WghAhQ=
+		n4sQahoY0l+/ojpuSelxN4d9OXs=
 		</data>
 		<key>Resources/UploaderResources/ProjectConfigs/ProjectConfigs.json</key>
 		<data>
@@ -2586,7 +2710,7 @@
 		</data>
 		<key>Resources/UploaderResources/Templates/PodsOverview/pods-overview.template.wiki</key>
 		<data>
-		r95avqJtdRMH2bA/PidbIsRN/6s=
+		q9owXYcTZIAoxIFiDVCAEO5gUW8=
 		</data>
 		<key>Resources/UploaderResources/Templates/PodsOverview/podsOverviewParentPage.template.wiki</key>
 		<data>
@@ -2647,7 +2771,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			eCsODJK3z5hvGsIbP1jiPhxI8EY=
+			ezLJBcw+GgjvwR55AvZUPkM1Id4=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.Commander" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2656,7 +2780,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			GgCqNCxWFhO5OvxlpgUg32bv4fE=
+			ZQx/H8959GYSx12cbevyKDSAoxw=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier "com.smartmobilefactory.metajson.analyser" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -2665,7 +2789,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			XjXWghEZXLM+rG8vvuk3ILbiz1Q=
+			2KvwELRr/ez5yrKLYQk8I5e2epc=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier "com.smartmobilefactory.metajson.confluence.uploader" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -2674,7 +2798,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			qOZpbp5LuHRWTBmunnr0Z7TwZzM=
+			WALMdoGFruKz7+qT//bVN5DWUW0=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier "com.smartmobilefactory.metajson.core" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -2683,7 +2807,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			JtgtH4UhRI6LtTL8Yv06n4xNOsw=
+			p5Co7BY68H00OgMuK36B05ljHPs=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.PathKit" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2692,7 +2816,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			EUHmqnTuBmMr3kDY6CP6EBAGh+o=
+			obHVZKwkD14ixklhPqcNECoYhyw=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.Stencil" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2701,7 +2825,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			98nALbSNfy8c1/VV2VLj1icQpnk=
+			ydbtx3L2igTrxB9FzAsQlToXLGQ=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftAppKit" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2710,7 +2834,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			M5K9c1LwlFOcGaeP/xqnKLLwvhE=
+			FCRa+4gKY7d9JJcyasSSsSsko+w=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftCore" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2719,7 +2843,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			yHFM20uq9HrZGVFVFb/SbPMezlg=
+			P3bmOSwSEW2DOTLEBEUoX4gt9VE=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftCoreData" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2728,7 +2852,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			rmwCPfBcHsU6pqxedGsOzcT0ydM=
+			XWkkBD8YauC/ZQbVxpOxP42QGCM=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftCoreFoundation" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2737,7 +2861,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			dp7cfz5CXpaBIEh9aGYHBOrAfwI=
+			aVW4e71/l4O7ybo04NGm3miyqVQ=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftCoreGraphics" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2746,7 +2870,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			swApri4dx1AnYKFehdtjhRNXgvo=
+			9P1G6i2R347MnUyjl0qdaMSwl6o=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftCoreImage" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2755,7 +2879,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			3lyPbWbtjhT7hQhNlF3jJUhvCIU=
+			WCSoEzuOXu49G1xCxn+DW67g5VE=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftDarwin" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2764,7 +2888,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			oR76RUllLB5+tEojNO9QbKFtnC0=
+			QT8FbUxLyVsK4ITmA5hmsbm4dgo=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftDispatch" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2773,7 +2897,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			PVnIqHGortf2am3GHN3n8lofbB4=
+			O0YXDll0xSD7w88STWGabfw38KY=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftFoundation" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2782,7 +2906,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			RWthoql9kVF+6lIvtA1s7eJTu8s=
+			9qcmK4Ag4VNgwoCNilTMJcydv6Q=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftIOKit" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2791,7 +2915,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			sQeCBi6+wuTghJF1zMsRLlUqs0E=
+			nGvYSIO1f2UiXCst/pIvbmKawBE=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftMetal" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2800,7 +2924,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			HDYL4JgeW/mkf0e/3AG3SpvJm/E=
+			MXSJQmAuAv4tSkkcAIuSuWYz1A4=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftObjectiveC" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2809,7 +2933,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			WG25N2JH3pZ9Ls6n9IWHSLOvv1s=
+			jjVbVbTmV/uWw+22Qawjj0xjoLg=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftQuartzCore" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2818,7 +2942,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			BBSgFGkVzdJlP0GY+Xc98cK+elM=
+			Zatskl10NM9D6p1GeWXiCUtagDY=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftXPC" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2827,7 +2951,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			rvhz4skMTmMadWYEMv+fBJLP/E8=
+			7bUAxGJDdhjc2gQnxwccglxnJH8=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.apple.dt.runtime.swiftos" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -2836,10 +2960,17 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			I0HsM/yyEYqYOXWBcfHOicz4rb8=
+			MOkg5XgAPRO7QCczl3oT/QSaXZQ=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier metajson and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/.gitignore</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			cn6lcllaZN0CnuwMoV/A7J5fhGWJzcpCi3iev9uGBcc=
+			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/.gitmodules</key>
 		<dict>
@@ -2859,7 +2990,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			3DJUraRxyZ99LrhqfZXzAvdnG9JUyQbNeIQWQNw8WJA=
+			O6qNkk76lNPrM5GXCVHmzvtxAx0L1/XoGJkXbMfdUuM=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/Unix/AUTHORS</key>
@@ -2887,14 +3018,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			H2IhdUw0PUFHWMGShVcRjs8LXRm6yYZu4rLe8gjUTeE=
+			Cnvnr0XifCZaxR+ixoq4DORXrvETc4JU2XOXWZW4xTU=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/Unix/NEWS</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			99K4HhS2Zx4OVbgx7mxpC47WpYXSXJe72jwK7qHhxsk=
+			fTJtTVNBkzHaGxL+qJWzVMKzT8rErwf+aEGWasJL0f8=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/Unix/README</key>
@@ -2908,14 +3039,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			v3gTE2KfRTz3v0WMjpd2cL7DU1FFH9fZGxznwdmoirc=
+			RVazqT1ItJrWl7DAiT7l5NQMHdqsdUJ6GjnJBZExw8M=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/Unix/cloc.1.pod</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			xkWJ+bhrmQawwKfQiyDBwapPxTmqyCzt6WHM+H2vtAU=
+			nkKIu8zemG9PcpFKu03qeUDyUgUVrrtb7PsVxNvkPhs=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/Unix/pod2man.mk</key>
@@ -2929,14 +3060,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			477CvfBJa1iMZg4zsJF7RAajPufPrvMntbN30YKFIJo=
+			wkx6NccHCnycVrSYyg4IF/UgcB80z+Psys/AeJT9gTA=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/Unix/t/01_opts.t</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			VzwJobZq3u2eTrGCSVQV+aPwkIPRvw+G3z9CEsFCpKE=
+			/z9Kda1K6es5nzuCUBUI57pd0ANpdDpFH3YhiCessvM=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/Unix/t/02_git.t</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ySSGk002BKTFnRD+jMpjUN3ulKEwldbhVK4xrchyY6E=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/Unix/why_this_directory_exists.txt</key>
@@ -2950,7 +3088,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			C0I1UTSzCl5oOl7IqLoXS2ULEePoVCNxTtQw6o5QfUU=
+			poD6Tgk24tMA1CQyE2UV/JQXV2w9Vt/mKGvJ3vYUlrk=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/sqlite_formatter</key>
@@ -3142,6 +3280,13 @@
 			J8sctHHTk49KzYWPMaePHf8P/MrSmPasG2k7gzVjs0k=
 			</data>
 		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/LogMain.re</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Sa/RkjL9wfITCU3r578RaLgR94mlLF3F80xdCn/qoBE=
+			</data>
+		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/Lookup.agda</key>
 		<dict>
 			<key>hash2</key>
@@ -3212,6 +3357,13 @@
 			cKCpoghMsNNRQAH1+pS6isQgFFqL1R5FngovhobBjL0=
 			</data>
 		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/SVG_logo.svg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			djWos5HHPsU4bnNswhJx2qsW7X3vMpaCrnhnFj1liSw=
+			</data>
+		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/Sample.mc</key>
 		<dict>
 			<key>hash2</key>
@@ -3252,6 +3404,13 @@
 			<key>hash2</key>
 			<data>
 			r+bWMuYz30ItRjcJX4DJEBqxn/UCG/cabQV0xYcAcJg=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/TypeScript_2.ts</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Pv6ObxOfk6jjR3TxmSxSY3eOlckKaVGh1sp10fA0egw=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/VisualBasic.Net.vba</key>
@@ -3527,11 +3686,25 @@
 			FWLW8mJfCMMSXT2wOhGdMlM+CpjIiS8RU9I9ZBFSods=
 			</data>
 		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/generate.fnl</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			cILtT0ZpeQLI9QTJGSyypd0UlCVjL3Utjx6BeqrIft8=
+			</data>
+		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/git_helpers.fish</key>
 		<dict>
 			<key>hash2</key>
 			<data>
 			HD03NJqKNWFBEifiHthN2Py8zZ56mFJYK7yY/pONtuQ=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/git_tests/contents_f647093e8.tar.gz</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			/6BhL1juN0vfAUxt8W0rImx2DSPcgGLBKLnLCGrDANU=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/glade-search-popover.ui</key>
@@ -3852,6 +4025,48 @@
 			LJAFG8YwkayBJrlj/hMPv5CmzDqRrR1ZFWXakAFdjck=
 			</data>
 		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/318/Rcs.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			0bfhWkogIcIE7HrQBucFLjHcxQTMAXjkDNpzAVAVT4Y=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/318/Réponse.cs</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			7g+ro8LF0h0VCwMRIPVPryx6HMzIxZFLROnWoQ9TvPY=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/327/example.smarty2</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			zjKxiuf3nnD3zeTPYHeui0GVBEMHp4pOqHYd3+35utw=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/327/lang.config</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			n7o2jWb82/+hvNYf0y+crBCAXCbu20JEhu5rje77Q3o=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/341/cItems.cls</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ZN4626tnSwpSkwuT5OOp9nHQUnCGvJGCF/naovP6HUM=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/issues/341/thesis.cls</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			PSy5PDWIFhQvzS72ygPOv7/F0CnkhY7BeWc5LsdCzRE=
+			</data>
+		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/julia.jl</key>
 		<dict>
 			<key>hash2</key>
@@ -3962,6 +4177,13 @@
 			<key>hash2</key>
 			<data>
 			aHTHgqXdG9l4wx/PV0bygmVvRKY6j8AMO27LcloybBU=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/inputs/reStructuredText.rst</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			SN0Dc6urJ67o0wtRS5oB+zkN/GZLIr03Lu1InQQCl5o=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/inputs/regex_limit.gradle</key>
@@ -4384,6 +4606,13 @@
 			vZ+mqVKZrEs2ovNYZwXew+Xc5mVzOe/HFvt829OBnMs=
 			</data>
 		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/LogMain.re.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			gsqGpdhhWHLLTVwuGlaKi8a5rvARvt09C6WPssmq8PM=
+			</data>
+		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/Lookup.agda.yaml</key>
 		<dict>
 			<key>hash2</key>
@@ -4454,6 +4683,13 @@
 			17/+3RJCbUbRvjOyp7+pcDx0iysjExPiWKPFHz5iy2A=
 			</data>
 		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/SVG_logo.svg.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ftmt65unqa1xcW3/kGPYisD0sin50F8syCxvMVTwroo=
+			</data>
+		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/Sample.mc.yaml</key>
 		<dict>
 			<key>hash2</key>
@@ -4494,6 +4730,13 @@
 			<key>hash2</key>
 			<data>
 			09PQfqH4hkuNYim92JcOK77DXQ9Ne62rouQEPtx6DoM=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/TypeScript_2.ts.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			aQiHOWEQ23OLm08MNifDEUK1W1Ljs+4+ztKmBQbymsU=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/VisualBasic.Net.vba.yaml</key>
@@ -4755,11 +4998,74 @@
 			X+FHHmMmBzN0SPrSfCDxbHF8y+D8kZEL2GikZj9OOZI=
 			</data>
 		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/generate.fnl.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Zl5lmVda/LxlPr+q7++AZrLNs3+knFU3kRqa5ay8Vo8=
+			</data>
+		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/git_helpers.fish.yaml</key>
 		<dict>
 			<key>hash2</key>
 			<data>
 			eTThr4UCz4JPQVg/WarmqQhTAgV8z/DIeJOzU/8P5po=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/contents_f647093e8.tar.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			8o5DfrGX1mzrScFopdRl9/atNZHx4xSrP5JDnxTjekI=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/count_and_diff.yaml.HEAD</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ODWJMYVNPzb6i9Vcasa5gLRTpz/DRPE4xBUAB0FQGs0=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/count_and_diff.yaml.HEAD~1</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			UpQN9vh5tYfPcOMXTQ0+0xMuVtPkEdQsnKJAcOUN/Z4=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/count_and_diff.yaml.diff.HEAD~1.HEAD</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			b6RZZiLJzpNLfAeUU8g4Fyiqp1S4b4jkZx/rf2vogak=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/d9b672643d.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Zk5P7Z1uaQ/A7DOolTeMyNhR/djAJnRaJwbaZTSHF9I=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/diff_contents_f647093e8.tar.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			J6Dqe4pogKe6Owkz910L6UZdbDyRdiL2DAU4BP5wWFQ=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/diff_f15bf042b_f647093e8b.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			7L8JxcmNadvjrNYXZtBE/7POgelS4TnfadE0VTqOeXU=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/git_tests/f647093e8be3.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Igyupd2ernM93XkJbjMI6KB4ucj20BK5xw2CyBZASHw=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/glade-search-popover.ui.yaml</key>
@@ -5140,6 +5446,20 @@
 			wvIrPnkO+VlROx3wHwTEu3dXo8NAQA3ZRPnzTuWDNp0=
 			</data>
 		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/issues/327/results.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			HbOkTwSj58+dJqvK5JO3jVyxBC492Tu9sqH7/R0AD9Y=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/issues/341/results.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			RHA/dGWiTjq3ABMMAfS03F/apNOs1P/+98f0Hmyuuuw=
+			</data>
+		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/julia.jl.yaml</key>
 		<dict>
 			<key>hash2</key>
@@ -5250,6 +5570,13 @@
 			<key>hash2</key>
 			<data>
 			qySemO6TPAi+AvmH3WbSqXkT4qoFGkPwCQ2D19RAhIw=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/cloc/tests/outputs/reStructuredText.rst.yaml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			OdQFMkJSTc6Win6wDB405Vf9lnbczyNsEEpEtIWztaY=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/cloc/tests/outputs/regex_limit.gradle.yaml</key>
@@ -5662,7 +5989,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			EYJ8lWaSR7WHSM0GRNpOIvdWK4daAVsHaLQiuS3ddvw=
+			UJ149x8wm2JW8pfaJlrF1qu/xb3cQ/mWiWTcXrQNjec=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/commands/diff.rb</key>
@@ -5690,7 +6017,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			XoezlTOC4ocpELkmVUPGLh1I2wc2BYWtmqMZ3sTr79g=
+			jGH4G9yWT/hIk5flcNmJODUub36qaurizIDvyKVplpg=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/hash_helper.rb</key>
@@ -5704,21 +6031,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			pBQXv8CiPpGZxVVLizDJBJBBxqbqvsHaXTHzkT8Pz9Y=
+			9vneB50qyK50MxFnbmzIfXWNyA8PyBSMaS3M92KnRP8=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/license_field.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			9Pobwyr/49WVsOzksn8EhLSGUu/cFIZsI1OfBzo8kRM=
+			+XjE7hnsSU70SVN4UbIjsIQL3bgnTpnhxIHg1RLmjmU=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/license_meta.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			hDAenL7Xx+BCTUM/PqU74wXIyrY3hp5vy8S7n2KvYD0=
+			64G6P1SbLn4Fd0bqXsgMnMkA/ORjAYKkB2V/9Rvg9H4=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/license_rules.rb</key>
@@ -5739,28 +6066,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			+cCEny+TPYnicnvRrI9LUAXooRDWk0uakFFOvgw6FOo=
+			cZKUdrgxG0neIsL2vbp299fAePi1WMHbkqYVpQV/1d4=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/cargo.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			7JK/yb1ArEcQpsfgdLoEDr34nFtJ5ZKiLr4He1Uuu4M=
+			yP7Ndi++SCOOPxMDpsTgC5uSWXyGCm676YcvI2UIeEE=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/copyright.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			vzT36jGbw3fyGo95hjT28VjoYiWuWp/O90V+fGNPaH4=
+			qfKSBvsr+l5HwnS+ShFzGGCCTuc4DwapDX5wx5mhTGU=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/cran.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			jaMwm+EbYeCC3wbwl4NN1QsItPx42Ge0leaC8fhrELQ=
+			+AX1e6O6VvQ5I1qZmiDneqEOoBqPA54MkRCldPHIVIg=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/dice.rb</key>
@@ -5774,56 +6101,56 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			pzcu0W85XK/Z0o4VotfamawfEBUJein4T/BIf0TTFrU=
+			a2FZy3eDIycUvXZNeoD+R3LERTEYkX/51B9pydv9CgE=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/exact.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			kEOIum2a7iNtICiVMLW5cfJCPwZosETutIk2A+kEzzQ=
+			UIvTl/aCMPQvgw0DvMYMV6uKkaQxlpE0hvFrLOmXS+s=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/gemspec.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			v1v5w/647pTuAmSO15+6lG3xmLqKOQ6nJ8EhXBe43Zk=
+			ipyagpmoF7Lmr3UmhR6WxeHE0xeFEPC8CTkOdB1n2U4=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/matcher.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			d+VNlyueMcJ0kQZHP5Qfhin03NJqKZh/KoRSBykHEuI=
+			ZY/IFg+XHdDB1u4Sf44I9wM3VqKh9X3jOSIlzAbhDq0=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/npm_bower.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			88LoI586o5lLhMaLQb2wglXUsmdyO7snOBwBPoLPYOA=
+			9GRtffT6SIpA8ufNrGzcRV59QPbbQdDhAbCi31htgY8=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/package.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			GVcIQ0MEupWBNy7r7qz2BPJokWpLBJtO/iBo5D+0oK4=
+			BmasxXYaPKH6Vgc8t7i3x1DCEPRmpe4aIkLWwEqw5eM=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/reference.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			D65gCYI7lmCxO18Ot56e9DAd+U8/Bq7IV+itJ1+8UQ0=
+			qMLVtgOJU8bnUBu5cgiL7SPm1ePPSpcrjzoiiXuk6bg=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/matchers/spdx.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DLMTo49FZpblhPXP6yOOPxQh4bgVHWi2A6DWqaVL9W4=
+			P20rKZ10Cpj7VJeSOkkaL8ihnvZJioEj7hW9HmO9b9s=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files.rb</key>
@@ -5837,28 +6164,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			q173BFuSX/UIDLjDX+/I1tQbtH0alIfCJQh8wC0pvE8=
+			yWRDUUMDNpcmRYyA4XUZ0597GznQQoTE92jquutEFp8=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files/package_manager_file.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Q0BIWi0U5s3knsd0SL+2mNe30PaPom6/GToAGsq3cyA=
+			yGT+BXfo8lxdvoLaSOaf77wfD40KNd4Bj7uGmUhURY4=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files/project_file.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			AhPWklKuo/pZOzlnfBgC2Lf2+I3en2atriF93P3Vv1M=
+			iAfuVQchyW7zfncd5TAIn/rusLLsDMc01doQqnccjDA=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/project_files/readme_file.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			qOX8+5XD8sCngLqMaEN7CYs6SR22c1A8tjrtLVcsBNI=
+			egfRBa02xJfcvPMnRgAAW1dOT89Bu0He6ratGR9G13I=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/projects.rb</key>
@@ -5872,7 +6199,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			p4l+7Ikp2+8L3oqW3CEhjkJvePsAvNpy9aAvujqJJno=
+			YGQCWJy0DdOxusqzHz0vFNPFOcf1AqgR9O/ugygiD7k=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/projects/git_project.rb</key>
@@ -5886,14 +6213,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			rYS/dM4yInlxHn+uC/ISMLlj9uov1lkVFXHSiQHyufQ=
+			TSamVnxh62HHiLjMoio2jNHDR+9i7hMNRsPRLv7Z9/I=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/projects/project.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			kN9UDAG7BPALlprYlDzGhWOGALKHDh9ob2ugAXJJLng=
+			zRppukP/lgtNXsSDO2uQef59bTDs7scS7zrTsGhouUc=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/lib/licensee/rule.rb</key>
@@ -5907,7 +6234,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			tpDw4W80yOSHpwBPvxOpBgkRDD3HEbog6cg5FuhLw6k=
+			iM08QaYa2LbziI8E/pB/4IBaLwz9BZbwqqaZvI2bGeI=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/licensee.gemspec</key>
@@ -5957,6 +6284,13 @@
 			<key>hash2</key>
 			<data>
 			OIqye4F5yOAejLrNZ/sjZXUZSZPVnRfhHhhPawocQCw=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/licensee/script/hash-licenses</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ey7UPERqPf58vNeEDCL38ACezsceRdiNKkuWbry/qDQ=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/script/license-path</key>
@@ -6096,7 +6430,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			SXP0ZBSPjaSMBSuctJqiBFUwxN0cdiOoGL6rhKCLsPI=
+			Dv/sb1jzhqXuaiVDnooID+lPy81ZikpdVKblPtUUfeM=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/fixtures/fcpl-modified-mpl/LICENSE</key>
@@ -6146,6 +6480,13 @@
 			<key>hash2</key>
 			<data>
 			47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+			</data>
+		</dict>
+		<key>Resources/AnalyserResources/licensee/spec/fixtures/license-hashes.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Ea1TO7laLeGtvIhOU5ByHbb5yTifaDqm4wB8u8I8IMw=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/fixtures/license-in-parent-folder/LICENSE.txt</key>
@@ -6271,7 +6612,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Mk8mDeBFWX0VbyfwGBq+PWC50Sd9DKkhNImkEG6ntGI=
+			6cP0tvXPGMoiIPoqRy3WBBTAOS8UCNEBJgw2PVKquts=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/commands/license_path_spec.rb</key>
@@ -6292,7 +6633,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			jlpoMHdywJj1ewRy9MyyCmzXCPQp3kMSOlqZkGZMvF0=
+			YZFjhGlaDQCyAt6vVvff362IElGzGJNGgSBQroKzhss=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/hash_helper_spec.rb</key>
@@ -6306,7 +6647,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			N+5B5BMUhjYbQFfTWiT79y5+VtAESoFJ6Hfduue45gw=
+			8gxTRp/n72cb8HHMidYQPjrhI05jR5lIga9lZlM9ah8=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/license_meta_spec.rb</key>
@@ -6327,7 +6668,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			dxjGXmtQlRdVWFGsUxeMDv6lMEHT4aCv28RzhsV+X6M=
+			8qNejRN9X1H84h/GTpwS8uv3eT0kVa8GWn++kbZAfNI=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/matchers/cabal_matcher_spec.rb</key>
@@ -6362,7 +6703,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			j70kLCMFSbQrixL/JgRQL+WO/PSOY/r5CjjKoV6JrcI=
+			v2FRMZNlZzU2r1A4/rGvDjDhsNOT7dSYyld/SbV5BRU=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/matchers/dist_zilla_matcher_spec.rb</key>
@@ -6425,7 +6766,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			NRH9QO9KjrsLvCd4uWiMLs8glllWuq/meLDJi1erxaw=
+			bOd6T0e0iSTxYSqtc/py7Vmo1cbLPNSHYZR8KGvfacs=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/project_files/package_info_spec.rb</key>
@@ -6446,7 +6787,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			oR7O71ae7j/yshqtM4wyCS3duWb852+5bGhwGOBK558=
+			UDlKvsXac1JmPm53lsqCBArX9ynaZs1oFIXsOelTBmI=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/licensee/project_spec.rb</key>
@@ -6481,14 +6822,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			gS3Gt++Dk82vObm40bJeIgP3UW5eIIDnmvo6arpHObQ=
+			igXSxn+IvhsUf4V81Xzjp3Sqk/wB+uIUh8JHXpX/yXE=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/spec/vendored_license_spec.rb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			laDsZshUWM0N9TCCZbp7sPNTHjd3AJW0BhF8WG+JLnM=
+			b0Uqm7jpLKECh4OXg5z5QcZ+foSRWJA1C7druLGPQSI=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_data/fields.yml</key>
@@ -6502,7 +6843,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			zf1k+nmpwjXsEMyANZthiUn/sGeDNdMyiNQTis2SAC4=
+			AZojde/L3aM2oGnxg/vIsMvAmqEAVegd+LPzeWO7R3A=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_data/rules.yml</key>
@@ -6516,259 +6857,259 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			EA28k+Vjp5crmWsnUzx4R1mG2xUY1zRuJs/YII1o2YU=
+			kZv+gnkH3+gJ4qr0aFRL8c444i8qpouZh85Zvi2izw4=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/agpl-3.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FO1cob+TRHXAZ8koy/TwexAyIiCEjacgOK9i6q7TyPc=
+			NvG5PF4/nRcC4vdSVA0vDzdnWGWxAHCprIrOpboo6J4=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/apache-2.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			xSOoKlVkfkiPLt1pHawjvSvMx19X4Uao9pG42KdvIzs=
+			ZrZqh+cVRrqUIFUHTRxleIOPo9vaFoeVU+HASn6zYJY=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/artistic-2.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			QRyt/QIvw5+O0Bw+uYNwx0vxkRJc77FlimHYPRlwD7M=
+			WBEFF0xXA+pWQLIvr1/6Lvk0afS6gnWvoMKz48uFKtE=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/bsd-2-clause.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			8KBFJDm3CLjA27ebwO3HGJIG7J44MGgSs0aRQu80zmI=
+			Stjwaa2QQwALaZ8I8y0IFYXTn5/yUrJRKipWIizcO1c=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/bsd-3-clause-clear.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			h1MKpVO6TFYnDhFbW3x2z3/rvjp4p3lz7nRG2QDhI5U=
+			aGoXPGYnToHlLKFbUYwsm04vBjWaoKX4SoEVnpLcHPg=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/bsd-3-clause.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			TQVLZQtET7wu1p/0bIc8W0RHCtQVXg/2RUZ7XXssXv0=
+			bDOHmjI47Mz7eXkbE2tEg7UvIzQUh2Y/sRqlTuF4JTk=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/bsl-1.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			pTFCKM/wtA2nhteyMgj+9m6LUYveyOa95gRq/e1IbdM=
+			gbfUn5C670XGDrDxje3j0sIptIUqudZEZ0rkIk1V3SQ=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/cc-by-4.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Zu+7+TbR3O+Fc9AC+HzUni4bLHXL8L4LMY6HCClchG0=
+			LdpNvMFM8OwIwXNelfREz1C2Vc1oQXWqeb5mxNFOJF8=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/cc-by-sa-4.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			B8KMCvJOAwP3jgyI1uZq7/n7jJFM5hVnFDC6A2NND1c=
+			iwZ65VB2qMKlDVtpsVWlgQDrg1HD5gCYx3mk6DcEZ6c=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/cc0-1.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			3H+IPSc4Rf2CgZm1/WoMp4jWIq0yUX+mr0p4GE/iYKM=
+			KxcULjbkUSh09G1ZNoNR0Rmw/kFODcyOhwNOhiC7lx0=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ecl-2.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			GCkbuxd94A6jeLfHeqoFdP8mwS3YFpnY/DIK7A2u7Os=
+			6sYHzFrWaO3TgpCvBB3JO0B2L2R0EMEEIDZ1xmul/TM=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/epl-1.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Q0UtlWtfxzRBLuvSdCfrYnexLAPWxPJr60A6WtdvIjA=
+			mDdoDGVBsjflKiH0dD8hpSIqqyAkiMni9AKI+6tRxTg=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/epl-2.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			wuG4tZ3BvFf/X358rGaUZykOtR0HvkCcajejeLfFcyo=
+			Mq/ucwB8LRF0HUZvtNDP0sio6zV7jYVTpwQAQumy5HQ=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/eupl-1.1.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			C80kXDaaHWKafIab8z8ALBn8MqA9Ldos1ro/aQJxCoA=
+			2AcfNH6rQ87Bklz54EY8T2kHoPuZUbakNUenQ3mtWgQ=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/eupl-1.2.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			uJvfeVvgJl5EVaTyq52QahhRQuYC+e2S2ae3B7kvTvY=
+			9EZxyzi6jhbJi2k774qFK0H74F5KyvvUDCeMYG8Nus4=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/gpl-2.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			vq2cEGBbKJA0SvjWCiK6mhI5mKUvrpRgoV0M5/N/uZo=
+			8ZG/oDBl/apNBcBWlfXITi62tOJk4+NY5ifGr63bS4M=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/gpl-3.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			0M5NAfAVqwIsJMj8msUs8sIjxr8YnkKvTX4PFU5pv0A=
+			kySoefJ0Z/2DbFK7MiEppm9Gwlj6e8KpX0blcID4hI8=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/isc.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			BbsIWsKAkKdRLgeJIEtnmlo2XhBUKv5NKLUZUz/068Q=
+			RZqplx7tnoS8m6jFfQvdJMahR0mwk06lG6cYMzfHVog=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/lgpl-2.1.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			TtxWLAKb09HvIKbD1UdTcjOiSo/109I1Oi3BrbYBtS4=
+			AJT/fStEUdIjHNDCCyeYV0wpvIHvdA1xmpkJqr2G1jM=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/lgpl-3.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			nNc9pkxL6bqtmRhyV1cSPfXQJvrVzrFj77v4T9PkmgY=
+			ynO4gQinLgYscbfLhf35BrDFQish8mwuRHsf6kRW7vU=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/lppl-1.3c.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			c4qUBMcHVF/wXXP1v++jWadmnGT2Vk8hkoHaUqVxZL8=
+			AsmRUH0eptA7SwrQXmg46nUQQiHSL7RMGdl4+SjaA0Y=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/mit.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZIepa5t1qRcWE92cY4FBpt+N6QTgygcU6NikxMkkrgc=
+			SpQOwgPdgc49yCLWJKYkGdh/2hHfwB6b0JsJLC9JqtY=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/mpl-2.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			6quW0xwzCur9SAQiWp/5tmeHBQw6n/XMhzRuIpIs9N8=
+			DTQDOVhhcUk9k6pwsntj3pd7du8KK1e3cJm5HHgaXys=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ms-pl.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			aFSZZHjVkM8xARyFq9HM2Ckf0i29KBKxJvEPzz02hZ0=
+			RQ729lB+pefWSFZF4wXHo6blmfzUJltLu3eQaE8rW9w=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ms-rl.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			GxkhF0viEdbvlKUaKJmIa5ap8Zphu4nsg+lYSSPE2ik=
+			n51KB4JlJbKdsCe/RUFuhw7tPYFRE7TjEntYacLN8WY=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ncsa.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			sHe5d7KLEiurgkq+ji7FvkwazoClhRweGFYvSjTBSCw=
+			ZlCru2EXdY2xXLIcl3hjsX2aCdYWWD4oCwEjSoC2bLc=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/ofl-1.1.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			zYclL/jSWxij7Fm3sa/6k3VdlODQA+BlmG++gGr6g9A=
+			pP22ktR+dNLOYr+9su/laBKAiBJaWjXYTm1oohhm+7E=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/osl-3.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Fbg/g6cIjLtx5sEUpwSYvNDpAW50jCZ2UF6f/BaTmYA=
+			+7Ovjz4gLOhLd/pojuq1IxmKh3tAwdDWQxNW4v4jX2Y=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/postgresql.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			uv+lA6daM8/0/9d65mg2rTuQW4H8mHrbsaEO0tOQFJI=
+			PPwU3EtsAftlLusNh6ZEUjndyd1EVxfTC90hUW5nXTA=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/unlicense.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			P1khpROPu+DicwQPuCffaDEPhh1x6an3BPPgbvGOFjM=
+			sM5QS1QSecL74ALhdbaiGx55diERIYUlZgQ8zqljXLw=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/upl-1.0.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			/Hmyix+vM3a0dkVR3lwtnE4xJhMsDWDwtLIZVXkBSo4=
+			k8n+k86ktB1ehtw4YiCsxLcwZylALgAwQCUKAms1Kjw=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/wtfpl.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			9Rs2Bal0IbXlQyN9XfR0iSZP9TnxuwZZm8iWZJX9hKE=
+			BxXeubkvQm32MDmlZsBcbzJzBpR5kWgw0JxSR9d7f3k=
 			</data>
 		</dict>
 		<key>Resources/AnalyserResources/licensee/vendor/choosealicense.com/_licenses/zlib.txt</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			bhrXPNEmFeEWo1oEBxl53cnocNdxu9IAb6ee4wciQfY=
+			moAVbwM4sHjRsc/RtbUtKpsErlOpaW+lUmyzFZJroH0=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/Info.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			8Q0f8kKZ3WtdwAWzGH6gwKcwRkGmcB1foG5RLovRFYw=
+			qEf7VU+K3+W4Y8+zGPrp+LTAUnRJh1GI9d4A7FxWt7A=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/MainMenu.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			76buNOCqg6npdKOj03+kpc/0RSEQDneNB/ZA54r+/sM=
+			YEL2Ku8bGLptcHZRqmvITz0CSPmIJKQIfirHX8hS4uk=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			PgSOLR43l2K28zy1FXrlKQVi/yHTTkLVagIQx1Abq6w=
+			7Ds5EfpR8uVlIkEgw8xv/SmZ4Cww0qK7SVHE2mGyTeo=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib</key>
@@ -7258,7 +7599,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			UgQEW3jOllMmMKbHjzFpPHrmlcZ1w7EXQhgFLZLkmDg=
+			VwXZ6GGpND3iVjwXAOJH4PT8c/YqqhuCgF8MXXLJ1SI=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/ProjectConfigs/ProjectConfigs.json</key>
@@ -7370,7 +7711,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Pn8LqNvIXSxsGFwmshozvLUzArfaZF+AX8jTyH1gjgM=
+			zVEHH1WH2luBsFOUrmVB7YVfK+sJaVHSJCuzBT9BJ3I=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/Templates/PodsOverview/podsOverviewParentPage.template.wiki</key>

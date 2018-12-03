@@ -5,9 +5,9 @@ module Licensee
 
       # While we could parse the DESCRIPTION file, prefer
       # a lenient regex for speed and security. Moar parsing moar problems.
-      LICENSE_FIELD_REGEX = /^license:\s*(.+)/i
-      PLUS_FILE_LICENSE_REGEX = /\s*\+\s*file\s+LICENSE$/i
-      GPL_VERSION_REGEX = /^GPL(?:-([23])|\s*\(\s*>=\s*([23])\s*\))$/i
+      LICENSE_FIELD_REGEX = /^license:\s*(.+)/i.freeze
+      PLUS_FILE_LICENSE_REGEX = /\s*\+\s*file\s+LICENSE$/i.freeze
+      GPL_VERSION_REGEX = /^GPL(?:-([23])|\s*\(\s*>=\s*([23])\s*\))$/i.freeze
 
       private
 
@@ -15,6 +15,7 @@ module Licensee
       # or `nil` if no license field is found
       def license_field
         return @license_field if defined? @license_field
+
         match = @file.content.match LICENSE_FIELD_REGEX
         @license_field = match ? match[1].downcase : nil
       end
@@ -30,6 +31,7 @@ module Licensee
       # Rerurns `nil` if no license is found
       def license_property
         return unless license_field
+
         # Remove The common + file LICENSE text
         license_key = license_field.sub(PLUS_FILE_LICENSE_REGEX, '')
         gpl_version(license_key) || license_key
