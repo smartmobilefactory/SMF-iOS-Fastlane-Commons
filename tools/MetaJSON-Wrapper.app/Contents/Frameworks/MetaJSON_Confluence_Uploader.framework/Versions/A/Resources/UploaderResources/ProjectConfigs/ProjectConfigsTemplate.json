@@ -1,0 +1,106 @@
+{
+	"confluence_server" : "https://smartmobilefactory.atlassian.net/wiki",
+	"cache_page_id": "",
+	"overview_pages": [
+
+		{
+			"type"	: "CocoaPodsOverviewParent",
+			"id"	: ""
+		},
+		{
+			"type"	: "CocoaPodsOverviewOutdated",
+			"id"	: ""
+		},
+		{
+			"type"	: "CocoaPodsOverviewCurrent",
+			"id"	: ""
+		},
+		{
+			"type"	: "CocoaPodsOverviewAll",
+			"id"	: ""
+		},
+		{
+			"type"	: "CocoaPodsOverviewFrameworks",
+			"id"	: ""
+		},
+		{
+			"type"	: "ProjectsOverview",
+			"id"	: ""
+		},
+		{
+			"type"	: "PodLicensesOverview",
+			"id"	: ""
+		},
+		{
+			"type"	: "CriticalLicensesOverview",
+			"id"	: ""
+		},
+		{
+			"type"	: "SinglePodsParent",
+			"id"	: ""
+		}
+	],
+
+	"projects": {
+
+		"apps": [
+
+			{
+				"project_name"			: "",
+				"project_short_name"	: "",
+				"branch"				: "",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "",
+				"ios_meta_page_id"		: "",
+				"codebeat_badge"		: "",
+				"codebeat_link"			: "",
+				"is_outdated"			: 
+			}
+		],
+
+		"ui_tests": [
+
+			{
+				"project_name"			: "",
+				"project_short_name"	: "",
+				"branch"				: "",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "",
+				"ios_meta_page_id"		: "",
+				"codebeat_badge"		: "",
+				"codebeat_link"			: "",
+				"is_outdated"			: 
+			}
+		],
+
+		"libraries": [
+			
+			{
+				"project_name"			: "",
+				"project_short_name"	: "",
+				"branch"				: "",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "",
+				"ios_meta_page_id"		: "",
+				"codebeat_badge"		: "",
+				"codebeat_link"			: "",
+				"is_outdated"			: 
+			}
+		],
+		
+		"frameworks": [
+			
+			{
+				"project_name"			: "",
+				"project_short_name"	: "",
+				"branch"				: "",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "",
+				"ios_meta_page_id"		: "",
+				"codebeat_badge"		: "",
+				"codebeat_link"			: "",
+				"is_outdated"			: 
+			}
+		]
+	}
+}

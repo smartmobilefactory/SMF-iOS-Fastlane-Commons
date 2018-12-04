@@ -1,0 +1,11 @@
+h4. Table
+
+|| \# || Pods || Latest || Used || Integration Type || License ||
+{% for pod in pods %}{{ pod }}{% endfor %}
+
+h4. Key
+
+|| Status || Description
+| {{ '{' }}status:colour=Green|title=Green{{ '}' }} | The integrated Pod matches the newest version (without pre releases)
+| {{ '{' }}status:colour=Red|title=Red{{ '}' }} | The integrated Pod doesn't match the newest version (without pre releases)
+| {{ '{' }}status:colour=Blue|title=Blue{{ '}' }} | The Pod is either integrated with a specific fixed or maximum version or based on a special branch

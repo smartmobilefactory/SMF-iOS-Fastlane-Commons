@@ -1,0 +1,2 @@
+{% if libraries %}{% if not single %}|| \# || Project {% endif %}|| Xcode || Language || Fastlane Jobs || CocoaPods || SwiftLint || MetaJSON || SMF-Commons || Codebeat || CPCL ||
+{% if not single %}{% for library in libraries %}{{ library }}{% endfor %}{% else %}{{ libraries.first }}{% endif %}{% endif %}

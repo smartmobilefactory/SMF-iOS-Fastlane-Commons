@@ -1,0 +1,2 @@
+{% if uiTests %}{% if not single %}|| \# || Project {% endif %}|| Xcode || Language || Fastlane Jobs || CocoaPods || Pods Licenses || SwiftLint || MetaJSON || SMF-Commons || ATS || Bitcode || IDFA || Codebeat || CPCL || UI Optimization ||
+{% if not single %}{% for uiTest in uiTests %}{{ uiTest }}{% endfor %}{% else %}{{ uiTests.first }}{% endif %}{% endif %}
