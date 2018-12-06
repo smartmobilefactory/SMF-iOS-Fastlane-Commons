@@ -35,46 +35,46 @@ The build variants configuration is nested in the root level key `build_variants
 
 |Key|Default Value|Mandatory|Description|
 |---|---|---|---|
-|attach\_build\_outputs\_to\_github|`false`|||
+|attach\_build\_outputs\_to\_github|`false`||If enabled, the build .ipa and simulator .app will be attached to the GitHub release. This is needed for the separated UI test setup. |
 |bundle\_identifier|`nil`|☑️ (for Apps)||
-|code\_signing\_identity| `nil` |☑️ (for Apps)||
-|disable\_concurrent\_testing|`false`|||
-|download\_provisioning\_profiles|`true`|||
-|export\_method|`nil`|||
-|generateMetaJSON|`true`|||
-|hockeyapp\_id|`nil`|||
+|code\_signing\_identity| `nil` |☑️ (for Apps)|The name of the signing identity. E.g. "iPhone Distribution: Smart Mobile Factory GmbH"|
+|disable\_concurrent\_testing|`false`||Disable concurrent testing of UI tests. |
+|download\_provisioning\_profiles|`true`||If disabled, the provisioning profiles won't be downloaded during the build job.|
+|export\_method|`nil`||The Xcode archive export method to use. This needs to be set for special cases only. |
+|generateMetaJSON|`true`||If disabled, MetaJSON won't analyze the project. |
+|hockeyapp\_id|`nil`||The identifier of the HockeyApp project which should be used to upload the app to.|
 |icloud\_environment|`"Development"`|||
-|itc\_apple\_id|`nil`|||
-|itc\_skip\_version\_check|`true`|||
-|itc\_skip\_waiting|`false`|||
-|itc\_team\_id|`nil`|||
-|keychain\_enabled|`true`|||
-|mailgun\_enabled|`true`|||
-|phrase\_app\_script|`nil`|||
-|platform|original platform|||
-|pods\_specs\_repo|`nil`|☑️ (for Pods)||
-|podspec\_path|`nil`|☑️ (for Pods)||
-|pr.archive\_ipa|`true` (App), `false` (Pod)|||
-|pr.perform\_unit\_test|`true`|||
-|pr.run\_danger|`true`|||
-|push\_generated\_code|`false` (no PhraseApp), `true` (with PhraseApp snyc)|||
-|scheme|`nil`|☑️ (for Apps)||
-|should\_clean\_project|`true` (single or first build variant), `false` (second or later build variant in a row)|||
-|slack\_enabled|`true`|||
-|sparkle.signing\_identity||||
-|sparkle\_s3aws\_bucket|`nil`|||
-|target|`nil`|||
-|team\_id|`nil`|☑️ (for Apps)||
-|tests.device\_to\_test\_against|`nil`|||
-|ui\_test.target.bundle\_identifier|`nil`|||
-|ui\_test\_triggering\_github\_releases|`nil`|||
-|unit\_test\_scheme|scheme of the build variant|||
-|upload\_bitcode|`true`|||
-|upload\_itc|`false`|||
-|use\_hockey|`true`|||
-|use\_sparkle|`false`|||
-|use\_wildcard\_signing|`false`|||
-|xcconfig\_name|`nil`|||
+|itc\_apple\_id|`nil`||The Apple ID to use for App Store Connect.|
+|itc\_skip\_version\_check|`true`||If enabled, the build won't check if there is a matching editable app version present in App Store Connect. |
+|itc\_skip\_waiting|`false`||If enabled, the build job won't wait until App Store Connect processed the .ipa.|
+|itc\_team\_id|`nil`||The team id to use for App Store Connect.|
+|keychain\_enabled|`true`||If disabled, the Jenkins keychain won't be unlocked. This should be done if you want to run Fastlane locally without the Jenkins environment.|
+|mailgun\_enabled|`true`||If disabled, no mails will be sent with Mailgun. This should be done if you want to run Fastlane locally without the Jenkins environment.|
+|phrase\_app\_script|`nil`||The path to the script file which syncs the Strings with PhraseApp. E.g. "fastlane/sync\_hidrive\_strings.sh".|
+|platform|original platform|☑️ (for macOS)|Can be used to modify the platform. This has to be done for macOS apps: "mac".|
+|pods\_specs\_repo|`nil`|☑️ (for private Pods)|The url of the CocoaPods Specs Repo. This has to be set if it's not the official CocoaPods Specs Repo.|
+|podspec\_path|`nil`|☑️ (for Pods)|The path to the Podspec file.|
+|pr.archive\_ipa|`true` (App), `false` (Pod)||If enabled, a pull request check will archive the app to test if this is possible.|
+|pr.perform\_unit\_test|`true`||If enabled, a pull request check will perform the unit tests.|
+|pr.run\_danger|`true`||If enabled, a pull request check will run Danger.|
+|push\_generated\_code|`false` (no PhraseApp), `true` (with PhraseApp snyc)||If enabled, code which changed after a project was built will be committed. This needs be done if e.g. PhraseApp is combined with R.swift as code might change after the Strings have been synced.|
+|scheme|`nil`|☑️ (for Apps)|The scheme which should be build.|
+|should\_clean\_project|`true` (single or first build variant), `false` (second or later build variant in a row)||If disabled, xcodebuild won't be told to clean before building an app.|
+|slack\_enabled|`true`||If disabled, no Slack notifications will be sentn. This should be done if you want to run Fastlane locally without the Jenkins environment.|
+|sparkle.signing\_identity|||The signing identity to use for Sparkle.|
+|sparkle\_s3aws\_bucket|`nil`||The S3 bucket to use for Sparkle.|
+|target|`nil`||The target which is built. This is needed in some cases to read the version number.|
+|team\_id|`nil`|☑️ (for Apps)|The Team ID to use for the Apple Member Center.|
+|tests.device\_to\_test\_against|`nil`||Can be used to specify the target device for unit tests. This can be useful if e.g. only an iPad should be used for tests.|
+|ui\_test.target.bundle\_identifier|`nil`||The bundle identifier of the app which a separated UI test should target.|
+|ui\_test\_triggering\_github\_releases|`nil`||A regex which is used to match GitHub releases which are intended to trigger a separated UI test.|
+|unit\_test\_scheme|scheme of the build variant||The scheme to use if unit tests are performed. This manual information is only needed in special cases.|
+|upload\_bitcode|`true`||If disabled, Bitcode won't be uploaded.|
+|upload\_itc|`false`||If enabled, the .ipa will be uploaded to App Store Connect.|
+|use\_hockey|`true`||If disabled, the .ipa won't be uploaded to HockeyApp|
+|use\_sparkle|`false`||If enabled, the release will be distributed with Sparkle.|
+|use\_wildcard\_signing|`false`||If enabled, the Wildcard provisioning profile will be downloaded instead of one which matches the bundle identifier.|
+|xcconfig\_name|`nil`||The name of the xcconfig to build. This is needed if xcconfig files are used instead of targets.|
 
 ## Extension Suffixes
 
