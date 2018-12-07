@@ -1,0 +1,44 @@
+{
+	"project": {
+		"project_name"				: "HiDrive",
+		"slack_channel"				: "strato",
+		"fastlane_commons_branch"	: "master"
+	},
+	"build_variants": {
+		"hidrive_alpha": {
+			"scheme"							: "HiDrive-Alpha-InHouse",
+			"bundle_identifier"					: "com.smartmobilefactory.enterprise.hidrive.alpha",
+			"hockeyapp_id"						: "0123456789101112131415161718",
+			"team_id"							: "ABCDEFGHIJ",
+			"code_signing_identity"				: "iPhone Distribution: Smart Mobile Factory GmbH",
+			"phrase_app_script"					: "fastlane/sync-hidrive-with-phraseapp.sh",
+			"attach_build_outputs_to_github"	: true
+		},
+		"hidrive_beta": {
+			"scheme"				: "HiDrive-Beta-InHouse",
+			"bundle_identifier"		: "com.smartmobilefactory.enterprise.hidrive.beta",
+			"hockeyapp_id"			: "1234567891011121314151617180",
+			"team_id"				: "JZ2H644EU7",
+			"code_signing_identity"	: "iPhone Distribution: Smart Mobile Factory GmbH"
+		},
+		"hidrive_live_appstore": {
+			"scheme"				: "HiDrive-Live-AppStore",
+			"bundle_identifier"		: "de.strato.hidrive",
+			"hockeyapp_id"			: "2345678910111213141516171801",
+			"team_id"				: "ABCDEFGHIJ",
+			"code_signing_identity"	: "iPhone Distribution: STRATO AG",
+			"upload_itc"			: true,
+			"upload_bitcode"		: false,
+			"itc_apple_id"			: "development+strato@smfhq.com",
+			"icloud_environment"	: "Production"
+		}
+	},
+	"extensions_suffixes": [
+		"uploadextension",
+		"documentproviderextension",
+		"documentprovider",
+		"filedocumentproviderextension",
+		"fileextension",
+		"documentextension"
+	]
+}

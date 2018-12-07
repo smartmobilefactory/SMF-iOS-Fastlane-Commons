@@ -1,66 +1,52 @@
-# SMF-iOS-Fastlane-Commons
+# What is needed in a project?
 
-This repo contains the shared Fastlane code which is used across the iOS and macOS apps of Smart Mobile Factory GmbH.
+As most of the logic is implemented in Fastlane Commons, the project doesn't need to contain that much logic.
 
-# Goal
+Besides some mandatory files from Fastlane most importantly the Fastlane Commons configuration is needed:
 
-There is one vision behind Fastlane Commons:
+* `fastlane` folder
+* `fastlane/Config.json`
+* `fastlane/Fastfile`
+* `fastlane/Appfile`
+* `fastlane/Dangerfile`
+* `fastlane/Gemfile`
 
-> Provide all Continuous Integration features we use to all apps and implement features and fixes only once
+## fastlane/Config.json
+This file contains the custom configuration of Fastlane Commons. The filename can be changed as it has to be provided in the Fastfile. A detailed documentation of the configuration can be found [here](Configuration.md).
 
-Result of this vision are a few rules / concepts:
+[Example file](project_example/Appfile)
 
-### Commons first
-Each project should contain as less Fastlane logic as possible. If new features are needed in a project, they should be placed in almost all cases in the shared Commons code instead of a project itself. It's very likely that a feature will also be needed in other projects.
+## fastlane/Fastfile
+This file is an pfficial Fastlane file. It needs to be used to add the lanes which are accessable from the outside - e.g. from Jenkins.
+There is some mandatory logic needed for Fastlane Commons:
 
-Some exceptions are eg. features which are needed for Strato for their UI tests usage. In this case it's clear that only one project is affected, there is no intersection with our environment and the client shouldn't need our Commons repo to do his things.
+* The lane `fastlane_config_path` which returns the path to the configuration JSON
+* The import of Fastlane Commons in `before_all`
 
-### Opt-out
+Additionally only the lanes `check_pr` and `deploy_app` or `publish_pod` are needed in most projects.
 
-The projects shouldn't be updated to support new features or bugfixes if possible. This is archived by referencing to a branch in Fastlane Commons instead of a specific release or commit. The Fastfile of a project downloads the shared Commons as first step during the execution. This ensures that always the newest codebase is used.
-  
-### Config.json instead of function parameters
+As most of the logic is configured in the configuration JSON and implemented in Fastlane Commons, the lanes only need to:
 
-To allow the opt-out idea, the configuration should be done in the Config.json instead of passing parameters to Fastlane functions.
-It's unclear which configuration is needed in which place in the future. By storing and accessing it in one central place, we can use it in any place which knows where the Congig.json is stored.
+* set the builds variant
+* activate notifications (if wanted)
+* set the git branch (in some cases)
+* call a Fastlane Commons flow
 
-If we would only provide the parameters which are currently needed, we would need to modify the projects once the content is also needed somewhere else deep inside the Fastlane Commons codebase.
+Besides this default setup it's still possible to create whatever lanes and logic you want, as long as Fastlane supports it.
 
-## Features
+[Example file](project_example/Fastfile)
 
-### Pull Requests
+## fastlane/Appfile
+This file is an official Fastlane file. It can be used to set e.g. credentials. In most projects which is only used to set the Apple ID for the Member Center.
 
-- [x] Builds iOS and macOS apps to verify that they can be compiled
-- [x] Builds framework targets to verify that they can be compiled
-- [x] Performs unit tests
-- [x] Runs Danger
-- [x] Collects project insights which are added to MetaJSON
+[Example file](project_example/Appfile)
 
-### Deploying
+## fastlane/Dangerfile
+This is an official Danger file. It normally contains the logic to run Danger. As most of our Danger logic in implemented in Fastlane Commons, the projects Dangerfile will normally only contain the import of the Fastlane Commons Dangerfile and maybe some custom rules afterwards.
 
-- [x] Builds iOS and macOS apps
-- [x] Uploads apps to HockeyApp and App Store Connect
-- [x] Builds CocoaPod Pods
-- [x] Releases CocoaPod Pods in the official and private Spec repos
-- [x] Creates special build outputs for UI tests
-- [x] Creates release notes based on the commit history
-- [x] Syncs Strings with PhraseApp
-- [x] Sends notifications via mail and HipChat with status updates
-- [x] Collects project insights which are added to MetaJSON
+[Example file](project_example/Dangerfile)
 
-### Dedicated UI-Test projects
+## fastlane/Gemfile
+The Gemfile is needed declare the dependencies for Danger. Normally a project shouldn't need to change anything of the default file content. You can take a look in the Example file to see what is needed.
 
-- [x] Performs UI tests which are stored in a separated project
-- [x] Sends notifications via mail and HipChat with status updates
-
-
-Most logic is written in Ruby, only some precompiled code is written in Java and Swift.
-
-## Documentation
-
-The documentation will split into the following areas:
-
-- Flow
-- Configuration
-- Steps
-- What is needed in a project?
+[Example file](project_example/Gemfile)

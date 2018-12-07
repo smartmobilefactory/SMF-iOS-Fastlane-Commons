@@ -1,0 +1,10 @@
+source "https://rubygems.org"
+
+gem 'fastlane'
+gem 'cocoapods'
+
+gemfile_local = './.fastlane-smf-commons/danger/Gemfile'
+
+if File.readable?(gemfile_local)
+  instance_eval(File.read(gemfile_local))
+end

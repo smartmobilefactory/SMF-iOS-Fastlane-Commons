@@ -1,66 +1,86 @@
-# SMF-iOS-Fastlane-Commons
-
-This repo contains the shared Fastlane code which is used across the iOS and macOS apps of Smart Mobile Factory GmbH.
+# Configuration
 
 # Goal
 
-There is one vision behind Fastlane Commons:
+A huge part of the logic to support the [Fastlane commons vision](../README.md#Goal) is the configuration json. It contains all the information which is needed to support different types of projects, enable or disables features in flows etc. As it's stored in a special file - which can be accessed everywhere in Fastlane Commons - it's easy to add new features without changing many lines of source code - e.g. in the projects Fastfile.
 
-> Provide all Continuous Integration features we use to all apps and implement features and fixes only once
+# Structure
 
-Result of this vision are a few rules / concepts:
+The configuration is stored in a JSON file. There is a set of available keys, which you can find here. In general there is a separation of things which are depended on the complete project and depended on a single build variant.
 
-### Commons first
-Each project should contain as less Fastlane logic as possible. If new features are needed in a project, they should be placed in almost all cases in the shared Commons code instead of a project itself. It's very likely that a feature will also be needed in other projects.
+## Project
 
-Some exceptions are eg. features which are needed for Strato for their UI tests usage. In this case it's clear that only one project is affected, there is no intersection with our environment and the client shouldn't need our Commons repo to do his things.
+The project configuration is nested in the root level key `project`.
 
-### Opt-out
+|Key|Default Value|Mandatory|Description|
+|---|---|---|---|
+|project\_name|`nil`|☑️|The name of the Xcode project and / or workspace files|
+|slack\_channel|`nil`||The name of the Slack channel (without `#`)|
+|fastlane\_commons\_branch|`nil`|☑️|The branch which will be used to download Fastlane Commons|
+|tag\_prefix|`"build/#{build\_variant}/"` (App) or `"releases/"` (Pod)||The prefix which is added to the Git tag of an app or Pod release|
+|tag\_suffix|`nil`||The suffix which is added to the Git tag of an app or Pod release|
+|github\_repo\_path|`nil`|☑️ (for UI Tests)| The GitHub repo path (<organisation/user>/<repo name>) of the project which contains the .app and .ipa to test against|
 
-The projects shouldn't be updated to support new features or bugfixes if possible. This is archived by referencing to a branch in Fastlane Commons instead of a specific release or commit. The Fastfile of a project downloads the shared Commons as first step during the execution. This ensures that always the newest codebase is used.
-  
-### Config.json instead of function parameters
+## Danger
 
-To allow the opt-out idea, the configuration should be done in the Config.json instead of passing parameters to Fastlane functions.
-It's unclear which configuration is needed in which place in the future. By storing and accessing it in one central place, we can use it in any place which knows where the Congig.json is stored.
+The project configuration is nested in the root level key `danger_config`.
 
-If we would only provide the parameters which are currently needed, we would need to modify the projects once the content is also needed somewhere else deep inside the Fastlane Commons codebase.
+Each feature from Danger can be en- and disabled. You can see [default Danger config](../danger/danger_defaults.json) to learn about the existing keys and features. The Danger configuration of the project will be merged with the default configuration. If you only need to modify e.g. one feature, you can only declare this one and still all the other default values will be used.
 
-## Features
+If you need to have a special configuration for one build variant, you can create a custom root level key and declare its name in the build variant key `danger_config_name`. Otherwise `danger_config` is used.
 
-### Pull Requests
+## Build Variants
 
-- [x] Builds iOS and macOS apps to verify that they can be compiled
-- [x] Builds framework targets to verify that they can be compiled
-- [x] Performs unit tests
-- [x] Runs Danger
-- [x] Collects project insights which are added to MetaJSON
+The build variants configuration is nested in the root level key `build_variants`. You need to add the build variants as map.
 
-### Deploying
+|Key|Default Value|Mandatory|Description|
+|---|---|---|---|
+|attach\_build\_outputs\_to\_github|`false`||If enabled, the build .ipa and simulator .app will be attached to the GitHub release. This is needed for the separated UI test setup. |
+|bundle\_identifier|`nil`|☑️ (for Apps)||
+|code\_signing\_identity| `nil` |☑️ (for Apps)|The name of the signing identity. E.g. "iPhone Distribution: Smart Mobile Factory GmbH"|
+|disable\_concurrent\_testing|`false`||Disable concurrent testing of UI tests. |
+|download\_provisioning\_profiles|`true`||If disabled, the provisioning profiles won't be downloaded during the build job.|
+|export\_method|`nil`||The Xcode archive export method to use. This needs to be set for special cases only. |
+|generateMetaJSON|`true`||If disabled, MetaJSON won't analyze the project. |
+|hockeyapp\_id|`nil`||The identifier of the HockeyApp project which should be used to upload the app to.|
+|icloud\_environment|`"Development"`|||
+|itc\_apple\_id|`nil`||The Apple ID to use for App Store Connect.|
+|itc\_skip\_version\_check|`true`||If enabled, the build won't check if there is a matching editable app version present in App Store Connect. |
+|itc\_skip\_waiting|`false`||If enabled, the build job won't wait until App Store Connect processed the .ipa.|
+|itc\_team\_id|`nil`||The team id to use for App Store Connect.|
+|keychain\_enabled|`true`||If disabled, the Jenkins keychain won't be unlocked. This should be done if you want to run Fastlane locally without the Jenkins environment.|
+|mailgun\_enabled|`true`||If disabled, no mails will be sent with Mailgun. This should be done if you want to run Fastlane locally without the Jenkins environment.|
+|phrase\_app\_script|`nil`||The path to the script file which syncs the Strings with PhraseApp. E.g. "fastlane/sync\_hidrive\_strings.sh".|
+|platform|original platform|☑️ (for macOS)|Can be used to modify the platform. This has to be done for macOS apps: "mac".|
+|pods\_specs\_repo|`nil`|☑️ (for private Pods)|The url of the CocoaPods Specs Repo. This has to be set if it's not the official CocoaPods Specs Repo.|
+|podspec\_path|`nil`|☑️ (for Pods)|The path to the Podspec file.|
+|pr.archive\_ipa|`true` (App), `false` (Pod)||If enabled, a pull request check will archive the app to test if this is possible.|
+|pr.perform\_unit\_test|`true`||If enabled, a pull request check will perform the unit tests.|
+|pr.run\_danger|`true`||If enabled, a pull request check will run Danger.|
+|push\_generated\_code|`false` (no PhraseApp), `true` (with PhraseApp snyc)||If enabled, code which changed after a project was built will be committed. This needs be done if e.g. PhraseApp is combined with R.swift as code might change after the Strings have been synced.|
+|scheme|`nil`|☑️ (for Apps)|The scheme which should be build.|
+|should\_clean\_project|`true` (single or first build variant), `false` (second or later build variant in a row)||If disabled, xcodebuild won't be told to clean before building an app.|
+|slack\_enabled|`true`||If disabled, no Slack notifications will be sentn. This should be done if you want to run Fastlane locally without the Jenkins environment.|
+|sparkle.signing\_identity|||The signing identity to use for Sparkle.|
+|sparkle\_s3aws\_bucket|`nil`||The S3 bucket to use for Sparkle.|
+|target|`nil`||The target which is built. This is needed in some cases to read the version number.|
+|team\_id|`nil`|☑️ (for Apps)|The Team ID to use for the Apple Member Center.|
+|tests.device\_to\_test\_against|`nil`||Can be used to specify the target device for unit tests. This can be useful if e.g. only an iPad should be used for tests.|
+|ui\_test.target.bundle\_identifier|`nil`||The bundle identifier of the app which a separated UI test should target.|
+|ui\_test\_triggering\_github\_releases|`nil`||A regex which is used to match GitHub releases which are intended to trigger a separated UI test.|
+|unit\_test\_scheme|scheme of the build variant||The scheme to use if unit tests are performed. This manual information is only needed in special cases.|
+|upload\_bitcode|`true`||If disabled, Bitcode won't be uploaded.|
+|upload\_itc|`false`||If enabled, the .ipa will be uploaded to App Store Connect.|
+|use\_hockey|`true`||If disabled, the .ipa won't be uploaded to HockeyApp|
+|use\_sparkle|`false`||If enabled, the release will be distributed with Sparkle.|
+|use\_wildcard\_signing|`false`||If enabled, the Wildcard provisioning profile will be downloaded instead of one which matches the bundle identifier.|
+|xcconfig\_name|`nil`||The name of the xcconfig to build. This is needed if xcconfig files are used instead of targets.|
 
-- [x] Builds iOS and macOS apps
-- [x] Uploads apps to HockeyApp and App Store Connect
-- [x] Builds CocoaPod Pods
-- [x] Releases CocoaPod Pods in the official and private Spec repos
-- [x] Creates special build outputs for UI tests
-- [x] Creates release notes based on the commit history
-- [x] Syncs Strings with PhraseApp
-- [x] Sends notifications via mail and HipChat with status updates
-- [x] Collects project insights which are added to MetaJSON
+## Extension Suffixes
 
-### Dedicated UI-Test projects
+The extension suffixes are nested in the root level key `extensions_suffixes`. It's an array which should contain the app extension bundle identifier suffixes.
 
-- [x] Performs UI tests which are stored in a separated project
-- [x] Sends notifications via mail and HipChat with status updates
+If you have an app with the bundle identifier `my.app` and an extensions `my.app.findersync`, the extension suffix would be `findersync`. This is needed to let Fastlane download the correct provisioning profiles.
 
 
-Most logic is written in Ruby, only some precompiled code is written in Java and Swift.
 
-## Documentation
-
-The documentation will split into the following areas:
-
-- Flow
-- Configuration
-- Steps
-- What is needed in a project?
