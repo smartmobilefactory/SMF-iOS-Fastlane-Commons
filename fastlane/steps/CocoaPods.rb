@@ -32,7 +32,7 @@ private_lane :smf_pod_push do |options|
   sh "pod --version"
 
   if specs_repo
-  	sh "cd #{workspace_dir}; pod repo push #{specs_repo} #{podspec_path} --allow-warnings"
+  	sh "cd #{workspace_dir}; pod repo push #{specs_repo} #{podspec_path} --allow-warnings --skip-import-validation"
   else
   	sh "cd #{workspace_dir}; pod trunk push #{podspec_path}"
   end
