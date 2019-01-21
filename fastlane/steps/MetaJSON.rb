@@ -30,7 +30,7 @@ private_lane :smf_generate_meta_json do |options|
     end
 
     # Create and commit the MetaJSON files
-    sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch #{branch} --output \"#{workspace_dir}/.MetaJSON\" --credentials \"#{configurationFilePath}\" --automatically --verbose || true"
+    sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch #{branch} --output \"#{workspace_dir}/.MetaJSON\" --credentials \"#{configurationFilePath}\" --automatically --verbose 2>/dev/null || true"
   
     File.delete(configurationFilePath)
   end
