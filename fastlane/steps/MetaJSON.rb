@@ -73,7 +73,13 @@ def smf_run_linter
     target_path = "#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
 
     # Run SwiftLint and save the output as JSON
-    system "cd #{workspace}; Pods/SwiftLint/swiftlint lint --reporter json > \"#{source_path}\""
+    system "cd #{workspace}"
+    swiftlint_path = Dir["./**/SwiftLint/portable_swiftlint/swiftlint"].first
+    if ( ! File.exists?(swiftlint_path))
+      swiftlint_path = "Pods/SwiftLint/swiftlint"
+    end 
+
+    system "#{swiftlint_path} lint --reporter json > \"#{source_path}\""
 
     # Removes the workspace part
     workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
