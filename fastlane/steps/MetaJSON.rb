@@ -74,7 +74,7 @@ def smf_run_linter
 
     # Run SwiftLint and save the output as JSON
     system "cd #{workspace}"
-    swiftlint_path = Dir["./**/SwiftLint/portable_swiftlint/swiftlint"].first
+    swiftlint_path = "Submodules⁩/⁨SMF-iOS-CommonProjectSetupFiles/SwiftLint/portable_swiftlint/swiftlint"
     if ( ! File.exists?(swiftlint_path))
       swiftlint_path = "Pods/SwiftLint/swiftlint"
     end 
