@@ -69,30 +69,29 @@ def smf_run_linter
 
   begin
 
-    source_path = "build/reports/swiftlint.json"
+    source_path = "#{workspace}/build/reports/swiftlint.json"
     target_path = "#{$METAJSON_TEMP_FOLDERNAME}/swiftlint.json"
 
     # Run SwiftLint and save the output as JSON
-    system "cd #{workspace}"
-    swiftlint_path = "Submodules⁩/⁨SMF-iOS-CommonProjectSetupFiles/SwiftLint/portable_swiftlint/swiftlint"
+    swiftlint_path = "#{workspace}/Submodules⁩/⁨SMF-iOS-CommonProjectSetupFiles/SwiftLint/portable_swiftlint/swiftlint"
     if ( ! File.exists?(swiftlint_path))
-      swiftlint_path = "Pods/SwiftLint/swiftlint"
+      swiftlint_path = "#{workspace}/Pods/SwiftLint/swiftlint"
     end 
 
     system "#{swiftlint_path} lint --reporter json > \"#{source_path}\""
 
     # Removes the workspace part
     workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
-    system "sed -i -e 's/#{workspace_regexp}//g' #{workspace}/#{source_path}"
+    system "sed -i -e 's/#{workspace_regexp}//g' #{source_path}"
 
     # Turns \/ int /
     a = '\\\\\/'
     b = '\/'
     # Convert the abosulte path to a path wich is relative to the project root folder
-    system "sed -i -e 's/#{a}/#{b}/g' #{workspace}/#{source_path}"
+    system "sed -i -e 's/#{a}/#{b}/g' #{source_path}"
 
     # Sort the report to avoid a changed file altough the warnings are the same
-    swiftlint_report_file = File.read("#{workspace}/#{source_path}")
+    swiftlint_report_file = File.read("#{source_path}")
     swiftlint_report_array ||= JSON.parse(swiftlint_report_file)
     swiftlint_report_array = swiftlint_report_array.sort_by { |entry| [entry['file'], entry['line'], entry['character'], entry['reason']] }
     File.open("#{workspace}/#{target_path}","w") do |f|
