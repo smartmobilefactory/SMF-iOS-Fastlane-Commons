@@ -22,6 +22,8 @@ private_lane :smf_collect_changelog do |options|
 
   last_tag = last_tag.strip
 
+  UI.important("Using tag: #{last_tag} to compare with HEAD")
+
   changelog_messages = changelog_from_git_commits(
     between:[last_tag,"HEAD"],
     merge_commit_filtering: "exclude_merges",
