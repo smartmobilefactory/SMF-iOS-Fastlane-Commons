@@ -102,6 +102,8 @@ private_lane :smf_add_git_tag do |options|
   smf_verify_git_tag_is_not_already_existing
 
   tag = smf_construct_default_tag_for_current_project
+
+  UI.important("Adding git tag: #{tag}")
   add_git_tag(
     tag: tag
     )
