@@ -79,8 +79,7 @@ def smf_run_linter
     end 
 
     UI.message("Running: #{swiftlint_path} lint --reporter json > \"#{source_path}\"")
-    output = system "cd #{workspace}; #{swiftlint_path} lint --reporter json > \"#{source_path}\""
-    UI.message("#{output}")
+    system "cd #{workspace}; #{swiftlint_path} lint --reporter json > \"#{source_path}\""
 
     # Removes the workspace part
     workspace_regexp = (workspace + '/').gsub(/\//, '\\\\\\\\\/')
