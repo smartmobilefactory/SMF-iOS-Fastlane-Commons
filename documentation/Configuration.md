@@ -55,7 +55,7 @@ The build variants configuration is nested in the root level key `build_variants
 |pods\_specs\_repo|`nil`|☑️ (for private Pods)|The url of the CocoaPods Specs Repo. This has to be set if it's not the official CocoaPods Specs Repo.|
 |podspec\_path|`nil`|☑️ (for Pods)|The path to the Podspec file.|
 |pr.archive\_ipa|`true` (App), `false` (Pod)||If enabled, a pull request check will archive the app to test if this is possible.|
-|pr.perform\_unit\_test|`true`||If enabled, a pull request check will perform the unit tests.|
+|pr.perform\_unit\_tests|`true`||If enabled, a pull request check will perform the unit tests.|
 |pr.run\_danger|`true`||If enabled, a pull request check will run Danger.|
 |push\_generated\_code|`false` (no PhraseApp), `true` (with PhraseApp snyc)||If enabled, code which changed after a project was built will be committed. This needs be done if e.g. PhraseApp is combined with R.swift as code might change after the Strings have been synced.|
 |scheme|`nil`|☑️ (for Apps)|The scheme which should be build.|
