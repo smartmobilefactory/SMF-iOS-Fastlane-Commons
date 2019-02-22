@@ -35,7 +35,7 @@ private_lane :smf_archive_ipa do |options|
   # Variables
 
   project_name = @smf_fastlane_config[:project][:project_name]
-  
+
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
   scheme = build_variant_config[:scheme]
@@ -46,7 +46,7 @@ private_lane :smf_archive_ipa do |options|
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
   xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name][:archive] : "Release"
   output_name = use_xcconfig ? "#{scheme}-#{xcconfig_name}" : scheme
-  
+
   export_method = (build_variant_config[:export_method].nil? ? nil : build_variant_config[:export_method])
   icloud_environment = (build_variant_config[:icloud_environment].nil? ? "Development" : build_variant_config[:icloud_environment])
   # Check if the project defined if the build should be cleaned. Other wise the default behavior is used based on the whether the archiving is a bulk operation.
@@ -62,7 +62,7 @@ private_lane :smf_archive_ipa do |options|
   smf_download_provisioning_profiles_if_needed
 
   if smf_is_keychain_enabled
-    unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+    unlock_keychain(path: "jenkins.keychain-db", password: ENV["JENKINS"])
   end
 
   gym(
@@ -195,7 +195,7 @@ end
 def smf_get_incremented_build_number(version)
 
   if version.to_s.include? "."
-    
+
    parts = version.to_s.split(".")
    count = parts.count
 
@@ -209,10 +209,10 @@ def smf_get_incremented_build_number(version)
 
    version_string += incremented_version.to_s
 
-  else 
+  else
    version_string = version.to_i + 1
 
-  end    
+  end
 
  return version_string.to_s
 
@@ -229,7 +229,7 @@ def smf_should_build_number_be_incremented
     return ENV[$SMF_SHOULD_BUILD_NUMBER_BE_INCREMENTED_ENV_KEY] == "true"
   end
 
-  # Check if the former commit was a build of the same build variant 
+  # Check if the former commit was a build of the same build variant
   tag_matching_pattern = smf_construct_default_tag_for_current_project(".*")
   last_commit_tags_string = sh "git tag -l --points-at HEAD"
   if last_commit_tags_string.match(tag_matching_pattern)
@@ -318,12 +318,12 @@ def smf_can_unit_tests_be_performed
     )
 
     UI.important("Unit tests can be performed")
-    
+
     return true
   rescue => exception
-    
+
     UI.important("Unit tests can't be performed: #{exception}")
-    
+
     return false
   end
 
@@ -379,7 +379,7 @@ def smf_create_dmg_from_app
 end
 
 def smf_path_to_ipa_or_app
-  
+
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   project_name = @smf_fastlane_config[:project][:project_name]
@@ -431,8 +431,8 @@ def smf_download_provisioning_profiles_if_needed
     team_id apple_team_id
 
     if smf_is_keychain_enabled
-      unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
-      unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+      unlock_keychain(path: "login.keychain-db", password: ENV["LOGIN"])
+      unlock_keychain(path: "jenkins.keychain-db", password: ENV["JENKINS"])
     end
 
     is_adhoc_build = @smf_build_variant.include? "adhoc"
@@ -450,7 +450,7 @@ def smf_download_provisioning_profiles_if_needed
 
     if extensions_suffixes
       for extension_suffix in extensions_suffixes do
-        
+
         begin
           sigh(
             adhoc: is_adhoc_build,
@@ -459,7 +459,7 @@ def smf_download_provisioning_profiles_if_needed
             )
         rescue
           UI.important("Seems like #{bundle_identifier}.#{extension_suffix} is not yet included in this project! Skipping sigh!")
-          next   
+          next
         end
 
       end
