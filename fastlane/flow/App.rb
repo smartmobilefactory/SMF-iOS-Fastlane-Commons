@@ -24,7 +24,7 @@ private_lane :smf_deploy_app do |options|
         bulk_deploy_params: bulk_deploy_params
       )
     rescue => exception
-      
+
       # Revert build number if needed
       smf_decrement_build_number
 
@@ -72,7 +72,7 @@ private_lane :smf_deploy_build_variant do |options|
 
   generateMetaJSON = build_variant_config[:generateMetaJSON]
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
-  # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true 
+  # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
   push_generated_code = (build_variant_config[:push_generated_code].nil? ? (build_variant_config[:phrase_app_script] != nil) : build_variant_config[:push_generated_code])
 
   # Cleanup the temporary MetaJSON folder in case it exists from a former build
@@ -83,7 +83,7 @@ private_lane :smf_deploy_build_variant do |options|
   end
 
   smf_install_pods_if_project_contains_podfile
-  
+
   # Increment the build number only if it should
   if smf_should_build_number_be_incremented
     smf_store_current_build_number
@@ -134,9 +134,9 @@ private_lane :smf_deploy_build_variant do |options|
 
       smf_run_linter
 
-      smf_generate_meta_json
-      
-      smf_commit_meta_json
+      # Disabled as not working anymore.
+      # smf_generate_meta_json
+      # smf_commit_meta_json
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
@@ -160,16 +160,16 @@ private_lane :smf_deploy_build_variant do |options|
     smf_build_simulator_app
   end
 
-  # Collect the changelog 
+  # Collect the changelog
   smf_collect_changelog
 
   if use_hockey
     # Store the HockeyApp ID to let the handle exception lane know what hockeyapp entry should be deleted. This value is reset during bulk builds to avoid the deletion of a former succesful build.
     ENV[$SMF_APP_HOCKEY_ID_ENV_KEY] = build_variant_config[:hockeyapp_id]
-    
+
     # Upload the IPA to HockeyApp
     smf_upload_ipa_to_hockey
-    
+
     # Disable the former HockeyApp entry
     smf_disable_former_hockey_entry(
       build_variants_contains_whitelist: ["beta"]

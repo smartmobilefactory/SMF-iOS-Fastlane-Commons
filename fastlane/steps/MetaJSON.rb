@@ -25,13 +25,13 @@ private_lane :smf_generate_meta_json do |options|
 
     # Create credentials file
     configurationFilePath = "#{workspace_dir}/CredentialsConfig.txt"
-    configurationFile = File.open(configurationFilePath, "w") do |f|     
-      f.write("GITHUB_TOKEN=#{ENV[$SMF_GITHUB_TOKEN_ENV_KEY]}")   
+    configurationFile = File.open(configurationFilePath, "w") do |f|
+      f.write("GITHUB_TOKEN=#{ENV[$SMF_GITHUB_TOKEN_ENV_KEY]}")
     end
 
     # Create and commit the MetaJSON files
     sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch #{branch} --output \"#{workspace_dir}/.MetaJSON\" --credentials \"#{configurationFilePath}\" --automatically --verbose 2>/dev/null || true"
-  
+
     File.delete(configurationFilePath)
   end
 
@@ -76,7 +76,7 @@ def smf_run_linter
     swiftlint_path = Dir["#{workspace}/**/SwiftLint/portable_swiftlint/swiftlint"].first
     if ( ! File.exists?(swiftlint_path))
       swiftlint_path = "#{workspace}/Pods/SwiftLint/swiftlint"
-    end 
+    end
 
     UI.message("Running: #{swiftlint_path} lint --reporter json > \"#{source_path}\"")
     system "cd #{workspace}; #{swiftlint_path} lint --reporter json > \"#{source_path}\""
@@ -119,7 +119,7 @@ def smf_run_slather
 
   # Create the Slather report as html
   system "cd " + workspace + "; slather coverage -v --html --scheme " + scheme + " --workspace " + project_name + ".xcworkspace " + project_name + ".xcodeproj"
-  
+
   # Create the Slather report as json
   system "cd " + workspace + "; slather coverage -v --json --scheme " + scheme + " --workspace " + project_name + ".xcworkspace " + project_name + ".xcodeproj"
 
@@ -135,7 +135,7 @@ def smf_run_slather
   slather_html_report_output_dir_name = "html"
   slather_html_report_output_path = "#{slather_html_report_output_root_path}/#{slather_html_report_output_dir_name}"
   slather_html_report_path = "#{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/#{SLATHER_HTML_OUTPUT_DIR_NAME}"
- 
+
 
   # Compress the Slather HTML folder and delete it afterwards
   sh "if [ -d \"#{slather_html_report_output_path}\" ]; then cd \"#{slather_html_report_output_root_path}\"; zip -rj \"#{slather_html_report_output_dir_name}.zip\" #{slather_html_report_output_dir_name}/*; fi"
