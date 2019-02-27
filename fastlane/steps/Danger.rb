@@ -1,6 +1,5 @@
 def smf_run_danger()
   if File.file?('Dangerfile')
-  	env_export = "export DANGER_GITHUB_API_TOKEN=$GITHUB_TOKEN;"
   	env_export << "export BUILD_VARIANT=\"#{@smf_build_variant}\";"
   	env_export << "export FASTLANE_CONFIG_PATH=\"#{fastlane_config_path}\";"
   	env_export << "export FASTLANE_COMMONS_FOLDER=\"#{@fastlane_commons_dir_path}\";"
