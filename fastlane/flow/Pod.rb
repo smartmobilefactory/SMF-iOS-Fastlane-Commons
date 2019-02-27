@@ -17,13 +17,13 @@ private_lane :smf_publish_pod do |options|
 
   # Unlock keycahin to enable pull repo with https
   if smf_is_keychain_enabled
-    unlock_keychain(path: "login.keychain-db", password: ENV["LOGIN"])
+    unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
   end
 
   if smf_is_keychain_enabled
-    unlock_keychain(path: "jenkins.keychain-db", password: ENV["JENKINS"])
+    unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
-
+  
   # Make sure the repo is up to date and clean
   ensure_git_branch(branch: branch)
 
@@ -43,7 +43,7 @@ private_lane :smf_publish_pod do |options|
        path: podspec_path,
        bump_type: "patch"
       )
-
+      
       # And set back the appendix to 0
       version_bump_podspec(
         path: podspec_path,
@@ -68,12 +68,12 @@ private_lane :smf_publish_pod do |options|
 
   # Check if the New Tag already exists
   smf_verify_git_tag_is_not_already_existing
-
+  
   # Update the MetaJSONS if wanted
   if generateMetaJSON != false
     begin
       smf_generate_meta_json
-
+      
       smf_commit_meta_json
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
@@ -92,7 +92,7 @@ private_lane :smf_publish_pod do |options|
 
   # Sync Phrase App
   smf_sync_strings_with_phrase_app
-
+  
   version = read_podspec(path: podspec_path)["version"]
 
   # Commit the version bump if needed
@@ -118,12 +118,12 @@ private_lane :smf_publish_pod do |options|
     force: true,
     tags: true
   )
-
+  
   begin
     # Publish the pod. Either to a private specs repo or to the offical one
     smf_pod_push
 
-  rescue => e
+  rescue => e 
     # Remove the git tag
     sh "git push --delete origin #{tag} || true"
     # Remove the temporary git branch
@@ -156,7 +156,7 @@ private_lane :smf_publish_pod do |options|
 
   # Update the CocoaPods repo to avoid unknown Pod version issues if this Pod is integrated into another project
   begin
-    sh "pod repo update"
+    sh "pod repo update"    
   rescue => exception
     smf_send_chat_message(
         title: "Failed to update the specs repo after publishing the Pod #{smf_default_notification_release_title} 😢",

@@ -40,8 +40,8 @@ private_lane :smf_perform_uitests_on_given_destinations do |options|
   begin
 
     if smf_is_keychain_enabled
-      unlock_keychain(path: "login.keychain-db", password: ENV["LOGIN"])
-      unlock_keychain(path: "jenkins.keychain-db", password: ENV["JENKINS"])
+      unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+      unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
     end
 
      # The derived data folder has to be deleted to support the testing of diferent apps. Otherwise the formerly tested app will be opened again
