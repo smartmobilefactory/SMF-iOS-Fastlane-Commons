@@ -45,7 +45,7 @@ private_lane :smf_archive_ipa do |options|
 
   use_xcconfig = build_variant_config[:xcconfig_name].nil? ? false : true
   xcconfig_name = use_xcconfig ? build_variant_config[:xcconfig_name][:archive] : "Release"
-  output_name = use_xcconfig ? "#{scheme}-#{xcconfig_name}" : scheme
+  output_name = scheme
   
   export_method = (build_variant_config[:export_method].nil? ? nil : build_variant_config[:export_method])
   icloud_environment = (build_variant_config[:icloud_environment].nil? ? "Development" : build_variant_config[:icloud_environment])
