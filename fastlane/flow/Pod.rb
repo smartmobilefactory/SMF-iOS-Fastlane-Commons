@@ -13,7 +13,6 @@ private_lane :smf_publish_pod do |options|
   project_config = @smf_fastlane_config[:project]
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   podspec_path = build_variant_config[:podspec_path]
-  generateMetaJSON = (build_variant_config[:generateMetaJSON].nil? ? true : build_variant_config[:generateMetaJSON])
 
   # Unlock keycahin to enable pull repo with https
   if smf_is_keychain_enabled
@@ -68,28 +67,6 @@ private_lane :smf_publish_pod do |options|
 
   # Check if the New Tag already exists
   smf_verify_git_tag_is_not_already_existing
-
-  # Update the MetaJSONS if wanted
-  if generateMetaJSON != false
-    begin
-
-      # Disabled as not working anymore.
-      # smf_generate_meta_json
-      # smf_commit_meta_json
-    rescue => exception
-      UI.important("Warning: MetaJSON couldn't be created")
-
-      project_name = project_config[:project_name]
-
-      smf_send_chat_message(
-        title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
-        type: "error",
-        exception: exception,
-        slack_channel: ci_ios_error_log
-      )
-      next
-    end
-  end
 
   # Sync Phrase App
   smf_sync_strings_with_phrase_app
@@ -165,6 +142,29 @@ private_lane :smf_publish_pod do |options|
         exception: exception,
         slack_channel: ci_ios_error_log
       )
+  end
+
+  ########### CALL METAJSON ANALYSER #########
+  generateMetaJSON = (build_variant_config[:generateMetaJSON].nil? ? true : build_variant_config[:generateMetaJSON])
+
+  # Update the MetaJSONS if wanted
+  if generateMetaJSON != false
+    begin
+      smf_generate_meta_json
+      smf_commit_meta_json
+    rescue => exception
+      UI.important("Warning: MetaJSON couldn't be created")
+
+      project_name = project_config[:project_name]
+
+      smf_send_chat_message(
+        title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
+        type: "error",
+        exception: exception,
+        slack_channel: ci_ios_error_log
+      )
+      next
+    end
   end
 
 end

@@ -23,18 +23,9 @@ private_lane :smf_generate_meta_json do |options|
     workspace_dir = smf_workspace_dir
     branch = @smf_git_branch
 
-    # Create credentials file
-    configurationFilePath = "#{workspace_dir}/CredentialsConfig.txt"
-    configurationFile = File.open(configurationFilePath, "w") do |f|
-      f.write("GITHUB_TOKEN=#{ENV[$SMF_GITHUB_TOKEN_ENV_KEY]}")
-    end
-
     # Create and commit the MetaJSON files
-    sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch #{branch} --output \"#{workspace_dir}/.MetaJSON\" --credentials \"#{configurationFilePath}\" --automatically --verbose 2>/dev/null || true"
-
-    File.delete(configurationFilePath)
+    sh "cd .. && #{metajson} analyse --d \"#{workspace_dir}\" --p \"#{@smf_fastlane_config[:project][:project_name]}\" --branch #{branch} --output \"#{workspace_dir}/.MetaJSON\" --automatically --verbose 2>/dev/null || true"
   end
-
 end
 
 ############################

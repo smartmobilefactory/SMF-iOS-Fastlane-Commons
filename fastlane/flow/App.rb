@@ -70,17 +70,9 @@ private_lane :smf_deploy_build_variant do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   project_name = @smf_fastlane_config[:project][:project_name]
 
-  generateMetaJSON = build_variant_config[:generateMetaJSON]
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
   push_generated_code = (build_variant_config[:push_generated_code].nil? ? (build_variant_config[:phrase_app_script] != nil) : build_variant_config[:push_generated_code])
-
-  # Cleanup the temporary MetaJSON folder in case it exists from a former build
-  if generateMetaJSON != false
-    workspace = smf_workspace_dir
-    sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}; fi"
-    sh "mkdir #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}"
-  end
 
   smf_install_pods_if_project_contains_podfile
 
@@ -110,43 +102,6 @@ private_lane :smf_deploy_build_variant do |options|
   # Commit generated code. There can be changes eg. from PhraseApp + R.swift
   if push_generated_code
     smf_commit_generated_code
-  end
-
-  # Copy the Xcode warnings and errors report to keep the files available for MetaJSON
-  if generateMetaJSON != false
-    workspace = smf_workspace_dir
-    sh "if [ -f #{workspace}/build/reports/errors.json ]; then cp #{workspace}/build/reports/errors.json #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/xcodebuild.json; fi"
-  end
-
-  # Update the MetaJSONS if wanted
-  if generateMetaJSON != false
-    begin
-      # Run unit tests and then run linter to generate JSONs
-      if smf_can_unit_tests_be_performed
-        begin
-          smf_perform_unit_tests
-        rescue
-          UI.important("Failed to perform the unit tests")
-        end
-
-        smf_run_slather
-      end
-
-      smf_run_linter
-
-      # Disabled as not working anymore.
-      # smf_generate_meta_json
-      # smf_commit_meta_json
-    rescue => exception
-      UI.important("Warning: MetaJSON couldn't be created")
-
-      smf_send_chat_message(
-        title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
-        type: "warning",
-        exception: exception,
-        slack_channel: ci_ios_error_log
-      )
-    end
   end
 
   # Commit the build number if it was incremented
@@ -290,4 +245,48 @@ private_lane :smf_deploy_build_variant do |options|
         slack_channel: @smf_fastlane_config[:project][:slack_channel]
       )
   end
+
+  ############ CALL METAJSON ANALYSER #############
+  generateMetaJSON = build_variant_config[:generateMetaJSON]
+
+  if generateMetaJSON != false
+    # Cleanup the temporary MetaJSON folder in case it exists from a former build
+    workspace = smf_workspace_dir
+    sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}; fi"
+    sh "mkdir #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}"
+
+    # Copy the Xcode warnings and errors report to keep the files available for MetaJSON
+    workspace = smf_workspace_dir
+    sh "if [ -f #{workspace}/build/reports/errors.json ]; then cp #{workspace}/build/reports/errors.json #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/xcodebuild.json; fi"
+
+    # Update the MetaJSONS if wanted
+    begin
+      # Run unit tests and then run linter to generate JSONs
+      if smf_can_unit_tests_be_performed
+        begin
+          smf_perform_unit_tests
+        rescue
+          UI.important("Failed to perform the unit tests")
+        end
+
+        smf_run_slather
+      end
+
+      smf_run_linter
+
+      # Run iOS-MetaJSON-Analyser
+      smf_generate_meta_json
+      smf_commit_meta_json
+    rescue => exception
+      UI.important("Warning: MetaJSON couldn't be created")
+
+      smf_send_chat_message(
+        title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
+        type: "warning",
+        exception: exception,
+        slack_channel: ci_ios_error_log
+      )
+    end
+  end
+
 end
