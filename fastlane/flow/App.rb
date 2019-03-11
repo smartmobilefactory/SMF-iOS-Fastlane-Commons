@@ -171,12 +171,12 @@ private_lane :smf_deploy_build_variant do |options|
   UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_org_slug]}")
   UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_project_slug]}")
 
-
-  upload_symbols_to_sentry(
-						   auth_token: build_variant_config[:sentry_auth_token],
-						   org_slug: build_variant_config[:sentry_org_slug],
-						   project_slug: build_variant_config[:sentry_project_slug],
-						   )
+  sentry_upload_dsym(
+					 auth_token: build_variant_config[:sentry_auth_token],
+					 org_slug: build_variant_config[:sentry_org_slug],
+					 project_slug: build_variant_config[:sentry_project_slug],
+					 dsym_path: './App.dSYM.zip',
+					 )
 
   if use_hockey
     # Store the HockeyApp ID to let the handle exception lane know what hockeyapp entry should be deleted. This value is reset during bulk builds to avoid the deletion of a former succesful build.
