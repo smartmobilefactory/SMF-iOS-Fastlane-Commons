@@ -192,7 +192,6 @@ private_lane :smf_deploy_build_variant do |options|
     end
   end
 
-  if use_sentry
 
 	UI.important("Upload dsym to sentry")
 	UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_auth_token]}")
@@ -205,7 +204,7 @@ private_lane :smf_deploy_build_variant do |options|
 		org_slug: build_variant_config[:sentry_org_slug],
 		project_slug: build_variant_config[:sentry_project_slug],
 	)
-  end
+
 
   if (build_variant_config[:use_sparkle])
     # Create appcast
