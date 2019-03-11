@@ -196,8 +196,8 @@ private_lane :smf_deploy_build_variant do |options|
 
 	UI.important("Upload dsym to sentry")
 	UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_auth_token]}")
-	UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_org_slug]]}")
-	UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_project_slug]]]}")
+	UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_org_slug]}")
+	UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_project_slug]}")
 
 
 	upload_symbols_to_sentry(
