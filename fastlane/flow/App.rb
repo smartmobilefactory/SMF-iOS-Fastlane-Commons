@@ -174,8 +174,7 @@ private_lane :smf_deploy_build_variant do |options|
 
 	  sentry_upload_dsym(auth_token: build_variant_config[:sentry_auth_token],
 						 org_slug: build_variant_config[:sentry_org_slug],
-						 project_slug: build_variant_config[:sentry_project_slug],
-						 api_host: 'https://mysentry.invalid/')
+						 project_slug: build_variant_config[:sentry_project_slug])
   end
 
   if use_hockey
