@@ -1,0 +1,8 @@
+h4. Key
+
+|| Status || Description
+| {{ '{' }}status:colour=Green|title=Green{{ '}' }} | Good. Its the wanted or newest or best possible value.|
+| {{ '{' }}status:colour=Red|title=Red{{ '}' }} | Bad. Its an unwanted or deprecated value.|
+| {{ '{' }}status:colour=Blue|title=Blue{{ '}' }} | Medium. Its a value which is not the newest or best possible, but still acceptable.|
+| {{ '{' }}status:colour=Grey|title=?{{ '}' }} | Unknown. The value for this field is missing. This can have multiple reasons. Either it just doesnt exist for this project (e.g. SwiftLint integration will be "?" if swift isn't used in the project). Or it is not present in the MetaJson files.|
+| {{ '{' }}status:colour=Grey|title=Info|subtle=true{{ '}' }} | These fields contain just basic information which can not be labeled as good or bad.|

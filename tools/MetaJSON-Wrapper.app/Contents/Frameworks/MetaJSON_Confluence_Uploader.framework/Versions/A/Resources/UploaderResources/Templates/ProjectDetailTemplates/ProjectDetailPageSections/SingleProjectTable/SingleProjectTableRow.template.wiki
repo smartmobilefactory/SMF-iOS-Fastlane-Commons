@@ -1,0 +1,2 @@
+| {{ xcodeVersionMarkup }} | {{ languageMarkup }} | {{ fastlaneMarkup }} | {{ swiftLintMarkup }} | {{ metaJsonMarkup }} | {{ commonProjectSetupfilesMarkup }} | {% if extended %}{{ atsExceptions }} | {{ bitcodeEnabledMarkup }} | {{ idfaUsageMarkup }} | {% endif %}{{ codebeatMarkup }} |
+

@@ -1,0 +1,4 @@
+{{ title }}
+|| \# || Project || Xcode || Language || Fastlane Jobs || SwiftLint || MetaJSON || SMF-Commons || ATS || Bitcode || IDFA || Codebeat ||
+{{ tableBody }}
+{{ key }}

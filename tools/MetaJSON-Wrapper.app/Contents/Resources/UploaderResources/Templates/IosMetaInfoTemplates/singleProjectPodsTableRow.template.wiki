@@ -1,1 +1,0 @@
-|| {{ pod.rowNumber }} || {{ pod.nameMarkup }} | {{ pod.latestVersion }} | {{ pod.usedVersion }} | {{ pod.integrationType }} | {{ pod.license }} |

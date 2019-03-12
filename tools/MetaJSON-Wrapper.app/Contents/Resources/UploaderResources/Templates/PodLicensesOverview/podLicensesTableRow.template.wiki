@@ -1,1 +1,0 @@
-|| {{ podName }} | {% for license in licenses %}{{ license }}|{% endfor %}
