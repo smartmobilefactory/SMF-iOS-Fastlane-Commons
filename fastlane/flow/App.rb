@@ -72,7 +72,7 @@ private_lane :smf_deploy_build_variant do |options|
 
   generateMetaJSON = build_variant_config[:generateMetaJSON]
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
-  use_sentry = true
+  use_sentry = (build_variant_config[:sentry_org_slug.nil? || build_variant_config[:sentry_project_slug].nil? || build_variant_config[:sentry_auth_token].nil? ? false : true)
   UI.important("Do we use sentry?: #{use_sentry}")
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
   push_generated_code = (build_variant_config[:push_generated_code].nil? ? (build_variant_config[:phrase_app_script] != nil) : build_variant_config[:push_generated_code])
@@ -165,17 +165,17 @@ private_lane :smf_deploy_build_variant do |options|
   # Collect the changelog
   smf_collect_changelog
 
+  if use_sentry
 
-  UI.important("Upload dsym to sentry")
-  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_auth_token]}")
-  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_org_slug]}")
-  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_project_slug]}")
+	  UI.important("Upload dsym to sentry")
+	  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_auth_token]}")
+	  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_org_slug]}")
+	  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_project_slug]}")
 
-  sentry_upload_dsym(
-					 auth_token: build_variant_config[:sentry_auth_token],
-					 org_slug: build_variant_config[:sentry_org_slug],
-					 project_slug: build_variant_config[:sentry_project_slug]
-					 )
+	  sentry_upload_dsym(auth_token: build_variant_config[:sentry_auth_token],
+						 org_slug: build_variant_config[:sentry_org_slug],
+						 project_slug: build_variant_config[:sentry_project_slug])
+  end
 
   if use_hockey
     # Store the HockeyApp ID to let the handle exception lane know what hockeyapp entry should be deleted. This value is reset during bulk builds to avoid the deletion of a former succesful build.
