@@ -45,8 +45,8 @@ private_lane :smf_commit_meta_json do |options|
   sh "if [ -d #{workspace}/#{$METAJSON_TEMP_FOLDERNAME} ]; then rm -rf #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}; fi"
 
   # Remove Pods.json and Cloc.json if they are present
-  sh "if [ -f #{workspace}/.MetaJSON/Pods.json ]; then rm #{workspace}/.MetaJSON/Pods.json}; fi"
-  sh "if [ -f #{workspace}/.MetaJSON/Cloc.json ]; then rm #{workspace}/.MetaJSON/Cloc.json}; fi"
+  sh "if [ -f #{workspace}/.MetaJSON/Pods.json ]; then rm #{workspace}/.MetaJSON/Pods.json; fi"
+  sh "if [ -f #{workspace}/.MetaJSON/Cloc.json ]; then rm #{workspace}/.MetaJSON/Cloc.json; fi"
 
   # Reset git, add MetaJSON directory and commit. A failing commit is not seen as error as this is fine if there are no changed files
   sh "cd \"#{workspace}\"; git reset && git add \".MetaJSON\" && (git commit -m \"Update MetaJSONs\" || true)"
