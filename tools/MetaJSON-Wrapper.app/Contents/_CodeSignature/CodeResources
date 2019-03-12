@@ -6,15 +6,15 @@
 	<dict>
 		<key>Resources/Main.storyboardc/Info.plist</key>
 		<data>
-		h3TshUCFzgIvwtNVZbhLWE7xFXM=
+		Qfd2CBuaaDKppqYR+lPO6EW+blg=
 		</data>
 		<key>Resources/Main.storyboardc/MainMenu.nib</key>
 		<data>
-		K2w7m7Ag9w+8fqqFc8yr8mMZNLg=
+		Irh4LJMc6eJEQzV0H3s04qMiMQY=
 		</data>
 		<key>Resources/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib</key>
 		<data>
-		fS8cR17Iu7kowhVyZ30v56xEICg=
+		9Layrk6x8Hcs67jBBrbq4YEJrRs=
 		</data>
 		<key>Resources/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib</key>
 		<data>
@@ -363,7 +363,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			7JemMEkiBtpJjx7LcpZEWqZKAak=
+			KP46zVj9hxJW9qSPTqVW3DKvgwc=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.Commander" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -372,7 +372,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			ysWNGN7i61f3yCA04VfAc1utun0=
+			FFO1qZyWjKJCnRVtiAwmfTltYo4=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier "com.smartmobilefactory.metajson.analyser" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -399,7 +399,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			TS4Je+OWIQ6RrsV87Ql9fcPFW+Q=
+			ajUrop9v3bOBjB8eTnfcnyKpSEU=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.PathKit" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -408,7 +408,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			lAjg3tABvP1gECX1EcxCHi8sfwM=
+			UXImVs+r+vG8zrbqC1mVjYYM9Nc=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.Stencil" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -552,7 +552,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			d6HP4j9tC3o8eh0h9DeHryHA2Tc=
+			JwgODf8pyJd1JVR33Y5ZrmMLq4Q=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier metajson and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -561,21 +561,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			fIm+jXQ1DjnQDMqNSu54Wu8WiWa/jfDaSlymyMdcDlQ=
+			sqF4L5+kfyGQmMexOPeXnspMGsbR9IyJ3pofiszdkAA=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/MainMenu.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Xn8biFOdyoYYMAenMNVobmFU1vE38f1WyUKIqsZLiSk=
+			xbxSoVpbHYYZCgyXHl8h1PypJXib4EzTbSHgqaWhHog=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			CAAbYbg6I89uQiTQJO6of63HxJe/951C4joexHlqswE=
+			O8ytNu7GTbbl9YVuET47Ez8tslJBty2UBrAbpJWF4Fs=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib</key>
