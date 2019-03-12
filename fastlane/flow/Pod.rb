@@ -73,7 +73,6 @@ private_lane :smf_publish_pod do |options|
   if generateMetaJSON != false
     begin
 
-      # Disabled as not working anymore.
       smf_generate_meta_json
       smf_commit_meta_json
     rescue => exception

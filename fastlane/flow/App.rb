@@ -1,5 +1,3 @@
-
-
 ######################
 ### smf_deploy_app ###
 ######################
@@ -134,46 +132,8 @@ private_lane :smf_deploy_build_variant do |options|
 
       smf_run_linter
 
-      # Disabled as not working anymore.
-	  smf_generate_meta_json
+      smf_generate_meta_json
       smf_commit_meta_json
-    rescue => exception
-      UI.important("Warning: MetaJSON couldn't be created")
-
-      smf_send_chat_message(
-        title: "Failed to create MetaJSON for #{smf_default_notification_release_title} 😢",
-        type: "warning",
-        exception: exception,
-        slack_channel: ci_ios_error_log
-      )
-    end
-  end
-
-  # Copy the Xcode warnings and errors report to keep the files available for MetaJSON
-  if generateMetaJSON != false
-    workspace = smf_workspace_dir
-    sh "if [ -f #{workspace}/build/reports/errors.json ]; then cp #{workspace}/build/reports/errors.json #{workspace}/#{$METAJSON_TEMP_FOLDERNAME}/xcodebuild.json; fi"
-  end
-
-  # Update the MetaJSONS if wanted
-  if generateMetaJSON != false
-    begin
-      # Run unit tests and then run linter to generate JSONs
-      if smf_can_unit_tests_be_performed
-        begin
-          smf_perform_unit_tests
-        rescue
-          UI.important("Failed to perform the unit tests")
-        end
-
-        smf_run_slather
-      end
-
-      smf_run_linter
-
-      # Disabled as not working anymore.
-      # smf_generate_meta_json
-      # smf_commit_meta_json
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
