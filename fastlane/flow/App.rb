@@ -1,5 +1,3 @@
-
-
 ######################
 ### smf_deploy_app ###
 ######################
@@ -134,9 +132,8 @@ private_lane :smf_deploy_build_variant do |options|
 
       smf_run_linter
 
-      # Disabled as not working anymore.
-      # smf_generate_meta_json
-      # smf_commit_meta_json
+      smf_generate_meta_json
+      smf_commit_meta_json
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 

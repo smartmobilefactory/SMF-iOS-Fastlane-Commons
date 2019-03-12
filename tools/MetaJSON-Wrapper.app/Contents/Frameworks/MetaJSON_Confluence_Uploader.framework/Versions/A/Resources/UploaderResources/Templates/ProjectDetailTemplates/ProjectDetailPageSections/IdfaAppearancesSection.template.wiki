@@ -1,0 +1,5 @@
+h2. IDFA: Code appearances
+
+|| File |
+{% for appearance in idfaAppearances %}| {{ appearance }}|
+{% endfor %}

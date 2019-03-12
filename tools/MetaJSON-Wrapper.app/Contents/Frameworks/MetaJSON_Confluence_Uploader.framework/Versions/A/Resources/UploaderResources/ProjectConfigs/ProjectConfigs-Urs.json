@@ -4,98 +4,44 @@
 	"overview_pages": [
 
 		{
-			"type"	: "CocoaPodsOverviewParent",
-			"id"	: "367165566"
-		},
-		{
-			"type"	: "CocoaPodsOverviewOutdated",
-			"id"	: "422379782"
-		},
-		{
-			"type"	: "CocoaPodsOverviewCurrent",
-			"id"	: "422412608"
-		},
-		{
-			"type"	: "CocoaPodsOverviewAll",
-			"id"	: "422379786"
-		},
-		{
-			"type"	: "CocoaPodsOverviewApps",
-			"id"	: "450232703"
-		},
-		{
-			"type"	: "CocoaPodsOverviewFrameworks",
-			"id"	: "422576386"
-		},
-		{
-			"type"	: "CocoaPodsOverviewLibraries",
-			"id"	: "450265572"
-		},
-		{
-			"type"	: "CocoaPodsOverviewUiTests",
-			"id"	: "450265578"
-		},
-		{
-			"type"	: "ProjectsOverview",
+			"type"	: "ProjectsOverviewPage",
 			"id"	: "367460391"
-		},
-		{
-			"type"	: "PodLicensesOverview",
-			"id"	: "378634452"
-		},
-		{
-			"type"	: "CriticalLicensesOverview",
-			"id"	: "404684927"
-		},
-		{
-			"type"	: "SinglePodsParent",
-			"id"	: "423166235"
 		}
 	],
 
 	"projects": {
 
 		"apps": [
-
-			{
-				"project_name"			: "MagentaCLOUD iOS",
-				"project_short_name"	: "Magenta iOS",
-				"branch"				: "master",
-				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/MagentaCLOUD-Swift-iOS",
-				"ios_meta_page_id"		: "",
-				"codebeat_badge"		: "https://codebeat.co/badges/c7472c9f-691b-434d-b6a2-91e766edb3a8",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/magentacloud-swift-ios-development"
-			},
-			{
-				"project_name"			: "Charite ACUD 2",
-				"project_short_name"	: "ACUD2",
-				"branch"				: "master",
-				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/Charite-ACUD-Swift-iOS",
-				"ios_meta_page_id"		: "424608436",
-				"codebeat_badge"		: "https://codebeat.co/badges/7a43c8e7-aa13-46e6-a433-6ff5e45282bc",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/charite-acud-swift-ios-master"
-			},
 			{
 				"project_name"			: "MagentaCLOUD macOS",
-				"project_short_name"	: "Magenta macOS Outdated",
-				"branch"				: "master",
+				"project_short_name"	: "Magenta macOS",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
 				"github_repo"			: "smartmobilefactory/MagentaCLOUD-OSX",
-				"ios_meta_page_id"		: "424608443",
+				"ios_meta_page_id"		: "486245527",
 				"codebeat_badge"		: "https://codebeat.co/badges/f60a5e46-eca8-45cf-a125-12aaad0ab7d8",
 				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-magentacloud-osx-master",
 				"is_outdated"			: true
 			},
 			{
-				"project_name"			: "HockeyApp",
-				"project_short_name"	: "HockeyApp",
-				"branch"				: "master",
+				"project_name"			: "HiDrive iOS",
+				"project_short_name"	: "HiDrive iOS",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/HockeyApp-iOS",
-				"codebeat_badge"		: "https://codebeat.co/badges/df822c4e-76e6-4130-ae6f-2d6f703b5daf",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hockeyapp-ios-master"
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS",
+				"ios_meta_page_id"		: "424608436",
+				"codebeat_badge"		: "https://codebeat.co/badges/90c0a637-c7f6-4893-8af9-702136a66fc7",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hidrive-ios-3-9-0-master"
+			},
+			{
+				"project_name"			: "Cosmo",
+				"project_short_name"	: "Cosmo",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
+				"relative_path"			: ".MetaJSON",
+				"github_repo"			: "smartmobilefactory/Cosmo-iOS-App",
+				"ios_meta_page_id"		: "503808138",
+				"codebeat_badge"		: "https://codebeat.co/badges/ce6bcb4c-e236-4042-aca0-17dbdd97d572",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-cosmo-ios-app-master"
 			}
 		],
 
@@ -104,22 +50,22 @@
 			{
 				"project_name"			: "HiDrive UI-Tests",
 				"project_short_name"	: "HiDrive UI-Tests",
-				"branch"				: "master",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
 				"github_repo"			: "smartmobilefactory/HiDrive-iOS-UITests",
-				"ios_meta_page_id"		: "424608447",
+				"ios_meta_page_id"		: "486310890",
 				"codebeat_badge"		: "https://codebeat.co/badges/76781423-5f89-46f7-9a3a-b779be877591",
 				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hidrive-ios-uitests-master"
 			},
 			{
-				"project_name"			: "HiDrive UI-Tests",
-				"project_short_name"	: "HiDrive UI-Tests Outdated",
-				"branch"				: "master",
+				"project_name"			: "MagentaCLOUD UI-Tests",
+				"project_short_name" 	: "Magenta UI-Tests",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/HiDrive-iOS-UITests",
-				"ios_meta_page_id"		: "",
-				"codebeat_badge"		: "https://codebeat.co/badges/76781423-5f89-46f7-9a3a-b779be877591",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hidrive-ios-uitests-master",
+				"github_repo"			: "smartmobilefactory/MagentaCLOUD-iOS-App-UITests",
+				"ios_meta_page_id"		: "486180137",
+				"codebeat_badge"		: "https://codebeat.co/badges/22396a4e-d141-4913-a264-3ce9e353e970",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-magentacloud-ios-app-uitests-master",
 				"is_outdated"			: true
 			}
 		],
@@ -127,22 +73,24 @@
 		"libraries": [
 			{
 				"project_name"			: "HiDrive Caching Framework",
-				"project_short_name"	: "HiDrive Caching Library Outdated",
-				"branch"				: "master",
+				"project_short_name"	: "HiDrive Caching Library",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
 				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Caching-Framework",
+				"ios_meta_page_id"		: "486049256",
 				"codebeat_badge"		: "https://codebeat.co/badges/0aef8171-b190-4195-a28f-0b78074862c6",
 				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-caching-framework-development",
 				"is_outdated"			: true
 			},
 			{
-				"project_name"			: "HiDrive Caching Framework",
-				"project_short_name"	: "HiDrive Caching Library ",
-				"branch"				: "master",
+				"project_name"			: "HiDrive Backup Framework",
+				"project_short_name"	: "HiDrive Backup",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Caching-Framework",
-				"codebeat_badge"		: "https://codebeat.co/badges/0aef8171-b190-4195-a28f-0b78074862c6",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-caching-framework-development"
+				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Backup-Framework",
+				"ios_meta_page_id"		: "486049260",
+				"codebeat_badge"		: "https://codebeat.co/badges/5d02810c-b997-4a2d-a358-6f85114e4966",
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-backup-framework-development"
 			}
 		],
 		
@@ -150,55 +98,21 @@
 			{
 				"project_name"			: "HiDrive API Framework",
 				"project_short_name"	: "HiDrive API",
-				"branch"				: "master",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
 				"github_repo"			: "smartmobilefactory/HiDrive-iOS-API-Framework",
 				"ios_meta_page_id"		: "424477277",
 				"codebeat_badge"		: "https://codebeat.co/badges/290ed09b-9ea5-4b29-b945-b7284631bc21",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-api-framework-development"
-			},
-			{
-				"project_name"			: "HiDrive Settings Framework",
-				"project_short_name"	: "HiDrive Settings",
-				"branch"				: "master",
-				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Settings-Framework",
-				"codebeat_badge"		: "https://codebeat.co/badges/f418c032-5b40-4b0e-94fd-fdc640b522b3",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-settings-framework-development"
-			},
-			{
-				"project_name"			: "HiDrive Crypto Framework",
-				"project_short_name"	: "HiDrive Crpyto",
-				"branch"				: "master",
-				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Crypto-Framework",
-				"codebeat_badge"		: "https://codebeat.co/badges/69354d79-c706-499d-a31f-4eb0e0645cf6",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hidrive-ios-crypto-framework-development"
-			},
-			{
-				"project_name"			: "HiDrive Backup Framework",
-				"project_short_name"	: "HiDrive Backup",
-				"branch"				: "master",
-				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Backup-Framework",
-				"codebeat_badge"		: "https://codebeat.co/badges/5d02810c-b997-4a2d-a358-6f85114e4966",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-backup-framework-development"
-			},
-			{
-				"project_name"			: "HiDrive Business Framework",
-				"project_short_name"	: "HiDrive Business",
-				"branch"				: "master",
-				"relative_path"			: ".MetaJSON",
-				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Business-Framework",
-				"codebeat_badge"		: "https://codebeat.co/badges/2114e423-b250-493c-8717-58b636710ede",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-business-framework-development"
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-api-framework-development",
+				"is_outdated"			: true
 			},
 			{
 				"project_name"			: "HockeyApp Browser Framework",
 				"project_short_name"	: "HockeyApp Browser",
-				"branch"				: "master",
+				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
 				"github_repo"			: "smartmobilefactory/HockeyApp-iOS-Framework",
+				"ios_meta_page_id"		: "486049264",
 				"codebeat_badge"		: "https://codebeat.co/badges/c7e31ac3-892e-4390-8375-f4bdbb922bed",
 				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/github-com-smartmobilefactory-hockeyapp-ios-framework-development"
 			}

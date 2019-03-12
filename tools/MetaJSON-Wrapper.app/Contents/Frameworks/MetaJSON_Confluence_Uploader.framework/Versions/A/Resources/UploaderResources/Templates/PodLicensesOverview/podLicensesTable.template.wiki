@@ -1,2 +1,0 @@
-|| Pods || {% for type in licenseTypes %}{{ type }}||{% endfor %}
-{% for row in tableRows %}{{ row }}{% endfor %}

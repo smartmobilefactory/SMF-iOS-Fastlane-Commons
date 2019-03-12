@@ -1,3 +1,0 @@
-Not included are:
-{% for repository in repositories %} * {{ repository.name }} ({% if repository.url %}{{ repository.url }}{% else %}none{% endif %})
-{% endfor %}

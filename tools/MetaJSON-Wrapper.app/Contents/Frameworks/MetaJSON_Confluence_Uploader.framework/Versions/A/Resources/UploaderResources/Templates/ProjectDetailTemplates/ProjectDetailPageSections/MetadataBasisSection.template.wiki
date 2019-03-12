@@ -1,0 +1,6 @@
+h2. Source
+Basis of this metadata extraction is:
+{% if isAppOrUiTest %}
+- App Version: {{ marketingVersion }} {% if buildNumber %}({{ buildNumber }}){% endif %} {% else %}
+- Pod version: {{ podVersion }} {% endif %}
+- Branch: {{ branch }}

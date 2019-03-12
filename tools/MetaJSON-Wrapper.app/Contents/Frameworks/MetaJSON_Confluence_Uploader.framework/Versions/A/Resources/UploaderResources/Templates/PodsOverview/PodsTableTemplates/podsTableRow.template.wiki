@@ -1,1 +1,0 @@
-|| {{ pod.rowNumber }} || {{ pod.nameMarkup }} | {{ pod.integratedCount }} | {{ pod.integratedPercentage }} | {{ pod.latestVersion }} |{% for version in pod.projectPodVersionsMarkup %} {{ version }} |{% endfor %}
