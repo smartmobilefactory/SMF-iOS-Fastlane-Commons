@@ -4,6 +4,8 @@
 ### smf_deploy_app ###
 ######################
 
+fastlane add_plugin sentry
+
 desc "Builds all current build variants including build number incrementation, MetaJSON etc. and uploads the version to Hockey."
 private_lane :smf_deploy_app do |options|
 
