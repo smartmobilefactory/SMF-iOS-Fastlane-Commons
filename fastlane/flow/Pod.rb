@@ -74,8 +74,8 @@ private_lane :smf_publish_pod do |options|
     begin
 
       # Disabled as not working anymore.
-      # smf_generate_meta_json
-      # smf_commit_meta_json
+      smf_generate_meta_json
+      smf_commit_meta_json
     rescue => exception
       UI.important("Warning: MetaJSON couldn't be created")
 
