@@ -196,13 +196,13 @@ private_lane :smf_deploy_build_variant do |options|
   UI.important("Do we use sentry?: #{use_sentry}")
   if use_sentry
 
-	  UI.important("Dsym file will be uploaded to sentry with auth token: #{@build_variant_config[:sentry_auth_token]}")
-	  sentry_upload_dsym(
-						 auth_token: build_variant_config[:sentry_auth_token],
-						 org_slug: build_variant_config[:sentry_org_slug],
-						 project_slug: build_variant_config[:sentry_project_slug],
-						 url: "https://sentry.solutions.smfhq.com/"
-						 )
+#	  UI.important("Dsym file will be uploaded to sentry with auth token: #{@build_variant_config[:sentry_auth_token]}")
+#	  sentry_upload_dsym(
+#						 auth_token: build_variant_config[:sentry_auth_token],
+#						 org_slug: build_variant_config[:sentry_org_slug],
+#						 project_slug: build_variant_config[:sentry_project_slug],
+#						 url: "https://sentry.solutions.smfhq.com/"
+#						 )
   end
 
   if (build_variant_config[:use_sparkle])
