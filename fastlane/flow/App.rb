@@ -165,18 +165,7 @@ private_lane :smf_deploy_build_variant do |options|
   # Collect the changelog
   smf_collect_changelog
 
-  UI.important("Do we use sentry?: #{use_sentry}")
-  if use_sentry
-
-	  UI.important("Dsym file will be uploaded to sentry with auth token: #{@build_variant_config[:sentry_auth_token]}")
-	  sentry_upload_dsym(
-		auth_token: build_variant_config[:sentry_auth_token],
-		org_slug: build_variant_config[:sentry_org_slug],
-		project_slug: build_variant_config[:sentry_project_slug],
-		url: "https://sentry.solutions.smfhq.com/"
-	  )
-  end
-
+  UI.important("Do we use hockey?: #{use_hockey}")
   if use_hockey
     # Store the HockeyApp ID to let the handle exception lane know what hockeyapp entry should be deleted. This value is reset during bulk builds to avoid the deletion of a former succesful build.
     ENV[$SMF_APP_HOCKEY_ID_ENV_KEY] = build_variant_config[:hockeyapp_id]
@@ -202,6 +191,18 @@ private_lane :smf_deploy_build_variant do |options|
         slack_channel: ci_ios_error_log
       )
     end
+  end
+
+  UI.important("Do we use sentry?: #{use_sentry}")
+  if use_sentry
+
+	  UI.important("Dsym file will be uploaded to sentry with auth token: #{@build_variant_config[:sentry_auth_token]}")
+	  sentry_upload_dsym(
+						 auth_token: build_variant_config[:sentry_auth_token],
+						 org_slug: build_variant_config[:sentry_org_slug],
+						 project_slug: build_variant_config[:sentry_project_slug],
+						 url: "https://sentry.solutions.smfhq.com/"
+						 )
   end
 
   if (build_variant_config[:use_sparkle])
