@@ -72,8 +72,7 @@ private_lane :smf_deploy_build_variant do |options|
 
   generateMetaJSON = build_variant_config[:generateMetaJSON]
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
-  use_sentry = (build_variant_config[:sentry_org_slug] != nil && build_variant_config[:sentry_project_slug] != nil && build_variant_config[:sentry_auth_token] != nil)
-  UI.important("Do we use sentry?: #{use_sentry}")
+  use_sentry = (build_variant_config[:sentry_org_slug] != nil && build_variant_config[:sentry_project_slug] != nil)
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
   push_generated_code = (build_variant_config[:push_generated_code].nil? ? (build_variant_config[:phrase_app_script] != nil) : build_variant_config[:push_generated_code])
 
@@ -166,9 +165,7 @@ private_lane :smf_deploy_build_variant do |options|
   smf_collect_changelog
 
   if use_sentry
-
 	  smf_upload_dsym_to_sentry(
-		auth_token: build_variant_config[:sentry_auth_token],
 		org_slug: build_variant_config[:sentry_org_slug],
 		project_slug: build_variant_config[:sentry_project_slug]
 	  )
@@ -306,12 +303,11 @@ end
 desc "Uploads dsym to sentry"
 private_lane :smf_upload_dsym_to_sentry do |options|
 
-	auth_token = options[:auth_token]
 	org_slug = options[:org_slug]
 	project_slug = options[:project_slug]
 
-	UI.important("Upload dsym to sentry with token: #{auth_token}")
-	sentry_upload_dsym(auth_token: auth_token,
+	UI.important("Upload dsym to sentry with token: #{$SENTRY_AUTH_TOKEN}")
+	sentry_upload_dsym(auth_token: $SENTRY_AUTH_TOKEN,
 					   org_slug: org_slug,
 					   project_slug: project_slug,
 					   url: $SENTRY_URL)
