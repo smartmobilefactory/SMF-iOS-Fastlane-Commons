@@ -167,15 +167,17 @@ private_lane :smf_deploy_build_variant do |options|
 
   if use_sentry
 
-	  UI.important("Upload dsym to sentry")
-	  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_auth_token]}")
-	  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_org_slug]}")
-	  UI.important("Upload dsym to sentry: #{build_variant_config[:sentry_project_slug]}")
+	  smf_upload_dsym_to_sentry(
+		auth_token: build_variant_config[:sentry_auth_token],
+		org_slug: build_variant_config[:sentry_org_slug],
+		project_slug: build_variant_config[:sentry_project_slug]
+	  )
 
-	  sentry_upload_dsym(auth_token: build_variant_config[:sentry_auth_token],
-						 org_slug: build_variant_config[:sentry_org_slug],
-						 project_slug: build_variant_config[:sentry_project_slug],
-						 url: "https://sentry.solutions.smfhq.com/")
+#	  UI.important("Upload dsym to sentry with token: #{build_variant_config[:sentry_auth_token]}")
+#	  sentry_upload_dsym(auth_token: build_variant_config[:sentry_auth_token],
+#						 org_slug: build_variant_config[:sentry_org_slug],
+#						 project_slug: build_variant_config[:sentry_project_slug],
+#						 url: $SENTRY_URL)
   end
 
   if use_hockey
@@ -305,4 +307,19 @@ private_lane :smf_deploy_build_variant do |options|
         slack_channel: @smf_fastlane_config[:project][:slack_channel]
       )
   end
+end
+
+desc "Uploads dsym to sentry"
+private_lane :smf_upload_dsym_to_sentry do |options|
+
+	auth_token = options[:auth_token]
+	org_slug = options[:org_slug]
+	project_slug = options[:project_slug]
+
+	UI.important("Upload dsym to sentry with token: #{build_variant_config[:sentry_auth_token]}")
+	sentry_upload_dsym(auth_token: build_variant_config[:sentry_auth_token],
+					   org_slug: build_variant_config[:sentry_org_slug],
+					   project_slug: build_variant_config[:sentry_project_slug],
+					   url: $SENTRY_URL)
+
 end
