@@ -316,7 +316,7 @@ private_lane :smf_upload_dsym_to_sentry do |options|
 	org_slug = options[:org_slug]
 	project_slug = options[:project_slug]
 
-	UI.important("Upload dsym to sentry with token: #{build_variant_config[:sentry_auth_token]}")
+	UI.important("Upload dsym to sentry with token: #{auth_token}")
 	sentry_upload_dsym(auth_token: auth_token,
 					   org_slug: org_slug,
 					   project_slug: project_slug,
