@@ -73,6 +73,7 @@ private_lane :smf_deploy_build_variant do |options|
   generateMetaJSON = build_variant_config[:generateMetaJSON]
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
   use_sentry = (build_variant_config[:sentry_org_slug] != nil && build_variant_config[:sentry_project_slug] != nil && build_variant_config[:sentry_auth_token] != nil)
+  UI.important("Do we use sentry?: #{use_sentry}")
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
   push_generated_code = (build_variant_config[:push_generated_code].nil? ? (build_variant_config[:phrase_app_script] != nil) : build_variant_config[:push_generated_code])
 
