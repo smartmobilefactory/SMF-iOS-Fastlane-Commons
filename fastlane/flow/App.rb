@@ -172,7 +172,7 @@ private_lane :smf_deploy_build_variant do |options|
 		auth_token: build_variant_config[:sentry_auth_token],
 		org_slug: build_variant_config[:sentry_org_slug],
 		project_slug: build_variant_config[:sentry_project_slug],
-		url: $SENTRY_URL
+		url: "https://sentry.solutions.smfhq.com/"
 	  )
   end
 
