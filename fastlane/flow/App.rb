@@ -165,6 +165,7 @@ private_lane :smf_deploy_build_variant do |options|
   # Collect the changelog
   smf_collect_changelog
 
+  UI.important("Do we use sentry?: #{use_sentry}")
   if use_sentry
 
 	  UI.important("Dsym file will be uploaded to sentry with auth token: #{@build_variant_config[:sentry_auth_token]}")
