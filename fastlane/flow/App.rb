@@ -196,16 +196,17 @@ private_lane :smf_deploy_build_variant do |options|
       raise("DMG file #{app_path} does not exit. Nothing to upload.")
     end
 
-    app_name = build_variant_config["sparkle_dmg_name".to_sym]
+    app_name = "#{build_variant_config["sparkle_dmg_path".to_sym]}#{build_variant_config["scheme".to_sym]}.dmg"
     user_name = build_variant_config["sparkle_upload_user".to_sym]
     upload_url = build_variant_config["sparkle_upload_url".to_sym]
 
-    #sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
     # Create appcast
     sparkle_private_key = ENV[build_variant_config["sparkle.signing_identity".to_sym]]
     update_dir = "#{smf_workspace_dir}/build/"
 
     UI.important("Create Keychain entry for Sparkle")
+    unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
     sh("security add-generic-password -a \"ed25519\" -s \"https://sparkle-project.org\" -w \"#{sparkle_private_key}\" -U -D \"private key\" -A || true")
 
     sh "#{@fastlane_commons_dir_path}/tools/generate_appcast #{update_dir}"
