@@ -206,7 +206,7 @@ private_lane :smf_deploy_build_variant do |options|
     update_dir = "#{smf_workspace_dir}/build/"
 
     UI.important("Create Keychain entry for Sparkle")
-    sh("security add-generic-password -a \"ed25519\" -D \"private key\" -s \"https://sparkle-project.org\" -A -U -w \"#{sparkle_private_key}\" jenkins")
+    sh("security add-generic-password -a \"ed25519\" -D \"private key\" -s \"https://sparkle-project.org\" -A -U -w \"#{sparkle_private_key}\" jenkins || true")
 
     sh "#{@fastlane_commons_dir_path}/tools/generate_appcast #{update_dir}"
     # Upload appcast
