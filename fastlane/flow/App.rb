@@ -200,17 +200,16 @@ private_lane :smf_deploy_build_variant do |options|
     user_name = build_variant_config["sparkle_upload_user".to_sym]
     upload_url = build_variant_config["sparkle_upload_url".to_sym]
 
-    UI.important("start Uploading:")
-    UI.important(app_name)
-    UI.important(user_name)
-    UI.important(upload_url)
-
     sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
     # Create appcast
     sparkle_private_key = ENV[build_variant_config["sparkle.signing_identity".to_sym]]
     update_dir = "#{smf_workspace_dir}/build/"
     download_link = build_variant_config["sparkle_download_url".to_sym]
-    sh "#{@fastlane_commons_dir_path}/tools/generate_appcast -f #{sparkle_private_key} #{update_dir} #{download_link}"
+
+    UI.important("Create Keychain entry for Sparkle")
+    sh("security add-generic-password -a \"ed25519\" -D \"private key\" -s \"https://sparkle-project.org\" -A -U -w \"#{sparkle_private_key}\"")
+
+    sh "#{@fastlane_commons_dir_path}/tools/generate_appcast #{update_dir}"
     # Upload appcast
     appcast_xml = "#{update_dir}/appcast.xml"
     appcast_upload_name = ENV[build_variant_config["sparkle_xml_name".to_sym]]
