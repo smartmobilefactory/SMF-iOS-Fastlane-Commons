@@ -196,9 +196,9 @@ private_lane :smf_deploy_build_variant do |options|
       raise("DMG file #{app_path} does not exit. Nothing to upload.")
     end
 
-    app_name = ENV[build_variant_config["sparkle_dmg_name".to_sym]]
-    user_name = ENV[build_variant_config["sparkle_upload_user".to_sym]]
-    upload_url = ENV[build_variant_config["sparkle_upload_url".to_sym]]
+    app_name = build_variant_config["sparkle_dmg_name".to_sym]
+    user_name = build_variant_config["sparkle_upload_user".to_sym]
+    upload_url = build_variant_config["sparkle_upload_url".to_sym]
 
     UI.important("start Uploading:")
     UI.important(app_name)
