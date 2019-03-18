@@ -210,7 +210,7 @@ private_lane :smf_deploy_build_variant do |options|
 
     sh "#{@fastlane_commons_dir_path}/tools/generate_appcast #{update_dir}"
     # Upload appcast
-    appcast_xml = "#{update_dir}appcast.xml"
+    appcast_xml = "#{update_dir}/appcast.xml"
     appcast_upload_name = ENV[build_variant_config["sparkle_xml_name".to_sym]]
     sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{appcast_upload_name}")
   end
