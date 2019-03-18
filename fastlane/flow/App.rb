@@ -204,16 +204,15 @@ private_lane :smf_deploy_build_variant do |options|
     # Create appcast
     sparkle_private_key = ENV[build_variant_config["sparkle.signing_identity".to_sym]]
     update_dir = "#{smf_workspace_dir}/build/"
-    download_link = build_variant_config["sparkle_download_url".to_sym]
 
     UI.important("Create Keychain entry for Sparkle")
     sh("security add-generic-password -a \"ed25519\" -D \"private key\" -s \"https://sparkle-project.org\" -A -U -w \"#{sparkle_private_key}\" jenkins")
 
     sh "#{@fastlane_commons_dir_path}/tools/generate_appcast #{update_dir}"
     # Upload appcast
-    appcast_xml = "#{update_dir}/appcast.xml"
+    appcast_xml = "#{update_dir}appcast.xml"
     appcast_upload_name = ENV[build_variant_config["sparkle_xml_name".to_sym]]
-    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{app_name}")
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{appcast_upload_name}")
   end
 
   tag = smf_add_git_tag
