@@ -199,6 +199,12 @@ private_lane :smf_deploy_build_variant do |options|
     app_name = ENV[build_variant_config["sparkle_dmg_name".to_sym]]
     user_name = ENV[build_variant_config["sparkle_upload_user".to_sym]]
     upload_url = ENV[build_variant_config["sparkle_upload_url".to_sym]]
+
+    UI.important("start Uploading:")
+    UI.important(app_name)
+    UI.important(user_name)
+    UI.important(upload_url)
+
     sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
     # Create appcast
     sparkle_private_key = ENV[build_variant_config["sparkle.signing_identity".to_sym]]
