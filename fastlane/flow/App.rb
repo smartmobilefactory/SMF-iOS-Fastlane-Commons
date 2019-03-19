@@ -205,11 +205,7 @@ private_lane :smf_deploy_build_variant do |options|
     sparkle_private_key = ENV[build_variant_config["sparkle.signing_identity".to_sym]]
     update_dir = "#{smf_workspace_dir}/build/"
 
-    UI.important("Create Keychain entry for Sparkle")
-    unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
-    sh("security add-generic-password -a \"ed25519\" -s \"https://sparkle-project.org\" -w \"#{sparkle_private_key}\" -U -D \"private key\" -A || true")
-
-    sh "#{@fastlane_commons_dir_path}/tools/generate_appcast #{update_dir}"
+    sh "#{@fastlane_commons_dir_path}/tools/sparkle.sh #{ENV["LOGIN"]} #{sparkle_private_key} #{update_dir}"
     # Upload appcast
     appcast_xml = "#{update_dir}appcast.xml"
     appcast_upload_name = build_variant_config["sparkle_xml_name".to_sym]
