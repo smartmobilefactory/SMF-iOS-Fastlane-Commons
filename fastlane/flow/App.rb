@@ -207,9 +207,9 @@ private_lane :smf_deploy_build_variant do |options|
 
     sh "#{@fastlane_commons_dir_path}/tools/sparkle.sh #{ENV["LOGIN"]} #{sparkle_private_key} #{update_dir}"
     # Upload appcast
-    appcast_xml = "#{update_dir}appcast.xml"
+    appcast_xml = "#{update_dir}#{build_variant_config["sparkle_xml_name".to_sym]}"
     appcast_upload_name = build_variant_config["sparkle_xml_name".to_sym]
-    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{appcast_upload_name}")
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{build_variant_config["sparkle_dmg_path".to_sym]}#{appcast_upload_name}")
   end
 
   tag = smf_add_git_tag
