@@ -54,12 +54,6 @@ security add-generic-password    -a "ed25519" -s "https://sparkle-project.org" -
 # Using the team id, authorise the identity codesigning the generate_appcast to access the private key.
 security set-generic-password-partition-list -a "ed25519" -s "https://sparkle-project.org" -k $1 -S teamid:$TEAM_ID "/Users/smf/Library/Keychains/login.keychain-db"
 
-echo "---- Access Private Key ----"
-
-# Test if the private key can be retrieved without any error.
-echo "** find-generic-password **"
-security find-generic-password -a "ed25519" -s "https://sparkle-project.org"
-
 # Use generate_appcast to access the private key within the default keychain.
 # The default keychain must be the one used previously.
 echo "** generate_appcast **"
