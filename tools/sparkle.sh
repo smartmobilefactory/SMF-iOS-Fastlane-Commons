@@ -14,8 +14,8 @@ export LANG=en_US.UTF-8
 # Remove local generate_appcast.
 
 # Variables to import and read from the Config.json
-SPARKLE_VERSION=1.21.3
-TEAM_ID=JZ2H644EU7
+SPARKLE_VERSION=$4
+TEAM_ID=$5
 
 echo "---- Download latest generate_appcast release ----"
 

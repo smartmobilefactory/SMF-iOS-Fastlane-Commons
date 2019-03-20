@@ -196,20 +196,22 @@ private_lane :smf_deploy_build_variant do |options|
       raise("DMG file #{app_path} does not exit. Nothing to upload.")
     end
 
-    app_name = "#{build_variant_config["sparkle_dmg_path".to_sym]}#{build_variant_config["scheme".to_sym]}.dmg"
-    user_name = build_variant_config["sparkle_upload_user".to_sym]
-    upload_url = build_variant_config["sparkle_upload_url".to_sym]
+    sparkle = build_variant_config["sparkle".to_sym]
+
+    app_name = "#{sparkle["dmg_path".to_sym]}#{build_variant_config["scheme".to_sym]}.dmg"
+    user_name = sparkle["upload_user".to_sym]
+    upload_url = sparkle["upload_url".to_sym]
 
     sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
     # Create appcast
-    sparkle_private_key = ENV[build_variant_config["sparkle.signing_identity".to_sym]]
+    sparkle_private_key = ENV[sparkle["signing_key".to_sym]]
     update_dir = "#{smf_workspace_dir}/build/"
 
-    sh "#{@fastlane_commons_dir_path}/tools/sparkle.sh #{ENV["LOGIN"]} #{sparkle_private_key} #{update_dir}"
+    sh "#{@fastlane_commons_dir_path}/tools/sparkle.sh #{ENV["LOGIN"]} #{sparkle_private_key} #{update_dir} #{sparkle["sparkle_version".to_sym]} #{sparkle["sparkle_signing_team".to_sym]}"
     # Upload appcast
-    appcast_xml = "#{update_dir}#{build_variant_config["sparkle_xml_name".to_sym]}"
-    appcast_upload_name = build_variant_config["sparkle_xml_name".to_sym]
-    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{build_variant_config["sparkle_dmg_path".to_sym]}#{appcast_upload_name}")
+    appcast_xml = "#{update_dir}#{sparkle["xml_name".to_sym]}"
+    appcast_upload_name = sparkle["xml_name".to_sym]
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{appcast_upload_name}")
   end
 
   tag = smf_add_git_tag
