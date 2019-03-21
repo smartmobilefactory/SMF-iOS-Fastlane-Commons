@@ -188,19 +188,30 @@ private_lane :smf_deploy_build_variant do |options|
   end
 
   if (build_variant_config[:use_sparkle])
-    # Create appcast
-    sparkle_code_signing_identity = build_variant_config["sparkle.signing_identity".to_sym]
-    sparkle_private_key = ENV["CUSTOM_CERTIFICATES"] + "/" + sparkle_code_signing_identity
-    update_dir = "#{smf_workspace_dir}/build/"
-    hockey_download_link = lane_context[SharedValues::HOCKEY_BUILD_INFORMATION]["build_url"]
-    sh "#{@fastlane_commons_dir_path}/tools/generate_appcast -f #{sparkle_private_key} #{update_dir} #{hockey_download_link}"
+    # Upload DMG to Strato
+    app_path = smf_path_to_ipa_or_app
+    app_path = app_path.sub(".app", ".dmg")
 
+    if ( ! File.exists?(app_path))
+      raise("DMG file #{app_path} does not exit. Nothing to upload.")
+    end
+
+    sparkle = build_variant_config["sparkle".to_sym]
+
+    app_name = "#{sparkle["dmg_path".to_sym]}#{build_variant_config["scheme".to_sym]}.dmg"
+    user_name = sparkle["upload_user".to_sym]
+    upload_url = sparkle["upload_url".to_sym]
+
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
+    # Create appcast
+    sparkle_private_key = ENV[sparkle["signing_key".to_sym]]
+    update_dir = "#{smf_workspace_dir}/build/"
+
+    sh "#{@fastlane_commons_dir_path}/tools/sparkle.sh #{ENV["LOGIN"]} #{sparkle_private_key} #{update_dir} #{sparkle["sparkle_version".to_sym]} #{sparkle["sparkle_signing_team".to_sym]}"
     # Upload appcast
-    access_key = ENV["SMF_SPARKLE_S3_ACCESS_KEY"]
-    secret_key = ENV["SMF_SPARKLE_S3_SECRET_ACCESS_KEY"]
-    sparkle_s3aws_bucket = build_variant_config["sparkle_s3aws_bucket".to_sym]
-    directory = build_variant_config["scheme".to_sym]
-    sh "#{@fastlane_commons_dir_path}/tools/upload2aws.sh -f #{update_dir}/appcast.xml -a #{access_key} -s #{secret_key} -b #{sparkle_s3aws_bucket} -d #{directory}"
+    appcast_xml = "#{update_dir}#{sparkle["xml_name".to_sym]}"
+    appcast_upload_name = sparkle["xml_name".to_sym]
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{appcast_upload_name}")
   end
 
   tag = smf_add_git_tag

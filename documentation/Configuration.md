@@ -61,8 +61,6 @@ The build variants configuration is nested in the root level key `build_variants
 |scheme|`nil`|☑️ (for Apps)|The scheme which should be build.|
 |should\_clean\_project|`true` (single or first build variant), `false` (second or later build variant in a row)||If disabled, xcodebuild won't be told to clean before building an app.|
 |slack\_enabled|`true`||If disabled, no Slack notifications will be sentn. This should be done if you want to run Fastlane locally without the Jenkins environment.|
-|sparkle.signing\_identity|||The signing identity to use for Sparkle.|
-|sparkle\_s3aws\_bucket|`nil`||The S3 bucket to use for Sparkle.|
 |target|`nil`||The target which is built. This is needed in some cases to read the version number.|
 |team\_id|`nil`|☑️ (for Apps)|The Team ID to use for the Apple Member Center.|
 |tests.device\_to\_test\_against|`nil`||Can be used to specify the target device for unit tests. This can be useful if e.g. only an iPad should be used for tests.|
@@ -72,9 +70,9 @@ The build variants configuration is nested in the root level key `build_variants
 |upload\_bitcode|`true`||If disabled, Bitcode won't be uploaded.|
 |upload\_itc|`false`||If enabled, the .ipa will be uploaded to App Store Connect.|
 |use\_hockey|`true`||If disabled, the .ipa won't be uploaded to HockeyApp|
-|use\_sparkle|`false`||If enabled, the release will be distributed with Sparkle.|
 |use\_wildcard\_signing|`false`||If enabled, the Wildcard provisioning profile will be downloaded instead of one which matches the bundle identifier.|
 |xcconfig\_name|`nil`||The name of the xcconfig to build. This is needed if xcconfig files are used instead of targets.|
+|use\_sparkle|`false`|If enabled, the release will be distributed with Sparkle.|Configuration Will be taken from the `sparkle` Json|
 
 ## Extension Suffixes
 
@@ -82,5 +80,15 @@ The extension suffixes are nested in the root level key `extensions_suffixes`. I
 
 If you have an app with the bundle identifier `my.app` and an extensions `my.app.findersync`, the extension suffix would be `findersync`. This is needed to let Fastlane download the correct provisioning profiles.
 
+## Sparkle Configuration
 
+|Key|Description|
+|---|---|
+|`signing_key`|The private Key from sparkle's `generate_key`-Tool. The according public Key should be set in the `info.Plist` of the Target.|
+|`upload_url`|The Host Address that is used to upload the `.xml` and the `.dmg` file using `scp`. **Note:** Since this is used in a Script, the Host-URL should be listed in the known-hosts.| 
+|`upload_user`|The User that is used to upload Files with `scp`|
+|`xml_name`|The filename of the XML, this filename will should be equal to the one that is referenced in the `info.Plist`.|
+|`dmg_path`|The Path on the Server where the `.dmg` File will be placed. **Note:** The `.dmg` File will always be named like the target.|
+|`sparkle_version`|The Version of the Tool Kit, provided from Sparkle, this will be downloaded from Github to sign the `.xml` File and the `.dmg` File.|
+|`sparkle_signing_team`|A Team that can sign the Sparkle Tools to let them access the Keychain without prompting. This is an important Step, otherwise the Update process would be insecure.|
 
