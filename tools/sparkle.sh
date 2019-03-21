@@ -37,7 +37,7 @@ echo "Default Keychain:"
 security default-keychain
 
 echo "Unlock login keychain"
-security unlock-keychain -p KEYCHAIN_PASSWORD "/Users/smf/Library/Keychains/login.keychain-db"
+security unlock-keychain -p $KEYCHAIN_PASSWORD "/Users/smf/Library/Keychains/login.keychain-db"
 
 # Get certificate identity from the keychain using the given team id.
 CERTIFICATE_NAME=`security find-certificate -c $TEAM_ID | grep -e "alis" | sed 's/    "alis"<blob>="//g' | sed 's/"//g'`
@@ -48,20 +48,21 @@ codesign -dv ./generate_appcast
 
 echo "----- Add Private Key ----"
 
-echo "Add credential in login keychain"
 # If any, delete pre-existing private keys from the keychain.
+echo "Delete credential in login keychain"
 security delete-generic-password -a "ed25519" -s "https://sparkle-project.org" -D "private key" "/Users/smf/Library/Keychains/login.keychain-db"
 # Add the (new) private key to the keychain.
 # Used parameters: account, service, description/type, allowed application, password, related keychain.
-security add-generic-password    -a "ed25519" -s "https://sparkle-project.org" -D "private key" -T ./generate_appcast -w APPCAST_PASSWORD "/Users/smf/Library/Keychains/login.keychain-db"
+echo "Add credential in login keychain"
+security add-generic-password    -a "ed25519" -s "https://sparkle-project.org" -D "private key" -T ./generate_appcast -w $APPCAST_PASSWORD "/Users/smf/Library/Keychains/login.keychain-db"
 # Using the team id, authorise the identity codesigning the generate_appcast to access the private key.
-security set-generic-password-partition-list -a "ed25519" -s "https://sparkle-project.org" -k KEYCHAIN_PASSWORD -S teamid:$TEAM_ID "/Users/smf/Library/Keychains/login.keychain-db"
+security set-generic-password-partition-list -a "ed25519" -s "https://sparkle-project.org" -k $KEYCHAIN_PASSWORD -S teamid:$TEAM_ID "/Users/smf/Library/Keychains/login.keychain-db"
 
 # Use generate_appcast to access the private key within the default keychain.
 # The default keychain must be the one used previously.
 echo "** generate_appcast **"
 
-./generate_appcast APPCAST_BASE_URI
+./generate_appcast $APPCAST_BASE_URI
 
 echo "---- clean up ----"
 # Delete the private key and codesigned version of the generate_appcast.
