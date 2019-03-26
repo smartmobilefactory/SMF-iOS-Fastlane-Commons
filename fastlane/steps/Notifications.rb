@@ -26,7 +26,7 @@ private_lane :smf_send_chat_message do |options|
   additional_html_entries = options[:additional_html_entries]
   fail_build_job_on_error = (options[:fail_build_job_on_error] == nil ? false : options[:additional_html_entries])
   attachment_path = options[:attachment_path]
-  
+
   type = options[:type]
   success = false
   if type == "success" || type == "message"
@@ -78,14 +78,16 @@ private_lane :smf_send_chat_message do |options|
 
     UI.message("Sending message \"#{content}\" to room \"#{slack_channel}\"")
 
+    slack_workspace_url = "https://hooks.slack.com/services/#{slack_url}"
+
     # Send failure messages also to CI to notice them so that we can see if they can be improved
     begin
       if type == "error" && ((slack_channel.eql? ci_ios_error_log) == false)
         slack(
-          slack_url: "#{slack_url}",
+          slack_url: slack_workspace_url,
           message: content,
           pretext: title,
-	  success: success,
+          success: success,
           channel: "#{ci_ios_error_log}",
           username: "#{project_name} iOS CI",
           payload: {
@@ -102,7 +104,7 @@ private_lane :smf_send_chat_message do |options|
     begin
         if attachment_path != nil
           slack(
-            slack_url: "#{slack_url}",
+            slack_url: slack_workspace_url,
             message: content,
             pretext: title,
 	    success: success,
@@ -124,7 +126,7 @@ private_lane :smf_send_chat_message do |options|
           )
         elsif
           slack(
-            slack_url: "#{slack_url}",
+            slack_url: slack_workspace_url,
             message: content,
             pretext: title,
 	    success: success,
