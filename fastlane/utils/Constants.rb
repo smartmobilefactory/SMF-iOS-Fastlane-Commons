@@ -26,6 +26,11 @@ $SMF_IS_MAILGUN_ENABLED = "SMF_IS_MAILGUN_ENABLED"
 $SMF_IS_SLACK_ENABLED = "SMF_IS_SLACK_ENABLED"
 $SMF_IS_KEYCHAIN_ENABLED = "SMF_IS_KEYCHAIN_ENABLED"
 
+# Path to xcode versions, used for xcode_select and ensure_xcode_version in combination with the projects xcode version
+$XCODE_EXECUTABLE_PATH_PREFIX = "/Applications/Xcode-"
+$XCODE_EXECUTABLE_PATH_POSTFIX = ".app"
+$DEVELOPMENT_DIRECTORY_KEY = "DEVELOPMENT_DIR"
+
 # Default Slack channel to send logs to
 $SMF_CI_IOS_ERROR_LOG = "ci-ios-error-log"
 $SLACK_URL = "https://hooks.slack.com/services/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"

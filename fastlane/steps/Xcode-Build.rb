@@ -65,6 +65,10 @@ private_lane :smf_archive_ipa do |options|
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
+  if @smf_fastlane_config[:project][:ready_for_parallel_build] == true
+    smf_setup_correct_xcode_executable_for_build
+  end
+
   gym(
     clean: should_clean_project,
     workspace: "#{project_name}.xcworkspace",
@@ -258,6 +262,22 @@ end
 ##############
 ### HELPER ###
 ##############
+
+def smf_setup_correct_xcode_executable_for_build
+  # Make sure that the correct xcode version is selected when building the app
+  required_xcode_version = @smf_fastlane_config[:project][:xcode_version]
+  xcode_executable_path = smf_xcode_executable_path_for_version(required_xcode_version)
+  
+  puts "SELECTED XCODE EXECUTABLE: #{xcode_executable_path}"
+  ENV[$DEVELOPMENT_DIRECTORY_KEY] = xcode_executable_path
+
+  xcode_select(xcode_executable_path)
+  ensure_xcode_version(version: required_xcode_version)
+end
+
+def smf_xcode_executable_path_for_version(xcode_version)
+  return "#{$XCODE_EXECUTABLE_PATH_PREFIX}" + xcode_version + "#{$XCODE_EXECUTABLE_PATH_POSTFIX}"
+end
 
 def smf_set_should_revert_build_number(value)
   newValue = value ? "true" : "false"
