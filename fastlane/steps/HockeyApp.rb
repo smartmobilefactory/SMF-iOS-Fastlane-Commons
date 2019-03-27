@@ -101,27 +101,13 @@ private_lane :smf_upload_ipa_to_hockey do |options|
   # Get the release notes
   release_notes = "#{ENV[$SMF_CHANGELOG_ENV_KEY][0..4995]}#{'\\n...' if ENV[$SMF_CHANGELOG_ENV_KEY].length > 4995}"
 
-  if (build_variant_config[:use_sparkle])
-    hockey(
-      api_token: ENV[$SMF_HOCKEYAPP_API_TOKEN_ENV_KEY],
-      ipa: app_path,
-      bundle_short_version: version_number,
-      bundle_version: version_number + "-" + build_number,
-      create_update: "1",
-      notify: "0",
-      notes: release_notes,
-      public_identifier: build_variant_config[:hockeyapp_id],
-      dsym: dsym_path  
-    )
-  elsif
-    hockey(
-      api_token: ENV[$SMF_HOCKEYAPP_API_TOKEN_ENV_KEY],
-      ipa: app_path,
-      notify: "0",
-      notes: release_notes,
-      public_identifier: build_variant_config[:hockeyapp_id],
-      dsym: dsym_path  
-    )
-  end
+  hockey(
+    api_token: ENV[$SMF_HOCKEYAPP_API_TOKEN_ENV_KEY],
+    ipa: app_path,
+    notify: "0",
+    notes: release_notes,
+    public_identifier: build_variant_config[:hockeyapp_id],
+    dsym: dsym_path  
+  )
 
 end
