@@ -9,7 +9,8 @@ private_lane :smf_install_pods_if_project_contains_podfile do |options|
 
   if File.exist?(podfile)
     cocoapods(
-      podfile: podfile
+      podfile: podfile,
+      use_bundle_exec: false
     )
   else
     UI.message("Didn't install Pods as the project doesn't contain a Podfile")
