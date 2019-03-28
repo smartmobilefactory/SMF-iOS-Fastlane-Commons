@@ -78,7 +78,8 @@ private_lane :smf_send_chat_message do |options|
 
     UI.message("Sending message \"#{content}\" to room \"#{slack_channel}\"")
 
-    slack_workspace_url = "https://hooks.slack.com/services/#{slack_url}"
+    slack_workspace_url = "https://hooks.slack.com/services/" + slack_url
+    UI.message("Sending message to workspace URL: #{slack_workspace_url}")
 
     # Send failure messages also to CI to notice them so that we can see if they can be improved
     begin
