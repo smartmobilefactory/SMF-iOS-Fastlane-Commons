@@ -34,7 +34,7 @@ end
 def smf_setup_fastlane_commons(options = Hash.new)
   # Load the Fastlane config from the disk into memory
   smf_load_fastlane_config
-  
+
   # Clone the Commons Repo
   @fastlane_commons_dir_path = "#{smf_workspace_dir}/.fastlane-smf-commons"
 
@@ -67,8 +67,8 @@ end
 ##############
 
 def import_all(path)
-  Dir["#{path}/*.rb"].each { |file| 
-    import file 
+  Dir["#{path}/*.rb"].each { |file|
+    import file
   }
 end
 
@@ -115,7 +115,7 @@ def smf_set_build_variant(build_variant, reset_build_variant_array = true)
   if reset_build_variant_array
     smf_set_build_variants_array(nil)
   end
-  
+
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
   if build_variant_config == nil
@@ -143,9 +143,9 @@ end
 def smf_set_build_variants_matching_regex(regex)
   all_build_variants = @smf_fastlane_config[:build_variants].keys
   matching_build_variants = all_build_variants.grep(/#{regex}/).map(&:to_s)
-  
+
   UI.important("Found matching build variants: #{matching_build_variants}")
-  
+
   smf_set_build_variants_array(matching_build_variants)
 end
 
@@ -186,7 +186,7 @@ def smf_override_build_type_options_by_variant_config(build_variant_config)
   is_keychain_enabled = (build_variant_config[:keychain_enabled].nil? ? smf_is_keychain_enabled : build_variant_config[:keychain_enabled])
 
   puts "Overriding build type options:\n mailgun_enabled: #{is_mailgun_enabled}\n slack_enabled: #{is_slack_enabled}\n keychain_enabled: #{is_keychain_enabled}"
-  
+
   smf_set_mailgun_enabled(is_mailgun_enabled)
   smf_set_slack_enabled(is_slack_enabled)
   smf_set_keychain_enabled(is_keychain_enabled)
@@ -242,7 +242,7 @@ end
 def smf_workspace_dir
   path = "#{Dir.pwd}"
   if path.end_with?("/fastlane")
-    path = path.chomp("/fastlane") 
+    path = path.chomp("/fastlane")
   end
   return path
 end
@@ -252,5 +252,5 @@ def ci_ios_error_log
 end
 
 def slack_url
-  return "#{$SLACK_URL}"
+  return "#{$SMF_SLACK_URL}"
 end
