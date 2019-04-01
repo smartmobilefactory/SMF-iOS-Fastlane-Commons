@@ -74,7 +74,7 @@ The build variants configuration is nested in the root level key `build_variants
 |xcconfig\_name|`nil`||The name of the xcconfig to build. This is needed if xcconfig files are used instead of targets.|
 |use\_sparkle|`false`|If enabled, the release will be distributed with Sparkle.|Configuration Will be taken from the `sparkle` Json|
 
-### Phrase App Synchonisation Variables
+### Phrase App Synchronisation Variables
 The Phrase-App synchronisation scripts need certain environment variables. The values for theses variables are stored in the nested dictionary ```phrase_app```. These entries exist for each build variant that needs to sync with phrase app and are therefore nested inside the given build-variant entry.
 
 |Key|Default Value|Datatype| Mandatory |Description|
@@ -98,37 +98,37 @@ Here a template for the ```phrase_app``` structure:
 ```
 "alpha": {
 		...		
-				"phrase_app" : [
+		"phrase_app" : [
+			{
+				"format"		: "...",
+				"access_token_key"	: "...",
+				"project_id"		: "...",
+				"source"		: "...",
+				"locales"		: [
+					"...",
+					"..."
+				],
+				"force_update"		: false/true,
+				"base_directory"	: "...",
+				"files"				: [
+					"...",
+					"..."
+				],
+				"forbid_comments_in_source"	: false/true,
+				"files_prefix"			: "...",
+				"git_branch"			: "...",
+				"extensions"			: [
 					{
-						"format"			: "...",
-						"access_token_key"	: "...",
 						"project_id"		: "...",
-						"source"			: "...",
-						"locales"			: [
-							"...",
-							"..."
-						],
-						"force_update"		: false/true,
 						"base_directory"	: "...",
 						"files"				: [
 							"...",
 							"..."
-						],
-						"forbid_comments_in_source"	: false/true,
-						"files_prefix"				: "...",
-						"git_branch"				: "...",
-						"extensions"				: [
-							{
-								"project_id"		: "...",
-								"base_directory"	: "...",
-								"files"				: [
-									"...",
-									"..."
-								]
-							}
 						]
 					}
 				]
+			}
+		]
 }
 ```
 ## Extension Suffixes
