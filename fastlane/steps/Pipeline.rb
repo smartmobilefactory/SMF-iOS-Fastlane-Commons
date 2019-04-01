@@ -7,10 +7,10 @@ private_lane :smf_generate_jenkins_file do |options|
 	jenkinsFileData = File.read("#{@fastlane_commons_dir_path}/pipeline/App_Jenkinsfile")
  	build_variants = ["Alpha", "Beta", "Live"]
  	
- 	build_variants_config = @smf_fastlane_config[:build_variants]
+ 	build_variants_from_config = @smf_fastlane_config[:build_variants].keys
  	
  	build_config_variants = []
- 	smf_build_variants_array.each do |variant|
+ 	build_variants_from_config.each do |variant|
  		build_config_variants.push(variant)
  	end
 
