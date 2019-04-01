@@ -74,6 +74,63 @@ The build variants configuration is nested in the root level key `build_variants
 |xcconfig\_name|`nil`||The name of the xcconfig to build. This is needed if xcconfig files are used instead of targets.|
 |use\_sparkle|`false`|If enabled, the release will be distributed with Sparkle.|Configuration Will be taken from the `sparkle` Json|
 
+### Phrase App Synchonisation Variables
+The Phrase-App synchronisation scripts need certain environment variables. The values for theses variables are stored in the nested dictionary ```phrase_app```. These entries exist for each build variant that needs to sync with phrase app and are therefore nested inside the given build-variant entry.
+
+|Key|Default Value|Datatype| Mandatory |Description|
+|---|---|---|---|---|
+|```access_token_key```| ```nil```|```String```| ☑️| ? |
+|```project_id```| ```nil```|```String```|  ☑️| ? |
+|```source```| ```nil```|```String```| ☑️| ? |
+|```locales```| ```nil```|```Array of Strings```| ☑️| ? |
+|```format```| ```nil```|```String```| ☑️| ? |
+|```base_directory```| ```nil```|```String```| ☑️| ? |
+|```files```| ```nil```|```Array of Strings```| ☑️| ? |
+|```git_branch```| ```"master"```|```String```| | ? |
+|```force_update```| ```nil```|```Bool```| | ? |
+|```files_prefix```| ```nil```|```String```| ☑️| ? |
+|```forbi_comments_in_source```| ```true```|```Bool```| | ? |
+
+If there are extensions which need to be synced with the phrase app, too, this can be done by adding an ```extensions``` array nested in the ```phrase_app``` entry. For each extension the array should contain entry with keys: ```project_id, base_directory and files```.
+
+Here a template for the ```phrase_app``` structure:
+
+```
+"alpha": {
+		...		
+				"phrase_app" : [
+					{
+						"format"			: "...",
+						"access_token_key"	: "...",
+						"project_id"		: "...",
+						"source"			: "...",
+						"locales"			: [
+							"...",
+							"..."
+						],
+						"force_update"		: false/true,
+						"base_directory"	: "...",
+						"files"				: [
+							"...",
+							"..."
+						],
+						"forbid_comments_in_source"	: false/true,
+						"files_prefix"				: "...",
+						"git_branch"				: "...",
+						"extensions"				: [
+							{
+								"project_id"		: "...",
+								"base_directory"	: "...",
+								"files"				: [
+									"...",
+									"..."
+								]
+							}
+						]
+					}
+				]
+}
+```
 ## Extension Suffixes
 
 The extension suffixes are nested in the root level key `extensions_suffixes`. It's an array which should contain the app extension bundle identifier suffixes.
