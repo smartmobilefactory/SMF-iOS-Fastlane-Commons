@@ -14,10 +14,10 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
     valid_entries = validate_and_set_phrase_app_env_variables
 
     if (valid_entries == false)
-      UI.error("Failed to sync Strings with PhraseApp: check fastlane/Config.json \"phrase_app\" entries!")
+      UI.error("Failed to sync Strings with PhraseApp (using the Config.json): check fastlane/Config.json \"phrase_app\" entries!")
       errors_occured = true
     else
-      UI.message("Starting to clone Phraseapp-CI scripts..."
+      UI.message("Starting to clone Phraseapp-CI scripts...")
       phrase_app_scripts_path = clone_phraseapp_ci
 
       if (phrase_app_scripts_path != nil)
@@ -79,7 +79,7 @@ end
 # Mapps the keys of the fastlane/Config.json to the env. variable names of for the phrase app script
 # the boolean value indicates whether the value is optional or not
 # for default values a third entry in the array can be provided
-phrase_app_config_keys_env_variable_mapping = {
+@phrase_app_config_keys_env_variable_mapping = {
   :access_token_key           => ["phraseappAccessToken", false],
   :project_id                 => ["phraseappProjectId", false],
   :source                     => ["phraseappSource", false],
@@ -101,7 +101,7 @@ def validate_and_set_phrase_app_env_variables
 
   UI.message("Checking if all necessary values for the phrase app script are present in the Config.json...")
 
-  phrase_app_config_keys_env_variable_mapping.each do |key, value|
+  @phrase_app_config_keys_env_variable_mapping.each do |key, value|
     result = validate_phrase_app_variable(key, value[1])
     if (result == nil)
       return false
@@ -127,10 +127,10 @@ end
 def validate_phrase_app_variable(key, optional)
   value = get_phrase_app_value_for(key)
   if (value == nil) && (optional == false)
-    UI.error("Failed to get phraseapp value for key #{key}, running old phrase_app shell script")
+    UI.error("Failed to get phraseapp value for key #{key} in config.json")
     return nil
   elsif (value == nil) && (optional == true)
-    UI.warning("Couldn't find value for key #{key}, for the phrase-app script. Keep going because the value is optional")
+    UI.message("Couldn't find value for key #{key}, for the phrase-app script. Keep going because the value is optional")
     return ""
   elsif (value != nil)
     value = transform_value_if_necessary(key, value)
@@ -153,8 +153,8 @@ def check_for_extensions_and_validate
   if (extensions != nil) && (extensions.length != 0)
     extensions.each do |extension|
       validated_extension = validate_extension(extension)
-      if (validate_extension != nil)
-        validated_extensions.push(validate_extension)
+      if (validated_extension != nil)
+        validated_extensions.push(validated_extension)
       else
         UI.error("Error validating an extension entry in the fastlane/Config.json for the phrase app script")
       end
@@ -169,17 +169,18 @@ end
 # otherwise it returns a dict with transformed key/values to be exported as env variables
 def validate_extension(extension)
   exportable_extension = {}
-  extension.each do |key, value|
-    value = validate_phrase_app_variable(key, false)
-    if (value == nil)
-      return nil
-    end
+  important_keys = [:project_id, :base_directory, :files]
 
-    key = phrase_app_config_keys_env_variable_mapping[key][0]
-    if (key == nil)
+  important_keys.each do |key|
+    value = extension[key]
+    env_key = @phrase_app_config_keys_env_variable_mapping[key][0]
+    if (value == nil || env_key == nil)
+      UI.error("Error validating a value in an extension...")
       return nil
+    else
+      value = transform_value_if_necessary(key, value)
+      exportable_extension[env_key] = value
     end
-    exportable_extension[key] = value
   end
 
   return exportable_extension
@@ -200,13 +201,13 @@ def clone_phraseapp_ci
   branch = "master"
   src_root = File.join(smf_workspace_dir, File.basename(url, File.extname(url)))
   if File.exists?(src_root)
-    UI.error("Can't clone into #{src_root}, directory already exists. Can't download Phraseapp-CI scripts.."
+    UI.error("Can't clone into #{src_root}, directory already exists. Can't download Phraseapp-CI scripts..")
     return nil
   end
   UI.message("Cloning #{url} branch: #{branch} into #{src_root}")
   `git clone #{url} #{src_root} -b #{branch} -q > /dev/null`
   if File.exists?(src_root) == false
-    UI.error("Error while cloning into #{src_root}. Couldn't download Phraseapp-CI scripts.."
+    UI.error("Error while cloning into #{src_root}. Couldn't download Phraseapp-CI scripts..")
     return nil
   end
   return src_root
@@ -228,6 +229,7 @@ def transform_value_if_necessary(key, value)
       return "1"
     else
       return "0"
+    end
   else
     return value
   end
@@ -243,7 +245,7 @@ end
 def export_dict_as_env_variables(dict)
   dict.each do |key, value|
     if (value != nil)
-      env[key] = value
+      ENV[key] = value
     end
   end
 end
