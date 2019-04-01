@@ -42,6 +42,9 @@ private_lane :smf_update_jenkins_file do |options|
   	if something_to_commit
   		UI.message("Jenkins file changed since last build, will synchronize and commit the changes...")
 
+  		#first remove commons, we dont want to commit that
+  		smf_remove_fastlane_commons_repo
+
   		branch = git_branch
     	sh("git", "fetch")
     	sh("git", "checkout", branch)
