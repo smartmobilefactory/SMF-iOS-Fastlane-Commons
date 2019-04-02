@@ -151,7 +151,7 @@ pipeline {
                     def build_variant = build_variant()
 
                     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
-                        if ([__EXAMPLE_VARIANTS__].contains(build_variant) == true) {
+                        if (__EXAMPLE_VARIANTS__.contains(build_variant) == true) {
                             sh '''#!/bin/bash -l
                                 cd fastlane
                                 fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
