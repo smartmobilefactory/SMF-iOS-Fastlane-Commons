@@ -6,6 +6,7 @@ TEMPLATE_APP_FILENAME = "App_Jenkinsfile.template"
 TEMPLATE_POD_FILENAME = "Pod_Jenkinsfile.template"
 JENKINSFILE_FILENAME = "Jenkinsfile"
 BUILD_VARIANTS_PATTERN = "__BUILD_VARIANTS__"
+POD_EXAMPLE_VARIANTS_PATTERN = "__EXAMPLE_VARIANTS__"
 POD_DEFAULT_VARIANTS = ["unit_tests", "patch", "minor", "major", "current", "breaking", "internal"]
 
 desc "Checks if the repository is a Pod"
@@ -39,7 +40,7 @@ private_lane :smf_generate_jenkins_file do |options|
 	template_filename = is_pod_repo ? TEMPLATE_POD_FILENAME : TEMPLATE_APP_FILENAME
 	jenkinsFileData = File.read("#{@fastlane_commons_dir_path}/pipeline/#{template_filename}")
 
-	build_variants = []
+	build_variants_from_config = []
 
 	# If we're building a Pod, exclude the framework variant from the variants list
 	if is_pod_repo
@@ -49,6 +50,8 @@ private_lane :smf_generate_jenkins_file do |options|
 			variant_value[:podspec_path] == nil && variant_value[:pods_specs_repo] == nil
 		}.keys
 
+		jenkinsFileData = jenkinsFileData.gsub("#{POD_EXAMPLE_VARIANTS_PATTERN}", JSON.dump(build_variants_from_config))
+
 		# Add the default variants on top of the one discoveres in Config.json
 		build_variants_from_config.push(*POD_DEFAULT_VARIANTS)
 	else
@@ -56,11 +59,7 @@ private_lane :smf_generate_jenkins_file do |options|
 		build_variants_from_config = @smf_fastlane_config[:build_variants].keys
 	end
 
-	build_variants_from_config.each do |variant|
-		build_variants.push(variant)
-	end
-
-	jenkinsFileData = jenkinsFileData.gsub("#{BUILD_VARIANTS_PATTERN}", JSON.dump(build_variants))
+	jenkinsFileData = jenkinsFileData.gsub("#{BUILD_VARIANTS_PATTERN}", JSON.dump(build_variants_from_config))
 	File.write("#{smf_workspace_dir}/#{JENKINSFILE_FILENAME}", jenkinsFileData)
 end
 
