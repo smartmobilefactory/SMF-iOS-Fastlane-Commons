@@ -16,30 +16,38 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
     if (valid_entries == false)
       UI.error("Failed to sync Strings with PhraseApp (using the Config.json): check fastlane/Config.json \"phrase_app\" entries!")
       errors_occured = true
-    else
+    end
+
+    phrase_app_scripts_path = nil
+
+    if (errors_occured == false)
       UI.message("Starting to clone Phraseapp-CI scripts...")
       phrase_app_scripts_path = clone_phraseapp_ci
+      errors_occured = (phrase_app_scripts_path == nil)
+    end
 
-      if (phrase_app_scripts_path != nil)
-        UI.message("Successfully downloaded phrase app scripts, running scripts...")
-        sh "if #{phrase_app_scripts_path}/push.sh; then #{phrase_app_scripts_path}/pull.sh || true; fi"
+    if (errors_occured == false)
+      UI.message("Successfully downloaded phrase app scripts, running scripts...")
+      sh "if #{phrase_app_scripts_path}/push.sh; then #{phrase_app_scripts_path}/pull.sh || true; fi"
 
-        UI.message("Ran scripts.. checking for extensions...")
-        extensions = check_for_extensions_and_validate
+      UI.message("Ran scripts.. checking for extensions...")
+      extensions = check_for_extensions_and_validate
         
-        if (extensions == [])
-          UI.message("There are no valid extension entries..")
-        else 
-          UI.message("Found valid extensions... running phrase app script for them")
-          extensions.each do |extension|
+      if (extensions == [])
+          UI.message("There are no extension entries..")
+      else 
+        UI.message("Found extensions...")
+        extensions.each do |extension|
+          if (extension != nil)
             setup_environtment_variables_for_extension(extension)
             sh "if #{phrase_app_scripts_path}/push.sh; then #{phrase_app_scripts_path}/pull.sh || true; fi"
+          elsif
+            UI.message("Skipping invalid extension.. look in the Config.json if all extension have the mandatory entries.")
           end
-          UI.message("Finished executing phrase app scripts for extensions...")
         end
+        UI.message("Finished executing phrase app scripts for extensions...")
+        UI.message("Deleting phrase app ci scripts...")
         clean_up_phraseapp_ci(phrase_app_scripts_path)
-      else
-        errors_occured = true
       end
     end
   end
@@ -146,16 +154,17 @@ end
 # Checks if there are any extensions to run the phrase app scripts with
 # and validates that all necessary entries are present
 # returns an array with extensions it valid ones are found
-# otherwise returns an emtpy array
+# invalid ones are put as nil into the array
+# otherwise returns an emtpy array if no extensions are present
 def check_for_extensions_and_validate
   extensions = get_phrase_app_value_for(:extensions)
   validated_extensions = []
   if (extensions != nil) && (extensions.length != 0)
     extensions.each do |extension|
       validated_extension = validate_extension(extension)
-      if (validated_extension != nil)
-        validated_extensions.push(validated_extension)
-      else
+      validated_extensions.push(validated_extension)
+      
+      if (validated_extension == nil)
         UI.error("Error validating an extension entry in the fastlane/Config.json for the phrase app script")
       end
     end
