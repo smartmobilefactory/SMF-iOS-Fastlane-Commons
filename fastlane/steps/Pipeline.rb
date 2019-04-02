@@ -13,7 +13,7 @@ def is_pod
 
 	# First we just check if there's a framework variant and if it's valid.
 	if framework_variant != nil 
-		if variant[:podspec_path] != nil && variant[:pods_specs_repo] != nil 
+		if framework_variant[:podspec_path] != nil && framework_variant[:pods_specs_repo] != nil 
 			return true
 		else
 			UI.user_error!("Found framework variant without podspec_path or pods_specs_repo. Please check your Config.json")
