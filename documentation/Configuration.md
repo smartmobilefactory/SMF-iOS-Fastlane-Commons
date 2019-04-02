@@ -86,7 +86,7 @@ The Phrase-App synchronisation scripts need certain environment variables. The v
 |```format```| ```nil```|```String```| ☑️| Determines the format in which the phrase app translation files are stored. This is in almost all cases ```"strings"```. But it could also be for example ```"simple_json"```or ```"xml"``` or another format.|
 |```base_directory```| ```nil```|```String```| ☑️| This string specifies the base directory in which the different translation files will be stored. |
 |```files```| ```nil```|```Array of Strings```| ☑️| A list of files which will be translated.|
-|```git_branch```| ```"master"```|```String```| | The projects git branch to which new or changed translations will be pushed.|
+|```git_branch```| ```@smf_git_branch```|```String```| | The projects git branch to which new or changed translations will be pushed. The default is the branch which is passed to the fastlane build job.|
 |```force_update```| ```false```|```Bool```| | Specifies whether or not new or chnaged translations should be updated in the phrase app (uploaded).|
 |```files_prefix```| ```""```|```String```| |Specifies a prefix for the file tags.|
 |```forbi_comments_in_source```| ```true```|```Bool```| | If this is set to true, the phrase app scripts abort if the find an comments in the source file. This is due to some weird behavoir of the PhrasApp if there are comments in the source file.|
