@@ -87,7 +87,7 @@ end
   :format                     => ["phraseappFormat", false],
   :base_directory             => ["phraseappBasedir", false],
   :files                      => ["phraseappFiles", false],
-  :git_branch                 => ["phraseappGitBranch", true, "master"],  # optional, defaults to @smf_git_branch
+  :git_branch                 => ["phraseappGitBranch", true, @smf_git_branch],  # optional, defaults to @smf_git_branch
   :force_update               => ["phraseappForceupdate", true, "0"],  # optional
   :files_prefix               => ["phraseappFilesPrefix", true, ""],
   :forbid_comments_in_source  => ["phraseappForbidCommentsInSource", true, "1"]  # optional
