@@ -23,7 +23,7 @@ def is_pod
 	# We also check if there's a variant that contains a podspec_path and pods_specs_repo (in case it is not named framework).
 	is_pod_framework = false
 	@smf_fastlane_config[:build_variants].each do |variant|
-		if variant[:podspec_path] != nil && variant[:pods_specs_repo] != nil
+		if variant["podspec_path"] != nil && variant["pods_specs_repo"] != nil
 			is_pod_framework = true
 			return is_pod_framework
 		end
@@ -43,8 +43,8 @@ private_lane :smf_generate_jenkins_file do |options|
 
 	# If we're building a Pod, exclude the framework variant from the variants list
 	if is_pod_repo
-		build_variants_from_config = @smf_fastlane_config[:build_variants].select { |hash|
-			hash[:podspec_path] == nil && hash[:pods_specs_repo] == nil
+		build_variants_from_config = @smf_fastlane_config[:build_variants].select { |variant|
+			variant[:podspec_path] == nil && variant[:pods_specs_repo] == nil
 		}.keys
 		build_variants_from_config.push(*POD_DEFAULT_VARIANTS)
 	else
