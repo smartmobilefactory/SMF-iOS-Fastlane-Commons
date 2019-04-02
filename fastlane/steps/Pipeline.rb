@@ -57,8 +57,6 @@ private_lane :smf_generate_jenkins_file do |options|
 		build_variants.push(variant)
 	end
 
-	UI.message(build_variants)
-
 	jenkinsFileData = jenkinsFileData.gsub("#{BUILD_VARIANTS_PATTERN}", JSON.dump(build_variants))
 	File.write("#{smf_workspace_dir}/#{JENKINSFILE_FILENAME}", jenkinsFileData)
 end
@@ -74,7 +72,7 @@ private_lane :smf_update_jenkins_file do |options|
 	something_to_commit = false
 
 	Dir.chdir(smf_workspace_dir) do
-		something_to_commit = 'git status --porcelain'.include? "#{JENKINSFILE_FILENAME}"
+		something_to_commit = `git status --porcelain`.include? "#{JENKINSFILE_FILENAME}"
 	end
 
 	UI.message("Checking for Jenkinsfile changes...")
