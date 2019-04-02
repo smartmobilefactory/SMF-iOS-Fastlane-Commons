@@ -80,7 +80,7 @@ end
 # the boolean value indicates whether the value is optional or not
 # for default values a third entry in the array can be provided
 @phrase_app_config_keys_env_variable_mapping = {
-  :access_token_key           => ["phraseappAccessToken", false],
+  :access_token_key           => ["phraseappAccessToken", true, "SMF_PHRASEAPP_ACCESS_TOKEN"],
   :project_id                 => ["phraseappProjectId", false],
   :source                     => ["phraseappSource", false],
   :locales                    => ["phraseappLocales", false],
@@ -88,8 +88,8 @@ end
   :base_directory             => ["phraseappBasedir", false],
   :files                      => ["phraseappFiles", false],
   :git_branch                 => ["phraseappGitBranch", true, "master"],  # optional, defaults to @smf_git_branch
-  :force_update               => ["phraseappForceupdate", true],  # optional
-  :files_prefix               => ["phraseappFilesPrefix", false],
+  :force_update               => ["phraseappForceupdate", true, "0"],  # optional
+  :files_prefix               => ["phraseappFilesPrefix", true, ""],
   :forbid_comments_in_source  => ["phraseappForbidCommentsInSource", true, "1"]  # optional
 }
 
