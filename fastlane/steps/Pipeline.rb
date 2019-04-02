@@ -44,7 +44,7 @@ private_lane :smf_generate_jenkins_file do |options|
 	# If we're building a Pod, exclude the framework variant from the variants list
 	if is_pod_repo
 		UI.message("Updating POD Jenkinsfile...")
-		# We will exclude the "framework" variant from teh list of variants, it should not be available as a triger.
+		# We will exclude the "framework" variant from the list of variants, it should not be available as a triger.
 		build_variants_from_config = @smf_fastlane_config[:build_variants].select { |variant_key, variant_value|
 			variant_value[:podspec_path] == nil && variant_value[:pods_specs_repo] == nil
 		}.keys
