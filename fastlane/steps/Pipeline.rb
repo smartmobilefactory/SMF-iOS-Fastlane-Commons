@@ -21,15 +21,14 @@ def is_pod
 	end
 
 	# We also check if there's a variant that contains a podspec_path and pods_specs_repo (in case it is not named framework).
-	is_pod_framework = false
 	@smf_fastlane_config[:build_variants].each do |variant_key, variant_value|
 		if variant_value[:podspec_path] != nil && variant_value[:pods_specs_repo] != nil
-			is_pod_framework = true
-			return is_pod_framework
+			UI.important("Found POD variant not named 'framework'. Please check your Config.json")
+			return true
 		end
 	end
 
-	return is_pod_framework
+	return false
 end
 
 desc "Generates a Jenkinsfile based on the fastlane commons template and options from Config.json"
@@ -96,6 +95,6 @@ private_lane :smf_update_jenkins_file do |options|
 
 		UI.user_error!("Jenkinsfile changed since last build, build will be restarted. This is not a failure.")
 	else
-		UI.message("Jenkinsfile is up to date...")
+		UI.success("Jenkinsfile is up to date. Nothing to do.")
 	end
 end
