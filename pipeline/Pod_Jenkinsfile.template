@@ -119,11 +119,20 @@ pipeline {
                         fail('ABORTED', "Invalid build variant '${build_variant}'.\nAvailable targets (case sensitive):\n - ${build_variants_description}")
                     }
 
-                    // Merge the related pull request.
-                    pullRequest.merge(commitTitle: "${env.JOB_BASE_NAME} merge", commitMessage: "Merge triggered for ${env.JOB_NAME} with command: ${env.MERGE_COMMAND}", sha: "${pullRequest.head}", mergeMethod: "merge")
-
-                    // Start a downstream job with the specified branch and build variant.
-                    build job: "${project_path}/${pullRequest.base}", parameters: [string(name: 'build_variant', value: "${build_variant}")], wait: false
+                    // Only merge and trigger downstream job for the right build_variants
+                    if (build_variant == "unit_tests") {
+                        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                            sh '''#!/bin/bash -l
+                                cd fastlane
+                                fastlane perform_unit_tests build_variant:${build_variant} branch:${BRANCH_NAME}
+                                '''
+                        }
+                    } else {
+                        // Merge the related pull request.
+                        pullRequest.merge(commitTitle: "${env.JOB_BASE_NAME} merge", commitMessage: "Merge triggered for ${env.JOB_NAME} with command: ${env.MERGE_COMMAND}", sha: "${pullRequest.head}", mergeMethod: "merge")
+                        // Start a downstream job with the specified branch and build variant.
+                        build job: "${project_path}/${pullRequest.base}", parameters: [string(name: 'build_variant', value: "${build_variant}")], wait: false
+                    }
                 }
             }
         }
@@ -138,11 +147,23 @@ pipeline {
                 // Git Checkout to access the source files.
                 checkout scm
 
-                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
-                    sh '''#!/bin/bash -l
-                        cd fastlane
-                        fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
-                        '''
+                script {
+                    def build_variant = build_variant()
+
+                    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                        if (build_variant == "Example_Alpha") {
+                            sh '''#!/bin/bash -l
+                                cd fastlane
+                                fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
+                                '''
+                        }
+                        else {
+                            sh '''#!/bin/bash -l
+                                cd fastlane
+                                fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
+                                '''
+                        }
+                    }
                 }
             }
         }

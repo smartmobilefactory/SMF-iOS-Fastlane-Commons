@@ -8,6 +8,7 @@ JENKINSFILE_FILENAME = "Jenkinsfile"
 BUILD_VARIANTS_PATTERN = "__BUILD_VARIANTS__"
 POD_DEFAULT_VARIANTS = ["unit_tests", "patch", "minor", "major", "current", "breaking", "internal"]
 
+desc "Checks if the repository is a Pod"
 def is_pod
 	framework_variant = @smf_fastlane_config[:build_variants][:framework]
 
@@ -43,9 +44,12 @@ private_lane :smf_generate_jenkins_file do |options|
 	# If we're building a Pod, exclude the framework variant from the variants list
 	if is_pod_repo
 		UI.message("Updating POD Jenkinsfile...")
+		# We will exclude the "framework" variant from teh list of variants, it should not be available as a triger.
 		build_variants_from_config = @smf_fastlane_config[:build_variants].select { |variant_key, variant_value|
 			variant_value[:podspec_path] == nil && variant_value[:pods_specs_repo] == nil
 		}.keys
+
+		# Add the default variants on top of the one discoveres in Config.json
 		build_variants_from_config.push(*POD_DEFAULT_VARIANTS)
 	else
 		UI.message("Updating APP Jenkinsfile...")
