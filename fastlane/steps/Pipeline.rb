@@ -22,9 +22,8 @@ def is_pod
 
 	# We also check if there's a variant that contains a podspec_path and pods_specs_repo (in case it is not named framework).
 	is_pod_framework = false
-	@smf_fastlane_config[:build_variants].each do |variant|
-		UI.important(variant)
-		if variant[:podspec_path] != nil && variant[:pods_specs_repo] != nil
+	@smf_fastlane_config[:build_variants].each do |variant_key, variant_value|
+		if variant_value[:podspec_path] != nil && variant_value[:pods_specs_repo] != nil
 			is_pod_framework = true
 			return is_pod_framework
 		end
