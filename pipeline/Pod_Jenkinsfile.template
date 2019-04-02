@@ -16,7 +16,7 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 /////////////////////////
 
 _agent_label = 'xcode10'
-_build_variants = ['minor', 'major', 'breaking', 'internal']
+_build_variants = __BUILD_VARIANTS__
 
 ////////////////////////////
 /// Declarative Pipeline ///

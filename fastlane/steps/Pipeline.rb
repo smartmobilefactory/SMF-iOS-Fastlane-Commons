@@ -43,11 +43,13 @@ private_lane :smf_generate_jenkins_file do |options|
 
 	# If we're building a Pod, exclude the framework variant from the variants list
 	if is_pod_repo
-		build_variants_from_config = @smf_fastlane_config[:build_variants].select { |variant|
-			variant[:podspec_path] == nil && variant[:pods_specs_repo] == nil
+		UI.message("Updating POD Jenkinsfile...")
+		build_variants_from_config = @smf_fastlane_config[:build_variants].select { |variant_key, variant_value|
+			variant_value[:podspec_path] == nil && variant_value[:pods_specs_repo] == nil
 		}.keys
 		build_variants_from_config.push(*POD_DEFAULT_VARIANTS)
 	else
+		UI.message("Updating APP Jenkinsfile...")
 		build_variants_from_config = @smf_fastlane_config[:build_variants].keys
 	end
 
