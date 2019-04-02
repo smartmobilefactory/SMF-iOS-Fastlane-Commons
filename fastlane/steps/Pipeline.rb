@@ -57,6 +57,8 @@ private_lane :smf_generate_jenkins_file do |options|
 		build_variants.push(variant)
 	end
 
+	UI.message(build_variants)
+
 	jenkinsFileData = jenkinsFileData.gsub("#{BUILD_VARIANTS_PATTERN}", JSON.dump(build_variants))
 	File.write("#{smf_workspace_dir}/#{JENKINSFILE_FILENAME}", jenkinsFileData)
 end
