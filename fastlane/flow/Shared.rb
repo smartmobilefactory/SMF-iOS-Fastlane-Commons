@@ -4,6 +4,8 @@
 
 private_lane :smf_check_pr do |options|
 
+  smf_update_jenkins_file
+
   smf_install_pods_if_project_contains_podfile
 
   # Use the current build variant if no array of build variants to check is provided
