@@ -45,10 +45,11 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
             UI.message("Skipping invalid extension.. look in the Config.json if all extension have the mandatory entries.")
           end
         end
-        UI.message("Finished executing phrase app scripts for extensions...")
-        UI.message("Deleting phrase app ci scripts...")
-        clean_up_phraseapp_ci(phrase_app_scripts_path)
       end
+
+      UI.message("Finished executing phrase app scripts for extensions...")
+      UI.message("Deleting phrase app ci scripts...")
+      clean_up_phraseapp_ci(phrase_app_scripts_path)
     end
   end
 
@@ -138,7 +139,7 @@ def validate_phrase_app_variable(key, optional)
     UI.error("Failed to get phraseapp value for key #{key} in config.json")
     return nil
   elsif (value == nil) && (optional == true)
-    UI.message("Couldn't find value for key #{key}, for the phrase-app script. Keep going because the value is optional")
+    UI.message("Couldn't find value for key #{key}, for the phrase-app script. Default is: \"#{@phrase_app_config_keys_env_variable_mapping[key][2]}\"")
     return ""
   elsif (value != nil)
     value = transform_value_if_necessary(key, value)
