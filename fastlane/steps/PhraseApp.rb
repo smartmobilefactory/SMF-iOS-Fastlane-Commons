@@ -222,6 +222,8 @@ end
 # Transform value to correct format to export as env variable
 def transform_value_if_necessary(key, value)
   case key
+  when :access_token_key
+    return ENV[value]
   when :locales, :files
     return value.join(" ")
   when :force_update, :forbid_comments_in_source
