@@ -69,6 +69,11 @@ end
 
 desc "Generates a Jenkinsfile and commits it if there are changes"
 private_lane :smf_update_jenkins_file do |options|
+	# If we're on a non-pipeline job we should skip this step. Remove this after all jobs are migrated to pipeline.
+	if ENV["CHANGE_BRANCH"] == nil
+		return
+	end
+
 	smf_generate_jenkins_file
 
 	something_to_commit = false
@@ -83,16 +88,19 @@ private_lane :smf_update_jenkins_file do |options|
 	if something_to_commit
 		UI.message("Jenkinsfile changed since last build, will synchronize and commit the changes...")
 
-		branch = ENV["CHANGE_BRANCH"]
-		sh("git", "checkout", "-b", branch)
+		branch = git_branch
+		sh("git", "fetch")
+		sh("git", "checkout", branch)
+		sh("git", "pull")
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
 		git_commit(path: ".", message: "Updated Jenkinsfile")
 
 		push_to_git_remote(
 		remote: "origin",
-			remote_branch: branch,
+			remote_branch: ENV["CHANGE_BRANCH"],
 			force: false
 		)
+
 
 		UI.user_error!("Jenkinsfile changed since last build, build will be restarted. This is not a failure.")
 	else
