@@ -82,13 +82,15 @@ private_lane :smf_update_jenkins_file do |options|
 	# If something changed in config
 	if something_to_commit
 		UI.message("Jenkinsfile changed since last build, will synchronize and commit the changes...")
-		
+
+		branch = ENV["CHANGE_BRANCH"]
+		sh("git", "checkout", git_branch)
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
 		git_commit(path: ".", message: "Updated Jenkinsfile")
 
 		push_to_git_remote(
 		remote: "origin",
-			remote_branch: ENV["CHANGE_BRANCH"],
+			remote_branch: branch,
 			force: false
 		)
 
