@@ -69,7 +69,7 @@ end
 
 desc "Generates a Jenkinsfile and commits it if there are changes"
 private_lane :smf_update_jenkins_file do |options|
-	# If we're on a non-pipeline job we shoudl skip this step. Remove this after all jobs are migrated to pipeline.
+	# If we're on a non-pipeline job we should skip this step. Remove this after all jobs are migrated to pipeline.
 	if ENV["CHANGE_BRANCH"] == nil
 		return
 	end
