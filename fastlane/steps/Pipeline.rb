@@ -84,7 +84,7 @@ private_lane :smf_update_jenkins_file do |options|
 		UI.message("Jenkinsfile changed since last build, will synchronize and commit the changes...")
 
 		branch = ENV["CHANGE_BRANCH"]
-		sh("git", "checkout", branch)
+		sh("git", "checkout", git_branch)
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
 		git_commit(path: ".", message: "Updated Jenkinsfile")
 
