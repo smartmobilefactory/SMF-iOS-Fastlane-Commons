@@ -69,9 +69,9 @@ end
 
 desc "Generates a Jenkinsfile and commits it if there are changes"
 private_lane :smf_update_jenkins_file do |options|
-	if ENV["CHANGE_BRANCH"] == nil {
+	if ENV["CHANGE_BRANCH"] == nil
 		return
-	}
+	end
 
 	smf_generate_jenkins_file
 
