@@ -68,6 +68,9 @@ private_lane :smf_deploy_build_variant do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   project_name = @smf_fastlane_config[:project][:project_name]
 
+  apple_id = build_variant_config[:apple_id]
+  generate_temporary_appfile apple_id
+
   generateMetaJSON = build_variant_config[:generateMetaJSON]
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
@@ -298,4 +301,19 @@ private_lane :smf_deploy_build_variant do |options|
         slack_channel: @smf_fastlane_config[:project][:slack_channel]
       )
   end
+end
+
+# Generate the Appfile based on the apple_id setting in Config.json for the current build variant
+private_lane :generate_temporary_appfile do |options|
+  apple_id = options[:apple_id]
+
+  if apple_id == nil
+    UI.important("Could not find the apple_id for this build variant, will use development@smfhq.com. Please update your Config.json.")
+  end
+
+  # If there's no apple_id setting, use the default development@smfhq.com
+  apple_id = apple_id != nil ? apple_id : "development@smfhq.com"
+
+  appfile_content = "apple_id \"#{apple_id}\""
+  File.write("#{smf_workspace_dir}/fastlane/Appfile", appfile_content)
 end
