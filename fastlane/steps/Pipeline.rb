@@ -83,10 +83,16 @@ private_lane :smf_update_jenkins_file do |options|
 	if something_to_commit
 		UI.message("Jenkinsfile changed since last build, will synchronize and commit the changes...")
 
+		branch = ENV["CHANGE_BRANCH"]
+		sh("git", "checkout", branch)
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
 		git_commit(path: ".", message: "Updated Jenkinsfile")
 
-		push_to_git_remote
+		push_to_git_remote(
+		remote: "origin",
+			remote_branch: branch,
+			force: false
+		)
 
 		UI.user_error!("Jenkinsfile changed since last build, build will be restarted. This is not a failure.")
 	else
