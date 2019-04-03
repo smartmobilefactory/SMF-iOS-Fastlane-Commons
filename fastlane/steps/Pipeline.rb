@@ -87,6 +87,7 @@ private_lane :smf_update_jenkins_file do |options|
   		branch_name.sub!("origin/", "")
 
 		sh("git", "checkout", "-B", branch_name)
+		sh("git", "pull", git_branch)
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
 		git_commit(path: ".", message: "Updated Jenkinsfile")
 
