@@ -15,6 +15,9 @@ private_lane :smf_publish_pod do |options|
   podspec_path = build_variant_config[:podspec_path]
   generateMetaJSON = (build_variant_config[:generateMetaJSON].nil? ? true : build_variant_config[:generateMetaJSON])
 
+  apple_id = build_variant_config[:apple_id]
+  generate_temporary_appfile apple_id
+
   # Unlock keycahin to enable pull repo with https
   if smf_is_keychain_enabled
     unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
