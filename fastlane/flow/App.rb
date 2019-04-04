@@ -68,8 +68,7 @@ private_lane :smf_deploy_build_variant do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   project_name = @smf_fastlane_config[:project][:project_name]
 
-  apple_id = build_variant_config[:apple_id]
-  generate_temporary_appfile apple_id
+  generate_temporary_appfile
 
   generateMetaJSON = build_variant_config[:generateMetaJSON]
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])

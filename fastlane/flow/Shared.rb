@@ -32,8 +32,7 @@ private_lane :smf_check_pr do |options|
     build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
     should_archive_ipa = (build_variant_config["pr.archive_ipa".to_sym].nil? ? (smf_is_build_variant_a_pod == false) : build_variant_config["pr.archive_ipa".to_sym])
 
-    apple_id = build_variant_config[:apple_id]
-    generate_temporary_appfile apple_id
+    generate_temporary_appfile
 
     if should_archive_ipa
       smf_archive_ipa_if_scheme_is_provided(
@@ -178,7 +177,7 @@ end
 
 # Generate the Appfile based on the apple_id setting in Config.json for the current build variant
 private_lane :generate_temporary_appfile do |options|
-  apple_id = options[:apple_id]
+  apple_id = build_variant_config[:apple_id]
 
   if apple_id == nil
     UI.important("Could not find the apple_id for this build variant, will use development@smfhq.com. Please update your Config.json.")
