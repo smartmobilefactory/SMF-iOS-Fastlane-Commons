@@ -177,6 +177,7 @@ end
 
 # Generate the Appfile based on the apple_id setting in Config.json for the current build variant
 private_lane :generate_temporary_appfile do |options|
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   apple_id = build_variant_config[:apple_id]
 
   if apple_id == nil
