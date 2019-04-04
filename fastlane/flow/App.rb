@@ -303,12 +303,18 @@ private_lane :smf_deploy_build_variant do |options|
   end
 end
 
+##################################
+### generate_temporary_appfile ###
+##################################
+
 # Generate the Appfile based on the apple_id setting in Config.json for the current build variant
 private_lane :generate_temporary_appfile do |options|
   apple_id = options[:apple_id]
 
   if apple_id == nil
     UI.important("Could not find the apple_id for this build variant, will use development@smfhq.com. Please update your Config.json.")
+  else
+    UI.message("Found apple_id: #{apple_id} in Config.json.")
   end
 
   # If there's no apple_id setting, use the default development@smfhq.com
