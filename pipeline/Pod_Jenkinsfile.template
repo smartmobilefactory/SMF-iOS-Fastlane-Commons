@@ -17,6 +17,7 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 
 _agent_label = 'xcode10'
 _build_variants = __BUILD_VARIANTS__
+_example_variants = __EXAMPLE_VARIANTS__
 
 ////////////////////////////
 /// Declarative Pipeline ///
@@ -150,7 +151,7 @@ pipeline {
                 script {
 
                     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
-                        if (__EXAMPLE_VARIANTS__.contains(build_variant) == true) {
+                        if (_example_variants.contains(build_variant) == true) {
                             sh '''#!/bin/bash -l
                                 cd fastlane
                                 fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
