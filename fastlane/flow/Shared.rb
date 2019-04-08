@@ -194,7 +194,7 @@ private_lane :generate_temporary_appfile do |options|
   appfile_content = "apple_id \"#{apple_id}\""
 
   #team_id is mandatory in Config.json, so no need checking for existence
-  appfile_content = appfile_content + "team_id \"#{team_id}\""
+  appfile_content = appfile_content + "\nteam_id \"#{team_id}\""
 
   File.write("#{smf_workspace_dir}/fastlane/Appfile", appfile_content)
 end
