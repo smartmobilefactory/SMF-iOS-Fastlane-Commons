@@ -209,7 +209,7 @@ def fail(result, description) {
     // Update the current build result.
     currentBuild.result = result
     // Write the error message as comment on GitHub.
-    pullRequest.comment(message)
+    pullRequest?.comment(message)
     // Create/throw a pipeline error.
     error(message)
 }

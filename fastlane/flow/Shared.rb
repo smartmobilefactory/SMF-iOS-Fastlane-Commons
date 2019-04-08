@@ -175,10 +175,12 @@ end
 ### generate_temporary_appfile ###
 ##################################
 
-# Generate the Appfile based on the apple_id setting in Config.json for the current build variant
+# Generate the Appfile based on the apple_id and team_id setting in Config.json for the current build variant
 private_lane :generate_temporary_appfile do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+
   apple_id = build_variant_config[:apple_id]
+  team_id = build_variant_config[:team_id]
 
   if apple_id == nil
     UI.important("Could not find the apple_id for this build variant, will use development@smfhq.com. Please update your Config.json.")
@@ -190,5 +192,9 @@ private_lane :generate_temporary_appfile do |options|
   apple_id = apple_id != nil ? apple_id : "development@smfhq.com"
 
   appfile_content = "apple_id \"#{apple_id}\""
+
+  #team_id is mandatory in Config.json, so no need checking for existence
+  appfile_content = appfile_content + "\nteam_id \"#{team_id}\""
+
   File.write("#{smf_workspace_dir}/fastlane/Appfile", appfile_content)
 end
