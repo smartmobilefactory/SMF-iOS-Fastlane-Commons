@@ -148,7 +148,6 @@ pipeline {
                 checkout scm
 
                 script {
-                    def build_variant = build_variant()
 
                     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
                         if (__EXAMPLE_VARIANTS__.contains(build_variant) == true) {
