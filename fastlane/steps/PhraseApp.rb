@@ -250,7 +250,7 @@ end
 # Tries to get the value for the given key in the fastlane/Config.json
 # if it doesn't exist it returns nil
 def get_phrase_app_value_for(key)
-  return @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:phrase_app][0][key]
+  return @smf_fastlane_config[:build_variants][@smf_build_variant_sym][:phrase_app][key]
 end
 
 # export dict as environment variables
