@@ -20,6 +20,10 @@ APPCAST_BASE_URI=$3
 SPARKLE_VERSION=$4
 TEAM_ID=$5
 
+echo "---- Clean Cache ----"
+
+rm -rf "/Users/smf/Library/Caches/Sparkle_generate_appcast/"
+
 echo "---- Download latest generate_appcast release ----"
 
 curl -L https://github.com/sparkle-project/Sparkle/releases/download/$SPARKLE_VERSION/Sparkle-$SPARKLE_VERSION.tar.bz2 --output sparkle.tar.bz2

@@ -4,6 +4,11 @@
 
 private_lane :smf_check_pr do |options|
 
+  # If we're on a non-pipeline job we should skip this step. Remove this after all jobs are migrated to pipeline.
+  if ENV["CHANGE_BRANCH"] != nil
+    smf_update_jenkins_file
+  end
+
   smf_install_pods_if_project_contains_podfile
 
   # Use the current build variant if no array of build variants to check is provided
@@ -26,6 +31,8 @@ private_lane :smf_check_pr do |options|
     # Archive the IPA if the build variant didn't opt-out
     build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
     should_archive_ipa = (build_variant_config["pr.archive_ipa".to_sym].nil? ? (smf_is_build_variant_a_pod == false) : build_variant_config["pr.archive_ipa".to_sym])
+
+    generate_temporary_appfile
 
     if should_archive_ipa
       smf_archive_ipa_if_scheme_is_provided(
@@ -161,4 +168,33 @@ private_lane :smf_handle_exception do |options|
       slack_channel: slack_channel
       )
   end
+end
+
+
+##################################
+### generate_temporary_appfile ###
+##################################
+
+# Generate the Appfile based on the apple_id and team_id setting in Config.json for the current build variant
+private_lane :generate_temporary_appfile do |options|
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+
+  apple_id = build_variant_config[:apple_id]
+  team_id = build_variant_config[:team_id]
+
+  if apple_id == nil
+    UI.important("Could not find the apple_id for this build variant, will use development@smfhq.com. Please update your Config.json.")
+  else
+    UI.message("Found apple_id: #{apple_id} in Config.json.")
+  end
+
+  # If there's no apple_id setting, use the default development@smfhq.com
+  apple_id = apple_id != nil ? apple_id : "development@smfhq.com"
+
+  appfile_content = "apple_id \"#{apple_id}\""
+
+  #team_id is mandatory in Config.json, so no need checking for existence
+  appfile_content = appfile_content + "\nteam_id \"#{team_id}\""
+
+  File.write("#{smf_workspace_dir}/fastlane/Appfile", appfile_content)
 end
