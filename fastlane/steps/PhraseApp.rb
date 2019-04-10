@@ -9,6 +9,7 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
   errors_occured = false
 
   if (should_sync_with_phrase_app_using_config == true)
+    initialize_env_variable_name_mappings
     UI.message("Git branch is: \"#{@smf_git_branch}\"")
     UI.message("Strings are synced with PhraseApp using the values from the fastlane/Config.json")
     valid_entries = validate_and_set_phrase_app_env_variables
@@ -88,19 +89,22 @@ end
 # Mapps the keys of the fastlane/Config.json to the env. variable names of for the phrase app script
 # the boolean value indicates whether the value is optional or not
 # for default values a third entry in the array can be provided
-@phrase_app_config_keys_env_variable_mapping = {
-  :access_token_key           => ["phraseappAccessToken", true, "SMF_PHRASEAPP_ACCESS_TOKEN"], # optional
-  :project_id                 => ["phraseappProjectId", false],
-  :source                     => ["phraseappSource", false],
-  :locales                    => ["phraseappLocales", false],
-  :format                     => ["phraseappFormat", false],
-  :base_directory             => ["phraseappBasedir", false],
-  :files                      => ["phraseappFiles", false],
-  :git_branch                 => ["phraseappGitBranch", true, "#{@smf_git_branch}"],  # optional, defaults to @smf_git_branch
-  #:git_branch                 => ["phraseappGitBranch", true, "phraseAppTest"],  # optional, defaults to @smf_git_branch
-  :files_prefix               => ["phraseappFilesPrefix", true, ""], # optional
-  :forbid_comments_in_source  => ["phraseappForbidCommentsInSource", true, "1"]  # optional
-}
+
+def initialize_env_variable_name_mappings
+  @phrase_app_config_keys_env_variable_mapping = {
+    :access_token_key           => ["phraseappAccessToken", true, "SMF_PHRASEAPP_ACCESS_TOKEN"], # optional
+    :project_id                 => ["phraseappProjectId", false],
+    :source                     => ["phraseappSource", false],
+    :locales                    => ["phraseappLocales", false],
+    :format                     => ["phraseappFormat", false],
+    :base_directory             => ["phraseappBasedir", false],
+    :files                      => ["phraseappFiles", false],
+    :git_branch                 => ["phraseappGitBranch", true, @smf_git_branch],  # optional, defaults to @smf_git_branch
+    #:git_branch                 => ["phraseappGitBranch", true, "phraseAppTest"],  # optional, defaults to @smf_git_branch
+    :files_prefix               => ["phraseappFilesPrefix", true, ""], # optional
+    :forbid_comments_in_source  => ["phraseappForbidCommentsInSource", true, "1"]  # optional
+  }
+end
 
 # Validates that all necessary values are present in the fastlane/Config.json
 # if a none optional value is missing, no env are set and false is returned
