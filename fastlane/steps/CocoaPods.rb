@@ -30,15 +30,11 @@ private_lane :smf_pod_push do |options|
   specs_repo = build_variant_config[:pods_specs_repo]
   workspace_dir = smf_workspace_dir
 
-  sh "which pod"
-  sh "pod --version"
-
   if specs_repo
-  	sh "cd #{workspace_dir}"
+    sh "cd #{workspace_dir}"
     pod_push(path: podspec_path, allow_warnings: true, skip_import_validation: true, repo: podspec_path)
   else
     sh "cd #{workspace_dir}"
     pod_push(path: podspec_path)
   end
-
 end
