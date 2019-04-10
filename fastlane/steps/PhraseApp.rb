@@ -96,9 +96,8 @@ end
   :format                     => ["phraseappFormat", false],
   :base_directory             => ["phraseappBasedir", false],
   :files                      => ["phraseappFiles", false],
-  #:git_branch                 => ["phraseappGitBranch", true, @smf_git_branch],  # optional, defaults to @smf_git_branch
-  :git_branch                 => ["phraseappGitBranch", true, "phraseAppTest"],  # optional, defaults to @smf_git_branch
-  :force_update               => ["phraseappForceupdate", true, "0"],  # optional
+  :git_branch                 => ["phraseappGitBranch", true, "#{@smf_git_branch}"],  # optional, defaults to @smf_git_branch
+  #:git_branch                 => ["phraseappGitBranch", true, "phraseAppTest"],  # optional, defaults to @smf_git_branch
   :files_prefix               => ["phraseappFilesPrefix", true, ""], # optional
   :forbid_comments_in_source  => ["phraseappForbidCommentsInSource", true, "1"]  # optional
 }
@@ -115,8 +114,6 @@ def validate_and_set_phrase_app_env_variables
     result = validate_phrase_app_variable(key, value[1])
     if (result == nil)
       return false
-    elsif (result == "")
-      result = value[2]
     end
 
     export_env_key_value_pairs[value[0]] = result
@@ -141,7 +138,7 @@ def validate_phrase_app_variable(key, optional)
     return nil
   elsif (value == nil) && (optional == true)
     UI.message("Couldn't find value for key #{key}, for the phrase-app script. Default is: \"#{@phrase_app_config_keys_env_variable_mapping[key][2]}\"")
-    return ""
+    return @phrase_app_config_keys_env_variable_mapping[key][2]
   elsif (value != nil)
     value = transform_value_if_necessary(key, value)
     UI.message("Phrase script value for key #{key} is #{value}")
@@ -237,7 +234,7 @@ def transform_value_if_necessary(key, value)
     return ENV[value]
   when :locales, :files
     return value.join(" ")
-  when :force_update, :forbid_comments_in_source
+  when :forbid_comments_in_source
     if (value == true)
       return "1"
     else
