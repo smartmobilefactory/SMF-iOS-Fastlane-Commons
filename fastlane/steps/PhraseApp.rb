@@ -9,7 +9,7 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
   errors_occured = false
 
   if (should_sync_with_phrase_app_using_config == true)
-
+    UI.message("Git branch is: \"#{@smf_git_branch}\"")
     UI.message("Strings are synced with PhraseApp using the values from the fastlane/Config.json")
     valid_entries = validate_and_set_phrase_app_env_variables
 
