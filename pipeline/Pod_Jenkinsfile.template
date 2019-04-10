@@ -15,7 +15,7 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 /// Static Parameters ///
 /////////////////////////
 
-_agent_label = 'xcode10'
+_agent_label = 'pipeline'
 _build_variants = __BUILD_VARIANTS__
 _example_variants = __EXAMPLE_VARIANTS__
 

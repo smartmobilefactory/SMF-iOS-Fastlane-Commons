@@ -63,6 +63,7 @@ private_lane :smf_generate_setup_files do |options|
 		build_variants_from_config = @smf_fastlane_config[:build_variants].keys
   end
 
+	UI.message("Updating Gemfile...")
 	gemfile_template_filename = is_pod_repo ? TEMPLATE_GEMFILE_POD_FILENAME : TEMPLATE_GEMFILE_APP_FILENAME
   gemfileData = File.read("#{@fastlane_commons_dir_path}/pipeline/#{gemfile_template_filename }")
 	File.write("#{smf_workspace_dir}/fastlane/#{GEMFILE_FILENAME}", gemfileData)
@@ -71,12 +72,13 @@ private_lane :smf_generate_setup_files do |options|
 	File.write("#{smf_workspace_dir}/#{JENKINSFILE_FILENAME}", jenkinsFileData)
 end
 
-###############################
-### smf_update_jenkins_file ###
-###############################
+#######################################
+### smf_update_generated_setup_file ###
+#######################################
 
 desc "Generates a Jenkinsfile and commits it if there are changes"
-private_lane :smf_update_jenkins_file do |options|
+desc "Additionally the Gemfile will be generated if needed"
+private_lane :smf_update_generated_setup_file do |options|
 	smf_generate_setup_files
 
 	jenkinsfile_changed = false
@@ -87,7 +89,7 @@ private_lane :smf_update_jenkins_file do |options|
 		gemfile_changed = `git status --porcelain`.match(/#{GEMFILE_FILENAME}[^\.]/)
 	end
 
-	UI.message("Checking for Jenkinsfile changes...")
+	UI.message("Checking for Jenkinsfile or Gemfile changes...")
 
 	# If something changed in config
 	if jenkinsfile_changed or gemfile_changed
@@ -105,6 +107,6 @@ private_lane :smf_update_jenkins_file do |options|
 
 		UI.user_error!("Generated Files changed since last build, build will be restarted. This is not a failure.")
 	else
-		UI.success("Jenkinsfile is up to date. Nothing to do.")
+		UI.success("Generated Files is up to date. Nothing to do.")
 	end
 end

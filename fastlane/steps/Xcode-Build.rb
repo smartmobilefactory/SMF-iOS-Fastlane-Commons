@@ -65,9 +65,7 @@ private_lane :smf_archive_ipa do |options|
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
-  if @smf_fastlane_config[:project][:ready_for_parallel_build] == true
-    smf_setup_correct_xcode_executable_for_build
-  end
+  smf_setup_correct_xcode_executable_for_build
 
   gym(
     clean: should_clean_project,
