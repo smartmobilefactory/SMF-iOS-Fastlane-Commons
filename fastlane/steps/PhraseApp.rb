@@ -10,7 +10,6 @@ private_lane :smf_sync_strings_with_phrase_app do |options|
 
   if (should_sync_with_phrase_app_using_config == true)
     initialize_env_variable_name_mappings
-    UI.message("Git branch is: \"#{@smf_git_branch}\"")
     UI.message("Strings are synced with PhraseApp using the values from the fastlane/Config.json")
     valid_entries = validate_and_set_phrase_app_env_variables
 
@@ -100,7 +99,6 @@ def initialize_env_variable_name_mappings
     :base_directory             => ["phraseappBasedir", false],
     :files                      => ["phraseappFiles", false],
     :git_branch                 => ["phraseappGitBranch", true, @smf_git_branch],  # optional, defaults to @smf_git_branch
-    #:git_branch                 => ["phraseappGitBranch", true, "phraseAppTest"],  # optional, defaults to @smf_git_branch
     :files_prefix               => ["phraseappFilesPrefix", true, ""], # optional
     :forbid_comments_in_source  => ["phraseappForbidCommentsInSource", true, "1"]  # optional
   }
