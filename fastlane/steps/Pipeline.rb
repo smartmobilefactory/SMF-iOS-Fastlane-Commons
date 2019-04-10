@@ -94,6 +94,7 @@ private_lane :smf_update_jenkins_file do |options|
 		UI.message("Jenkinsfile changed since last build, will synchronize and commit the changes...")
 
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
+		git_add(path: "./fastlane/#{GEMFILE_FILENAME}")
 		git_commit(path: ".", message: "Updated Generated SetupFiles")
 
 		push_to_git_remote(
