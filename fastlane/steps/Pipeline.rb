@@ -8,7 +8,6 @@ TEMPLATE_GEMFILE_APP_FILENAME = "App_Gemfile.template"
 TEMPLATE_GEMFILE_POD_FILENAME = "Pod_Gemfile.template"
 JENKINSFILE_FILENAME = "Jenkinsfile"
 GEMFILE_FILENAME = "Gemfile"
-GEMFILE_LOCK_FILENAME = "Gemfile.lock"
 BUILD_VARIANTS_PATTERN = "__BUILD_VARIANTS__"
 POD_EXAMPLE_VARIANTS_PATTERN = "__EXAMPLE_VARIANTS__"
 POD_DEFAULT_VARIANTS = ["unit_tests", "patch", "minor", "major", "current", "breaking", "internal"]
@@ -85,7 +84,7 @@ private_lane :smf_update_jenkins_file do |options|
 
 	Dir.chdir(smf_workspace_dir) do
 		jenkinsfile_changed = `git status --porcelain`.include? "#{JENKINSFILE_FILENAME}"
-		gemfile_changed = `git status --porcelain`.include? "#{GEMFILE_FILENAME}"
+		gemfile_changed = `git status --porcelain`.match(/#{GEMFILE_FILENAME}[^\.]/)
 	end
 
 	UI.message("Checking for Jenkinsfile changes...")
@@ -94,13 +93,8 @@ private_lane :smf_update_jenkins_file do |options|
 	if jenkinsfile_changed or gemfile_changed
 		UI.message("Jenkinsfile changed since last build, will synchronize and commit the changes...")
 
-    if File.exist?("./fastlane/#{GEMFILE_FILENAME}.lock")
-			git_add(path: "./fastlane/#{GEMFILE_FILENAME}.lock")
-    end
-
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
 		git_add(path: "./fastlane/#{GEMFILE_FILENAME}")
-
 		git_commit(path: ".", message: "Updated Generated SetupFiles")
 
 		push_to_git_remote(
