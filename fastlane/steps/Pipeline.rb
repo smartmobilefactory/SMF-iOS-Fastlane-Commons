@@ -79,16 +79,18 @@ desc "Generates a Jenkinsfile and commits it if there are changes"
 private_lane :smf_update_jenkins_file do |options|
 	smf_generate_setup_files
 
-	something_to_commit = false
+	jenkinsfile_changed = false
+  gemfile_changed = false
 
 	Dir.chdir(smf_workspace_dir) do
-		something_to_commit = `git status --porcelain`.include? "#{JENKINSFILE_FILENAME}" || `git status --porcelain`.include? "#{GEMFILE_FILENAME}"
+		jenkinsfile_changed = `git status --porcelain`.include? "#{JENKINSFILE_FILENAME}"
+		gemfile_changed = `git status --porcelain`.include? "#{GEMFILE_FILENAME}"
 	end
 
 	UI.message("Checking for Jenkinsfile changes...")
 
 	# If something changed in config
-	if something_to_commit
+	if jenkinsfile_changed or gemfile_changed
 		UI.message("Jenkinsfile changed since last build, will synchronize and commit the changes...")
 
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
