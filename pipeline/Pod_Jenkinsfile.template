@@ -96,7 +96,8 @@ pipeline {
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
                     sh '''#!/bin/bash -l
                         cd fastlane
-                        fastlane check_pr
+                        bundle install
+                        bundle exec fastlane check_pr
                         '''
                 }
             }
@@ -125,7 +126,8 @@ pipeline {
                         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
                             sh '''#!/bin/bash -l
                                 cd fastlane
-                                fastlane perform_unit_tests build_variant:${build_variant} branch:${BRANCH_NAME}
+                                bundle install
+                                bundle exec fastlane perform_unit_tests build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
                         }
                     } else {
@@ -154,13 +156,15 @@ pipeline {
                         if (_example_variants.contains(build_variant) == true) {
                             sh '''#!/bin/bash -l
                                 cd fastlane
-                                fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
+                                bundle install
+                                bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
                         }
                         else {
                             sh '''#!/bin/bash -l
                                 cd fastlane
-                                fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
+                                bundle install
+                                bundle exec fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
                         }
                     }
