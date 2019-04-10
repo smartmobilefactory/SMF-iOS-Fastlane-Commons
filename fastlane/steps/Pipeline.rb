@@ -2,9 +2,12 @@
 ### smf_generate_jenkinsfile ###
 #################################
 
-TEMPLATE_APP_FILENAME = "App_Jenkinsfile.template"
-TEMPLATE_POD_FILENAME = "Pod_Jenkinsfile.template"
+TEMPLATE_JENKINSFILE_APP_FILENAME = "App_Jenkinsfile.template"
+TEMPLATE_JENKINSFILE_POD_FILENAME = "Pod_Jenkinsfile.template"
+TEMPLATE_GEMFILE_APP_FILENAME = "App_Gemfile.template"
+TEMPLATE_GEMFILE_POD_FILENAME = "Pod_Gemfile.template"
 JENKINSFILE_FILENAME = "Jenkinsfile"
+GEMFILE_FILENAME = "Gemfile"
 BUILD_VARIANTS_PATTERN = "__BUILD_VARIANTS__"
 POD_EXAMPLE_VARIANTS_PATTERN = "__EXAMPLE_VARIANTS__"
 POD_DEFAULT_VARIANTS = ["unit_tests", "patch", "minor", "major", "current", "breaking", "internal"]
@@ -34,10 +37,11 @@ def is_pod
 end
 
 desc "Generates a Jenkinsfile based on the fastlane commons template and options from Config.json"
-private_lane :smf_generate_jenkins_file do |options|
+desc "Alsp generates the Gemfile"
+private_lane :smf_generate_setup_files do |options|
 	is_pod_repo = is_pod
 
-	template_filename = is_pod_repo ? TEMPLATE_POD_FILENAME : TEMPLATE_APP_FILENAME
+	template_filename = is_pod_repo ? TEMPLATE_JENKINSFILE_POD_FILENAME : TEMPLATE_JENKINSFILE_APP_FILENAME
 	jenkinsFileData = File.read("#{@fastlane_commons_dir_path}/pipeline/#{template_filename}")
 
 	build_variants_from_config = []
@@ -57,7 +61,11 @@ private_lane :smf_generate_jenkins_file do |options|
 	else
 		UI.message("Updating APP Jenkinsfile...")
 		build_variants_from_config = @smf_fastlane_config[:build_variants].keys
-	end
+  end
+
+	gemfile_template_filename = is_pod_repo ? TEMPLATE_GEMFILE_POD_FILENAME : TEMPLATE_GEMFILE_APP_FILENAME
+  gemfileData = File.read("#{@fastlane_commons_dir_path}/pipeline/#{gemfile_template_filename }")
+	File.write("#{smf_workspace_dir}/fastlane/#{GEMFILE_FILENAME}", gemfileData)
 
 	jenkinsFileData = jenkinsFileData.gsub("#{BUILD_VARIANTS_PATTERN}", JSON.dump(build_variants_from_config))
 	File.write("#{smf_workspace_dir}/#{JENKINSFILE_FILENAME}", jenkinsFileData)
@@ -69,12 +77,12 @@ end
 
 desc "Generates a Jenkinsfile and commits it if there are changes"
 private_lane :smf_update_jenkins_file do |options|
-	smf_generate_jenkins_file
+	smf_generate_setup_files
 
 	something_to_commit = false
 
 	Dir.chdir(smf_workspace_dir) do
-		something_to_commit = `git status --porcelain`.include? "#{JENKINSFILE_FILENAME}"
+		something_to_commit = `git status --porcelain`.include? "#{JENKINSFILE_FILENAME}" || `git status --porcelain`.include? "#{GEMFILE_FILENAME}"
 	end
 
 	UI.message("Checking for Jenkinsfile changes...")
@@ -84,7 +92,7 @@ private_lane :smf_update_jenkins_file do |options|
 		UI.message("Jenkinsfile changed since last build, will synchronize and commit the changes...")
 
 		git_add(path: "./#{JENKINSFILE_FILENAME}")
-		git_commit(path: ".", message: "Updated Jenkinsfile")
+		git_commit(path: ".", message: "Updated Generated SetupFiles")
 
 		push_to_git_remote(
 		remote: "origin",
@@ -92,7 +100,7 @@ private_lane :smf_update_jenkins_file do |options|
 			force: false
 		)
 
-		UI.user_error!("Jenkinsfile changed since last build, build will be restarted. This is not a failure.")
+		UI.user_error!("Generated Files changed since last build, build will be restarted. This is not a failure.")
 	else
 		UI.success("Jenkinsfile is up to date. Nothing to do.")
 	end
