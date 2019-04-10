@@ -32,7 +32,7 @@ private_lane :smf_pod_push do |options|
 
   if specs_repo
     sh "cd #{workspace_dir}"
-    pod_push(path: podspec_path, allow_warnings: true, skip_import_validation: true, repo: podspec_path)
+    pod_push(path: podspec_path, allow_warnings: true, skip_import_validation: true, repo: specs_repo)
   else
     sh "cd #{workspace_dir}"
     pod_push(path: podspec_path)
