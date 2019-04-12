@@ -198,9 +198,7 @@ private_lane :smf_deploy_build_variant do |options|
 
   if use_sentry
     UI.message("Dsym file will be uploaded to Sentry...")
-    UI.message("Sentry URL: #{$SENTRY_URL}")
-    UI.message("Sentry Token: #{$SENTRY_AUTH_TOKEN}")
-
+  
     project_config = @smf_fastlane_config[:project]
 
     sentry_upload_dsym(
