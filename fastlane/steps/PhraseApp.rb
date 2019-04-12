@@ -85,7 +85,7 @@ end
 
 ###################### GENERAL SETUP ##########################
 
-# Mapps the keys of the fastlane/Config.json to the env. variable names of for the phrase app script
+# Mapps the keys of the fastlane/Config.json to the env. variable names of the phrase app script
 # the boolean value indicates whether the value is optional or not
 # for default values a third entry in the array can be provided
 
@@ -131,7 +131,7 @@ end
 
 # Checks if the value for a given key exists in the fastlane config.json file,
 # if the value doesn't exist and the value is mandatory it returns nil
-# if the value doesnt' exist and the value is optional it returns an empty string
+# if the value doesnt' exist and the value is optional it returns the default value
 # otherwise it returns the value found for the given key.
 def validate_phrase_app_variable(key, optional)
   value = get_phrase_app_value_for(key)
@@ -154,7 +154,7 @@ end
 
 # Checks if there are any extensions to run the phrase app scripts with
 # and validates that all necessary entries are present
-# returns an array with extensions it valid ones are found
+# returns an array with extensions if valid ones are found
 # invalid ones are put as nil into the array
 # otherwise returns an emtpy array if no extensions are present
 def check_for_extensions_and_validate
@@ -175,7 +175,7 @@ def check_for_extensions_and_validate
 end
 
 # Goes through all the values in an extension
-# and checks if they are presend, if one is missing it returns nil
+# and checks if they are present, if one is missing it returns nil
 # otherwise it returns a dict with transformed key/values to be exported as env variables
 def validate_extension(extension)
   exportable_extension = {}
@@ -205,7 +205,7 @@ end
 # clones the phrasapp ci repository into the current directory
 # so the push and pull scripts can be used
 # returns parent directory of the push/pull scripts on success
-# return nil on error
+# returns nil on error
 def clone_phraseapp_ci
   url = "git@github.com:smartmobilefactory/Phraseapp-CI.git"
   branch = "master"
