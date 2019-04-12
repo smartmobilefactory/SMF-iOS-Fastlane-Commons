@@ -71,7 +71,11 @@ private_lane :smf_deploy_build_variant do |options|
   generate_temporary_appfile
 
   generateMetaJSON = build_variant_config[:generateMetaJSON]
+
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
+  
+  use_sentry = (build_variant_config[:sentry_org_slug] != nil && build_variant_config[:sentry_project_slug] != nil)
+
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
   push_generated_code = (build_variant_config[:push_generated_code].nil? ? (build_variant_config[:phrase_app_script] != nil) : build_variant_config[:push_generated_code])
 
@@ -187,6 +191,17 @@ private_lane :smf_deploy_build_variant do |options|
         slack_channel: ci_ios_error_log
       )
     end
+  end
+
+  if use_sentry
+    UI.message("Dsym file will be uploaded to Sentry...")
+
+    sentry_upload_dsym(
+      auth_token: ENV["SENTRY_AUTH_TOKEN"],
+      org_slug: build_variant_config[:sentry_org_slug],
+      project_slug: build_variant_config[:sentry_project_slug],
+      url: ENV["SENTRY_URL"]
+    )
   end
 
   if (build_variant_config[:use_sparkle])
