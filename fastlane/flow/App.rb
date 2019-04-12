@@ -66,7 +66,9 @@ private_lane :smf_deploy_build_variant do |options|
 
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
-  project_name = @smf_fastlane_config[:project][:project_name]
+  project_config = @smf_fastlane_config[:project]
+
+  project_name = project_config[:project_name]
 
   generate_temporary_appfile
 
@@ -74,7 +76,7 @@ private_lane :smf_deploy_build_variant do |options|
 
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
   
-  use_sentry = (build_variant_config[:sentry_org_slug] != nil && build_variant_config[:sentry_project_slug] != nil)
+  use_sentry = (project_config[:sentry_org_slug] != nil && project_config[:sentry_project_slug] != nil)
   UI.message("Will upload to Sentry: #{use_sentry}")
 
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
