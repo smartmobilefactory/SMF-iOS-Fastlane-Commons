@@ -77,7 +77,7 @@ private_lane :smf_generate_setup_files do |options|
 		UI.message("Updating APP Jenkinsfile ...")
 		build_variants_from_config = @smf_fastlane_config[:build_variants].keys
 
-    for kind in ["Beta", "Alpha"]
+    for kind in ["Live", "Beta", "Alpha"]
       kind_variants = build_variants_from_config.select { |key|
 				key.to_s.downcase.include? kind.downcase
 			}
@@ -122,6 +122,7 @@ private_lane :smf_update_generated_setup_file do |options|
 
 	jenkinsfile_changed = false
   gemfile_changed = false
+	fastfile_changed = false
 
 	Dir.chdir(smf_workspace_dir) do
 		jenkinsfile_changed = `git status --porcelain`.include? "#{JENKINSFILE_FILENAME}"
