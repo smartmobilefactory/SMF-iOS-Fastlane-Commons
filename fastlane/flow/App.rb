@@ -197,16 +197,18 @@ private_lane :smf_deploy_build_variant do |options|
   end
 
   if use_sentry
-    UI.message("Dsym file will be uploaded to Sentry...")
-  
-    project_config = @smf_fastlane_config[:project]
+    begin
+      smf_upload_dsyms_to_sentry
+    rescue => exception
+      UI.important("Warning: Dsyms could not be uploaded to Sentry !")
 
-    sentry_upload_dsym(
-      auth_token: $SENTRY_AUTH_TOKEN,
-      org_slug: project_config[:sentry_org_slug],
-      project_slug: project_config[:sentry_project_slug],
-      url: $SENTRY_URL
-    )
+      smf_send_chat_message(
+        title: "Failed to upload dsyms to Sentry for #{smf_default_notification_release_title} 😢",
+        type: "warning",
+        exception: exception,
+        slack_channel: ci_ios_error_log
+      )
+    end
   end
 
   if (build_variant_config[:use_sparkle])

@@ -35,8 +35,6 @@ $DEVELOPMENT_DIRECTORY_KEY = "DEVELOPMENT_DIR"
 # Default Slack channel to send logs to
 $SMF_CI_IOS_ERROR_LOG = "ci-ios-error-log"
 
-# TODO: Move these to credentials store
+# We host our own Sentry server so we need to supply the URL ourselves
 $SENTRY_URL = "https://sentry.solutions.smfhq.com/"
-
-# TODO: Generate from the right sentry user
-$SENTRY_AUTH_TOKEN = "38430cbb2e9f4a1697065c6b5392414408b6a79aa4c146f78ff5d3971139a84c"
+$SENTRY_AUTH_TOKEN = ENV["SENTRY_API_ACCESS_TOKEN"]
