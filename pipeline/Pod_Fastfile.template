@@ -1,0 +1,48 @@
+default_platform :ios
+
+platform :ios do
+
+  config = JSON.parse(File.read('Config.json'))
+
+  private_lane :fastlane_config_path do
+    # Return the path to the Fastlane config file
+    "#{Dir.pwd}/Config.json"
+  end
+
+  before_all do
+    # Import the Fastlane Commons Repo
+    fastlane_commons_branch = config["project"]["fastlane_commons_branch"]
+    import_from_git(url: "git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git", branch: fastlane_commons_branch)
+  end
+
+  lane :check_pr do
+
+    smf_set_build_variants_matching_regex(".*example.*")
+
+    smf_check_pr
+
+  end
+
+  desc "Clean, build the development variant and run the unit tests"
+  lane :perform_unit_tests do
+
+    # Install Pods
+    cocoapods
+
+    smf_set_build_variants_matching_regex(".*example.*")
+    smf_perform_unit_tests
+  end
+
+  desc "Publish a new version"
+  lane :publish do |options|
+
+    smf_set_should_send_deploy_notifications(true)
+
+    smf_set_build_variant("framework")
+    smf_set_git_branch(options[:branch])
+    smf_set_bump_type(options[:build_variant].downcase)
+
+    smf_publish_pod
+  end
+
+end
