@@ -76,6 +76,16 @@ private_lane :smf_generate_setup_files do |options|
 	else
 		UI.message("Updating APP Jenkinsfile ...")
 		build_variants_from_config = @smf_fastlane_config[:build_variants].keys
+
+    for kind in ["Beta", "Alpha"]
+      kind_variants = build_variants_from_config.select { |key|
+				key.downcase.include? kind.downcase
+			}.keys
+
+      if kind_variants.length > 1
+        build_variants_from_config.insert(0, kind)
+      end
+    end
   end
 
   if should_generate_Gemfile
