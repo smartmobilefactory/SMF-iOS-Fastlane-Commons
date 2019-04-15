@@ -80,7 +80,7 @@ private_lane :smf_generate_setup_files do |options|
     for kind in ["Beta", "Alpha"]
       kind_variants = build_variants_from_config.select { |key|
 				key.to_s.downcase.include? kind.downcase
-			}.keys
+			}
 
       if kind_variants.length > 1
         build_variants_from_config.insert(0, kind)
