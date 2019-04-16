@@ -123,6 +123,13 @@ end
 desc "Performs the unit tests of a project."
 private_lane :smf_perform_unit_tests do |options|
 
+  should_perform_tests = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]["pr.perform_unit_tests".to_sym]
+
+  if (should_perform_tests == false)
+    UI.message("Build Variant \"#{@smf_build_variant}\" is not allowed to perform Unit Tests")
+    return
+  end
+
   # Variables
   project_name = @smf_fastlane_config[:project][:project_name]
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]

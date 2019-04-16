@@ -159,8 +159,7 @@ pipeline {
                                 bundle install
                                 bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
-                        }
-                        else {
+                        } else {
                             sh '''#!/bin/bash -l
                                 cd fastlane
                                 bundle install
