@@ -42,10 +42,10 @@ end
 
 def _pr_check_build_variant
 	alpha_variants_from_config = @smf_fastlane_config[:build_variants].select { |variant_key, variant_value|
-		variant_key.downcase.include? "alpha"
+		variant_key.to_s.downcase.include? "alpha"
 	}.keys
 
-	return alpha_variants_from_config.first
+	return alpha_variants_from_config.first.to_s
 end
 
 desc "Generates a Jenkinsfile based on the fastlane commons template and options from Config.json"
