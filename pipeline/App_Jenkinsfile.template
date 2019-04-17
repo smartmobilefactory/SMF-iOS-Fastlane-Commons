@@ -46,6 +46,7 @@ pipeline {
         MAILGUN_KEY = credentials('MAILGUN_API_KEY')
         SMF_HOCKEYAPP_ONE_SIGNAL_BASIC_AUTH = credentials('ONESIGNAL_SMF_API_KEY')
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
+        SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
     }
 
     parameters {
