@@ -196,6 +196,7 @@ private_lane :smf_deploy_build_variant do |options|
     update_dir = "#{smf_workspace_dir}/build/"
 
     release_notes = "#{ENV[$SMF_CHANGELOG_ENV_KEY]}"
+    release_notes = release_notes.gsub('\n', '<br>')
     File.write("#{update_dir}#{build_variant_config["scheme".to_sym]}.html", release_notes)
 
     if ( ! File.exists?(app_path))
