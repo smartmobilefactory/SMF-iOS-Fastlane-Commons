@@ -141,6 +141,11 @@ private_lane :smf_update_generated_setup_file do |options|
 		git_add(path: "./fastlane/#{FASTFILE_FILENAME}")
 		git_commit(path: ".", message: "Updated Generated SetupFiles")
 
+		if smf_is_keychain_enabled
+			unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+			unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+		end
+
 		push_to_git_remote(
 			remote: "origin",
 			remote_branch: ENV["CHANGE_BRANCH"],
