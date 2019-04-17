@@ -76,6 +76,60 @@ The build variants configuration is nested in the root level key `build_variants
 |xcconfig\_name|`nil`||The name of the xcconfig to build. This is needed if xcconfig files are used instead of targets.|
 |use\_sparkle|`false`|If enabled, the release will be distributed with Sparkle.|Configuration Will be taken from the `sparkle` Json|
 
+### Phrase App Synchronisation Variables
+The Phrase-App synchronisation scripts need certain environment variables. The values for theses variables are stored in the nested dictionary ```phrase_app```. These entries exist for each build variant that needs to sync with phrase app and are therefore nested inside the given build-variant entry.
+
+|Key|Default Value|Datatype| Mandatory |Description|
+|---|---|---|---|---|
+|```access_token_key```| ```"SMF_PHRASEAPP_ACCESS_TOKEN"```|```String```| ☑️| The variable name in which jenkins stores the access token for the phrase app api. The default value is ```"SMF_PHRASEAPP_ACCESS_TOKEN"``` which should work for almost all projects. An exception are the Strato projects, they should use ```"stratoPhraseappAccessToken"```.|
+|```project_id```| ```nil```|```String```|  ☑️| The projects phrase app id which is used in the api call to identify the correct project. This should be an all lowercase hexadecimal string with 32 digits. For example ```"12abc345bf6e980d96e5b0a236fe78b1"```|
+|```source```| ```nil```|```String```| ☑️| This value should be an identifier for the language which is used as source for the translation. This is ```"en"``` in the most of the cases.|
+|```locales```| ```nil```|```Array of Strings```| ☑️| A list of language identifiers to which the strings of the app will be translated. For example ```["de", "at", "es", "fr"]```|
+|```format```| ```nil```|```String```| ☑️| Determines the format in which the phrase app translation files are stored. This is in almost all cases ```"strings"```. But it could also be for example ```"simple_json"```or ```"xml"``` or another format.|
+|```base_directory```| ```nil```|```String```| ☑️| This string specifies the base directory in which the different translation files will be stored. |
+|```files```| ```nil```|```Array of Strings```| ☑️| A list of files which will be translated.|
+|```git_branch```| ```@smf_git_branch```|```String```| | The projects git branch to which new or changed translations will be pushed. The default is the branch which is passed to the fastlane build job.|
+|```files_prefix```| ```""```|```String```| |Specifies a prefix for the file tags.|
+|```forbi_comments_in_source```| ```true```|```Bool```| | If this is set to true, the phrase app scripts abort if the find an comments in the source file. This is due to some weird behavoir of the PhrasApp if there are comments in the source file.|
+
+If there are extensions which need to be synced with the phrase app, too, this can be done by adding an ```extensions``` array nested in the ```phrase_app``` entry. For each extension the array should contain entry with keys: ```project_id, base_directory and files```.
+
+Here a template for the ```phrase_app``` structure:
+
+```
+"alpha": {
+		...		
+		"phrase_app" : {
+			"format"		: "...",
+			"access_token_key"	: "...",
+			"project_id"		: "...",
+			"source"		: "...",
+			"locales"		: [
+				"...",
+				"..."
+			],
+			"base_directory"	: "...",
+			"files"				: [
+				"...",
+				"..."
+			],
+			"forbid_comments_in_source"	: false/true,
+			"files_prefix"			: "...",
+			"git_branch"			: "...",
+			"extensions"			: [
+				{
+					"project_id"		: "...",
+					"base_directory"	: "...",
+					"files"				: [
+						"...",
+						"..."
+					]
+				}
+			]
+		}
+
+}
+```
 ## Extension Suffixes
 
 The extension suffixes are nested in the root level key `extensions_suffixes`. It's an array which should contain the app extension bundle identifier suffixes.
