@@ -2,11 +2,11 @@ default_platform :ios
 
 platform :ios do
 
-  config = JSON.parse(File.read('Config.json'))
+  config = JSON.parse(File.read('../Config.json'))
 
   private_lane :fastlane_config_path do
     # Return the path to the Fastlane config file
-    "#{Dir.pwd}/Config.json"
+    "#{Dir.pwd}/../Config.json"
   end
 
   before_all do
