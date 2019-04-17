@@ -1,0 +1,15 @@
+source "https://rubygems.org"
+
+gem 'fastlane'
+gem 'cocoapods'
+gem 'xcode-install'
+gem 'rest-client'
+gem 'CFPropertyList', '~> 2.3.3'
+gem 'addressable', '~> 2.5.1'
+gem 'fastlane-plugin-sentry'
+
+gemfile_local = './.fastlane-smf-commons/danger/Gemfile'
+
+if File.readable?(gemfile_local)
+  instance_eval(File.read(gemfile_local))
+end

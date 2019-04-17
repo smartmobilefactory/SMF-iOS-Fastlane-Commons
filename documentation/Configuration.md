@@ -20,6 +20,8 @@ The project configuration is nested in the root level key `project`.
 |tag\_prefix|`"build/#{build\_variant}/"` (App) or `"releases/"` (Pod)||The prefix which is added to the Git tag of an app or Pod release|
 |tag\_suffix|`nil`||The suffix which is added to the Git tag of an app or Pod release|
 |github\_repo\_path|`nil`|☑️ (for UI Tests)| The GitHub repo path (<organisation/user>/<repo name>) of the project which contains the .app and .ipa to test against|
+|use_custom_fastfile| `false` | | Optional Parameter that determines if the `Fastfile` will be overwritten in a PR |
+|use_custom_gemfile| `false` | | Optional Parameter that determines if the `Gemfile`will be overwritten in a PR |
 
 ## Danger
 

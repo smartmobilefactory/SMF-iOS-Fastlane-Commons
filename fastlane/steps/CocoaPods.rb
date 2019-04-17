@@ -5,10 +5,12 @@
 desc "Runs pod install if the project contains a Podfile"
 private_lane :smf_install_pods_if_project_contains_podfile do |options|
 
-  if File.exist?("#{smf_workspace_dir}/Podfile")
-  	sh "which pod"
-  	sh "pod --version"
-    sh "cd #{smf_workspace_dir}; pod install"
+  podfile = "#{smf_workspace_dir}/Podfile"
+
+  if File.exist?(podfile)
+    cocoapods(
+      podfile: podfile
+    )
   else
     UI.message("Didn't install Pods as the project doesn't contain a Podfile")
   end
@@ -28,13 +30,11 @@ private_lane :smf_pod_push do |options|
   specs_repo = build_variant_config[:pods_specs_repo]
   workspace_dir = smf_workspace_dir
 
-  sh "which pod"
-  sh "pod --version"
-
   if specs_repo
-  	sh "cd #{workspace_dir}; pod repo push #{specs_repo} #{podspec_path} --allow-warnings --skip-import-validation"
+    sh "cd #{workspace_dir}"
+    pod_push(path: podspec_path, allow_warnings: true, skip_import_validation: true, repo: specs_repo)
   else
-  	sh "cd #{workspace_dir}; pod trunk push #{podspec_path}"
+    sh "cd #{workspace_dir}"
+    pod_push(path: podspec_path)
   end
-
 end

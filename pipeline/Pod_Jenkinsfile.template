@@ -15,7 +15,7 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 /// Static Parameters ///
 /////////////////////////
 
-_agent_label = 'xcode10'
+_agent_label = 'pipeline'
 _build_variants = __BUILD_VARIANTS__
 _example_variants = __EXAMPLE_VARIANTS__
 
@@ -96,7 +96,8 @@ pipeline {
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
                     sh '''#!/bin/bash -l
                         cd fastlane
-                        fastlane check_pr
+                        bundle install
+                        bundle exec fastlane check_pr
                         '''
                 }
             }
@@ -125,7 +126,8 @@ pipeline {
                         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
                             sh '''#!/bin/bash -l
                                 cd fastlane
-                                fastlane perform_unit_tests build_variant:${build_variant} branch:${BRANCH_NAME}
+                                bundle install
+                                bundle exec fastlane perform_unit_tests build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
                         }
                     } else {
@@ -154,13 +156,14 @@ pipeline {
                         if (_example_variants.contains(build_variant) == true) {
                             sh '''#!/bin/bash -l
                                 cd fastlane
-                                fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
+                                bundle install
+                                bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
-                        }
-                        else {
+                        } else {
                             sh '''#!/bin/bash -l
                                 cd fastlane
-                                fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
+                                bundle install
+                                bundle exec fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
                         }
                     }

@@ -66,12 +66,19 @@ private_lane :smf_deploy_build_variant do |options|
 
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
-  project_name = @smf_fastlane_config[:project][:project_name]
+  project_config = @smf_fastlane_config[:project]
+
+  project_name = project_config[:project_name]
 
   generate_temporary_appfile
 
   generateMetaJSON = build_variant_config[:generateMetaJSON]
+
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
+  
+  use_sentry = (project_config[:sentry_org_slug] != nil && project_config[:sentry_project_slug] != nil)
+  UI.message("Will upload to Sentry: #{use_sentry}")
+
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
   push_generated_code = (build_variant_config[:push_generated_code].nil? ? (build_variant_config[:phrase_app_script] != nil) : build_variant_config[:push_generated_code])
 
@@ -182,6 +189,21 @@ private_lane :smf_deploy_build_variant do |options|
 
       smf_send_chat_message(
         title: "Failed to send APN to SMF HockeyApp for #{smf_default_notification_release_title} 😢",
+        type: "warning",
+        exception: exception,
+        slack_channel: ci_ios_error_log
+      )
+    end
+  end
+
+  if use_sentry
+    begin
+      smf_upload_dsyms_to_sentry
+    rescue => exception
+      UI.important("Warning: Dsyms could not be uploaded to Sentry !")
+
+      smf_send_chat_message(
+        title: "Failed to upload dsyms to Sentry for #{smf_default_notification_release_title} 😢",
         type: "warning",
         exception: exception,
         slack_channel: ci_ios_error_log

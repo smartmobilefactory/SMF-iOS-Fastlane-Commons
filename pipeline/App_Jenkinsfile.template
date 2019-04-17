@@ -15,7 +15,7 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 /// Static Parameters ///
 /////////////////////////
 
-_agent_label = 'xcode10'
+_agent_label = 'pipeline'
 _build_variants = __BUILD_VARIANTS__
 
 ////////////////////////////
@@ -46,6 +46,7 @@ pipeline {
         MAILGUN_KEY = credentials('MAILGUN_API_KEY')
         SMF_HOCKEYAPP_ONE_SIGNAL_BASIC_AUTH = credentials('ONESIGNAL_SMF_API_KEY')
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
+        SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
     }
 
     parameters {
@@ -96,7 +97,8 @@ pipeline {
                     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
                         sh '''#!/bin/bash -l
                             cd fastlane
-                            fastlane check_pr
+                            bundle install
+                            bundle exec fastlane check_pr
                             '''
                     }
                 }
@@ -143,7 +145,8 @@ pipeline {
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
                     sh '''#!/bin/bash -l
                         cd fastlane
-                        fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
+                        bundle install
+                        bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
                         '''
                 }
             }

@@ -6,7 +6,7 @@ private_lane :smf_check_pr do |options|
 
   # If we're on a non-pipeline job we should skip this step. Remove this after all jobs are migrated to pipeline.
   if ENV["CHANGE_BRANCH"] != nil
-    smf_update_jenkins_file
+    smf_update_generated_setup_file
   end
 
   smf_install_pods_if_project_contains_podfile
