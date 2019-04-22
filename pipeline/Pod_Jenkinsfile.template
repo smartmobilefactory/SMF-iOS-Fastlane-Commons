@@ -170,7 +170,7 @@ pipeline {
                     }
                 }
 
-                build job: _pod_repo_update_job_name, wait: false
+                build job: _pod_repo_update_job_name, wait: true
             }
         }
     }
