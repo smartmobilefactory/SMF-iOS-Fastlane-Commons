@@ -152,17 +152,4 @@ private_lane :smf_publish_pod do |options|
   smf_send_deploy_success_notifications(
     app_link: ""
     )
-
-  # Update the CocoaPods repo to avoid unknown Pod version issues if this Pod is integrated into another project
-  begin
-    sh "pod repo update"
-  rescue => exception
-    smf_send_chat_message(
-        title: "Failed to update the specs repo after publishing the Pod #{smf_default_notification_release_title} 😢",
-        type: "warning",
-        exception: exception,
-        slack_channel: ci_ios_error_log
-      )
-  end
-
 end

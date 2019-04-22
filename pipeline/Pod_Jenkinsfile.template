@@ -16,6 +16,7 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 /////////////////////////
 
 _agent_label = 'pipeline'
+_pod_repo_update_job_name = 'iOS/Cocoapods_Repo_Update/Cocoapods_Repo_Update'
 _build_variants = __BUILD_VARIANTS__
 _example_variants = __EXAMPLE_VARIANTS__
 
@@ -45,7 +46,6 @@ pipeline {
         // Keychain Access
         LOGIN = credentials('iOS_NODES_LOGIN_KEYCHAIN')
         JENKINS = credentials('iOS_NODES_JENKINS_KEYCHAIN')
-        MAILGUN_KEY = credentials('MAILGUN_API_KEY')
         SMF_HOCKEYAPP_ONE_SIGNAL_BASIC_AUTH = credentials('ONESIGNAL_SMF_API_KEY')
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
     }
@@ -165,6 +165,9 @@ pipeline {
                                 bundle install
                                 bundle exec fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
+
+                            // Trigger a 'pod repo update' on all nodes after the pod is published
+                            build job: _pod_repo_update_job_name, wait: true
                         }
                     }
                 }

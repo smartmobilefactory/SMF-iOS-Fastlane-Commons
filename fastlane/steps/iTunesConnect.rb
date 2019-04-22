@@ -79,15 +79,6 @@ private_lane :smf_itunes_precheck do |options|
     title = "Fastlane Precheck found Metadata issues in iTunes Connect for #{smf_default_notification_release_title} 😢"
     message = "The build will continue to upload to iTunes Connect, but you may need to fix the Metadata issues before releasing the app."
 
-    smf_send_mail(
-      title: title,
-      message: message,
-      success: false,
-      exception_message: "#{exception}",
-      authors_emails: ["development@smfhq.com"],
-      template_path: "#{@fastlane_commons_dir_path}/mailgun/template_mail_ios_precheck.erb"
-    )
-
     smf_send_chat_message(
       title: title,
       message: message,

@@ -51,7 +51,6 @@ The build variants configuration is nested in the root level key `build_variants
 |itc\_skip\_waiting|`false`||If enabled, the build job won't wait until App Store Connect processed the .ipa.|
 |itc\_team\_id|`nil`||The team id to use for App Store Connect.|
 |keychain\_enabled|`true`||If disabled, the Jenkins keychain won't be unlocked. This should be done if you want to run Fastlane locally without the Jenkins environment.|
-|mailgun\_enabled|`true`||If disabled, no mails will be sent with Mailgun. This should be done if you want to run Fastlane locally without the Jenkins environment.|
 |phrase\_app\_script|`nil`||The path to the script file which syncs the Strings with PhraseApp. E.g. "fastlane/sync\_hidrive\_strings.sh".|
 |platform|original platform|☑️ (for macOS)|Can be used to modify the platform. This has to be done for macOS apps: "mac".|
 |pods\_specs\_repo|`nil`|☑️ (for private Pods)|The url of the CocoaPods Specs Repo. This has to be set if it's not the official CocoaPods Specs Repo.|
