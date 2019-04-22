@@ -152,42 +152,6 @@ private_lane :smf_send_chat_message do |options|
 
 end
 
-#####################################
-### smf_send_mail_to_contributors ###
-#####################################
-
-# options: title (String), message (String), success (Boolean), exception_message (String) [Optional], app_link (String), template_path (String) [Optional], send_only_to_internal_adresses (Boolean) [Optional]
-
-desc "Send emails to all collaborators who worked on the project since the last build to inform about successfully or failing build jobs."
-private_lane :smf_send_mail_to_contributors do |options|
-
-  # Parameter
-  title = options[:title]
-  message = options[:message]
-  success = options[:success]
-  exception_message = options[:exception_message]
-  send_only_to_internal_adresses = options[:send_only_to_internal_adresses]
-  app_link = options[:app_link]
-  template_path = options[:template_path]
-
-  authors_emails = []
-  if ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY]
-    authors_emails = ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY].split(" ").uniq.delete_if{|e| e == "git-checkout@smartmobilefactory.com"}
-  end
-
-  smf_send_mail(
-    title: title,
-    message:message,
-    success: success,
-    exception_message: exception_message,
-    authors_emails: authors_emails,
-    send_only_to_internal_adresses: send_only_to_internal_adresses,
-    app_link: app_link,
-    template_path: template_path
-    )
-
-end
-
 ###################################
 ### smf_send_ios_hockey_app_apn ###
 ###################################

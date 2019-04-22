@@ -95,12 +95,6 @@ private_lane :smf_send_deploy_success_notifications do |options|
 
   title = "Built #{smf_default_notification_release_title} 🎉"
 
-  smf_send_mail_to_contributors(
-    title: title,
-    success: true,
-    app_link: app_link
-    )
-
   if slack_channel
     smf_send_chat_message(
       title: title,
@@ -150,14 +144,7 @@ private_lane :smf_handle_exception do |options|
     title = "Failed to perform UI-Tests for #{smf_default_notification_release_title} 😢"
   else
     title = "Failed to build #{smf_default_notification_release_title} 😢"
-  end 
-
-  smf_send_mail_to_contributors(
-    title: title,
-    success: false,
-    message: message,
-    exception_message: "#{exception.message}"
-    )
+  end
 
   if slack_channel
     smf_send_chat_message(
