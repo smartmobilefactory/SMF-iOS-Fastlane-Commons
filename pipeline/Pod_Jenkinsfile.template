@@ -168,6 +168,13 @@ pipeline {
                         }
                     }
                 }
+
+                stage ('Pod Repo Update All Nodes') {
+
+                    steps {
+                        build job: "iOS/Cocoapods_Repo_Update/Cocoapods_Repo_Update" wait: false
+                    }
+                }
             }
         }
     }
