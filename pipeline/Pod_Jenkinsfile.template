@@ -166,11 +166,12 @@ pipeline {
                                 bundle install
                                 bundle exec fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
                                 '''
+
+                            // Trigger a 'pod repo update' on all nodes after the pod is published
+                            build job: _pod_repo_update_job_name, wait: true
                         }
                     }
                 }
-
-                build job: _pod_repo_update_job_name, wait: true
             }
         }
     }
