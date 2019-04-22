@@ -16,6 +16,7 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 /////////////////////////
 
 _agent_label = 'pipeline'
+_pod_repo_update_job_name = 'iOS/Cocoapods_Repo_Update/Cocoapods_Repo_Update'
 _build_variants = __BUILD_VARIANTS__
 _example_variants = __EXAMPLE_VARIANTS__
 
@@ -169,7 +170,7 @@ pipeline {
                     }
                 }
 
-                build job: "iOS/Cocoapods_Repo_Update/Cocoapods_Repo_Update", wait: false
+                build job: _pod_repo_update_job_name, wait: false
             }
         }
     }
