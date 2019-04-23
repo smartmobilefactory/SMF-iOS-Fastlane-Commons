@@ -4,7 +4,14 @@ def smf_run_danger()
     env_export << "export FASTLANE_CONFIG_PATH=\"#{fastlane_config_path}\";"
     env_export << "export FASTLANE_COMMONS_FOLDER=\"#{@fastlane_commons_dir_path}\";"
     env_export << "export DID_RUN_UNIT_TESTS=\"#{ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY]}\";"
-    sh "#{env_export} cd ..; /usr/local/bin/danger --dangerfile=fastlane/Dangerfile --danger_id=#{@smf_build_variant}"
+
+    sh "#{env_export} cd .."
+
+    danger(
+        danger_id: @smf_build_variant,
+        dangerfile: "fastlane/Dangerfile",
+        github_api_token: ENV[$SMF_GITHUB_TOKEN_ENV_KEY]
+    )
   else
     UI.important("There was no Dangerfile in ./fastlane, not running danger at all!")
   end
