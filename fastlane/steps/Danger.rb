@@ -1,11 +1,12 @@
 def smf_run_danger()
   if File.file?('Dangerfile')
-    env_export = "export BUILD_VARIANT=\"#{@smf_build_variant}\";"
-    env_export << "export FASTLANE_CONFIG_PATH=\"#{fastlane_config_path}\";"
-    env_export << "export FASTLANE_COMMONS_FOLDER=\"#{@fastlane_commons_dir_path}\";"
-    env_export << "export DID_RUN_UNIT_TESTS=\"#{ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY]}\";"
 
-    sh "#{env_export} cd .."
+    ENV["BUILD_VARIANT"] = @smf_build_variant
+    ENV["FASTLANE_CONFIG_PATH"] = fastlane_config_path
+    ENV["FASTLANE_COMMONS_FOLDER"] = @fastlane_commons_dir_path
+    ENV["DID_RUN_UNIT_TESTS"] = ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY]
+
+    sh "cd .."
 
     danger(
         danger_id: @smf_build_variant,
