@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem 'fastlane', '2.120.0'
-gem 'cocoapods'
+gem 'cocoapods', '1.6.1'
 gem 'xcode-install'
 gem 'rest-client'
 gem 'CFPropertyList', '~> 2.3.3'
