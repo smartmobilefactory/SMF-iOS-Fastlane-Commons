@@ -3,6 +3,8 @@
 // Automatically generated. Do not edit.
 //
 
+import jenkins.model.CauseOfInterruption.UserInterruption
+
 //////////////////////
 /// Regex Patterns ///
 //////////////////////
@@ -90,6 +92,9 @@ pipeline {
             when { expression { env.CHANGE_ID != null && env.CHECK_PR == "true" } }
 
             steps {
+
+                abortPreviousBuilds()
+
                 // Git Checkout to access the source files.
                 checkout scm
 
@@ -152,22 +157,25 @@ pipeline {
 
                 script {
 
-                    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
-                        if (_example_variants.contains(build_variant) == true) {
-                            sh '''#!/bin/bash -l
-                                cd fastlane
-                                bundle install
-                                bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
-                                '''
-                        } else {
-                            sh '''#!/bin/bash -l
-                                cd fastlane
-                                bundle install
-                                bundle exec fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
-                                '''
+                    lock(env.JOB_NAME) {
 
-                            // Trigger a 'pod repo update' on all nodes after the pod is published
-                            build job: _pod_repo_update_job_name, wait: true
+                        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                            if (_example_variants.contains(build_variant) == true) {
+                                sh '''#!/bin/bash -l
+                                    cd fastlane
+                                    bundle install
+                                    bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
+                                    '''
+                            } else {
+                                sh '''#!/bin/bash -l
+                                    cd fastlane
+                                    bundle install
+                                    bundle exec fastlane publish build_variant:${build_variant} branch:${BRANCH_NAME}
+                                    '''
+    
+                                // Trigger a 'pod repo update' on all nodes after the pod is published
+                                build job: _pod_repo_update_job_name, wait: true
+                            }
                         }
                     }
                 }
@@ -179,6 +187,25 @@ pipeline {
 /////////////////////////
 /// Utility Functions ///
 /////////////////////////
+
+/// cancel old builds of the same type
+def abortPreviousBuilds() {
+    Run previousBuild = currentBuild.rawBuild.getPreviousBuildInProgress()
+
+    while (previousBuild != null) {
+        if (previousBuild.isInProgress()) {
+            def executor = previousBuild.getExecutor()
+            if (executor != null) {
+                echo ">> Aborting older build #${previousBuild.number}"
+                executor.interrupt(Result.ABORTED, new UserInterruption(
+                    "Aborted by newer build #${currentBuild.number}"
+                ))
+            }
+        }
+
+        previousBuild = previousBuild.getPreviousBuildInProgress()
+    }
+}
 
 /// Property 'build_variant' (aka. target) from the merge command (eg. the issue comment on GitHub).
 def build_variant() {
