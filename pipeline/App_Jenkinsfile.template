@@ -59,6 +59,15 @@ pipeline {
     }
 
     stages {
+        stage('Setup and generate files') {
+            steps {
+                script {
+                    // Delete the gemfile.lock if it exists
+                    def gemfileLock = new File('fastlane/Gemfile.lock')
+                    gemfileLock.delete()
+                }
+            }
+        }
         stage('Check Conditions') {
             steps {
                 script {
