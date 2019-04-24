@@ -63,8 +63,9 @@ pipeline {
             steps {
                 script {
                     // Delete the gemfile.lock if it exists
-                    def gemfileLock = new File('fastlane/Gemfile.lock')
-                    gemfileLock.delete()
+                    sh '''#!/bin/bash -l
+                        rm fastlane/Gemfile.lock
+                        '''
                 }
             }
         }
