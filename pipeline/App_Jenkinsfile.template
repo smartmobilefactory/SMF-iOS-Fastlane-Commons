@@ -49,7 +49,6 @@ pipeline {
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
         SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
         SMF_PHRASEAPP_ACCESS_TOKEN = credentials('PHRASEAPP_API_ACCESS_TOKEN')
-        stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
     }
 
     parameters {
