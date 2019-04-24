@@ -3,6 +3,8 @@
 // Automatically generated. Do not edit.
 //
 
+import jenkins.model.CauseOfInterruption.UserInterruption
+
 //////////////////////
 /// Regex Patterns ///
 //////////////////////
@@ -84,12 +86,32 @@ pipeline {
             }
         }
 
+        stage('Setup and generate files') {
+            when { expression { env.MERGE_COMMAND == null } }
+
+            steps {
+                checkout scm
+                
+                script {
+                    // Delete the gemfile.lock if it exists
+                    sh '''#!/bin/bash -l
+                        if rm fastlane/Gemfile.lock 2> /dev/null; then
+                            echo "Removed Gemfile.lock"
+                        fi
+                        '''
+                }
+            }
+        }
+
         stage('Check Pull Request') {
             // CHANGE_ID is set only for pull requests, so it is safe to access the pullRequest global variable.
             // CHECK_PR is set only for pushes on a branch with an active PR or with the command 'ok to test'.
             when { expression { env.CHANGE_ID != null && env.CHECK_PR == "true" } }
 
             steps {
+
+                abortPreviousBuilds()
+
                 // Git Checkout to access the source files.
                 checkout scm
 
@@ -140,15 +162,18 @@ pipeline {
             when { expression { env.CHANGE_ID == null } }
 
             steps {
-                // Git Checkout to access the source files.
-                checkout scm
 
-                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
-                    sh '''#!/bin/bash -l
-                        cd fastlane
-                        bundle install
-                        bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
-                        '''
+                lock(env.JOB_NAME) {
+                    // Git Checkout to access the source files.
+                    checkout scm
+    
+                    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                        sh '''#!/bin/bash -l
+                            cd fastlane
+                            bundle install
+                            bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
+                            '''
+                    }
                 }
             }
         }
@@ -158,6 +183,25 @@ pipeline {
 /////////////////////////
 /// Utility Functions ///
 /////////////////////////
+
+/// cancel old builds of the same type
+def abortPreviousBuilds() {
+    Run previousBuild = currentBuild.rawBuild.getPreviousBuildInProgress()
+
+    while (previousBuild != null) {
+        if (previousBuild.isInProgress()) {
+            def executor = previousBuild.getExecutor()
+            if (executor != null) {
+                echo ">> Aborting older build #${previousBuild.number}"
+                executor.interrupt(Result.ABORTED, new UserInterruption(
+                    "Aborted by newer build #${currentBuild.number}"
+                ))
+            }
+        }
+
+        previousBuild = previousBuild.getPreviousBuildInProgress()
+    }
+}
 
 /// Property 'build_variant' (aka. target) from the merge command (eg. the issue comment on GitHub).
 def build_variant() {
