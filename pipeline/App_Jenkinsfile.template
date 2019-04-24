@@ -3,6 +3,8 @@
 // Automatically generated. Do not edit.
 //
 
+import jenkins.model.CauseOfInterruption.UserInterruption
+
 //////////////////////
 /// Regex Patterns ///
 //////////////////////
