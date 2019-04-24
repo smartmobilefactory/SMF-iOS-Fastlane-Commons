@@ -66,6 +66,7 @@ pipeline {
                     sh '''#!/bin/bash -l
                         cd fastlane
                         bundle install
+                        cd ..
                         if rm fastlane/Gemfile.lock 2> /dev/null; then
                             echo "Removed Gemfile.lock"
                         fi
