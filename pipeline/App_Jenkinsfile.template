@@ -64,7 +64,11 @@ pipeline {
                 script {
                     // Delete the gemfile.lock if it exists
                     sh '''#!/bin/bash -l
-                        rm fastlane/Gemfile.lock
+                        cd fastlane
+                        bundle install
+                        if rm fastlane/Gemfile.lock 2> /dev/null; then
+                            echo "Removed Gemfile.lock"
+                        fi
                         '''
                 }
             }
