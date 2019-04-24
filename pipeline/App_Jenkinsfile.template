@@ -59,21 +59,6 @@ pipeline {
     }
 
     stages {
-        stage('Setup and generate files') {
-            steps {
-                script {
-                    // Delete the gemfile.lock if it exists
-                    sh '''#!/bin/bash -l
-                        cd fastlane
-                        bundle install
-                        cd ..
-                        if rm fastlane/Gemfile.lock 2> /dev/null; then
-                            echo "Removed Gemfile.lock"
-                        fi
-                        '''
-                }
-            }
-        }
         stage('Check Conditions') {
             steps {
                 script {
@@ -94,6 +79,26 @@ pipeline {
                         // The current build is linked to a PR when the CHANGE_ID variable is set.
                         env.CHECK_PR = "true"
                     }
+                }
+            }
+        }
+
+        stage('Setup and generate files') {
+            when { expression { env.CHANGE_ID != null && env.MERGE_COMMAND == null } }
+
+            steps {
+                checkout scm
+                
+                script {
+                    // Delete the gemfile.lock if it exists
+                    sh '''#!/bin/bash -l
+                        cd fastlane
+                        bundle install
+                        cd ..
+                        if rm fastlane/Gemfile.lock 2> /dev/null; then
+                            echo "Removed Gemfile.lock"
+                        fi
+                        '''
                 }
             }
         }
