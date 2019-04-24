@@ -152,12 +152,13 @@ pipeline {
             when { expression { env.CHANGE_ID == null } }
 
             steps {
-                // Git Checkout to access the source files.
-                checkout scm
 
                 script {
 
                     lock(env.JOB_NAME) {
+
+                        // Git Checkout to access the source files.
+                        checkout scm
 
                         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
                             if (_example_variants.contains(build_variant) == true) {
