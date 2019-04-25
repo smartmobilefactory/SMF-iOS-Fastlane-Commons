@@ -20,21 +20,6 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 _agent_label = 'pipeline'
 _build_variants = __BUILD_VARIANTS__
 
-_STRATO_SPARKLE_PRIVATE_SSH_KEY = ''
-try {
-    _STRATO_SPARKLE_PRIVATE_SSH_KEY = credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
-} catch (Exception e) {}
-
-_SPARKLE_SIGNING_ALPHA_BETA = ''
-try {
-    _SPARKLE_SIGNING_ALPHA_BETA = credentials('SPARKLE_SIGNING_ALPHA_BETA')
-} catch (Exception e) {}
-
-_stratoPhraseappAccessToken = ''
-try {
-     _stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
-} catch (Exception e) {}
-
 ////////////////////////////
 /// Declarative Pipeline ///
 ////////////////////////////
@@ -65,9 +50,9 @@ pipeline {
         SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
         SMF_PHRASEAPP_ACCESS_TOKEN = credentials('PHRASEAPP_API_ACCESS_TOKEN')
 
-        STRATO_SPARKLE_PRIVATE_SSH_KEY = "${_STRATO_SPARKLE_PRIVATE_SSH_KEY}"
-        SPARKLE_SIGNING_ALPHA_BETA = "${_SPARKLE_SIGNING_ALPHA_BETA}"
-        stratoPhraseappAccessToken = "${_stratoPhraseappAccessToken}"
+        __CUSTOM_PHRASE_APP_TOKEN__
+        __CUSTOM_SPARKLE_PRIVATE_SSH_KEY__
+        __CUSTOM_SPARKLE_SIGNING_KEY__
     }
 
     parameters {
@@ -81,7 +66,9 @@ pipeline {
 
     stages {
         stage('Check Conditions') {
+
             steps {
+
                 script {
                     // Get the current build's cause and to understand how it has been triggered.
                     def triggerCause = currentBuild.rawBuild.getCause(org.jenkinsci.plugins.pipeline.github.trigger.IssueCommentCause)
@@ -108,6 +95,7 @@ pipeline {
             when { expression { env.MERGE_COMMAND == null } }
 
             steps {
+
                 checkout scm
                 
                 script {
@@ -151,6 +139,8 @@ pipeline {
             when { expression { env.CHANGE_ID != null && env.MERGE_COMMAND != null } }
 
             steps {
+
+
                 script {
                     if (pullRequest.mergeable == false) {
                         fail('FAILURE', "Pull Request '${env.JOB_NAME}' is not mergeable.")
@@ -180,6 +170,7 @@ pipeline {
             when { expression { env.CHANGE_ID == null } }
 
             steps {
+
 
                 lock(env.JOB_NAME) {
                     // Git Checkout to access the source files.
