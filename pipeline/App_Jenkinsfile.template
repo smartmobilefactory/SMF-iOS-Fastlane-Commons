@@ -49,10 +49,6 @@ pipeline {
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
         SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
         SMF_PHRASEAPP_ACCESS_TOKEN = credentials('PHRASEAPP_API_ACCESS_TOKEN')
-
-        STRATO_SPARKLE_PRIVATE_SSH_KEY = optional_credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
-        SPARKLE_SIGNING_ALPHA_BETA = optional_credentials('SPARKLE_SIGNING_ALPHA_BETA')
-        stratoPhraseappAccessToken = optional_credentials('stratoPhraseappAccessToken')
     }
 
     parameters {
@@ -66,6 +62,9 @@ pipeline {
 
     stages {
         stage('Check Conditions') {
+
+            setOptionalEnvironment()
+
             steps {
                 script {
                     // Get the current build's cause and to understand how it has been triggered.
@@ -92,6 +91,8 @@ pipeline {
         stage('Setup and generate files') {
             when { expression { env.MERGE_COMMAND == null } }
 
+            setOptionalEnvironment()
+
             steps {
                 checkout scm
                 
@@ -110,6 +111,8 @@ pipeline {
             // CHANGE_ID is set only for pull requests, so it is safe to access the pullRequest global variable.
             // CHECK_PR is set only for pushes on a branch with an active PR or with the command 'ok to test'.
             when { expression { env.CHANGE_ID != null && env.CHECK_PR == "true" } }
+
+            setOptionalEnvironment()
 
             steps {
 
@@ -134,6 +137,8 @@ pipeline {
         stage('Merge Pull Request') {
             // MERGE_COMMAND is set only when a merge command has triggered the current build.
             when { expression { env.CHANGE_ID != null && env.MERGE_COMMAND != null } }
+
+            setOptionalEnvironment()
 
             steps {
                 script {
@@ -163,6 +168,8 @@ pipeline {
             // Doing so the 'Build and Release' stage is only executed when the job has been manually triggered via the Jenkins UI OR through a release command on a upstream PR job.
             // In any case could the current build be linked to a PR and therefore the CHANGE_ID variable is never set.
             when { expression { env.CHANGE_ID == null } }
+
+            setOptionalEnvironment()
 
             steps {
 
@@ -217,14 +224,6 @@ def build_variant() {
     return build_variant
 }
 
-def optional_credentials(key) {
-    try {
-        return credentials(key)
-    } catch (Exception e) {
-        return ''
-    }
-}
-
 /// Path on Jenkins of the downstream project.
 ///
 /// The downstream project must be used to build a new release on a specific branch (not a pull request based one).
@@ -237,6 +236,34 @@ def downstream_project_path() {
 
     def project_path = project_path_matcher.group(1)
     return project_path
+}
+
+def setOptionalEnvironment() {
+
+        try {
+            credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
+
+            environment {
+                STRATO_SPARKLE_PRIVATE_SSH_KEY = credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
+            }
+        } catch (Exception e) { }
+
+
+        try {
+            credentials('SPARKLE_SIGNING_ALPHA_BETA')
+
+            environment {
+                SPARKLE_SIGNING_ALPHA_BETA = credentials('SPARKLE_SIGNING_ALPHA_BETA')
+            }
+        } catch (Exception e) { }
+
+        try {
+            credentials('stratoPhraseappAccessToken')
+
+            environment {
+                stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
+            }
+        } catch (Exception e) { }
 }
 
 /// Set the result of the current build, log the error message and throw the an error.
