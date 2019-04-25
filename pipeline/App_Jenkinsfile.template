@@ -264,6 +264,10 @@ def setOptionalEnvironment() {
                 stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
             }
         } catch (Exception e) { }
+
+        echo env.STRATO_SPARKLE_PRIVATE_SSH_KEY
+        echo env.SPARKLE_SIGNING_ALPHA_BETA
+        echo env.stratoPhraseappAccessToken
 }
 
 /// Set the result of the current build, log the error message and throw the an error.
