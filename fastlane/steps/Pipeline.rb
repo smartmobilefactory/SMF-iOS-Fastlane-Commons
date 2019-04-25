@@ -14,6 +14,7 @@ FASTFILE_FILENAME = "Fastfile"
 BUILD_VARIANTS_PATTERN = "__BUILD_VARIANTS__"
 POD_EXAMPLE_VARIANTS_PATTERN = "__EXAMPLE_VARIANTS__"
 PR_CHECK_BUILD_VARIANT_PATTERN = "__PR_CHECK_BUILD_VARIANT__"
+CUSTOM_CREDENTIALS = ["__CUSTOM_PHRASE_APP_TOKEN__", "__CUSTOM_SPARKLE_PRIVATE_SSH_KEY__", "__CUSTOM_SPARKLE_SIGNING_KEY__"]
 POD_DEFAULT_VARIANTS = ["unit_tests", "patch", "minor", "major", "current", "breaking", "internal"]
 
 desc "Checks if the repository is a Pod"
@@ -108,6 +109,17 @@ private_lane :smf_generate_setup_files do |options|
   end
 
 	jenkinsFileData = jenkinsFileData.gsub("#{BUILD_VARIANTS_PATTERN}", JSON.dump(build_variants_from_config))
+
+  for custom_credential in CUSTOM_CREDENTIALS
+    if @smf_fastlane_config[:project][:custom_credentials][custom_credential.to_sym]
+			custom_credential_key = @smf_fastlane_config[:project][:custom_credentials][custom_credential.to_sym]
+      custom_credential_string = "#{custom_credential_key} = credentials('#{custom_credential_key}')"
+			jenkinsFileData = jenkinsFileData.gsub(custom_credential, custom_credential_string)
+    else
+			jenkinsFileData = jenkinsFileData.gsub(custom_credential, "")
+    end
+  end
+
 	File.write("#{smf_workspace_dir}/#{JENKINSFILE_FILENAME}", jenkinsFileData)
 end
 

@@ -49,6 +49,10 @@ pipeline {
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
         SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
         SMF_PHRASEAPP_ACCESS_TOKEN = credentials('PHRASEAPP_API_ACCESS_TOKEN')
+
+        __CUSTOM_PHRASE_APP_TOKEN__
+        __CUSTOM_SPARKLE_PRIVATE_SSH_KEY__
+        __CUSTOM_SPARKLE_SIGNING_KEY__
     }
 
     parameters {
@@ -65,7 +69,6 @@ pipeline {
 
             steps {
 
-                setOptionalEnvironment()
                 script {
                     // Get the current build's cause and to understand how it has been triggered.
                     def triggerCause = currentBuild.rawBuild.getCause(org.jenkinsci.plugins.pipeline.github.trigger.IssueCommentCause)
@@ -93,7 +96,6 @@ pipeline {
 
             steps {
 
-                setOptionalEnvironment()
                 checkout scm
                 
                 script {
@@ -114,7 +116,6 @@ pipeline {
 
             steps {
 
-                setOptionalEnvironment()
                 abortPreviousBuilds()
 
                 // Git Checkout to access the source files.
@@ -139,7 +140,6 @@ pipeline {
 
             steps {
 
-                setOptionalEnvironment()
 
                 script {
                     if (pullRequest.mergeable == false) {
@@ -171,7 +171,6 @@ pipeline {
 
             steps {
 
-                setOptionalEnvironment()
 
                 lock(env.JOB_NAME) {
                     // Git Checkout to access the source files.
@@ -236,38 +235,6 @@ def downstream_project_path() {
 
     def project_path = project_path_matcher.group(1)
     return project_path
-}
-
-def setOptionalEnvironment() {
-
-        try {
-            credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
-
-            environment {
-                STRATO_SPARKLE_PRIVATE_SSH_KEY = credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
-            }
-        } catch (Exception e) { }
-
-
-        try {
-            credentials('SPARKLE_SIGNING_ALPHA_BETA')
-
-            environment {
-                SPARKLE_SIGNING_ALPHA_BETA = credentials('SPARKLE_SIGNING_ALPHA_BETA')
-            }
-        } catch (Exception e) { }
-
-        try {
-            credentials('stratoPhraseappAccessToken')
-
-            environment {
-                stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
-            }
-        } catch (Exception e) { }
-
-        echo env.STRATO_SPARKLE_PRIVATE_SSH_KEY
-        echo env.SPARKLE_SIGNING_ALPHA_BETA
-        echo env.stratoPhraseappAccessToken
 }
 
 /// Set the result of the current build, log the error message and throw the an error.
