@@ -50,10 +50,6 @@ pipeline {
         JENKINS = credentials('iOS_NODES_JENKINS_KEYCHAIN')
         SMF_HOCKEYAPP_ONE_SIGNAL_BASIC_AUTH = credentials('ONESIGNAL_SMF_API_KEY')
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
-
-        STRATO_SPARKLE_PRIVATE_SSH_KEY = optional_credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
-        SPARKLE_SIGNING_ALPHA_BETA = optional_credentials('SPARKLE_SIGNING_ALPHA_BETA')
-        stratoPhraseappAccessToken = optional_credentials('stratoPhraseappAccessToken')
     }
 
     parameters {
@@ -221,14 +217,6 @@ def build_variant() {
 
     def build_variant = merge_command_matcher.group(1)
     return build_variant
-}
-
-def optional_credentials(key) {
-    try {
-        return credentials(key)
-    } catch (Exception e) {
-        return ''
-    }
 }
 
 /// Path on Jenkins of the downstream project.
