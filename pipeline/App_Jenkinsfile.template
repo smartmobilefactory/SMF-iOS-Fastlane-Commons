@@ -63,9 +63,9 @@ pipeline {
     stages {
         stage('Check Conditions') {
 
-            setOptionalEnvironment()
-
             steps {
+
+                setOptionalEnvironment()
                 script {
                     // Get the current build's cause and to understand how it has been triggered.
                     def triggerCause = currentBuild.rawBuild.getCause(org.jenkinsci.plugins.pipeline.github.trigger.IssueCommentCause)
@@ -91,9 +91,9 @@ pipeline {
         stage('Setup and generate files') {
             when { expression { env.MERGE_COMMAND == null } }
 
-            setOptionalEnvironment()
-
             steps {
+
+                setOptionalEnvironment()
                 checkout scm
                 
                 script {
@@ -112,10 +112,9 @@ pipeline {
             // CHECK_PR is set only for pushes on a branch with an active PR or with the command 'ok to test'.
             when { expression { env.CHANGE_ID != null && env.CHECK_PR == "true" } }
 
-            setOptionalEnvironment()
-
             steps {
 
+                setOptionalEnvironment()
                 abortPreviousBuilds()
 
                 // Git Checkout to access the source files.
@@ -138,9 +137,10 @@ pipeline {
             // MERGE_COMMAND is set only when a merge command has triggered the current build.
             when { expression { env.CHANGE_ID != null && env.MERGE_COMMAND != null } }
 
-            setOptionalEnvironment()
-
             steps {
+
+                setOptionalEnvironment()
+
                 script {
                     if (pullRequest.mergeable == false) {
                         fail('FAILURE', "Pull Request '${env.JOB_NAME}' is not mergeable.")
@@ -169,9 +169,9 @@ pipeline {
             // In any case could the current build be linked to a PR and therefore the CHANGE_ID variable is never set.
             when { expression { env.CHANGE_ID == null } }
 
-            setOptionalEnvironment()
-
             steps {
+
+                setOptionalEnvironment()
 
                 lock(env.JOB_NAME) {
                     // Git Checkout to access the source files.
