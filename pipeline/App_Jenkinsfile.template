@@ -20,6 +20,25 @@ _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 _agent_label = 'pipeline'
 _build_variants = __BUILD_VARIANTS__
 
+/////////////////////////
+/// Static Parameters ///
+/////////////////////////
+
+_STRATO_SPARKLE_PRIVATE_SSH_KEY = ''
+try {
+    _STRATO_SPARKLE_PRIVATE_SSH_KEY = credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
+} catch (Exception e) {}
+
+_SPARKLE_SIGNING_ALPHA_BETA = ''
+try {
+    _SPARKLE_SIGNING_ALPHA_BETA = credentials('SPARKLE_SIGNING_ALPHA_BETA')
+} catch (Exception e) {}
+
+_stratoPhraseappAccessToken = ''
+try {
+     _stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
+} catch (Exception e) {}
+
 ////////////////////////////
 /// Declarative Pipeline ///
 ////////////////////////////
@@ -49,6 +68,10 @@ pipeline {
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
         SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
         SMF_PHRASEAPP_ACCESS_TOKEN = credentials('PHRASEAPP_API_ACCESS_TOKEN')
+
+        STRATO_SPARKLE_PRIVATE_SSH_KEY = _STRATO_SPARKLE_PRIVATE_SSH_KEY
+        SPARKLE_SIGNING_ALPHA_BETA = _SPARKLE_SIGNING_ALPHA_BETA
+        stratoPhraseappAccessToken = _stratoPhraseappAccessToken
     }
 
     parameters {
