@@ -22,22 +22,6 @@ _pod_repo_update_job_name = 'iOS/Cocoapods_Repo_Update/Cocoapods_Repo_Update'
 _build_variants = __BUILD_VARIANTS__
 _example_variants = __EXAMPLE_VARIANTS__
 
-_STRATO_SPARKLE_PRIVATE_SSH_KEY = ''
-try {
-    _STRATO_SPARKLE_PRIVATE_SSH_KEY = credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
-} catch (Exception e) {}
-
-_SPARKLE_SIGNING_ALPHA_BETA = ''
-try {
-    _SPARKLE_SIGNING_ALPHA_BETA = credentials('SPARKLE_SIGNING_ALPHA_BETA')
-} catch (Exception e) {}
-
-_stratoPhraseappAccessToken = ''
-try {
-     _stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
-} catch (Exception e) {}
-
-
 ////////////////////////////
 /// Declarative Pipeline ///
 ////////////////////////////
@@ -67,9 +51,9 @@ pipeline {
         SMF_HOCKEYAPP_ONE_SIGNAL_BASIC_AUTH = credentials('ONESIGNAL_SMF_API_KEY')
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
 
-        STRATO_SPARKLE_PRIVATE_SSH_KEY = "${_STRATO_SPARKLE_PRIVATE_SSH_KEY}"
-        SPARKLE_SIGNING_ALPHA_BETA = "${_SPARKLE_SIGNING_ALPHA_BETA}"
-        stratoPhraseappAccessToken = "${_stratoPhraseappAccessToken}"
+        STRATO_SPARKLE_PRIVATE_SSH_KEY = optional_credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
+        SPARKLE_SIGNING_ALPHA_BETA = optional_credentials('SPARKLE_SIGNING_ALPHA_BETA')
+        stratoPhraseappAccessToken = optional_credentials('stratoPhraseappAccessToken')
     }
 
     parameters {
@@ -237,6 +221,14 @@ def build_variant() {
 
     def build_variant = merge_command_matcher.group(1)
     return build_variant
+}
+
+def optional_credentials(key) {
+    try {
+        return credentials(key)
+    } catch (Exception e) {
+        return ''
+    }
 }
 
 /// Path on Jenkins of the downstream project.
