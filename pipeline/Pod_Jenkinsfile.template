@@ -22,10 +22,6 @@ _pod_repo_update_job_name = 'iOS/Cocoapods_Repo_Update/Cocoapods_Repo_Update'
 _build_variants = __BUILD_VARIANTS__
 _example_variants = __EXAMPLE_VARIANTS__
 
-/////////////////////////
-/// Static Parameters ///
-/////////////////////////
-
 _STRATO_SPARKLE_PRIVATE_SSH_KEY = ''
 try {
     _STRATO_SPARKLE_PRIVATE_SSH_KEY = credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
@@ -71,9 +67,9 @@ pipeline {
         SMF_HOCKEYAPP_ONE_SIGNAL_BASIC_AUTH = credentials('ONESIGNAL_SMF_API_KEY')
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
 
-        STRATO_SPARKLE_PRIVATE_SSH_KEY = _STRATO_SPARKLE_PRIVATE_SSH_KEY
-        SPARKLE_SIGNING_ALPHA_BETA = _SPARKLE_SIGNING_ALPHA_BETA
-        stratoPhraseappAccessToken = _stratoPhraseappAccessToken
+        STRATO_SPARKLE_PRIVATE_SSH_KEY = "${_STRATO_SPARKLE_PRIVATE_SSH_KEY}"
+        SPARKLE_SIGNING_ALPHA_BETA = "${_SPARKLE_SIGNING_ALPHA_BETA}"
+        stratoPhraseappAccessToken = "${_stratoPhraseappAccessToken}"
     }
 
     parameters {
