@@ -49,18 +49,6 @@ pipeline {
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
         SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
         SMF_PHRASEAPP_ACCESS_TOKEN = credentials('PHRASEAPP_API_ACCESS_TOKEN')
-
-        try {
-            STRATO_SPARKLE_PRIVATE_SSH_KEY = credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
-        } catch (Exception e) {}
-
-        try {
-            SPARKLE_SIGNING_ALPHA_BETA = credentials('SPARKLE_SIGNING_ALPHA_BETA')
-        } catch (Exception e) {}
-
-        try {
-             stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
-        } catch (Exception e) {}
     }
 
     parameters {
