@@ -50,18 +50,6 @@ pipeline {
         JENKINS = credentials('iOS_NODES_JENKINS_KEYCHAIN')
         SMF_HOCKEYAPP_ONE_SIGNAL_BASIC_AUTH = credentials('ONESIGNAL_SMF_API_KEY')
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
-
-        try {
-            STRATO_SPARKLE_PRIVATE_SSH_KEY = credentials('STRATO_SPARKLE_PRIVATE_SSH_KEY')
-        } catch (Exception e) {}
-
-        try {
-            SPARKLE_SIGNING_ALPHA_BETA = credentials('SPARKLE_SIGNING_ALPHA_BETA')
-        } catch (Exception e) {}
-
-        try {
-             stratoPhraseappAccessToken = credentials('stratoPhraseappAccessToken')
-        } catch (Exception e) {}
     }
 
     parameters {
