@@ -94,7 +94,7 @@ pipeline {
 
             steps {
 
-                if (env.NUKE) {
+                if (env.NUKE == "true") {
                     deleteDir()
                 } else {
 
