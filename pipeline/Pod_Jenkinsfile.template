@@ -74,7 +74,7 @@ pipeline {
                             env.CHECK_PR = "true"
                         } else if (triggerCause.comment ==~ _wipe_workspace_pattern) {
                             env.NUKE = "true"
-
+                            env.CHECK_PR = "true"
                         } else if (triggerCause.comment ==~ _merge_trigger_pattern) {
                             // Build triggered by a merge command.
                             env.MERGE_COMMAND = triggerCause.comment
