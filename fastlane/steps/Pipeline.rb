@@ -113,9 +113,9 @@ private_lane :smf_generate_setup_files do |options|
   if @smf_fastlane_config[:project][:custom_credentials]
     for custom_credential in CUSTOM_CREDENTIALS
       if @smf_fastlane_config[:project][:custom_credentials][custom_credential.to_sym]
-			  custom_credential_key = @smf_fastlane_config[:project][:custom_credentials][custom_credential.to_sym]
+        custom_credential_key = @smf_fastlane_config[:project][:custom_credentials][custom_credential.to_sym]
         custom_credential_string = "#{custom_credential_key} = credentials('#{custom_credential_key}')"
-			  jenkinsFileData = jenkinsFileData.gsub(custom_credential, custom_credential_string)
+        jenkinsFileData = jenkinsFileData.gsub(custom_credential, custom_credential_string)
       else
 			  jenkinsFileData = jenkinsFileData.gsub(custom_credential, "")
       end
