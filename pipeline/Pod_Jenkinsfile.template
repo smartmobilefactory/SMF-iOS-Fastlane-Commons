@@ -94,11 +94,11 @@ pipeline {
 
             steps {
 
-                if (env.NUKE == "true") {
-                    deleteDir()
-                } else {
+                script {
 
-                    script {
+                    if (env.NUKE == "true") {
+                        deleteDir()
+                    } else {
 
                         // Delete the gemfile.lock if it exists
                         sh '''#!/bin/bash -l
