@@ -86,6 +86,24 @@ pipeline {
             }
         }
 
+        stage('Setup and generate files') {
+            when { expression { env.MERGE_COMMAND == null } }
+
+            steps {
+
+                checkout scm
+
+                script {
+                    // Delete the gemfile.lock if it exists
+                    sh '''#!/bin/bash -l
+                        if rm fastlane/Gemfile.lock 2> /dev/null; then
+                            echo "Removed Gemfile.lock"
+                        fi
+                        '''
+                }
+            }
+        }
+
         stage('Check Pull Request') {
             // CHANGE_ID is set only for pull requests, so it is safe to access the pullRequest global variable.
             // CHECK_PR is set only for pushes on a branch with an active PR or with the command 'ok to test'.
