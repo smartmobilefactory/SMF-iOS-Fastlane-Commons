@@ -10,6 +10,7 @@ import jenkins.model.CauseOfInterruption.UserInterruption
 //////////////////////
 
 _ok_to_test_pattern = /^(ok to test)\s*$/
+_wipe_workspace_pattern = /^(wipe workspace|nuke workspace)\s*$/
 _merge_trigger_pattern = /^[release|merge]+ ([\w-_.]+)\s*$/
 _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 
@@ -71,6 +72,9 @@ pipeline {
                         if (triggerCause.comment ==~ _ok_to_test_pattern) {
                             // Build triggered by a "ok to test" command.
                             env.CHECK_PR = "true"
+                        } else if (triggerCause.comment ==~ _wipe_workspace_pattern) {
+                            env.NUKE = "true"
+                            env.CHECK_PR = "true"
                         } else if (triggerCause.comment ==~ _merge_trigger_pattern) {
                             // Build triggered by a merge command.
                             env.MERGE_COMMAND = triggerCause.comment
@@ -84,6 +88,27 @@ pipeline {
                     }
                 }
             }
+        }
+
+        stage('Setup and generate files') {
+
+            steps {
+
+                if (env.NUKE) {
+                    deleteDir()
+                } else {
+
+                    script {
+
+                        // Delete the gemfile.lock if it exists
+                        sh '''#!/bin/bash -l
+                            if rm fastlane/Gemfile.lock 2> /dev/null; then
+                                echo "Removed Gemfile.lock"
+                            fi
+                            '''
+                    }
+                }
+             }
         }
 
         stage('Check Pull Request') {
