@@ -62,7 +62,7 @@ pipeline {
     }
 
     triggers {
-        issueCommentTrigger("${_ok_to_test_pattern}|${_merge_trigger_pattern}")
+        issueCommentTrigger("${_ok_to_test_pattern}|${_merge_trigger_pattern}|${_wipe_workspace_pattern}")
     }
 
     stages {
