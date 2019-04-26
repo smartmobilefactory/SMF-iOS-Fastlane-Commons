@@ -10,7 +10,7 @@ import jenkins.model.CauseOfInterruption.UserInterruption
 //////////////////////
 
 _ok_to_test_pattern = /^(ok to test)\s*$/
-_wipe_workspace_pattern = /^(wipeout workspace|nuke workspace)\s*$/
+_wipe_workspace_pattern = /^(wipe workspace|nuke workspace)\s*$/
 _merge_trigger_pattern = /^[release|merge]+ ([\w-_.]+)\s*$/
 _project_name_pattern = /([\w-_.\/]+)\/PR-[\d]+$/
 
