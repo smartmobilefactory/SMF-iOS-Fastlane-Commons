@@ -97,7 +97,7 @@ pipeline {
                 script {
 
                     if (env.NUKE == "true") {
-                        deleteDir()
+                        cleanWs()
                     } else {
 
                         // Delete the gemfile.lock if it exists
