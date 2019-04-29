@@ -59,6 +59,7 @@ pipeline {
     parameters {
         // Use generated project buld variants (aka. build targets of the related project).
         choice(choices: _build_variants, description: 'Target', name: 'build_variant')
+        booleanParam(name: 'clean_workspace', defaultValue: false, description: 'Clean Workspace before building')
     }
 
     triggers {
@@ -90,6 +91,10 @@ pipeline {
                         // Build was started with a push on a branch.
                         // The current build is linked to a PR when the CHANGE_ID variable is set.
                         env.CHECK_PR = "true"
+                    }
+
+                    if (params.clean_workspace) {
+                        env.NUKE = "true"
                     }
                 }
             }
@@ -164,8 +169,9 @@ pipeline {
                     // Merge the related pull request.
                     pullRequest.merge(commitTitle: "${env.JOB_BASE_NAME} merge", commitMessage: "Merge triggered for ${env.JOB_NAME} with command: ${env.MERGE_COMMAND}", sha: "${pullRequest.head}", mergeMethod: "merge")
 
+                    def encodedBase = URLEncoder.encode(pullRequest.base, "utf-8")
                     // Start a downstream job with the specified branch and build variant.
-                    build job: "${project_path}/${pullRequest.base}", parameters: [string(name: 'build_variant', value: "${build_variant}")], wait: false
+                    build job: "${project_path}/${encodedBase}", parameters: [string(name: 'build_variant', value: "${build_variant}")], wait: false
                 }
             }
         }
