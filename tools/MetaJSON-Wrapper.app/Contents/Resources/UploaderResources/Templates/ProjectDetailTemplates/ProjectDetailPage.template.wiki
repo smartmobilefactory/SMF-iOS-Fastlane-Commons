@@ -13,3 +13,5 @@ h2. General
 {{ atsExceptionsSection }}
 
 {{ idfaAppearancesSection }}
+
+{{ tableKey }}

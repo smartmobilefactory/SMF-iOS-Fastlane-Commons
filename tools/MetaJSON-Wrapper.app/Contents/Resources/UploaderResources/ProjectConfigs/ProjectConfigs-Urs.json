@@ -88,7 +88,6 @@
 				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
 				"github_repo"			: "smartmobilefactory/HiDrive-iOS-Backup-Framework",
-				"ios_meta_page_id"		: "486049260",
 				"codebeat_badge"		: "https://codebeat.co/badges/5d02810c-b997-4a2d-a358-6f85114e4966",
 				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-backup-framework-development"
 			}
@@ -101,10 +100,9 @@
 				"branch"				: "^([0-9.]+(?=\/))*\/{0,1}master$",
 				"relative_path"			: ".MetaJSON",
 				"github_repo"			: "smartmobilefactory/HiDrive-iOS-API-Framework",
-				"ios_meta_page_id"		: "424477277",
+				"ios_meta_page_id"		: "",
 				"codebeat_badge"		: "https://codebeat.co/badges/290ed09b-9ea5-4b29-b945-b7284631bc21",
-				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-api-framework-development",
-				"is_outdated"			: true
+				"codebeat_link"			: "https://codebeat.co/a/smart-mobile-factory-gmbh/projects/hidrive-ios-api-framework-development"
 			},
 			{
 				"project_name"			: "HockeyApp Browser Framework",

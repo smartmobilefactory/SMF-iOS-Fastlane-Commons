@@ -1,1 +1,1 @@
-|| {{ rowIndex }} || {{ nameMarkup }} | {{ xcodeVersionMarkup }} | {{ languageMarkup }} | {{ fastlaneMarkup }} | {{ swiftLintMarkup }} | {{ metaJsonMarkup }} | {{ commonProjectSetupfilesMarkup }} | {{ codebeatMarkup }} |
+|| {{ rowIndex }} || {{ nameMarkup }} | {{ xcodeVersionMarkup }} | {{ languageMarkup }} | {{ fastlaneMarkup }} | {{ metaJsonMarkup }} | {{ commonProjectSetupfilesMarkup }} | {{ codebeatMarkup }} |
