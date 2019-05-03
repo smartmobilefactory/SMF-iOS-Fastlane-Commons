@@ -1,1 +1,1 @@
-|| {{ rowIndex }} || {{ nameMarkup }} | {{ xcodeVersionMarkup }} | {{ languageMarkup }} | {{ fastlaneMarkup }} | {{ swiftLintMarkup }} | {{ metaJsonMarkup }} | {{ commonProjectSetupfilesMarkup }} | {{ atsExceptions }} | {{ bitcodeEnabledMarkup }} | {{ idfaUsageMarkup }} | {{ codebeatMarkup }} |
+|| {{ rowIndex }} || {{ nameMarkup }} | {{ xcodeVersionMarkup }} | {{ languageMarkup }} | {{ fastlaneMarkup }} | {{ metaJsonMarkup }} | {{ commonProjectSetupfilesMarkup }} | {{ atsExceptions }} | {{ bitcodeEnabledMarkup }} | {{ idfaUsageMarkup }} | {{ codebeatMarkup }} |

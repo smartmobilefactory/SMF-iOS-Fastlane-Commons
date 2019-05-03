@@ -6,15 +6,15 @@
 	<dict>
 		<key>Resources/Main.storyboardc/Info.plist</key>
 		<data>
-		e8sRoIcBkThr/0bLZwNWU2LQHvc=
+		3AinJFkQHg9e7Cj06GIdfu2yzII=
 		</data>
 		<key>Resources/Main.storyboardc/MainMenu.nib</key>
 		<data>
-		U/CAWhhE5AV530ivKOul9K636Y4=
+		0VGH/5I/3vPQ3L2pGoLwoKHVta4=
 		</data>
 		<key>Resources/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib</key>
 		<data>
-		7PuM/O9yCSzVnGcj9hhz2ZV65Kc=
+		yNHXgPII/swqbLeExjHRwWv4RII=
 		</data>
 		<key>Resources/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib</key>
 		<data>
@@ -294,7 +294,7 @@
 		</data>
 		<key>Resources/UploaderResources/ProjectConfigs/ProjectConfigs-Urs.json</key>
 		<data>
-		3YLIu11zv2HAXmW1LL6Ws+yZ7Kc=
+		I2h9OnKvqLWzqaNVMtklCgKKF5I=
 		</data>
 		<key>Resources/UploaderResources/ProjectConfigs/ProjectConfigs.json</key>
 		<data>
@@ -306,7 +306,7 @@
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectDetailTemplates/ProjectDetailPage.template.wiki</key>
 		<data>
-		CXp9hYv9mwgnMTNm87Tp/1R+axQ=
+		KzhzLOIzO7PdeUUKhd1AgZpTvNM=
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectDetailTemplates/ProjectDetailPageSections/ATSExceptionsTable/AtsExceptionsTable.template.wiki</key>
 		<data>
@@ -326,27 +326,27 @@
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectDetailTemplates/ProjectDetailPageSections/SingleProjectTable/SingleProjectTable.template.wiki</key>
 		<data>
-		F4R8cdyX/Fhm+QjjwLgjtHeuhXU=
+		psDOszuA9QKYQhIyy0pXcqnwMtE=
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectDetailTemplates/ProjectDetailPageSections/SingleProjectTable/SingleProjectTableRow.template.wiki</key>
 		<data>
-		2RB5QPyRDZtlT3F0Tn/fYM6pVAc=
+		ow2As72bi7VEQxXXovPBuwi0uNQ=
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectOverviewPage.template.wiki</key>
 		<data>
-		ISa8ns5Gu+4siUbWSwWdJdqJuTg=
+		v/1EQ+nxWN+cYWmdjTOHaK13KDA=
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/longProjectsTable.template.wiki</key>
 		<data>
-		hnou6VOURXat/53+qjuPGzCDu9M=
+		wwYiHkrSyRuDTyLVQdyGraU14bM=
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/longProjectsTableRow.template.wiki</key>
 		<data>
-		cZVM52hkIrZbUXrSb1KSmAHNYYg=
+		NX3bKKTT81/fXjUQgwKAXOxHdvI=
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/projectTableKey.template.wiki</key>
 		<data>
-		MagNLakKEyFxCS+N0u+asM9cLoE=
+		OR/iIuAh3gsvmOMz5axNLTWGjyg=
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/shortProjectsTable.template.wiki</key>
 		<data>
@@ -354,7 +354,7 @@
 		</data>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/shortProjectsTableRow.template.wiki</key>
 		<data>
-		RenjG47C6tIsLH4HCePF3aRhO7E=
+		B0vuKnjPNPmlUm7yk1pPZP10loI=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -363,7 +363,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			5HLuVQXU57XH4nDL4dSq03TXN9Q=
+			mr/tPJbHU2Mq3XzqmyNoRQjzOMY=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.Commander" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -372,7 +372,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			Kww/P4DkXsHY3Hmf75uRG2vo1zE=
+			mDl214S0el3rVtkBdrMQdAi5FCc=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier "com.smartmobilefactory.metajson.analyser" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -381,7 +381,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			X0MNZQ9saDfKfpyFL60UhzSlxFY=
+			S+TJARxAC3OWrXhQCm5dvM17joc=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier "com.smartmobilefactory.metajson.confluence.uploader" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -390,7 +390,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			ebLstFgdllssLCfU2rEmhH9MnDc=
+			vlVKNbvliZFpmIGr6isVdQhNK74=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier "com.smartmobilefactory.metajson.core" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -399,7 +399,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			up8+L/br1i+mGhlbKXxUa5Qbtpw=
+			+U/VDO+Lvn46AdibUIslh0Rq2D8=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.PathKit" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -408,7 +408,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			Tr9jYQTBsd37CivRgdRy4zc+N3g=
+			5fLPNFL6yNCItBVd8O+ya88tZEA=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.Stencil" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7</string>
@@ -552,7 +552,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			JwgODf8pyJd1JVR33Y5ZrmMLq4Q=
+			oxkjyNIA7PpZlDW8UgdJZnnL918=
 			</data>
 			<key>requirement</key>
 			<string>anchor apple generic and identifier metajson and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JZ2H644EU7)</string>
@@ -561,21 +561,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Y7Cs5/lXuagbjSM4mvszhpXzis8hva8f3RdGjsj0Fu8=
+			1BTu0rdafo9sJ4kP5wC0hULOSqX08JbI5hdXCD7fvm4=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/MainMenu.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			sm+j8hXePQF3MP9DYT2xuGrxjKeB7cgTO1lZ3t/2FrU=
+			jGZNEoGCq9ED/OeyN4I8uhYwcBcZTfv/fLl6IeR1BR8=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/NSWindowController-B8D-0N-5wS.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Kn405ftnA2JlYpu1sxzT6XGRbQ96JfnIm3birHu2cIU=
+			tOO/W5ytcDGIznuFV+ki/hy2Mt/wG1wRhbd9dat6sxk=
 			</data>
 		</dict>
 		<key>Resources/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib</key>
@@ -1065,7 +1065,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			qK61N3OzTFxPcLH942ZvfFBTkVlPsHBHhdXOTLwcGCY=
+			Z+xr4sOCz62+XIAk2w4id8t8MQHi9atzPJMaYcL5CpI=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/ProjectConfigs/ProjectConfigs.json</key>
@@ -1086,7 +1086,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			by6w/lUiTnLg7iDLadSNbzI/HdaX3wk9CRbSMKkE20c=
+			COB5G54IzhJXVfors+WKdLgPrH0gmmurVe+KjmjPf+g=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/Templates/ProjectDetailTemplates/ProjectDetailPageSections/ATSExceptionsTable/AtsExceptionsTable.template.wiki</key>
@@ -1121,42 +1121,42 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			19qbZD5kwiyvoBpj2Pmui31uHfUEQTI5XTKXiGFuj6U=
+			dQfyDo5CQsvItc/XsBukfaXrYhoUakmOrYnD9j8uOg4=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/Templates/ProjectDetailTemplates/ProjectDetailPageSections/SingleProjectTable/SingleProjectTableRow.template.wiki</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			519BcsZz30u+DHWsczCOOwUm31IVIXoBz5sa7LyvA9A=
+			tzREsUbT++YRafSyX/kB1B4cAxDqSHWChoddcCTTr/o=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectOverviewPage.template.wiki</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Wh0Q1u5cOMNrTT3sDbsAOF/ldHWfVycKYaFcKUW6Ohg=
+			1v5Ad7SGXpX2QYykLLjseaBVizlcyV7k/2hNif9rwSE=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/longProjectsTable.template.wiki</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			pgpSZnTdxVMV5iuvJOTA0ztOm57+8LE3+qp4JR7vOb8=
+			xOzu+KjF4AvQjTxQc6f+hxIaKt1VsIHHNN9GKGpEKGs=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/longProjectsTableRow.template.wiki</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			hJaTPfua3WG+6lIFpu7hSUs9SsWmrC4e7L8cdNOgAUU=
+			ZlMOKtQi1kppYTSs+1nXqyIM0MfQbb9LVbTCZLtxUpI=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/projectTableKey.template.wiki</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			kGztVdRrw8p+qONqu8IvtftNk7uRoEz2Zih+7NvS8OE=
+			mNjolPK3uLCnkeUlfeUWVT74XpQuoW7mvbs3bHer3nI=
 			</data>
 		</dict>
 		<key>Resources/UploaderResources/Templates/ProjectsOverviewTemplates/ProjectTableTemplates/shortProjectsTable.template.wiki</key>
@@ -1170,7 +1170,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			MyWOTkWGV6c2Goe1LzyNSJsbHiLK0VFObHVehLrgUII=
+			P8crbsIKRSQ75K3fARW/TUjkoJIVebsB//yV0Vq2Bl4=
 			</data>
 		</dict>
 		<key>embedded.provisionprofile</key>
