@@ -14,7 +14,8 @@ private_lane :smf_collect_changelog do |options|
   matching_pattern = smf_construct_default_tag_for_current_project("*")
 
   # Pull all the tags so the change log collector finds the latest tag
-  git_pull(only_tags: true)
+  UI.message("Fetching all tags...")
+  sh("git fetch --tags --quiet")
 
   last_tag = sh("git describe --tags --match \"#{matching_pattern}\" --abbrev=0 HEAD --first-parent || echo #{NO_GIT_TAG_FAILURE}").to_s
 
@@ -35,7 +36,8 @@ private_lane :smf_collect_changelog do |options|
   changelog_authors = changelog_from_git_commits(
     between:[last_tag,"HEAD"],
     merge_commit_filtering: "exclude_merges",
-    pretty: '%ae'
+    pretty: '%ae',
+    quiet: true
     )
 
   if changelog_messages == nil
