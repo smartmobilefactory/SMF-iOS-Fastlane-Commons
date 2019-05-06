@@ -13,6 +13,9 @@ private_lane :smf_collect_changelog do |options|
   # Create the tag with a regex as version. The result is eg. "releases/*" which will match any tag starting with "releases/"
   matching_pattern = smf_construct_default_tag_for_current_project("*")
 
+  # Pull all the tags so the change log collector finds the latest tag
+  git_pull(only_tags: true)
+
   last_tag = sh("git describe --tags --match \"#{matching_pattern}\" --abbrev=0 HEAD --first-parent || echo #{NO_GIT_TAG_FAILURE}").to_s
 
   # Use the initial commit if there is no matching tag yet
