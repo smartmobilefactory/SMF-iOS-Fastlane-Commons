@@ -75,8 +75,11 @@ private_lane :smf_deploy_build_variant do |options|
   generateMetaJSON = build_variant_config[:generateMetaJSON]
 
   use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
+
+  has_sentry_project_settings = project_config[:sentry_org_slug] != nil && project_config[:sentry_project_slug] != nil
+  has_sentry_variant_settings = build_variant_config[:sentry_org_slug] != nil && build_variant_config[:sentry_project_slug] != nil
   
-  use_sentry = (project_config[:sentry_org_slug] != nil && project_config[:sentry_project_slug] != nil)
+  use_sentry = has_sentry_project_settings || has_sentry_variant_settings
   UI.message("Will upload to Sentry: #{use_sentry}")
 
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
