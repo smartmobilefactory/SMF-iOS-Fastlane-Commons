@@ -196,16 +196,14 @@ pipeline {
                             bundle exec fastlane deploy_app build_variant:${build_variant} branch:${BRANCH_NAME}
                             '''
                     }
-                }
-            }
 
-            steps {
-                checkout scm
-                build job: "MetaJSON/MetaJSON_Analyser/master", parameters: [
-                    string(name: 'git', value: "${sh(returnStdout: true, script: 'git config remote.origin.url').trim()}"), 
-                    string(name: 'branch', value: "${env.BRANCH_NAME}"),
-                    string(name: 'platform', value: "ios")
-                ], wait: false
+                    // start downstream metajson analyser
+                    build job: "MetaJSON/MetaJSON_Analyser/master", parameters: [
+                        string(name: 'git', value: "${sh(returnStdout: true, script: 'git config remote.origin.url').trim()}"), 
+                        string(name: 'branch', value: "${env.BRANCH_NAME}"),
+                        string(name: 'platform', value: "ios")
+                    ], wait: false
+                }
             }
         }
     }
