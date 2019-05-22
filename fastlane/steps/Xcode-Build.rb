@@ -149,6 +149,7 @@ private_lane :smf_perform_unit_tests do |options|
   scan(
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
+    xcargs: "-UseNewBuildSystem=NO",
     clean: false,
     device: device,
     destination: destination,
