@@ -221,8 +221,8 @@ private_lane :smf_deploy_build_variant do |options|
     update_dir = "#{smf_workspace_dir}/build/"
 
     release_notes = "#{ENV[$SMF_CHANGELOG_ENV_HTML_KEY]}"
-    release_notes = release_notes.gsub('\n', '<br>')
-    File.write("#{update_dir}#{build_variant_config["scheme".to_sym]}.html", release_notes)
+    release_notes_name = "#{build_variant_config["scheme".to_sym]}.html"
+    File.write("#{update_dir}#{release_notes_name}", release_notes)
 
     if ( ! File.exists?(app_path))
       raise("DMG file #{app_path} does not exit. Nothing to upload.")
@@ -234,6 +234,7 @@ private_lane :smf_deploy_build_variant do |options|
     user_name = sparkle["upload_user".to_sym]
     upload_url = sparkle["upload_url".to_sym]
 
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{update_dir}#{release_notes_name} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{release_notes_name}")
     sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
     # Create appcast
     sparkle_private_key = ENV[sparkle["signing_key".to_sym]]
