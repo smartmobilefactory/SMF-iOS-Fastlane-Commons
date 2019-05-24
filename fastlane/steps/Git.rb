@@ -70,6 +70,7 @@ private_lane :smf_collect_changelog do |options|
   changelog = "#{changelog[0..20000]}#{'\\n...' if changelog.length > 20000}"
   changelog_authors = "#{changelog_authors[0..20000]}#{'\\n...' if changelog_authors.length > 20000}"
 
+  ENV[$SMF_CHANGELOG_ENV_HTML_KEY] = "<ul>#{cleaned_changelog_messages.uniq.map {|x| "<li>#{x}</li>" }.join("")}</ul>"
   ENV[$SMF_CHANGELOG_ENV_KEY] = changelog
   ENV[$SMF_CHANGELOG_EMAILS_ENV_KEY] = changelog_authors
 end
