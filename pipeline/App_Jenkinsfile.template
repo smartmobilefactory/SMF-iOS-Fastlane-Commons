@@ -144,7 +144,7 @@ pipeline {
                             '''
                     }
 
-                    pullRequest.comment("This is a test !")
+                    pullRequest.comment("This is a test ! and anophter test")
                 }
             }
         }
