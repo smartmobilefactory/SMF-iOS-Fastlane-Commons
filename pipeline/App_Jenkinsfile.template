@@ -50,6 +50,7 @@ pipeline {
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
         SENTRY_API_ACCESS_TOKEN = credentials('SENTRY_API_ACCESS_TOKEN')
         SMF_PHRASEAPP_ACCESS_TOKEN = credentials('PHRASEAPP_API_ACCESS_TOKEN')
+        PR_CHECK_COMMENT = "old value"
 
         __CUSTOM_PHRASE_APP_TOKEN__
         __CUSTOM_SPARKLE_PRIVATE_SSH_KEY__
@@ -143,7 +144,7 @@ pipeline {
                             '''
                     }
 
-                    pullRequest.comment(readFile("pr_check_commt.txt"))
+                    pullRequest.comment(env.PR_CHECK_COMMENT)
                 }
             }
         }
