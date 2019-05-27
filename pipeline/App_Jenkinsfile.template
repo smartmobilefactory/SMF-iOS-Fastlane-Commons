@@ -143,6 +143,8 @@ pipeline {
                             '''
                     }
                 }
+
+                pullRequest?.comment(env.PR_COMMENT_POSTFIX)
             }
         }
 
