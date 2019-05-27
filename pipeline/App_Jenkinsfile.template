@@ -140,11 +140,10 @@ pipeline {
                             cd fastlane
                             bundle install
                             bundle exec fastlane check_pr
-                            printenv
                             '''
                     }
 
-                    pullRequest.comment("This is a test ! and anophter test")
+                    pullRequest.comment(readFile("pr_check_commt.txt"))
                 }
             }
         }
