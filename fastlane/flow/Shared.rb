@@ -72,7 +72,8 @@ private_lane :smf_check_pr do |options|
   end
 
   # Set env variable which will later be used for the PR comment
-  ENV["PR_COMMENT_POSTFIX"] = "This is a test message!"
+  #ENV["PR_COMMENT_POSTFIX"] = "This is a test message!"
+  sh "export PR_COMMENT_POSTFIX =\"This is a test message\""
 
 end
 
