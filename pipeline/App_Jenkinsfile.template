@@ -142,9 +142,9 @@ pipeline {
                             bundle exec fastlane check_pr
                             '''
                     }
-                }
 
-                pullRequest?.comment(env.PR_COMMENT_POSTFIX)
+                    pullRequest?.comment(env.PR_COMMENT_POSTFIX)
+                }
             }
         }
 
