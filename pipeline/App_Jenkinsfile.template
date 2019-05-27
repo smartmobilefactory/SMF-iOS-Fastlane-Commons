@@ -140,6 +140,7 @@ pipeline {
                             cd fastlane
                             bundle install
                             bundle exec fastlane check_pr
+                            printenv
                             '''
                     }
 
