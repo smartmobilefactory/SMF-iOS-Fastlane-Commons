@@ -74,6 +74,7 @@ private_lane :smf_archive_ipa do |options|
     configuration: xcconfig_name,
     codesigning_identity: code_signing_identity,
     output_directory: "build",
+    xcargs: "-UseNewBuildSystem=YES",
     archive_path:"build/",
     output_name: output_name,
     include_symbols: true,
