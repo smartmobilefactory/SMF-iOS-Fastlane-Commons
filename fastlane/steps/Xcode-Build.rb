@@ -463,7 +463,7 @@ def smf_download_provisioning_profiles_if_needed
         adhoc: is_adhoc_build,
         app_identifier: app_identifier,
         readonly: true
-        )
+      )
     rescue => exception
       raise "Couldn't download the provisioning profiles. The profile did either expire or there is no matching certificate available locally."
     end
@@ -476,7 +476,7 @@ def smf_download_provisioning_profiles_if_needed
             adhoc: is_adhoc_build,
             app_identifier: "#{bundle_identifier}.#{extension_suffix}",
             readonly: true
-            )
+          )
         rescue
           UI.important("Seems like #{bundle_identifier}.#{extension_suffix} is not yet included in this project! Skipping sigh!")
           next   

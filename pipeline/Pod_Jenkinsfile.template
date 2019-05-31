@@ -51,6 +51,7 @@ pipeline {
         JENKINS = credentials('iOS_NODES_JENKINS_KEYCHAIN')
         SMF_HOCKEYAPP_ONE_SIGNAL_BASIC_AUTH = credentials('ONESIGNAL_SMF_API_KEY')
         SMF_SLACK_URL_IDENTIFIER = credentials('SMF_SLACK_URL_IDENTIFIER')
+        MATCH_PASSWORD = credentials('MATCH_PASSWORD')
     }
 
     parameters {
