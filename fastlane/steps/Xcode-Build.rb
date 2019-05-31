@@ -74,6 +74,7 @@ private_lane :smf_archive_ipa do |options|
     configuration: xcconfig_name,
     codesigning_identity: code_signing_identity,
     output_directory: "build",
+    xcargs: smf_xcargs_for_build_system,
     archive_path:"build/",
     output_name: output_name,
     include_symbols: true,
@@ -149,7 +150,7 @@ private_lane :smf_perform_unit_tests do |options|
   scan(
     workspace: "#{project_name}.xcworkspace",
     scheme: scheme,
-    xcargs: "-UseNewBuildSystem=NO",
+    xcargs: smf_xcargs_for_build_system,
     clean: false,
     device: device,
     destination: destination,
@@ -263,6 +264,39 @@ end
 ### HELPER ###
 ##############
 
+def smf_xcargs_for_build_system
+  return smf_is_using_old_build_system ? "" : "-UseNewBuildSystem=YES"
+end
+
+def smf_is_using_old_build_system
+  project_root = smf_workspace_dir
+
+  if (project_root== nil)
+    return false
+  end
+
+  workspace_file = `cd #{project_root} && ls | grep -E "(.|\s)+\.xcworkspace"`.gsub("\n", "")
+
+  if (workspace_file == "" || workspace_file == nil)
+    return false
+  end
+
+  file_to_search = File.join(project_root, "#{workspace_file}/xcshareddata/WorkspaceSettings.xcsettings")
+
+  if (File.exist?(file_to_search) == false)
+    return false
+  end
+
+  file_to_search_opened = File.open(file_to_search, "r")
+  contents = file_to_search_opened.read
+
+  regex = /<dict>\n\t<key>BuildSystemType<\/key>\n\t<string>Original<\/string>\n<\/dict>/
+
+  if (contents.match(regex) != nil)
+    return true
+  end
+end
+
 def smf_setup_correct_xcode_executable_for_build
   # Make sure that the correct xcode version is selected when building the app
   required_xcode_version = @smf_fastlane_config[:project][:xcode_version]
@@ -334,7 +368,7 @@ def smf_can_unit_tests_be_performed
       configuration: xcconfig_name,
       clean: false,
       skip_build: true,
-      xcargs: "-dry-run"
+      xcargs: "-dry-run #{smf_xcargs_for_build_system}"
     )
 
     UI.important("Unit tests can be performed")
