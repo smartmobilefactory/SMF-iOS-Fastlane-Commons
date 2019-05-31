@@ -265,10 +265,10 @@ end
 ##############
 
 def smf_xcargs_for_build_system
-  return smf_is_using_new_build_system ? "-UseNewBuildSystem=YES" : ""
+  return smf_is_using_old_build_system ? "" : "-UseNewBuildSystem=YES"
 end
 
-def smf_is_using_new_build_system
+def smf_is_using_old_build_system
   project_root = smf_workspace_dir
 
   if (project_root== nil)
