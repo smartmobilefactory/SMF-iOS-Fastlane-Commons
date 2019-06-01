@@ -112,7 +112,14 @@ private_lane :smf_add_git_tag do |options|
   UI.important("Adding git tag: #{tag}")
   add_git_tag(
     tag: tag
-    )
+  )
+
+  Dir.chdir(smf_workspace_dir) do
+    readMe = File.read("README.md")
+    readME.gsub(/latest.*?\.svg/, "version-#{tag}-lightgrey.svg")
+
+    git_add(path: "./README.md")
+  end
 
   # Return the tag
   tag
