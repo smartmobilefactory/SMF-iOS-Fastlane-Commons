@@ -115,8 +115,15 @@ private_lane :smf_add_git_tag do |options|
   )
 
   Dir.chdir(smf_workspace_dir) do
-    readMe = File.read("README.md")
-    readME.gsub(/latest.*?\.svg/, "version-#{tag}-lightgrey.svg")
+
+    File.open("./README.md", "r+") do |file|
+      read_me = file.read
+      read_me = read_me.gsub(/latest.*?\.svg/, "version-#{tag}-lightgrey.svg")
+
+      file.write(read_me)
+
+      file.close
+    end
 
     git_add(path: "./README.md")
   end
