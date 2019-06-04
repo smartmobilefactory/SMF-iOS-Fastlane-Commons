@@ -483,6 +483,7 @@ def smf_download_provisioning_profiles_if_needed
     unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
   end
 
+  bundle_identifier = build_variant_config[:bundle_identifier]
   is_adhoc_build = @smf_build_variant.include? "adhoc"
   app_identifier = (use_wildcard_signing == true ? "*" : bundle_identifier)
 
