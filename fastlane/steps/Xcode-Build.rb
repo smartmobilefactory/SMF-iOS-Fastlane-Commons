@@ -516,7 +516,7 @@ def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
 
   if extensions_suffixes
     for extension_suffix in extensions_suffixes do
-      identifiers << "#{bundle_identifier}.#{extension_suffix}"
+      identifiers << "#{app_identifier}.#{extension_suffix}"
     end
   end
 
