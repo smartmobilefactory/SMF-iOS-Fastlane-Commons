@@ -92,6 +92,7 @@ SRCFOLDER=${APPDIR}/${APPFULLNAME}
 #
 
 if [ $CREATE_DMG = true ]; then
+    rm -rf ${SRCFOLDER}
 	mkdir -p ${SRCFOLDER}
 	cp -r ${APPPATH} ${SRCFOLDER}
 	cd ${SRCFOLDER}
