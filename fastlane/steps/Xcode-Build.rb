@@ -506,6 +506,7 @@ def smf_download_provisioning_profiles_if_needed
 end
 
 def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   match_config = build_variant_config[:match]
   type = type == nil ? match_config[:type] : type
   read_only = type == nil ? match_config[:read_only] : false
@@ -525,6 +526,7 @@ def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
 end
 
 def smf_download_provisioning_profile_using_sigh(is_adhoc_build, app_identifier)
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   bundle_identifier = build_variant_config[:bundle_identifier]
   extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
 
@@ -558,6 +560,7 @@ end
 
 # returns true if fastlane match should be used and false if not, on error this function returns nil
 def should_use_match
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   match_config = build_variant_config[:match]
   if match_config == nil
     return false
@@ -584,6 +587,7 @@ def is_enterprise_alpha_beta(bundle_identifier)
 end
 
 def safe_build_variant_config_read(property)
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   value = build_variant_config[property]
   if (value == nil)
     raise "Error #{property.to_s} entry is nil in config.json build_variant."
