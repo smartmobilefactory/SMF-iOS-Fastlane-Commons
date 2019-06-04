@@ -509,7 +509,8 @@ def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   match_config = build_variant_config[:match]
   type = type == nil ? match_config[:type] : type
-  read_only = type == nil ? match_config[:read_only] : false
+  read_only = (type == nil ? match_config[:read_only] : false)
+  extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
   
   username = safe_build_variant_config_read(:apple_id)
   team_id = safe_build_variant_config_read(:team_id)
