@@ -512,8 +512,15 @@ def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
   username = safe_build_variant_config_read(:apple_id)
   team_id = safe_build_variant_config_read(:team_id)
   git_url = $FASTLANE_MATCH_REPO_URL
+  identifiers = [app_identifier]
 
-  match(type: type, readonly: readonly, app_identifier: app_identifier, username: username, team_id: team_id, git_url: git_url)
+  if extensions_suffixes
+    for extension_suffix in extensions_suffixes do
+      identifiers << "#{bundle_identifier}.#{extension_suffix}"
+    end
+  end
+
+  match(type: type, readonly: read_only, app_identifier: identifiers, username: username, team_id: team_id, git_url: git_url)
 end
 
 def smf_download_provisioning_profile_using_sigh(is_adhoc_build, app_identifier)
