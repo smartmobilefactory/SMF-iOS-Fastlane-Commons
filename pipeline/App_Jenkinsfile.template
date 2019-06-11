@@ -1,4 +1,4 @@
-@Library('jenkins-pipeline-commons@android_tests') _
+@Library('jenkins-pipeline-commons@ios_specific') _
 
 _build_variants = __BUILD_VARIANTS__
 
