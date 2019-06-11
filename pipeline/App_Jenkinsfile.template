@@ -1,5 +1,5 @@
 @Library('jenkins-pipeline-commons@ios_specific') _
 
-_build_variants = __BUILD_VARIANTS__
+_build_parameters = __BUILD_PARAMETERS__
 
-iOSApp(_build_variants)
+iOSApp(_build_parameters)
