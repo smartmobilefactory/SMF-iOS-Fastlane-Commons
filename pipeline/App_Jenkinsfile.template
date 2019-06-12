@@ -5,9 +5,13 @@
 @Library('jenkins-pipeline-commons@ios_specific') _
 
 _build_variants = __BUILD_VARIANTS__
-_custom_credentials = __CUSTOM_CREDENTIALS__
+_custom_credentials = [
+	'CUSTOM_PHRASE_APP_TOKEN': '__CUSTOM_PHRASE_APP_TOKEN__',
+	'CUSTOM_SPARKLE_PRIVATE_SSH_KEY': '__CUSTOM_SPARKLE_PRIVATE_SSH_KEY__',
+	'CUSTOM_SPARKLE_SIGNING_KEY': '__CUSTOM_SPARKLE_SIGNING_KEY__'
+]
 
-_build_parameters = [
+_build_parameters = [ 
 	'build_variants': _build_variants,
 	'custom_credentials': _custom_credentials
 ]

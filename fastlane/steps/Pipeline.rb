@@ -12,7 +12,6 @@ JENKINSFILE_FILENAME = "Jenkinsfile"
 GEMFILE_FILENAME = "Gemfile"
 FASTFILE_FILENAME = "Fastfile"
 BUILD_VARIANTS_PATTERN = "__BUILD_VARIANTS__"
-CUSTOM_CREDENTIALS_PATTERN = "__CUSTOM_CREDENTIALS__"
 POD_EXAMPLE_VARIANTS_PATTERN = "__EXAMPLE_VARIANTS__"
 PR_CHECK_BUILD_VARIANT_PATTERN = "__PR_CHECK_BUILD_VARIANT__"
 CUSTOM_CREDENTIALS = ["__CUSTOM_PHRASE_APP_TOKEN__", "__CUSTOM_SPARKLE_PRIVATE_SSH_KEY__", "__CUSTOM_SPARKLE_SIGNING_KEY__"]
@@ -112,17 +111,14 @@ private_lane :smf_generate_setup_files do |options|
 
 	jenkinsFileData = jenkinsFileData.gsub("#{BUILD_VARIANTS_PATTERN}", JSON.dump(build_variants_from_config))
 
-  custom_credentials_hash = {}
   for custom_credential in CUSTOM_CREDENTIALS
     if @smf_fastlane_config[:project][:custom_credentials] && @smf_fastlane_config[:project][:custom_credentials][custom_credential.to_sym]
       custom_credential_key = @smf_fastlane_config[:project][:custom_credentials][custom_credential.to_sym]
-      custom_credentials_hash[custom_credential] = custom_credential_key
+      jenkinsFileData = jenkinsFileData.gsub(custom_credential, custom_credential_key)
     else
-      custom_credentials_hash[custom_credential] = FALLBACK_TEMPLATE_CREDENTIAL_KEY
+      jenkinsFileData = jenkinsFileData.gsub(custom_credential, FALLBACK_TEMPLATE_CREDENTIAL_KEY)
     end
   end
-
-  jenkinsFileData = jenkinsFileData.gsub("#{CUSTOM_CREDENTIALS_PATTERN}", JSON.dump(custom_credentials_hash))
 
 	File.write("#{smf_workspace_dir}/#{JENKINSFILE_FILENAME}", jenkinsFileData)
 end
