@@ -2,7 +2,7 @@
 // Automatically generated. Do not edit.
 //
 
-@Library('jenkins-pipeline-commons@ios_specific') _
+@Library('jenkins-pipeline-commons') _
 
 _build_variants = __BUILD_VARIANTS__
 _example_variants = __EXAMPLE_VARIANTS__
