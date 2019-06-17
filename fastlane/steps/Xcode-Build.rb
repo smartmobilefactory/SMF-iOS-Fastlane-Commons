@@ -265,7 +265,7 @@ end
 ##############
 
 def smf_xcargs_for_build_system
-  return ""
+  return "-UseNewBuildSystem=YES"
 end
 
 def smf_is_using_old_build_system
