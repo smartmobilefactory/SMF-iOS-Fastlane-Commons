@@ -233,7 +233,7 @@ end
 def transform_value_if_necessary(key, value)
   case key
   when :access_token_key
-    return ENV[value]
+    return ENV["CUSTOM_PHRASE_APP_TOKEN"]
   when :locales, :files
     return value.join(" ")
   when :forbid_comments_in_source
