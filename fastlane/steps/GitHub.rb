@@ -40,6 +40,18 @@ private_lane :smf_create_github_release do |options|
     paths_to_simulator_builds = ["#{ipa_or_app_directory_path}/#{$SMF_DEVICE_RELEASE_APP_ZIP_FILENAME}", "#{smf_workspace_dir}/build/#{$SMF_SIMULATOR_RELEASE_APP_ZIP_FILENAME}"]
   end
 
+  # Attach app and test files to release if this is a mac release
+
+  if build_variant_config[:platform] == "mac"
+    path_to_ipa_or_app = smf_path_to_ipa_or_app
+    paths_to_simulator_builds.append(path_to_ipa_or_app)
+    
+    test_dir = ""
+    test_dir_zipped = "#{test_dir}.zip"
+    sh "zip -r \"#{test_dir_zipped}\" \"#{test_dir}\""
+    paths_to_simulator_builds.append(test_dir_zipped)
+  end
+
   # Create the GitHub release as draft
   set_github_release(
     is_draft: true,
