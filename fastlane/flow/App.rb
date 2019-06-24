@@ -74,12 +74,12 @@ private_lane :smf_deploy_build_variant do |options|
 
   generateMetaJSON = build_variant_config[:generateMetaJSON]
 
-  use_hockey = false #(build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
+  use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
 
   has_sentry_project_settings = project_config[:sentry_org_slug] != nil && project_config[:sentry_project_slug] != nil
   has_sentry_variant_settings = build_variant_config[:sentry_org_slug] != nil && build_variant_config[:sentry_project_slug] != nil
   
-  use_sentry = false #has_sentry_project_settings || has_sentry_variant_settings
+  use_sentry = has_sentry_project_settings || has_sentry_variant_settings
   UI.message("Will upload to Sentry: #{use_sentry}")
 
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
@@ -213,7 +213,7 @@ private_lane :smf_deploy_build_variant do |options|
       )
     end
   end
-=begin
+
   if (build_variant_config[:use_sparkle])
     # Upload DMG to Strato
     app_path = smf_path_to_ipa_or_app
@@ -234,18 +234,17 @@ private_lane :smf_deploy_build_variant do |options|
     user_name = sparkle["upload_user".to_sym]
     upload_url = sparkle["upload_url".to_sym]
 
-    sh("scp -i #{ENV["CUSTOM_SPARKLE_PRIVATE_SSH_KEY"]} #{update_dir}#{release_notes_name} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{release_notes_name}")
-    sh("scp -i #{ENV["CUSTOM_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{update_dir}#{release_notes_name} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{release_notes_name}")
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
     # Create appcast
-    sparkle_private_key = ENV["CUSTOM_SPARKLE_SIGNING_KEY"]
+    sparkle_private_key = ENV[sparkle["signing_key".to_sym]]
 
     sh "#{@fastlane_commons_dir_path}/tools/sparkle.sh #{ENV["LOGIN"]} #{sparkle_private_key} #{update_dir} #{sparkle["sparkle_version".to_sym]} 'CUSTOM_SPARKLE_SIGNING_KEY'"
     # Upload appcast
     appcast_xml = "#{update_dir}#{sparkle["xml_name".to_sym]}"
     appcast_upload_name = sparkle["xml_name".to_sym]
-    sh("scp -i #{ENV["CUSTOM_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{appcast_upload_name}")
+    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{appcast_upload_name}")
   end
-=end
 
   tag = smf_add_git_tag
 
