@@ -104,9 +104,13 @@ private_lane :smf_add_app_to_git_tag do |options|
     end
     
     test_dir = File.join(smf_workspace_dir, "Tests/SMFTests")
-    test_dir_zipped = "#{test_dir}.zip"
-    sh "zip -r \"#{test_dir_zipped}\" \"#{test_dir}\""
-    path_to_files_to_attach.append(test_dir_zipped) # this will be returned
+    if File.exist?(test_dir)
+      test_dir_zipped = "#{test_dir}.zip"
+      sh "zip -r \"#{test_dir_zipped}\" \"#{test_dir}\""
+      path_to_files_to_attach.append(test_dir_zipped) # this will be returned
+    end
+
+    path_to_files_to_attach # reutrn the array
   end
 end
 
