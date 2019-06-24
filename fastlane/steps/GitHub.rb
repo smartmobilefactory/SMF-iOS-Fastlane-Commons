@@ -92,7 +92,7 @@ private_lane :smf_add_app_to_git_tag do |options|
         sh "unzip -o #{path_to_ipa_or_app}"
         path_to_ipa_or_app = path_to_ipa_or_app.gsub(".zip", "")
       else
-        UI.message("Couldn't fing .app file, can't attach App to github release")
+        UI.message("Couldn't find .app file, can't attach App to github release")
         next
       end
     end
@@ -100,7 +100,7 @@ private_lane :smf_add_app_to_git_tag do |options|
     if options[:projects][current_project] != nil
       path_to_renamed_app_file = File.join(File.dirname(path_to_ipa_or_app), "#{options[:projects][current_project]}.app")
       sh "cp -r #{path_to_ipa_or_app} #{path_to_renamed_app_file}"
-      path_to_files_to_attach.append(path_to_ipa_or_app)
+      path_to_files_to_attach.append(path_to_renamed_app_file)
     end
     
     test_dir = File.join(smf_workspace_dir, "Tests/SMFTests")
