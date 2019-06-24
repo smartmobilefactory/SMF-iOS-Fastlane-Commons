@@ -96,7 +96,7 @@ private_lane :smf_add_app_to_git_tag do |options|
     end
 
     if options[:projects][current_project] != nil
-      path_to_renamed_app_file = File.join(File.dirname(path_to_ipa_or_app}, "#{options[:projects][current_project]}.app")
+      path_to_renamed_app_file = File.join(File.dirname(path_to_ipa_or_app), "#{options[:projects][current_project]}.app")
       sh "cp #{path_to_ipa_or_app} #{path_to_renamed_app_file}"
       path_to_files_to_attach.append(path_to_ipa_or_app)
     end
