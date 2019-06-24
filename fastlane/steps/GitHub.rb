@@ -81,9 +81,9 @@ private_lane :smf_add_app_to_git_tag do |options|
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   # Attach app and test files to release if this is a mac release and the project is in the list for which this should be executed
   UI.message("Adding .app file and test folder to project")
+  path_to_files_to_attach = []
   current_project = @smf_fastlane_config[:project][:project_name].to_sym
   if build_variant_config[:platform] == "mac" && options[:projects].keys.include?(current_project)
-    path_to_files_to_attach = []
     path_to_ipa_or_app = smf_path_to_ipa_or_app
 
     # check if the path is actually pointing to the .app file
@@ -109,9 +109,8 @@ private_lane :smf_add_app_to_git_tag do |options|
       sh "zip -r \"#{test_dir_zipped}\" \"#{test_dir}\""
       path_to_files_to_attach.append(test_dir_zipped) # this will be returned
     end
-
-    path_to_files_to_attach # reutrn the array
   end
+  path_to_files_to_attach # reutrn the array
 end
 
 ##############
