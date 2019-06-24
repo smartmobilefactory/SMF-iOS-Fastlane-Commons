@@ -26,7 +26,7 @@ private_lane :smf_create_github_release do |options|
 
   UI.message("Found \"#{repository_path}\" as GitHub project")
 
-  paths_to_simulator_builds = nil
+  paths_to_simulator_builds = []
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
   if build_variant_config[:attach_build_outputs_to_github] == true
@@ -92,7 +92,7 @@ private_lane :smf_add_app_to_git_tag do |options|
         sh "unzip -o #{path_to_ipa_or_app}"
         path_to_ipa_or_app = path_to_ipa_or_app.gsub(".zip", "")
       else
-        # couldn't find .app do nothing
+        UI.message("Couldn't fing .app file, can't attach App to github release")
         next
       end
     end
