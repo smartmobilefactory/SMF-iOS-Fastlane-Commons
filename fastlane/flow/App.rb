@@ -74,12 +74,12 @@ private_lane :smf_deploy_build_variant do |options|
 
   generateMetaJSON = build_variant_config[:generateMetaJSON]
 
-  use_hockey = (build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
+  use_hockey = false #(build_variant_config[:use_hockey].nil? ? true : build_variant_config[:use_hockey])
 
   has_sentry_project_settings = project_config[:sentry_org_slug] != nil && project_config[:sentry_project_slug] != nil
   has_sentry_variant_settings = build_variant_config[:sentry_org_slug] != nil && build_variant_config[:sentry_project_slug] != nil
   
-  use_sentry = has_sentry_project_settings || has_sentry_variant_settings
+  use_sentry = false #has_sentry_project_settings || has_sentry_variant_settings
   UI.message("Will upload to Sentry: #{use_sentry}")
 
   # The default value of push_generated_code depends on whether Strings are synced with PhraseApp. If PhraseApp should be synced, the default is true
@@ -213,7 +213,7 @@ private_lane :smf_deploy_build_variant do |options|
       )
     end
   end
-
+=begin
   if (build_variant_config[:use_sparkle])
     # Upload DMG to Strato
     app_path = smf_path_to_ipa_or_app
@@ -245,6 +245,7 @@ private_lane :smf_deploy_build_variant do |options|
     appcast_upload_name = sparkle["xml_name".to_sym]
     sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{appcast_upload_name}")
   end
+=end
 
   tag = smf_add_git_tag
 
@@ -267,7 +268,7 @@ private_lane :smf_deploy_build_variant do |options|
   )
 
   smf_send_deploy_success_notifications
-
+=begin
   # Upload Ipa to Testflight and Download the generated DSYM
   # The testflight upload should happen as last step as the upload often shows an error although the IPA was successfully uploaded. We still want the tag, HockeyApp upload etc in this case.
   if build_variant_config[:upload_itc] == true
@@ -330,4 +331,5 @@ private_lane :smf_deploy_build_variant do |options|
         slack_channel: @smf_fastlane_config[:project][:slack_channel]
       )
   end
+=end
 end
