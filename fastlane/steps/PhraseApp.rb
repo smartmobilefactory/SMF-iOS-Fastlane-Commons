@@ -235,6 +235,8 @@ def transform_value_if_necessary(key, value)
   when :access_token_key
     if value != "SMF_PHRASEAPP_ACCESS_TOKEN"
       return ENV["CUSTOM_PHRASE_APP_TOKEN"]
+    else
+      return "SMF_PHRASEAPP_ACCESS_TOKEN"
     end
   when :locales, :files
     return value.join(" ")
