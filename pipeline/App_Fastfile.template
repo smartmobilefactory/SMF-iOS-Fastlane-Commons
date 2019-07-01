@@ -1,5 +1,7 @@
 require "json"
 
+@platform = :ios
+
 default_platform :ios
 
 platform :ios do
@@ -14,7 +16,7 @@ platform :ios do
   before_all do
     # Import the Fastlane Commons Repo
     fastlane_commons_branch = config["project"]["fastlane_commons_branch"]
-    import_from_git(url: "git@github.com:smartmobilefactory/SMF-iOS-Fastlane-Commons.git", branch: fastlane_commons_branch)
+    import_from_git(url: "git@github.com:smartmobilefactory/SMF-Fastlane-Commons.git", branch: fastlane_commons_branch)
   end
 
   desc "Clean, build the development variant and run the unit tests"
