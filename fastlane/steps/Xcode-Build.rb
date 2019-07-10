@@ -492,7 +492,7 @@ def smf_download_provisioning_profiles_if_needed
   if (use_match == true)
     smf_download_provisioning_profile_using_match(app_identifier)
   elsif (use_match == false)
-    if is_enterprise_alpha_beta(app_identifier)
+    if is_enterprise_alpha_beta(bundle_identifier)
       smf_download_provisioning_profile_using_match(app_identifier, "enterprise")
     else
       use_sigh = (build_variant_config[:download_provisioning_profiles].nil? ? true : build_variant_config[:download_provisioning_profiles])
