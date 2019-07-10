@@ -577,6 +577,10 @@ def should_use_match
 end
 
 def is_enterprise_alpha_beta(bundle_identifier)
+  if ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] != "mac"
+    return false
+  end
+
   if @smf_build_variant.match(/alpha/) != nil || @smf_build_variant.match(/beta/) != nil
     regex = /com\.smartmobilefactory\.enterprise/
     if bundle_identifier.match(regex) != nil
