@@ -501,7 +501,7 @@ def smf_download_provisioning_profiles_if_needed
       end
     end
   else
-    raise "The fastlane match entries in the Config.json file are incomplete."
+    raise "The fastlane match entries in the Config.json file are incomplete. Set `readonly` and `type` for the `match`-Key."
   end
 end
 
