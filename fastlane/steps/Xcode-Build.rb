@@ -577,7 +577,7 @@ def should_use_match
 end
 
 def is_enterprise_alpha_beta(bundle_identifier)
-  if ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] != "mac"
+  if ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] == "mac"
     return false
   end
 
