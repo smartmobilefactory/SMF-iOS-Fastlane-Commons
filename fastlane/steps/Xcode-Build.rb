@@ -472,51 +472,131 @@ def smf_download_provisioning_profiles_if_needed
 
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
-  use_sigh = (build_variant_config[:download_provisioning_profiles].nil? ? true : build_variant_config[:download_provisioning_profiles])
+  use_wildcard_signing = build_variant_config[:use_wildcard_signing]
+  apple_team_id = build_variant_config[:team_id]
 
-  if use_sigh
+  # Set the Apple Team ID
+  team_id(apple_team_id)
 
-    bundle_identifier = build_variant_config[:bundle_identifier]
-    use_wildcard_signing = build_variant_config[:use_wildcard_signing]
-    extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
-    apple_team_id = build_variant_config[:team_id]
+  if smf_is_keychain_enabled
+    unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
+    unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
+  end
 
-    # Set the Apple Team ID
-    team_id apple_team_id
+  bundle_identifier = build_variant_config[:bundle_identifier]
+  is_adhoc_build = @smf_build_variant.include? "adhoc"
+  app_identifier = (use_wildcard_signing == true ? "*" : bundle_identifier)
 
-    if smf_is_keychain_enabled
-      unlock_keychain(path: "login.keychain", password: ENV["LOGIN"])
-      unlock_keychain(path: "jenkins.keychain", password: ENV["JENKINS"])
-    end
+  use_match = should_use_match
 
-    is_adhoc_build = @smf_build_variant.include? "adhoc"
-    app_identifier = (use_wildcard_signing == true ? "*" : bundle_identifier)
-
-    begin
-      sigh(
-        adhoc: is_adhoc_build,
-        app_identifier: app_identifier,
-        readonly: true
-        )
-    rescue => exception
-      raise "Couldn't download the provisioning profiles. The profile did either expire or there is no matching certificate available locally."
-    end
-
-    if extensions_suffixes
-      for extension_suffix in extensions_suffixes do
-        
-        begin
-          sigh(
-            adhoc: is_adhoc_build,
-            app_identifier: "#{bundle_identifier}.#{extension_suffix}",
-            readonly: true
-            )
-        rescue
-          UI.important("Seems like #{bundle_identifier}.#{extension_suffix} is not yet included in this project! Skipping sigh!")
-          next   
-        end
-
+  if (use_match == true)
+    smf_download_provisioning_profile_using_match(app_identifier)
+  elsif (use_match == false)
+    if is_enterprise_alpha_beta(app_identifier)
+      smf_download_provisioning_profile_using_match(app_identifier, "enterprise")
+    else
+      use_sigh = (build_variant_config[:download_provisioning_profiles].nil? ? true : build_variant_config[:download_provisioning_profiles])
+      if (use_sigh == true)
+        smf_download_provisioning_profile_using_sigh(is_adhoc_build, app_identifier)
       end
     end
+  else
+    raise "The fastlane match entries in the Config.json file are incomplete. Set `readonly` and `type` for the `match`-Key."
   end
+end
+
+def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  match_config = build_variant_config[:match]
+  type = type == nil ? match_config[:type] : type
+  read_only = (type == nil ? match_config[:read_only] : false)
+  extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
+  
+  username = safe_build_variant_config_read(:apple_id)
+  team_id = safe_build_variant_config_read(:team_id)
+  git_url = $FASTLANE_MATCH_REPO_URL
+  identifiers = [app_identifier]
+
+  if extensions_suffixes
+    for extension_suffix in extensions_suffixes do
+      identifiers << "#{app_identifier}.#{extension_suffix}"
+    end
+  end
+
+  match(type: type, readonly: read_only, app_identifier: identifiers, username: username, team_id: team_id, git_url: git_url, keychain_name: "jenkins.keychain", keychain_password: ENV["JENKINS"])
+end
+
+def smf_download_provisioning_profile_using_sigh(is_adhoc_build, app_identifier)
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  bundle_identifier = build_variant_config[:bundle_identifier]
+  extensions_suffixes = @smf_fastlane_config[:extensions_suffixes]
+
+  begin
+    sigh(
+      adhoc: is_adhoc_build,
+      app_identifier: app_identifier,
+      readonly: true
+    )
+  rescue => exception
+    raise "Couldn't download the provisioning profiles. The profile did either expire or there is no matching certificate available locally."
+  end
+
+  if extensions_suffixes
+    for extension_suffix in extensions_suffixes do
+
+      begin
+        sigh(
+          adhoc: is_adhoc_build,
+          app_identifier: "#{bundle_identifier}.#{extension_suffix}",
+          readonly: true
+        )
+      rescue
+        UI.important("Seems like #{bundle_identifier}.#{extension_suffix} is not yet included in this project! Skipping sigh!")
+        next   
+      end
+
+    end
+  end
+end
+
+# returns true if fastlane match should be used and false if not, on error this function returns nil
+def should_use_match
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  match_config = build_variant_config[:match]
+  if match_config == nil
+    return false
+  end
+
+  allowed_types = ["appstore", "adhoc", "development", "enterprise"]
+
+  if (match_config[:read_only] == nil || allowed_types.include?(match_config[:type]) == false) 
+    return nil
+  end
+
+  return true
+end
+
+def is_enterprise_alpha_beta(bundle_identifier)
+  if ENV[$FASTLANE_PLATFORM_NAME_ENV_KEY] != "mac"
+    return false
+  end
+
+  if @smf_build_variant.match(/alpha/) != nil || @smf_build_variant.match(/beta/) != nil
+    regex = /com\.smartmobilefactory\.enterprise/
+    if bundle_identifier.match(regex) != nil
+      return true
+    end
+  end
+
+  return false
+end
+
+def safe_build_variant_config_read(property)
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  value = build_variant_config[property]
+  if (value == nil)
+    raise "Error #{property.to_s} entry is nil in config.json build_variant."
+  end
+
+  return value
 end
