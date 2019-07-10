@@ -32,13 +32,16 @@ private_lane :smf_collect_changelog do |options|
     between:[last_tag,"HEAD"],
     merge_commit_filtering: "exclude_merges",
     pretty: '- (%an) %s'
-    )
+  )
+
   changelog_authors = changelog_from_git_commits(
     between:[last_tag,"HEAD"],
     merge_commit_filtering: "exclude_merges",
     pretty: '%ae',
     quiet: true
-    )
+  )
+
+  changelog_authors = changelog_authors == nil ? "" : changelog_authors
 
   if changelog_messages == nil
     changelog_messages = ""
