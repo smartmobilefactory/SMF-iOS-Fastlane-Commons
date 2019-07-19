@@ -110,7 +110,7 @@ private_lane :smf_add_app_to_git_tag do |options|
       path_to_files_to_attach.append(test_dir_zipped) # this will be returned
     end
   end
-  path_to_files_to_attach # reutrn the array
+  path_to_files_to_attach # return the array
 end
 
 ##############
