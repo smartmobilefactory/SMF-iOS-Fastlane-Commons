@@ -234,8 +234,8 @@ private_lane :smf_deploy_build_variant do |options|
     user_name = sparkle["upload_user".to_sym]
     upload_url = sparkle["upload_url".to_sym]
 
-    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{update_dir}#{release_notes_name} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{release_notes_name}")
-    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
+    sh("scp -i #{ENV["CUSTOM_SPARKLE_PRIVATE_SSH_KEY"]} #{update_dir}#{release_notes_name} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{release_notes_name}")
+    sh("scp -i #{ENV["CUSTOM_SPARKLE_PRIVATE_SSH_KEY"]} #{app_path} '#{user_name}'@#{upload_url}:/#{app_name}")
     # Create appcast
     sparkle_private_key = ENV[sparkle["signing_key".to_sym]]
 
@@ -243,7 +243,7 @@ private_lane :smf_deploy_build_variant do |options|
     # Upload appcast
     appcast_xml = "#{update_dir}#{sparkle["xml_name".to_sym]}"
     appcast_upload_name = sparkle["xml_name".to_sym]
-    sh("scp -i #{ENV["STRATO_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{appcast_upload_name}")
+    sh("scp -i #{ENV["CUSTOM_SPARKLE_PRIVATE_SSH_KEY"]} #{appcast_xml} '#{user_name}'@#{upload_url}:/#{sparkle["dmg_path".to_sym]}#{appcast_upload_name}")
   end
 
   tag = smf_add_git_tag
