@@ -26,7 +26,7 @@ private_lane :smf_create_github_release do |options|
 
   UI.message("Found \"#{repository_path}\" as GitHub project")
 
-  paths_to_simulator_builds = nil
+  paths_to_simulator_builds = []
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
   if build_variant_config[:attach_build_outputs_to_github] == true
@@ -39,6 +39,14 @@ private_lane :smf_create_github_release do |options|
 
     paths_to_simulator_builds = ["#{ipa_or_app_directory_path}/#{$SMF_DEVICE_RELEASE_APP_ZIP_FILENAME}", "#{smf_workspace_dir}/build/#{$SMF_SIMULATOR_RELEASE_APP_ZIP_FILENAME}"]
   end
+
+  # projects (key) for which the .app should be attached to the git tag, the value is the name which is given to the .app
+  project_attach_app = {
+    "HiDrive": "HiDrive"
+  }
+
+  paths_to_simulator_builds += smf_add_app_to_git_tag(projects: project_attach_app)
+  UI.message("Path to attach: #{paths_to_simulator_builds}")
 
   # Create the GitHub release as draft
   set_github_release(
@@ -64,6 +72,45 @@ private_lane :smf_create_github_release do |options|
       "draft": false 
       }
     )
+end
+
+# Attaches .app and testfiles to the git tag
+# Options:
+#.  :projects -> dict with project name and app_name mappings for which the app should be attached to the tag
+private_lane :smf_add_app_to_git_tag do |options|
+  build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
+  # Attach app and test files to release if this is a mac release and the project is in the list for which this should be executed
+  UI.message("Adding .app file and test folder to project")
+  path_to_files_to_attach = []
+  current_project = @smf_fastlane_config[:project][:project_name].to_sym
+  if build_variant_config[:platform] == "mac" && options[:projects].keys.include?(current_project)
+    path_to_ipa_or_app = smf_path_to_ipa_or_app
+
+    # check if the path is actually pointing to the .app file
+    if File.extname(path_to_ipa_or_app) != ".app"
+      if File.extname(path_to_ipa_or_app) == ".zip" && File.extname(path_to_ipa_or_app.gsub(".zip", "")) == ".app"
+        sh "unzip -o #{path_to_ipa_or_app}"
+        path_to_ipa_or_app = path_to_ipa_or_app.gsub(".zip", "")
+      else
+        UI.message("Couldn't find .app file, can't attach App to github release")
+        next
+      end
+    end
+
+    if options[:projects][current_project] != nil
+      path_to_renamed_app_file = File.join(File.dirname(path_to_ipa_or_app), "#{options[:projects][current_project]}.app")
+      sh "cp -r #{path_to_ipa_or_app} #{path_to_renamed_app_file}"
+      path_to_files_to_attach.append(path_to_renamed_app_file)
+    end
+    
+    test_dir = File.join(smf_workspace_dir, "Tests/SMFTests")
+    if File.exist?(test_dir)
+      test_dir_zipped = "#{test_dir}.zip"
+      sh "zip -r \"#{test_dir_zipped}\" \"#{test_dir}\""
+      path_to_files_to_attach.append(test_dir_zipped) # this will be returned
+    end
+  end
+  path_to_files_to_attach # return the array
 end
 
 ##############
