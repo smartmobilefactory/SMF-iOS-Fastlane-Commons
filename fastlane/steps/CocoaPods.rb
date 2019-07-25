@@ -30,6 +30,8 @@ private_lane :smf_pod_push do |options|
   specs_repo = build_variant_config[:pods_specs_repo]
   workspace_dir = smf_workspace_dir
 
+  smf_setup_correct_xcode_executable_for_build
+
   if specs_repo
     sh "cd #{workspace_dir}"
     pod_push(path: podspec_path, allow_warnings: true, skip_import_validation: true, repo: specs_repo)
