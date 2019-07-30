@@ -239,7 +239,7 @@ private_lane :smf_deploy_build_variant do |options|
     # Create appcast
     sparkle_private_key = ENV["CUSTOM_SPARKLE_SIGNING_KEY"]
 
-    sh "#{@fastlane_commons_dir_path}/tools/sparkle.sh #{ENV["LOGIN"]} #{sparkle_private_key} #{update_dir} #{sparkle["sparkle_version".to_sym]} 'CUSTOM_SPARKLE_SIGNING_KEY'"
+    sh "#{@fastlane_commons_dir_path}/tools/sparkle.sh #{ENV["LOGIN"]} #{sparkle_private_key} #{update_dir} #{sparkle["sparkle_version".to_sym]} #{sparkle["sparkle_signing_team".to_sym]}"
     # Upload appcast
     appcast_xml = "#{update_dir}#{sparkle["xml_name".to_sym]}"
     appcast_upload_name = sparkle["xml_name".to_sym]
