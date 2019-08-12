@@ -100,14 +100,14 @@ private_lane :smf_add_app_to_git_tag do |options|
     if options[:projects][current_project] != nil
       path_to_renamed_app_file = File.join(File.dirname(path_to_ipa_or_app), "#{options[:projects][current_project]}.app")
       sh "cp -r #{path_to_ipa_or_app} #{path_to_renamed_app_file}"
-      path_to_files_to_attach.append(path_to_renamed_app_file)
+      path_to_files_to_attach << path_to_renamed_app_file
     end
     
     test_dir = File.join(smf_workspace_dir, "Tests/SMFTests")
     if File.exist?(test_dir)
       test_dir_zipped = "#{test_dir}.zip"
       sh "zip -r \"#{test_dir_zipped}\" \"#{test_dir}\""
-      path_to_files_to_attach.append(test_dir_zipped) # this will be returned
+      path_to_files_to_attach << test_dir_zipped
     end
   end
   path_to_files_to_attach # return the array
