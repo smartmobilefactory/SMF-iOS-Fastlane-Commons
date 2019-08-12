@@ -495,7 +495,10 @@ def smf_download_provisioning_profiles_if_needed
     if is_enterprise_alpha_beta(bundle_identifier)
       smf_download_provisioning_profile_using_match(app_identifier, "enterprise")
     else
-      smf_download_provisioning_profile_using_sigh(is_adhoc_build, app_identifier)
+      use_sigh = (build_variant_config[:download_provisioning_profiles].nil? ? true : build_variant_config[:download_provisioning_profiles])
+      if (use_sigh == true)
+        smf_download_provisioning_profile_using_sigh(is_adhoc_build, app_identifier)
+      end
     end
   else
     raise "The fastlane match entries in the Config.json file are incomplete. Set `readonly` and `type` for the `match`-Key."
