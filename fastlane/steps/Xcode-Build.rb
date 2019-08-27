@@ -295,6 +295,8 @@ def smf_is_using_old_build_system
   if (contents.match(regex) != nil)
     return true
   end
+
+  return false
 end
 
 def smf_setup_correct_xcode_executable_for_build
