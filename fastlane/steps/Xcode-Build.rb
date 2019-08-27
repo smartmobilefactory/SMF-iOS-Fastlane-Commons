@@ -271,6 +271,10 @@ end
 def smf_is_using_old_build_system
   project_root = smf_workspace_dir
 
+  if (@smf_fastlane_config[:project][:xcode_version] == '9.4.1')
+      return true
+  end
+
   if (project_root== nil)
     return false
   end
