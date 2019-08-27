@@ -140,6 +140,10 @@ private_lane :smf_perform_unit_tests do |options|
 
   # Prefer the unit test scheme over the normal scheme
   scheme = (build_variant_config[:unit_test_scheme].nil? ? build_variant_config[:scheme] : build_variant_config[:unit_test_scheme])
+  derivedDataPath = "./DerivedData/#{build_variant_config[:scheme]}"
+
+  # We cleanup the derivedData for the given scheme to be sure that we get the right test coverage file
+  FileUtils.rm_rf("#{smf_workspace_dir}/#{derivedDataPath}")
 
   UI.important("Performing the unit tests with the scheme \"#{scheme}\"")
 
@@ -153,6 +157,7 @@ private_lane :smf_perform_unit_tests do |options|
     xcargs: smf_xcargs_for_build_system,
     clean: false,
     device: device,
+    derived_data_path: derivedDataPath,
     destination: destination,
     configuration: xcconfig_name,
     code_coverage: true,
@@ -162,6 +167,10 @@ private_lane :smf_perform_unit_tests do |options|
 
   ENV[$SMF_DID_RUN_UNIT_TESTS_ENV_KEY] = "true"
 
+  # Gather code coverage
+  `xcrun xccov view #{smf_workspace_dir}/#{derivedDataPath}/Logs/Test/*.xcresult/*_Test/*xccovreport --json > #{smf_workspace_dir}/#{derivedDataPath}/rawCoverage.json`
+  # Format the coverage JSON
+  `#{@fastlane_commons_dir_path}/tools/xccovCoverageJSONFormatter.swift #{smf_workspace_dir}/#{derivedDataPath}/rawCoverage.json > #{smf_workspace_dir}/#{derivedDataPath}/formattedCoverage.json`
 end
 
 ##################################

@@ -9,5 +9,6 @@
       "swiftlint.use_feature": true,
       "swiftlint.fail_on_error": false,
       "smf_common.notify_level": "warn",
-      "hipchat.migration_to_slack.use_feature": true
+      "hipchat.migration_to_slack.use_feature": true,
+      "code_coverage.xccov.use_feature": true
 }

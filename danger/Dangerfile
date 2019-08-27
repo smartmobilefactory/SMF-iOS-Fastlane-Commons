@@ -158,9 +158,38 @@ if get_config_value("code_coverage.slather.use_feature")
 
     configuration_message += "<br /><br />Slather is <b>enabled</b><br />- notify_if_coverage_is_less_than: <b>#{min_total_coverage}</b><br />- notify_if_modified_file_is_less_than: <b>#{min_file_coverage}</b><br />- notify_level: <b>#{notify_level_string}</b>"
   elsif did_run_unit_tests == "false"
-    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests weren't runned during the PR check"
+    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests weren't run during the PR check"
   else
-    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests shouldn't be runned"
+    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests shouldn't be run"
+  end
+end
+
+#####################
+######  xccov  ######
+#####################
+
+if get_config_value("code_coverage.xccov.use_feature")
+    perform_unit_tests = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
+  if perform_unit_tests && did_run_unit_tests == "true"
+    # TODO: Put in path in variable sharable between scripts ?!
+    coveragePath = "./DerivedData/#{build_variant_config[:scheme]}/formattedCoverage.json"
+    if File.file?(coveragePath)
+      begin
+        coverageData = JSON.parse(File.read(coveragePath), :symbolize_names => true)
+        coveredLineCount = coverageData[:coveredLines]
+        totalLineCount = coverageData[:executableLines]
+        percentCoverage = (coverageData[:lineCoverage]*100).round(2).to_s
+        message("Code coverage: <b>#{percentCoverage}%</b><br />Lines covered: #{coveredLineCount} / #{totalLineCount}")
+        configuration_message += "<br /><br />xccov is <b>enabled</b>"
+      rescue
+        # We got a JSON parsing error here, we just display the content of the file
+        configuration_message += "<br /><br />xccov is <b>disabled</b><br />- Error: #{File.read(coveragePath)}</b>"
+      end
+    else
+      configuration_message += "<br /><br />xccov is <b>disabled</b><br />- Cannot find the coverage informations"
+    end
+  else
+    configuration_message += "<br /><br />xccov is <b>disabled</b> Unit tests were not run during the PR check"
   end
 end
 
