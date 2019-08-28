@@ -171,7 +171,6 @@ end
 if get_config_value("code_coverage.xccov.use_feature")
     perform_unit_tests = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
   if perform_unit_tests && did_run_unit_tests == "true"
-    # TODO: Put in path in variable sharable between scripts ?!
     coveragePath = "./DerivedData/#{build_variant_config[:scheme]}/formattedCoverage.json"
     if File.file?(coveragePath)
       begin
