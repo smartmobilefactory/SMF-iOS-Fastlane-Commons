@@ -132,39 +132,6 @@ else
 end
 
 #####################
-###### Slather ######
-#####################
-
-if get_config_value("code_coverage.slather.use_feature")
-  perform_unit_tests = (build_variant_config["pr.perform_unit_tests".to_sym].nil? ? true : build_variant_config["pr.perform_unit_tests".to_sym])
-  if perform_unit_tests && did_run_unit_tests == "true"
-
-    project_name = fastlane_config[:project][:project_name]
-    scheme = build_variant_config[:scheme]
-
-    slather.configure("#{project_name}.xcodeproj", scheme, options: {
-      workspace: "#{project_name}.xcworkspace",
-      output_directory: 'build/reports',
-    })
-
-    min_total_coverage = get_config_value("code_coverage.slather.notify_if_coverage_is_less_than").to_i
-    min_file_coverage = get_config_value("code_coverage.slather.notify_if_modified_file_is_less_than").to_i
-    notify_level_string = get_config_value("code_coverage.slather.notify_level")
-    notify_level = notify_level_string == "warn" ? :warn : :fail
-
-    slather.notify_if_coverage_is_less_than(minimum_coverage: min_total_coverage, notify_level: notify_level)
-    slather.notify_if_modified_file_is_less_than(minimum_coverage: min_file_coverage, notify_level: notify_level)
-    slather.show_coverage
-
-    configuration_message += "<br /><br />Slather is <b>enabled</b><br />- notify_if_coverage_is_less_than: <b>#{min_total_coverage}</b><br />- notify_if_modified_file_is_less_than: <b>#{min_file_coverage}</b><br />- notify_level: <b>#{notify_level_string}</b>"
-  elsif did_run_unit_tests == "false"
-    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests weren't run during the PR check"
-  else
-    configuration_message += "<br /><br />Slather is <b>disabled</b> as unit tests shouldn't be run"
-  end
-end
-
-#####################
 ######  xccov  ######
 #####################
 
