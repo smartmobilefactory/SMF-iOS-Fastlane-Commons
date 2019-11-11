@@ -10,12 +10,6 @@ private_lane :smf_upload_ipa_to_testflight do |options|
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
-  if build_variant_config.key? :itc_apple_id
-    username = build_variant_config[:itc_apple_id]
-  else
-    username = nil
-  end
-
   pilot(
     apple_id: build_variant_config[:itc_apple_id],
     username: build_variant_config[:apple_id],
@@ -40,7 +34,7 @@ private_lane :smf_download_dsym_from_testflight do |options|
   project_name = @smf_fastlane_config[:project][:project_name]
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
   bundle_identifier = build_variant_config[:bundle_identifier]
-  username = build_variant_config[:itc_apple_id]
+  username = build_variant_config[:apple_id]
 
   build_number = get_build_number(
     xcodeproj: "#{project_name}.xcodeproj"
@@ -69,7 +63,7 @@ private_lane :smf_itunes_precheck do |options|
 
   begin
     app_identifier = build_variant_config[:bundle_identifier]
-    username = build_variant_config[:itc_apple_id]
+    username = build_variant_config[:apple_id]
 
     precheck(
       username: username.nil? ? nil : username,
@@ -109,12 +103,7 @@ private_lane :smf_verify_common_itc_upload_errors do |options|
   itc_team_id = build_variant_config[:itc_team_id]
   itc_skip_version_check = build_variant_config[:itc_skip_version_check]
 
-  # Use the specified Apple ID to login or take the default one (is automatically chosen if the values are nil)
-  if build_variant_config.key? :itc_apple_id
-    username = build_variant_config[:itc_apple_id]
-  else
-    username = nil
-  end
+  username = build_variant_config[:apple_id]
 
   credentials = CredentialsManager::AccountManager.new(user: username)
 
