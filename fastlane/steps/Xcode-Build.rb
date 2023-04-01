@@ -275,7 +275,7 @@ end
 
 def smf_xcargs_for_build_system
   # always use legacy Build System
-  return ""
+  return "CODE_SIGN_STYLE=Manual"
 end
 
 def smf_is_using_old_build_system
