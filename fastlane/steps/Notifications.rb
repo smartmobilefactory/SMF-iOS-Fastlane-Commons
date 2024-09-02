@@ -48,7 +48,7 @@ private_lane :smf_send_chat_message do |options|
   if slack_channel && (slack_channel.include? "/") == false
 
     project_name = @smf_fastlane_config[:project][:project_name]
-    slack_channel = URI.unescape(slack_channel) == slack_channel ? URI.escape(slack_channel) : slack_channel
+    slack_channel = URI.decode_www_form_component(slack_channel) == slack_channel ? URI.encode_www_form_component(slack_channel) : slack_channel
 
     content = ""
 
