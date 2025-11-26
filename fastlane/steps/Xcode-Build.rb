@@ -539,7 +539,7 @@ def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
     end
   end
 
-  match(type: type, readonly: read_only, app_identifier: identifiers, username: username, team_id: team_id, git_url: git_url, git_branch: team_id, keychain_name: "jenkins.keychain", keychain_password: ENV["JENKINS"])
+  match(type: type, readonly: read_only, app_identifier: identifiers, username: username, team_id: team_id, git_url: git_url, git_branch: team_id, keychain_name: "jenkins.keychain", keychain_password: ENV["JENKINS"], force_legacy_encryption: true)
 end
 
 def smf_download_provisioning_profile_using_sigh(is_adhoc_build, app_identifier)
