@@ -82,7 +82,7 @@ private_lane :smf_archive_ipa do |options|
     export_method: export_method,
     export_options: { iCloudContainerEnvironment: icloud_environment },
     skip_package_ipa: skip_package_ipa,
-    xcpretty_formatter: "/Library/Ruby/Gems/2.3.0/gems/xcpretty-json-formatter-0.1.0/lib/json_formatter.rb"
+    xcodebuild_formatter: "xcbeautify"
     )
 
   if use_sparkle
