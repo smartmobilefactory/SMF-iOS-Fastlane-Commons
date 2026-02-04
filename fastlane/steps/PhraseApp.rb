@@ -233,11 +233,7 @@ end
 def transform_value_if_necessary(key, value)
   case key
   when :access_token_key
-    if value != "PHRASEAPP_API_ACCESS_TOKEN"
-      return ENV["CUSTOM_PHRASE_APP_TOKEN"]
-    else
-      return ENV["PHRASEAPP_API_ACCESS_TOKEN"]
-    end
+    return ENV["PHRASEAPP_API_ACCESS_TOKEN"]
   when :locales, :files
     return value.join(" ")
   when :forbid_comments_in_source
