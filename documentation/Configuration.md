@@ -80,7 +80,7 @@ The Phrase-App synchronisation scripts need certain environment variables. The v
 
 |Key|Default Value|Datatype| Mandatory |Description|
 |---|---|---|---|---|
-|```access_token_key```| ```"SMF_PHRASEAPP_ACCESS_TOKEN"```|```String```| ☑️| The variable name in which jenkins stores the access token for the phrase app api. The default value is ```"SMF_PHRASEAPP_ACCESS_TOKEN"``` which should work for almost all projects. An exception are the Strato projects, they should use ```"stratoPhraseappAccessToken"```.|
+|```access_token_key```| ```"PHRASEAPP_API_ACCESS_TOKEN"```|```String```| ☑️| The variable name in which jenkins stores the access token for the phrase app api. The default value is ```"PHRASEAPP_API_ACCESS_TOKEN"``` which should work for almost all projects. An exception are the Strato projects, they should use ```"stratoPhraseappAccessToken"```.|
 |```project_id```| ```nil```|```String```|  ☑️| The projects phrase app id which is used in the api call to identify the correct project. This should be an all lowercase hexadecimal string with 32 digits. For example ```"12abc345bf6e980d96e5b0a236fe78b1"```|
 |```source```| ```nil```|```String```| ☑️| This value should be an identifier for the language which is used as source for the translation. This is ```"en"``` in the most of the cases.|
 |```locales```| ```nil```|```Array of Strings```| ☑️| A list of language identifiers to which the strings of the app will be translated. For example ```["de", "at", "es", "fr"]```|

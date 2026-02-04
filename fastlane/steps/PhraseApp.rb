@@ -91,7 +91,7 @@ end
 
 def initialize_env_variable_name_mappings
   @phrase_app_config_keys_env_variable_mapping = {
-    :access_token_key           => ["phraseappAccessToken", true, "SMF_PHRASEAPP_ACCESS_TOKEN"], # optional
+    :access_token_key           => ["phraseappAccessToken", true, "PHRASEAPP_API_ACCESS_TOKEN"], # optional
     :project_id                 => ["phraseappProjectId", false],
     :source                     => ["phraseappSource", false],
     :locales                    => ["phraseappLocales", false],
@@ -233,10 +233,10 @@ end
 def transform_value_if_necessary(key, value)
   case key
   when :access_token_key
-    if value != "SMF_PHRASEAPP_ACCESS_TOKEN"
+    if value != "PHRASEAPP_API_ACCESS_TOKEN"
       return ENV["CUSTOM_PHRASE_APP_TOKEN"]
     else
-      return ENV["SMF_PHRASEAPP_ACCESS_TOKEN"]
+      return ENV["PHRASEAPP_API_ACCESS_TOKEN"]
     end
   when :locales, :files
     return value.join(" ")
