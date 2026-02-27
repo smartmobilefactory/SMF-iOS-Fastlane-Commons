@@ -27,8 +27,8 @@ export phraseappForbidCommentsInSource=0
 export phraseappBasedir='../Resources/HiDrive'
 export phraseappFiles='en.lproj/Localizable.strings en.lproj/InfoPlist.strings'
 
-/Users/smf/PhraseApp/push.sh
-/Users/smf/PhraseApp/pull.sh
+$HOME/PhraseApp/push.sh
+$HOME/PhraseApp/pull.sh
 
 #
 # UploadExtension HiDrive
@@ -38,8 +38,8 @@ export phraseappProjectId="44af9b5d1d4a30b6622d5afe28d19ba7"
 export phraseappBasedir='../Extensions/UploadExtension/Resources/HiDrive'
 export phraseappFiles="en.lproj/InfoPlist.strings"
 
-/Users/smf/PhraseApp/push.sh
-/Users/smf/PhraseApp/pull.sh
+$HOME/PhraseApp/push.sh
+$HOME/PhraseApp/pull.sh
 
 #
 # DocumentProvider Extension HiDrive
@@ -49,5 +49,5 @@ export phraseappProjectId="909b107b6a3d162914e2a88096c3069f"
 export phraseappBasedir='../Extensions/HiDrive-DocumentProviderExtension'
 export phraseappFiles="en.lproj/InfoPlist.strings"
 
-/Users/smf/PhraseApp/push.sh
-/Users/smf/PhraseApp/pull.sh
+$HOME/PhraseApp/push.sh
+$HOME/PhraseApp/pull.sh
