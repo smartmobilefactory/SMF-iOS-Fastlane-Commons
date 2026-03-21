@@ -527,7 +527,7 @@ def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
   type = type == nil ? match_config[:type] : type
   read_only = (type == nil ? match_config[:read_only] : false)
   extensions_suffixes = build_variant_config[:extensions_suffixes].nil? ? @smf_fastlane_config[:extensions_suffixes] : build_variant_config[:extensions_suffixes]
-  
+
   username = safe_build_variant_config_read(:apple_id)
   team_id = safe_build_variant_config_read(:team_id)
   git_url = $FASTLANE_MATCH_REPO_URL
@@ -539,7 +539,23 @@ def smf_download_provisioning_profile_using_match(app_identifier, type = nil)
     end
   end
 
+  # CBENEFIOS-2162: Skip match if valid signing identity already in keychain
+  if read_only && smf_is_ci? && smf_keychain_has_valid_identity?("jenkins.keychain")
+    UI.message("✅ Valid signing identity found in keychain – skipping match")
+    return
+  end
+
   match(type: type, readonly: read_only, app_identifier: identifiers, username: username, team_id: team_id, git_url: git_url, git_branch: team_id, keychain_name: "jenkins.keychain", keychain_password: ENV["JENKINS"], force_legacy_encryption: true)
+end
+
+# CBENEFIOS-2162: Check if keychain already contains a valid codesigning identity
+def smf_keychain_has_valid_identity?(keychain_name = "jenkins.keychain")
+  identity_count = sh(
+    command: "security find-identity -v -p codesigning #{keychain_name} 2>/dev/null | grep -c 'iPhone'",
+    log: false,
+    error_callback: -> (_) { "0" }
+  ).strip.to_i
+  identity_count > 0
 end
 
 def smf_download_provisioning_profile_using_sigh(is_adhoc_build, app_identifier)
