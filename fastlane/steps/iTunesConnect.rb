@@ -1,3 +1,43 @@
+##############################################
+### App Store Connect API Key Auth helper  ###
+##############################################
+#
+# Returns a fastlane `app_store_connect_api_key`-action hash if the Jenkins
+# pipeline has injected the three `APP_STORE_CONNECT_API_KEY_*` environment
+# variables (see Jenkins-Pipeline-Commons `vars/fastlane.groovy` line 141-143
+# and `vars/loadAppStoreConnectCredentials.groovy`). Returns `nil` otherwise,
+# in which case fastlane falls back to the legacy Apple-ID + app-specific
+# password auth via `FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD`.
+#
+# Memoised per fastlane run — the action issues a JWT under the hood and
+# we don't need to re-mint it for every lane that uses iTC.
+#
+# CBENEFIOS-1686 brought the Jenkins-side credentials online but the
+# fastlane lanes here were never switched to consume them. This helper
+# closes that loop without forcing every caller to handle the nil case.
+
+def smf_app_store_connect_api_key
+  return @smf_asc_api_key if defined?(@smf_asc_api_key) && !@smf_asc_api_key.nil?
+
+  key_path   = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+  key_id     = ENV["APP_STORE_CONNECT_API_KEY_ID"]
+  issuer_id  = ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"]
+
+  return nil if key_path.nil? || key_path.empty?
+  return nil if key_id.nil? || key_id.empty?
+  return nil if issuer_id.nil? || issuer_id.empty?
+
+  UI.important("Using App Store Connect API Key auth (Key ID: #{key_id})")
+
+  @smf_asc_api_key = app_store_connect_api_key(
+    key_id: key_id,
+    issuer_id: issuer_id,
+    key_filepath: key_path,
+    duration: 1200,
+    in_house: false
+  )
+end
+
 ####################################
 ### smf_upload_ipa_to_testflight ###
 ####################################
@@ -10,14 +50,19 @@ private_lane :smf_upload_ipa_to_testflight do |options|
   # Variables
   build_variant_config = @smf_fastlane_config[:build_variants][@smf_build_variant_sym]
 
-  pilot(
+  pilot_params = {
     apple_id: build_variant_config[:itc_apple_id],
     username: build_variant_config[:apple_id],
     team_id: build_variant_config[:itc_team_id],
     skip_waiting_for_build_processing: should_skip_waiting_after_itc_upload,
     wait_for_uploaded_build: (should_skip_waiting_after_itc_upload == false),
     changelog: ""
-  )
+  }
+
+  api_key = smf_app_store_connect_api_key
+  pilot_params[:api_key] = api_key if api_key
+
+  pilot(pilot_params)
 
 end
 
@@ -40,11 +85,16 @@ private_lane :smf_download_dsym_from_testflight do |options|
     xcodeproj: "#{project_name}.xcodeproj"
     ).to_s
 
-  download_dsyms(
+  download_dsyms_params = {
     username: username,
     app_identifier: bundle_identifier,
     build_number: build_number
-    )
+  }
+
+  api_key = smf_app_store_connect_api_key
+  download_dsyms_params[:api_key] = api_key if api_key
+
+  download_dsyms(download_dsyms_params)
 
 end
 
@@ -65,10 +115,15 @@ private_lane :smf_itunes_precheck do |options|
     app_identifier = build_variant_config[:bundle_identifier]
     username = build_variant_config[:apple_id]
 
-    precheck(
+    precheck_params = {
       username: username.nil? ? nil : username,
       app_identifier: app_identifier
-      )
+    }
+
+    api_key = smf_app_store_connect_api_key
+    precheck_params[:api_key] = api_key if api_key
+
+    precheck(precheck_params)
 
   rescue => exception
 
@@ -90,6 +145,12 @@ end
 ################################################
 
 private_lane :smf_verify_common_itc_upload_errors do |options|
+  # TODO: still uses legacy `Spaceship::Tunes.login(user, password)` below —
+  # needs migration to `Spaceship::ConnectAPI.token = …` with the ASC API
+  # Key (same key as `smf_app_store_connect_api_key` returns). Out of scope
+  # for the initial fix that unblocks `smf_upload_ipa_to_testflight`; track
+  # in a follow-up. Until then this lane will fail authentication too when
+  # the app-specific password expires.
   require 'spaceship'
   require 'credentials_manager'
 
