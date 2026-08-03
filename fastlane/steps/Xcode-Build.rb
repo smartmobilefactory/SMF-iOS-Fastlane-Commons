@@ -322,7 +322,9 @@ def smf_setup_correct_xcode_executable_for_build
   ENV[$DEVELOPMENT_DIRECTORY_KEY] = xcode_executable_path
 
   xcode_select(xcode_executable_path)
-  ensure_xcode_version(version: required_xcode_version)
+  # strict: false matches only the provided version components (e.g. "26.5" == "26.5.x"),
+  # so a project pin does not need updating on every Xcode patch release.
+  ensure_xcode_version(version: required_xcode_version, strict: false)
 end
 
 def smf_xcode_executable_path_for_version(xcode_version)
