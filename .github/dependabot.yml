@@ -1,0 +1,15 @@
+version: 2
+# One run per week, monday 05:00 Europe/Berlin: the morning slots (08:00 Mon/Thu, Tue/Fri) stay with
+# the product apps so the dependency PRs of different repos do not land on the same day.
+# Only danger/Gemfile is a real manifest; documentation/project_example/Gemfile is an example.
+updates:
+  - package-ecosystem: "bundler"
+    directory: "/danger"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps(danger)"
